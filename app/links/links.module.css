@@ -1,0 +1,8 @@
+.lightBorder {
+  border: 1px solid var(--border-color-1);
+}
+
+.linkCard.swiped {
+  transform: translateX(-100%); /* Swipe out to the left */
+  opacity: 0;
+}

@@ -1,0 +1,16 @@
+.cardDimensions {
+  height: 100px;
+  width: 100%;
+}
+
+.otpInputContainer {
+  border: none !important;
+  border-bottom: 1px solid var(--theme-1) !important;
+  margin: 12px;
+  font-size: 24px;
+  color: #1c1c1c;
+  width: 40px;
+  height: auto;
+  text-align: center;
+  outline: 'none';
+}

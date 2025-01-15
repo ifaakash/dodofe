@@ -1,0 +1,18 @@
+.lightBorder {
+  border: 1px solid var(--border-color-1);
+}
+
+.dodoUrlPage {
+  height: fit-content;
+  width: 100%;
+}
+
+.dodoContainer {
+  border: 1px solid var(--dark-green);
+  position: relative;
+  height: 340px;
+  width: 200px;
+}
+
+.themeName {
+}

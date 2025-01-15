@@ -1,0 +1,48 @@
+.inputContainer {
+  position: relative;
+}
+
+.inputContainer input {
+  text-align: left;
+  outline: none;
+  letter-spacing: 1px;
+  cursor: text;
+  line-height: 1.71;
+  background: transparent;
+}
+
+.inputContainer input:focus,
+.inputContainer input:not([value=""]) {
+  border-color: var(--theme-1);
+}
+
+.inputContainer input:focus ~ .input-label,
+.inputContainer input:not([value=""]) ~ .input-label {
+  top: -5px;
+  font-size: 0.875rem;
+}
+
+.inputContainer input.input__element_invalid {
+  border-color: var(--red);
+}
+
+.inputContainer input::placeholder {
+  color: var(--disabled-color);
+  font-size: 1rem;
+  font-family: "medium-font";
+}
+
+.inputContainer input:-webkit-autofill,
+.inputContainer input:-webkit-autofill:hover,
+.inputContainer input:-webkit-autofill:focus,
+.inputContainer input:-webkit-autofill:active {
+  transition: var(--white) 5000s ease-in-out 0s;
+}
+
+.inputContainer .inputLabel {
+  position: absolute;
+  top: 20%;
+  transition: all 0.25s ease-in-out;
+  letter-spacing: 1px;
+  font-size: 1rem;
+}

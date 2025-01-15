@@ -1,0 +1,113 @@
+import instaIcon from "public/icons/insta.svg";
+import fbIcon from "public/icons/fb.svg";
+import youtubeIcon from "public/icons/youtube.svg";
+import snapchatIcon from "public/icons/snapchat.svg";
+import githubIcon from "public/icons/github.svg";
+import behanceIcon from "public/icons/behance.svg";
+import dribbleIcon from "public/icons/dribble.svg";
+import linkedInIcon from "public/icons/linkedIn.svg";
+import telegramIcon from "public/icons/telegram.svg";
+import twitterIcon from "public/icons/twitter.svg";
+
+export const ColorConstants = {
+  THEME1: "theme-1",
+  THEME2: "theme-2",
+  THEME3: "theme-3",
+  THEME_GRADIENT1: "theme-gradient-1",
+  THEME_GRADIENT2: "theme-gradient-2",
+  LIGHT_THEME: "light-theme",
+  SECONDARY_PINK: "secondary-pink",
+  PRIMARY_BLUE: "primary-blue",
+  SECONDARY_PURPLE: "secondary-purple",
+  SUCCESS: "success",
+  DANGER: "danger",
+  WARNING: "warning",
+  WHITE: "white",
+};
+
+export enum Size {
+  FREE = "free",
+  LARGE = "large",
+  EXTRALARGE = "extraLarge",
+  MEDIUM = "medium",
+  REGULAR = "regular",
+  SMALL = "small",
+  TINY = "tiny",
+}
+
+export const ROUTE_CONSTANTS = {
+  SLASH: '/',
+  HOME: "/home",
+  LINKS: "/links",
+  ADD_STUFF: "/add-stuff",
+  BASIC_DETAILS: "/basic-details",
+  THEME_SELECT: "/theme-select",
+  ERROR: "/404",
+  LOGIN: "/login",
+  PREVIEW: "/preview",
+  INVOICE: "/invoice",
+  SENDER: "/sender",
+  RECEIVER: "/receiver",
+  DETAILS: "/details",
+  PAYMENT_DETAILS: "/payment/details",
+  FINAL_DETAILS: "/final-details"
+};
+
+export const BLOCKS = {
+  LINK: "link",
+  SOCIAL: "social",
+  VIDEO: "video",
+  SEPARATOR: "seperator",
+  HEADING: "heading",
+  THOUGHTS: "thoughts"
+};
+
+export const STORAGE_CONSTANTS = {
+  TOKEN_SESSION_KEY: 'token',
+  MOBILE: 'mobile',
+  userId: 'userId'
+}
+
+export const ROUTE_TYPE = {
+  PRIVATE: 'private',
+  PUBLIC: 'public',
+  RESTRICTED: 'restricted'
+}
+
+export const PLAYER_STATUS = {
+  PAUSE: 'pause',
+  PLAY: 'play'
+}
+
+export const SEPARATOR = {
+  LINE: "line",
+  SOLID: "solid",
+  OR: "or",
+};
+
+export const BADGE_COLORS = [
+  { name: "Sunflower", color: "#FFCF58" },
+  { name: "Grapefruit", color: "#FB7053" },
+  { name: "Aqua", color: "#51C0EB" },
+  { name: "Plum", color: "#8066BE" },
+];
+
+export const BADGE_COLORS_MAP: { [key: string]: string } = {
+  Sunflower: "#FFD700",
+  Grapefruit: "#FF6347",
+  Aqua: "#00FFFF",
+  Plum: "#DDA0DD",
+};
+
+export const socialPlatforms: any[] = [
+  { name: 'instagram', displayName: 'Instagram', icon: instaIcon },
+  { name: 'facebook', displayName: 'Facebook', icon: fbIcon },
+  { name: 'youtube', displayName: 'Youtube', icon: youtubeIcon },
+  { name: 'snapchat', displayName: 'Snapchat', icon: snapchatIcon },
+  { name: 'twitter', displayName: 'Twitter', icon: twitterIcon },
+  { name: 'linkedin', displayName: 'Linkedin', icon: linkedInIcon },
+  { name: 'github', displayName: 'Github', icon: githubIcon },
+  { name: 'behance', displayName: 'Behance', icon: behanceIcon },
+  { name: 'dribble', displayName: 'Dribble', icon: dribbleIcon },
+  { name: 'telegram', displayName: 'Telegram', icon: telegramIcon },
+];
