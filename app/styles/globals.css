@@ -55,6 +55,9 @@ body {
   background: var(--card-bg);
 }
 
+.yellow-bg {
+  background: var(--yellow);
+}
 /* main page styles ends */
 
 .card {

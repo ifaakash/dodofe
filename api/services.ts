@@ -3,9 +3,9 @@ import API_CONSTANTS from './constants';
 
 export const sendOtp = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.sendOtp, payload);
 
-export const verifyUser = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.verifyUser, payload);
+export const registerUser = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.registerUser, payload);
 
-export const storeUserDetails = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.storeUserDetails, payload);
+export const completeProfile = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.completeProfile, payload);
 
 export const getUserDetails = async (userId: string): Promise<any> => Get<any>(API_CONSTANTS.getUserDetails + API_CONSTANTS.slash + userId);
 

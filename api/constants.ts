@@ -1,9 +1,9 @@
 export default {
     slash: '/',
     sendOtp: '/send-otp',
-    verifyUser: '/verify-user',
-    storeUserDetails: '/store-user-details',
-    getUserDetails: '/get-user-details',
+    registerUser: '/auth/register',
+    completeProfile: '/complete-profile',
+    getUserDetails: '/user',
     updateUserDetails: '/update-user-details',
     createUserBlocks: '/create-block',
     getUserBlocks: '/user-blocks',

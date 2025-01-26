@@ -6,13 +6,16 @@ import Image from "next/image";
 import Button from "@components/atoms/Button";
 
 import userProfileImg from "public/assets/userProfile.png";
+import crossBg from "public/icons/crossBg.svg";
 import noUserDp from "public/assets/noUserDp.png";
-import footerImg from "public/assets/footerImg.png";
+// import footerImg from "public/assets/footerImg.png";
 import engagementCalc from "public/assets/engagementCalc.png";
 import priceCalc from "public/assets/priceCalc.png";
 import copy from "public/icons/copy.svg";
 import sideBarIcon from "public/icons/sideBarIcon.svg";
+import dodoCoinIcon from "public/icons/dodoCoin.svg";
 import otherFeatures from "public/assets/otherFeatures.png";
+import welcomeToDodo from "public/assets/welcome.png";
 
 import { useRouter } from "next/navigation";
 import { BLOCKS, ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
@@ -23,6 +26,8 @@ import { loadState } from "@utils/localStorage";
 import { isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
 import { sidebarUI } from "@utils/uiUtils";
+import CtaSection from "@components/molecules/CtaSection";
+import HomeFooter from "./homeFooter";
 
 export default function Home() {
   const router = useRouter();
@@ -116,116 +121,155 @@ export default function Home() {
     }
   };
 
-  const getOldCardUI = () => {
-    return (
-      <div
-        className={cx(
-          "card mt-4 p-4 flex items-center flex-col h-66",
-          styles.cardDimensions
-        )}
-      >
-        <Image
-          height={80}
-          width={80}
-          src={noUserDp}
-          alt="user profile"
-          className="my-4 circle"
-        />
-        <span className="text-lg mb-2">{userDetails?.dodoPageName || userDetails?.userName || 'Dodo user'}</span>
+  const getUserCard = () => {
+    const dodoPageDetail = userDetails?.dodoPages[0];
 
-        <div className="rounded-lg h-11 w-full items-center bg-theme justify-between flex pl-2">
-          <span
-            className="clr-dark-green text-sm truncate overflow-hidden text-ellipsis whitespace-nowrap"
-            style={{ maxWidth: '200px' }}
-          >
-            {'dodoclub.in/' + userId}</span>
-          <Image
-            height={20}
-            width={20}
-            src={copy}
-            alt="user profile"
-            className="circle mr-2"
-            onClick={() => copyToClipboard('https://dodoclub.in/' + userId)}
-          />
-        </div>
+    return <CtaSection
+      title={dodoPageDetail?.url || 'Dodo user'}
+      description={dodoPageDetail?.url}
+      buttonBgColor="var(--pink)"
+      onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
+      img={copy}
+      onButtonClick={gotoLinksPage}
+    />
 
-        <div className="flex flex-row mt-4">
-          <Button btnColor="white" text="Share" onClick={shareContent}
-            className="mx-4 my-2 font-bold py-2" />
+    // return (
+    //   <div
+    //     className={cx(
+    //       "card mt-4 p-4 flex items-center flex-col h-66",
+    //       styles.cardDimensions
+    //     )}
+    //   >
+    //     <Image
+    //       height={80}
+    //       width={80}
+    //       src={noUserDp}
+    //       alt="user profile"
+    //       className="my-4 circle"
+    //     />
+    //     <span className="text-lg mb-2">{userDetails?.dodoPageName || userDetails?.userName || 'Dodo user'}</span>
 
-          <Button
-            text="Manage"
-            btnColor="theme-1"
-            className="mx-4 my-2 font-bold py-2 rounded-lg"
-            onClick={() => gotoLinksPage()}
-          />
-        </div>
-      </div>
-    );
+    //     <div className="rounded-lg h-11 w-full items-center bg-theme justify-between flex pl-2">
+    //       <span
+    //         className="clr-dark-green text-sm truncate overflow-hidden text-ellipsis whitespace-nowrap"
+    //         style={{ maxWidth: '200px' }}
+    //       >
+    //         {'dodoclub.in/' + userId}</span>
+    //       <Image
+    //         height={20}
+    //         width={20}
+    //         src={copy}
+    //         alt="user profile"
+    //         className="circle mr-2"
+    //         onClick={() => copyToClipboard('https://dodoclub.in/' + userId)}
+    //       />
+    //     </div>
+
+    //     <div className="flex flex-row mt-4">
+    //       <Button btnColor="white" text="Share" onClick={shareContent}
+    //         className="mx-4 my-2 font-bold py-2" />
+
+    //       <Button
+    //         text="Manage"
+    //         btnColor="theme-1"
+    //         className="mx-4 my-2 font-bold py-2 rounded-lg"
+    //         onClick={() => gotoLinksPage()}
+    //       />
+    //     </div>
+    //   </div>
+    // );
   };
 
 
   return (
     <Screen>
-      <div className="mt-16 px-4 text-center">
-        <div className="flex justify-between mb-6">
-          <span className="text-xl">
-            👋 Hey! <span className="font-extrabold">Dodo user</span>
-          </span>
+      <div className="mt-16 text-center">
 
-          <Image
-            height={24}
-            width={24}
-            src={sideBarIcon}
-            alt="side bar"
-            onClick={toggleSidebar}
-          />
+        <div className="px-4" style={{ backgroundImage: `url(${crossBg.src})` }}>
+          <div className="flex justify-between mb-6">
+            <Image
+              height={50}
+              width={260}
+              src={welcomeToDodo}
+              alt="side bar"
+              className="ml-16"
+              onClick={toggleSidebar}
+            />
+
+            <Image
+              height={24}
+              width={24}
+              src={sideBarIcon}
+              alt="side bar"
+              onClick={toggleSidebar}
+            />
+          </div>
+
+          {isEmpty(userId) ? <div>
+            <CtaSection onButtonClick={gotoLinksPage} />
+
+            <div className="rounded-2xl flex p-2 clr-white my-4 pl-4" style={{ background: 'grey' }}>
+              Login to get free
+              <Image
+                className="mx-2"
+                height={18}
+                width={22}
+                src={dodoCoinIcon}
+                alt="dodo coin"
+              />
+              1000 dodo coins
+            </div>
+          </div> :
+            getUserCard()
+          }
         </div>
+        {/* {isEmpty(userId) ? getNewCardUI() : getOldCardUI()} */}
 
-        {isEmpty(userId) ? getNewCardUI() : getOldCardUI()}
 
-        <Image
-          height={21}
-          width={205}
-          src={otherFeatures}
-          alt="user profile"
-          className="mx-auto my-6"
-        />
-
-        <div className="absolute-center">
+        <div className={cx('w-full px-4 rounded-t-2xl bg-white', styles.lowerDiv)} >
           <Image
-            height={200}
-            width={152}
-            src={priceCalc}
+            height={21}
+            width={205}
+            src={otherFeatures}
             alt="user profile"
             className="mx-auto my-6"
           />
 
-          <Image
-            height={200}
-            width={152}
-            src={engagementCalc}
-            alt="user profile"
-            className="mx-auto my-6"
-          />
+          <div className="absolute-center flex-col">
+            <CtaSection bgColor="var(--yellow)" title="Invoice" description="Create stunning digital invoices in a few seconds" />
+
+            <div className="flex flex-row justify-between block w-full">
+              <Image
+                height={320}
+                width={172}
+                src={engagementCalc}
+                alt="engagement calc"
+                className="ml-2 my-6"
+              />
+
+              <Image
+                height={320}
+                width={172}
+                src={priceCalc}
+                alt="price calc"
+                className="mr-2 my-6"
+              />
+            </div>
+
+          </div>
+
+          <CtaSection bgColor="var(--warm-green)" title="MediaKit" description="Your digital resume" buttonLabel="Coming soon..." />
+
+          <span className="absolute-center text-sm mt-4">more coming soon.</span>
+
+          {sidebarUI(isSidebarOpen, toggleSidebar)}
 
         </div>
 
-        <Image
-          // height={100}
-          // width={300}
-          src={footerImg}
-          layout="responsive"
-          alt="user profile"
-          className="my-4"
-        />
-
-        {sidebarUI(isSidebarOpen, toggleSidebar)}
-        {/* 
-           < div className="absolute w-full bottom-2 font-light">
-         Crafted with ❤️ in <span className="font-semibold">BHARAT</span>
-       </div> */}
+        <HomeFooter />
       </div>
+
+
     </Screen >
   );
 }

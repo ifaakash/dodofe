@@ -21,6 +21,9 @@
   --text-color: #000000;
   --dark-text-color: #414D55;
   --card-bg: transparent;
+  --yellow: #FFF455;
+  --warm-green: #C0FA59;
+  --pink: #F4668E;
 }
 
 [data-theme="light"] {

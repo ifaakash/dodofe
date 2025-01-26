@@ -6,8 +6,8 @@ import cx from "classnames";
 import { useRouter } from "next/navigation";
 
 import styles from "./userCategory.module.css";
-import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
-import { createUserBlock, storeUserDetails } from "api";
+import { ROUTE_CONSTANTS, socialPlatforms, STORAGE_CONSTANTS } from "@utils/constants";
+import { createUserBlock, completeProfile } from "api";
 import { loadState, saveState } from "@utils/localStorage";
 
 const categories = [
@@ -35,7 +35,9 @@ export const UserCategory = () => {
 
   const gotoHome = () => {
     const mobileNumber = loadState(STORAGE_CONSTANTS.MOBILE);
-    storeUserDetails({ name, mobileNumber, category }).then((res) => {
+    const userId: string = loadState(STORAGE_CONSTANTS.userId) || '';
+
+    completeProfile({ userId, name, mobileNumber, interests: [category], socialLinks: [] }).then((res) => {
       saveState(STORAGE_CONSTANTS.userId, res?.userId);
 
       router.push(ROUTE_CONSTANTS.HOME, { scroll: false });

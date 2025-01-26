@@ -1,3 +1,8 @@
 .cardDimensions {
   width: 100%;
 }
+
+
+.lowerDiv {
+  border-top: 3px solid #3D4966; 
+}

@@ -11,7 +11,7 @@ import { Splash } from "./Splash";
 import { UserCategory } from "./UserCategory";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import Screen from "@components/molecules/Screen";
-import { verifyUser } from "api";
+import { registerUser } from "api";
 import { saveState } from "@utils/localStorage";
 
 export default function loginPage() {
@@ -72,12 +72,10 @@ export default function loginPage() {
       window.otpless = (otplessUser: any) => {
         console.log("Otpless User Data:", otplessUser);
 
-        verifyUser({
+        registerUser({
           mobileNumber: otplessUser?.identities[0]?.identityValue,
-          thirdPartyData: {
-            userId: otplessUser?.userId,
-            idToken: otplessUser?.token,
-          },
+          otplessId: otplessUser?.userId,
+          token: otplessUser.token
         })
           .then((res: any) => {
             saveState(STORAGE_CONSTANTS.TOKEN_SESSION_KEY, res.token);
@@ -92,8 +90,6 @@ export default function loginPage() {
 
             saveState(STORAGE_CONSTANTS.userId, res?.userId);
             router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
-
-
           })
           .catch((error) => {
             console.error("Error during verification:", error);
