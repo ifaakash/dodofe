@@ -11,6 +11,7 @@ export const getUserDetails = async (userId: string): Promise<any> => Get<any>(A
 
 export const updateUserDetails = async (userId: string, payload: any): Promise<any> => Post<any>(API_CONSTANTS.updateUserDetails + API_CONSTANTS.slash + userId, payload, { 'Content-Type': 'multipart/form-data' });
 
+
 export const createUserBlock = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.createUserBlocks, payload);
 
 export const getUserBlocks = async (userId: string): Promise<any> => Get<any>(API_CONSTANTS.getUserBlocks + API_CONSTANTS.slash + userId);

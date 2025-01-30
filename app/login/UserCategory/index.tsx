@@ -38,8 +38,6 @@ export const UserCategory = () => {
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || '';
 
     completeProfile({ userId, name, mobileNumber, interests: [category], socialLinks: [] }).then((res) => {
-      saveState(STORAGE_CONSTANTS.userId, res?.userId);
-
       router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
     }).catch(() => {
       console.log('error');

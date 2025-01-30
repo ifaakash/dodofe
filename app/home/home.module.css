@@ -6,3 +6,20 @@
 .lowerDiv {
   border-top: 3px solid #3D4966; 
 }
+
+.shimmerBg {
+  background-size: 200% 200%; /* Make the gradient larger to create a shimmer effect */
+  animation: shimmer 0.4s infinite ease-in-out; /* Apply the animation */
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

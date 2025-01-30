@@ -14,6 +14,7 @@ const CtaSection = ({
     onButtonClick = () => { },
     onImageClick = () => { },
     img = profileIcon,
+    imgSize = -1,
     floatingPosition = 'bottom-right', // 'top-right' or 'bottom-right'
     bgColor = '#fff',
     textColor = '#000',
@@ -48,11 +49,11 @@ const CtaSection = ({
                 <div className={styles.thirdPart} style={{ backgroundColor: bgColor }}>
                     <div onClick={onImageClick}>
                         <Image
-                            height={54}
-                            width={54}
+                            height={imgSize > 0 ? imgSize : 84}
+                            width={imgSize > 0 ? imgSize : 84}
                             src={img}
                             alt="user"
-                            className="mb-4 mt-4"
+                            className="mb-2 mt-2"
                         />
                     </div>
                 </div>

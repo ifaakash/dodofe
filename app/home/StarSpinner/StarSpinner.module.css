@@ -1,0 +1,39 @@
+.starContainer {
+    position: relative;
+    width: 89px;
+    height: 89px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .bigStar {
+    position: absolute;
+    animation: rotateClockwise 6s linear infinite;
+  }
+  
+  .smallStar {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    animation: rotateAntiClockwise 6s linear infinite;
+  }
+  
+  @keyframes rotateClockwise {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes rotateAntiClockwise {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  

@@ -16,6 +16,8 @@ import sideBarIcon from "public/icons/sideBarIcon.svg";
 import dodoCoinIcon from "public/icons/dodoCoin.svg";
 import otherFeatures from "public/assets/otherFeatures.png";
 import welcomeToDodo from "public/assets/welcome.png";
+import invoiceIcon from "public/assets/invoice.png";
+import mediakitIcon from "public/assets/mediakit.png";
 
 import { useRouter } from "next/navigation";
 import { BLOCKS, ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
@@ -42,7 +44,7 @@ export default function Home() {
   useEffect(() => {
 
     getUserDetails(userId).then((res) => {
-      setUserDetails(res);
+      setUserDetails(res?.user);
     })
   }, [])
 
@@ -122,7 +124,11 @@ export default function Home() {
   };
 
   const getUserCard = () => {
-    const dodoPageDetail = userDetails?.dodoPages[0];
+    const dodoPageDetail = userDetails?.dodoPages?.[0];
+
+    if (isEmpty(dodoPageDetail)) {
+      return <></>;
+    }
 
     return <CtaSection
       title={dodoPageDetail?.url || 'Dodo user'}
@@ -130,54 +136,9 @@ export default function Home() {
       buttonBgColor="var(--pink)"
       onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
       img={copy}
+      imgSize={32}
       onButtonClick={gotoLinksPage}
     />
-
-    // return (
-    //   <div
-    //     className={cx(
-    //       "card mt-4 p-4 flex items-center flex-col h-66",
-    //       styles.cardDimensions
-    //     )}
-    //   >
-    //     <Image
-    //       height={80}
-    //       width={80}
-    //       src={noUserDp}
-    //       alt="user profile"
-    //       className="my-4 circle"
-    //     />
-    //     <span className="text-lg mb-2">{userDetails?.dodoPageName || userDetails?.userName || 'Dodo user'}</span>
-
-    //     <div className="rounded-lg h-11 w-full items-center bg-theme justify-between flex pl-2">
-    //       <span
-    //         className="clr-dark-green text-sm truncate overflow-hidden text-ellipsis whitespace-nowrap"
-    //         style={{ maxWidth: '200px' }}
-    //       >
-    //         {'dodoclub.in/' + userId}</span>
-    //       <Image
-    //         height={20}
-    //         width={20}
-    //         src={copy}
-    //         alt="user profile"
-    //         className="circle mr-2"
-    //         onClick={() => copyToClipboard('https://dodoclub.in/' + userId)}
-    //       />
-    //     </div>
-
-    //     <div className="flex flex-row mt-4">
-    //       <Button btnColor="white" text="Share" onClick={shareContent}
-    //         className="mx-4 my-2 font-bold py-2" />
-
-    //       <Button
-    //         text="Manage"
-    //         btnColor="theme-1"
-    //         className="mx-4 my-2 font-bold py-2 rounded-lg"
-    //         onClick={() => gotoLinksPage()}
-    //       />
-    //     </div>
-    //   </div>
-    // );
   };
 
 
@@ -208,8 +169,12 @@ export default function Home() {
           {isEmpty(userId) ? <div>
             <CtaSection onButtonClick={gotoLinksPage} />
 
-            <div className="rounded-2xl flex p-2 clr-white my-4 pl-4" style={{ background: 'grey' }}>
-              Login to get free
+            <div
+              className={cx('rounded-2xl flex p-3 clr-white my-4 pl-4 shimmer-bg', styles.shimmerBg)}
+              style={{
+                background: 'linear-gradient(45deg, rgba(249,206,52,1) 0%, rgba(238,42,123,1) 50%, rgba(98,40,215,1) 100%)',
+              }}
+            >              Login to get free
               <Image
                 className="mx-2"
                 height={18}
@@ -220,7 +185,9 @@ export default function Home() {
               1000 dodo coins
             </div>
           </div> :
-            getUserCard()
+            <div className="my-4">
+              {getUserCard()}
+            </div>
           }
         </div>
         {/* {isEmpty(userId) ? getNewCardUI() : getOldCardUI()} */}
@@ -228,15 +195,15 @@ export default function Home() {
 
         <div className={cx('w-full px-4 rounded-t-2xl bg-white', styles.lowerDiv)} >
           <Image
-            height={21}
-            width={205}
+            height={53}
+            width={251}
             src={otherFeatures}
             alt="user profile"
             className="mx-auto my-6"
           />
 
           <div className="absolute-center flex-col">
-            <CtaSection bgColor="var(--yellow)" title="Invoice" description="Create stunning digital invoices in a few seconds" />
+            <CtaSection bgColor="var(--yellow)" img={invoiceIcon} title="Invoice" description="Create stunning digital invoices in a few seconds" />
 
             <div className="flex flex-row justify-between block w-full">
               <Image
@@ -258,7 +225,7 @@ export default function Home() {
 
           </div>
 
-          <CtaSection bgColor="var(--warm-green)" title="MediaKit" description="Your digital resume" buttonLabel="Coming soon..." />
+          <CtaSection bgColor="var(--warm-green)" img={mediakitIcon} title="MediaKit" description="Your digital resume" buttonLabel="Coming soon..." />
 
           <span className="absolute-center text-sm mt-4">more coming soon.</span>
 

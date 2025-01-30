@@ -82,13 +82,15 @@ export default function loginPage() {
 
             // saveState(STORAGE_CONSTANTS.userId, res?.userId);
             // router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
+            saveState(STORAGE_CONSTANTS.userId, res?.userId);
+            saveState(STORAGE_CONSTANTS.MOBILE, otplessUser?.identities[0]?.identityValue);
 
             if (res?.isNewUser) {
               setLoginState(1); // New user flow
               return;
             }
 
-            saveState(STORAGE_CONSTANTS.userId, res?.userId);
+
             router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
           })
           .catch((error) => {
