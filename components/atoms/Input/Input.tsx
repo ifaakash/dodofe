@@ -16,7 +16,7 @@ const Input: React.FC<any> = ({
     <input
       className={cx(
         className,
-        "bg-theme-2 my-4 px-4 py-1 h-12 text-sm rounded-lg w-full"
+        "bg-theme-2 px-4 py-1 h-12 text-sm rounded-lg w-full"
       )}
       placeholder={placeholder}
       value={value}

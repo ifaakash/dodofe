@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { SEPARATOR } from "./constants";
 import cx from "classnames";
+import { ROUTE_CONSTANTS } from "@utils/constants";
+import Router from "next/navigation";
 
 import lineSeperator from "public/icons/line.svg";
 import solidLineSeperator from "public/icons/solidLine.svg";
@@ -44,66 +46,105 @@ export const getSeperatorOptionsUI = (seperator: string) => {
     }
 };
 
-export const sidebarUI = (isSidebarOpen: boolean, toggleSidebar: () => void) => {
-    console.log(isSidebarOpen)
+export const sidebarUI = (
+    isSidebarOpen: boolean,
+    toggleSidebar: () => void
+) => {
+    const handleLogout = () => {
+        // Clear all storage
+        localStorage.clear();
+        // Close sidebar
+        toggleSidebar();
+        // Redirect to login
+        window.location.href = ROUTE_CONSTANTS.LOGIN;
+    };
+
+    const menuItems = [
+        {
+            text: "Home",
+            action: () => (window.location.href = ROUTE_CONSTANTS.HOME),
+            delay: 0,
+        },
+        {
+            text: "Profile",
+            action: () => (window.location.href = ROUTE_CONSTANTS.LINKS),
+            delay: 50,
+        },
+        {
+            text: "Settings",
+            action: () => (window.location.href = ROUTE_CONSTANTS.THEME_SELECT),
+            delay: 100,
+        },
+        { text: "Logout", action: handleLogout, delay: 150 },
+    ];
+
     return (
-        <div>
+        <>
+            {/* Overlay with fade animation */}
+            {/* <div
+                className={`fixed inset-0 bg-black transition-all duration-300 ease-in-out ${
+                    isSidebarOpen
+                        ? "bg-opacity-50"
+                        : "bg-opacity-0 pointer-events-none"
+                }`}
+                onClick={toggleSidebar}
+                style={{
+                    zIndex: 40,
+                    backdropFilter: isSidebarOpen ? "blur(4px)" : "none",
+                }}
+            /> */}
+
+            {/* Sidebar with slide and fade animation */}
             <div
-                className={cx(
-                    "fixed top-0 right-0 h-full w-64 bg-white shadow-lg transition-transform duration-300 z-50",
-                    {
-                        "translate-x-0": isSidebarOpen, // Sidebar is open
-                        "translate-x-full": !isSidebarOpen, // Sidebar is hidden
-                    }
-                )}
+                className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-all duration-300 ease-in-out ${
+                    isSidebarOpen
+                        ? "translate-x-0 opacity-100"
+                        : "translate-x-full opacity-0"
+                }`}
+                style={{
+                    zIndex: 50,
+                    boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
+                }}
             >
                 <div className="p-4 flex justify-between items-center border-b">
                     <h2 className="text-lg font-bold">Menu</h2>
                     <button
-                        className="text-lg font-bold text-gray-500"
+                        className="text-2xl font-bold text-gray-500 hover:text-gray-700 transform transition-transform duration-200 hover:scale-110"
                         onClick={toggleSidebar}
                     >
-                        &times;
+                        ×
                     </button>
                 </div>
-                <div className="p-4">
+                <nav className="p-4">
                     <ul className="space-y-4">
-                        <li>
-                            <a href="#" className="text-gray-700 hover:underline">
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-gray-700 hover:underline">
-                                Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-gray-700 hover:underline">
-                                Settings
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-gray-700 hover:underline">
-                                Logout
-                            </a>
-                        </li>
+                        {menuItems.map((item, index) => (
+                            <li
+                                key={item.text}
+                                className={`transform transition-all duration-300 ${
+                                    isSidebarOpen
+                                        ? "translate-x-0 opacity-100"
+                                        : "translate-x-8 opacity-0"
+                                }`}
+                                style={{
+                                    transitionDelay: isSidebarOpen
+                                        ? `${item.delay}ms`
+                                        : "0ms",
+                                }}
+                            >
+                                <button
+                                    onClick={item.action}
+                                    className="w-full text-left text-gray-700 hover:text-gray-900 block py-2 transition-all duration-200 hover:pl-2"
+                                >
+                                    {item.text}
+                                </button>
+                            </li>
+                        ))}
                     </ul>
-                </div>
+                </nav>
             </div>
-
-            {/* Overlay (optional, to dim the rest of the page when sidebar is open) */}
-            {
-                isSidebarOpen && (
-                    <div
-                        className="fixed inset-0 bg-black bg-opacity-30 z-40"
-                        onClick={toggleSidebar}
-                    ></div>
-                )
-            }
-        </div >
-    )
-}
+        </>
+    );
+};
 
 export const getLinkBoxUI = (data: any, badgeColor: string) => {
     return (

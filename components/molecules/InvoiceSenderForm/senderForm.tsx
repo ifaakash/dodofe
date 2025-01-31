@@ -1,178 +1,146 @@
 "use client";
-
-import { useState } from "react";
-import { Button } from "@components/atoms";
 import { Input } from "@components/atoms";
-import cx from "classnames";
-import styles from "./senderForm.module.css"; // Optional for modular CSS
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState, ChangeEvent } from "react";
+import InvoiceUserCard from "../UserCard/InvoiceUserCard";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addClientDetailsID,
+  addCurrentClientDetails,
+} from "store/slice/invoiceSlice";
+import { Plus } from "lucide-react";
+import { ClientDetailsProps } from "types";
+import { RootState } from "store/store";
 
-export function SenderForm() {
-  const router = useRouter();
+interface SenderFormProps {
+  clientDetails: ClientDetailsProps[];
+}
 
-  // State to store form data
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    zipCode: "",
-    state: "",
-    city: "",
-    address: "",
-    gstin: "",
-    pan: "",
-  });
+const SenderForm = ({ clientDetails }: SenderFormProps) => {
+  const dispatch = useDispatch();
+  const [showInputFields, setShowInputFields] = useState(true);
+  const [clientID, setClientID] = useState("");
 
-  // Handler to update form data
-  const handleInputChange = (e: any) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
+  // Update client ID in Redux store whenever it changes
+  useEffect(() => {
+    if (clientID) {
+      dispatch(addClientDetailsID(clientID));
+    }
+  }, [clientID, dispatch]);
 
-  // Form submission handler
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+  // Determine whether to show input fields or existing client cards
+  useEffect(() => {
+    setShowInputFields(clientDetails.length === 0);
+  }, [clientDetails]);
 
-    // Log or process the form data
-    console.log("Form Data Submitted:", formData);
-
-    // Navigate to the next page
-    router.push("/invoice/receiver");
-  };
+  const currentClientDetails = useSelector(
+    (state: RootState) => state.invoice.currentClientDetails || {}
+  );
 
   return (
-    <form
-      className={cx("flex flex-col space-y-6 p-4 bg-white rounded-lg shadow-md", styles.senderForm)}
-      onSubmit={handleSubmit}
-    >
-      {/* Basic Section */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-medium text-gray-500">Sender Details</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <Input
-              id="name"
-              placeholder="Enter name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
+    <div className="py-4 px-5 overflow-scroll h-[calc(100vh-150px)]">
+      {showInputFields ? (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            <div className="text-[#5E6C84] text-xs font-semibold">BASIC</div>
+            <div className="flex flex-col gap-1">
+              <Input
+                placeholder="Enter name"
+                value={currentClientDetails.name || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ name: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Email"
+                value={currentClientDetails.email || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ email: e.target.value }))
+                }
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
+          <div className="flex flex-col gap-3">
+            <div className="text-[#5E6C84] text-xs font-semibold">
+              FULL ADDRESS
+            </div>
+            <div className="flex flex-col gap-1">
+              <Input
+                placeholder="Zip Code"
+                value={currentClientDetails.zipcode || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ zipcode: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="State"
+                value={currentClientDetails.state || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ state: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="City"
+                value={currentClientDetails.city || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ city: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Address"
+                value={currentClientDetails.address || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ address: e.target.value }))
+                }
+              />
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Full Address Section */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-medium text-gray-500">Full Address</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-              Zip Code
-            </label>
-            <Input
-              id="zipCode"
-              placeholder="Zip Code"
-              value={formData.zipCode}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-              State
-            </label>
-            <Input
-              id="state"
-              placeholder="State"
-              value={formData.state}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-              City
-            </label>
-            <Input
-              id="city"
-              placeholder="City"
-              value={formData.city}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-              Address
-            </label>
-            <Input
-              id="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Optional Section */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-medium text-gray-500">Optional Details</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="gstin" className="block text-sm font-medium text-gray-700">
-              GSTIN Number
-            </label>
-            <Input
-              id="gstin"
-              placeholder="GSTIN number"
-              value={formData.gstin}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="pan" className="block text-sm font-medium text-gray-700">
-              PAN Number
-            </label>
-            <Input
-              id="pan"
-              placeholder="PAN number"
-              value={formData.pan}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="logo" className="block text-sm font-medium text-gray-700">
-              Upload Image/Logo
-            </label>
-            <div className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50">
-              <p className="text-sm text-gray-500">Click to upload</p>
+          <div className="flex flex-col gap-3">
+            <div className="text-[#5E6C84] text-xs font-semibold">OPTIONAL</div>
+            <div className="flex flex-col gap-1">
+              <Input
+                placeholder="GSTN number"
+                value={currentClientDetails.gst || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ gst: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="PAN number"
+                value={currentClientDetails.pan || ""}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentClientDetails({ pan: e.target.value }))
+                }
+              />
+              <Input placeholder="Upload image/logo" type="file" />
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Submit Button */}
-      <Button text="Next" type="submit" className="w-full" />
-    </form>
+      ) : (
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-end">
+            <div
+              className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full"
+              onClick={() => setShowInputFields(true)}
+            >
+              <div className="text-sm font-semibold">Add New Sender</div>
+              <Plus
+                size={16}
+                className="text-white bg-brandPrimary rounded-full p-0.5 cursor-pointer"
+              />
+            </div>
+          </div>
+          {clientDetails.map((detail, index) => (
+            <InvoiceUserCard
+              key={index}
+              detail={detail}
+              setUserID={setClientID}
+              userID={clientID}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
-}
+};
+
+export default SenderForm;

@@ -4,8 +4,8 @@ import styles from "./links.module.css";
 import cx from "classnames";
 import Image from "next/image";
 import Button from "@components/atoms/Button";
-import { Reorder, useDragControls } from "framer-motion"
-import { useSwipeable } from 'react-swipeable';
+import { Reorder, useDragControls } from "framer-motion";
+import { useSwipeable } from "react-swipeable";
 
 import userDetailImg from "public/assets/userDetails.png";
 import thoughtsImg from "public/assets/thoughts.svg";
@@ -27,11 +27,27 @@ import leftArrow from "public/icons/leftArrow.svg";
 import sideBarIcon from "public/icons/sideBarIcon.svg";
 import curvyLine from "public/assets/curvyLine.svg";
 import { Footer, Input } from "@components/atoms";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, use, useCallback, useEffect, useRef, useState } from "react";
 import Modal from "@components/molecules/Modal";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BADGE_COLORS_MAP, BLOCKS, ColorConstants, ROUTE_CONSTANTS, SEPARATOR, socialPlatforms, STORAGE_CONSTANTS } from "@utils/constants";
-import { createLink, createUserBlock, getLinkList, getUserDetails, publishData, reorderLink, updateUserDetails } from "api";
+import {
+  BADGE_COLORS_MAP,
+  BLOCKS,
+  ColorConstants,
+  ROUTE_CONSTANTS,
+  SEPARATOR,
+  socialPlatforms,
+  STORAGE_CONSTANTS,
+} from "@utils/constants";
+import {
+  createLink,
+  createUserBlock,
+  getLinkList,
+  getUserDetails,
+  publishData,
+  reorderLink,
+  updateUserDetails,
+} from "api";
 import { loadState } from "@utils/localStorage";
 import Screen from "@components/molecules/Screen";
 import { debounce, isEmpty } from "@utils/index";
@@ -75,15 +91,19 @@ function Links() {
   const [socialLinks, setSocialLinks] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dodoPageNameModal, setDodoPageNameModal] = useState(false);
-  const [dodoPageName, setDodoPageName] = useState('');
+  const [dodoPageName, setDodoPageName] = useState("");
 
   const [isThoughtsModalOpen, setThoughtsModalOpen] = useState(false);
 
   const [linkList, setLinkList] = useState([]);
 
   const searchParams = useSearchParams();
-  const blockId = searchParams?.get("blockId") || '';
-  const userId = searchParams?.get("userId") || '';
+  const blockId = searchParams?.get("blockId") || "";
+  // const userId = searchParams?.get("userId") || "";
+
+  // TODO: Remove this once the userId is passed from the parent component
+  const userId =
+    localStorage.getItem("dodo_0.1.0_userId")?.replace(/"/g, "") || "";
   const [currentBlockId, setCurrentBlockId] = useState(blockId);
   const [userDetails, setUserDetails] = useState({} as any);
 
@@ -95,21 +115,20 @@ function Links() {
   const router = useRouter();
 
   const handleArchive = () => {
-    console.log('archive');
-  }
+    console.log("archive");
+  };
 
   useEffect(() => {
-
     if (document) {
       document.body.style.backgroundImage = "url('/assets/bioBg.png')";
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundPosition = 'center';
-      document.body.style.backgroundRepeat = 'no-repeat';
-      document.body.style.height = '100vh';
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundPosition = "center";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.height = "100vh";
     }
 
     return () => {
-      document.body.style.backgroundImage = '';
+      document.body.style.backgroundImage = "";
     };
   }, []);
 
@@ -120,83 +139,106 @@ function Links() {
   });
 
   const redirectToPreview = () => {
-    router.push(ROUTE_CONSTANTS.LINKS + ROUTE_CONSTANTS.SLASH + ROUTE_CONSTANTS.PREVIEW + `?userId=${userId}`);
+    router.push(
+      ROUTE_CONSTANTS.LINKS +
+        ROUTE_CONSTANTS.SLASH +
+        ROUTE_CONSTANTS.PREVIEW +
+        `?userId=${userId}`
+    );
   };
 
-  const debouncedApiCall = useCallback(debounce((payload) => {
-    reorderLink(payload).then((res) => {
-      toast.success('Your links are updated! Publish to make them live.')
-    }).catch((err) => {
-      console.log('error', err)
-    })
-  }, 3000), [])
+  const debouncedApiCall = useCallback(
+    debounce((payload) => {
+      reorderLink(payload)
+        .then((res) => {
+          toast.success("Your links are updated! Publish to make them live.");
+        })
+        .catch((err) => {
+          console.log("error", err);
+        });
+    }, 3000),
+    []
+  );
 
   const onReorder = (linkList: any) => {
     setLinkList(linkList);
 
     debouncedApiCall({ userId, blockId, urls: linkList });
-  }
+  };
 
   useEffect(() => {
-
-
+    console.log("chec user", userId);
     getUserDetails(userId).then((res) => {
+      console.log("res", res);
       setUserDetails(res);
 
       fetchAudioBio(res);
 
-      setSocialLinks(res?.socialLinks || {})
+      setSocialLinks(res?.socialLinks || {});
       setDodoPageName(res?.dodoPageName || res?.name);
 
-      getLinkList(userId).then((res) => {
-        setLinkList(res);
-      }).catch(() => {
-        console.log('error fetching links')
-      })
-    })
+      getLinkList(userId)
+        .then((res) => {
+          setLinkList(res);
+        })
+        .catch(() => {
+          console.log("error fetching links");
+        });
+    });
 
     return () => {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
     };
-  }, [])
+  }, []);
 
   const fetchAudioBio = (userData: any) => {
     if (userData.audioBio) {
-      const audioBlob = new Blob([new Uint8Array(atob(userData.audioBio).split("").map(char => char.charCodeAt(0)))], { type: 'audio/ogg' });
+      const audioBlob = new Blob(
+        [
+          new Uint8Array(
+            atob(userData.audioBio)
+              .split("")
+              .map((char) => char.charCodeAt(0))
+          ),
+        ],
+        { type: "audio/ogg" }
+      );
       const audioObjectUrl = URL.createObjectURL(audioBlob);
       setAudioUrl(audioObjectUrl);
     }
-  }
+  };
 
   const linksFooterUI = () => {
     return (
       <div className="flex flex-col main-bg-theme fixed bottom-2 w-full">
-        {isEmpty(linkList) && <div className="flex justify-center flex-col items-center">
-          <span className="text-2xl clr-heading-text font-black mb-2">
-            Click “+” here to add your stuff
-          </span>
+        {isEmpty(linkList) && (
+          <div className="flex justify-center flex-col items-center">
+            <span className="text-2xl clr-heading-text font-black mb-2">
+              Click “+” here to add your stuff
+            </span>
 
-          <Image
-            height={40}
-            width={50}
-            src={curvyLine}
-            alt="user profile"
-            className="my-4"
-          />
-        </div>}
+            <Image
+              height={40}
+              width={50}
+              src={curvyLine}
+              alt="user profile"
+              className="my-4"
+            />
+          </div>
+        )}
         <div className="flex flex-row">
           <Button
             text="Preview"
             className="mx-4 my-2 w-full theme-3 font-bold py-2"
             onClick={redirectToPreview}
-            btnColor='white'
+            btnColor="white"
           />
 
           <div
             onClick={() => {
-              setModalStatus(true)
+              setModalStatus(true);
             }}
             className="bg-theme-3 w-52 mt-2 h-14 circle flex items-center justify-center text-3xl clr-white"
           >
@@ -207,7 +249,7 @@ function Links() {
             text="Publish"
             className="mx-4 my-2 w-full theme-3 font-bold py-2"
             onClick={publishDraftData}
-            btnColor='white'
+            btnColor="white"
           />
         </div>
       </div>
@@ -217,7 +259,6 @@ function Links() {
   const onVoiceRecordClick = (data: any) => {
     setVoiceRecorderModal(true);
   };
-
 
   const getHeader = () => {
     return (
@@ -245,19 +286,25 @@ function Links() {
   };
 
   const onBlockClick = (block: string) => {
-    router.push(ROUTE_CONSTANTS.ADD_STUFF + `?pageType=${block}&userId=${userId}&blockId=${currentBlockId}`);
+    router.push(
+      ROUTE_CONSTANTS.ADD_STUFF +
+        `?pageType=${block}&userId=${userId}&blockId=${currentBlockId}`
+    );
   };
 
   const onLinkClick = (block: string, linkId: string, description?: string) => {
-    router.push(ROUTE_CONSTANTS.ADD_STUFF + `?pageType=${block}&linkId=${linkId}&userId=${userId}&blockId=${currentBlockId}&description=${description}`);
-  }
+    router.push(
+      ROUTE_CONSTANTS.ADD_STUFF +
+        `?pageType=${block}&linkId=${linkId}&userId=${userId}&blockId=${currentBlockId}&description=${description}`
+    );
+  };
 
   const uploadAudio = async (audioBlob: Blob) => {
     const formData = new FormData();
-    const userId: string = loadState(STORAGE_CONSTANTS.userId) || '';
+    const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
     if (audioBlob) {
-      formData.append('audioBio', audioBlob, 'recording.ogg');
+      formData.append("audioBio", audioBlob, "recording.ogg");
 
       // setup payload for updating user details
       Object.entries(userDetails).forEach(([key, value]) => {
@@ -269,18 +316,18 @@ function Links() {
       });
 
       try {
-        const res = await updateUserDetails(userId, formData)
+        const res = await updateUserDetails(userId, formData);
 
-        toast.success('Audio uploaded successfully! Publish to make it live.');
+        toast.success("Audio uploaded successfully! Publish to make it live.");
 
-        console.log('Audio uploaded successfully');
+        console.log("Audio uploaded successfully");
       } catch (error) {
-        console.error('Error uploading audio:', error);
+        console.error("Error uploading audio:", error);
       }
 
       setVoiceRecorderModal(false);
     }
-  }
+  };
 
   let startX = 0;
 
@@ -293,20 +340,24 @@ function Links() {
     const deltaX = touchX - startX;
 
     const item: any = document.querySelector(`[data-id="${id}"]`);
-    if (deltaX < 0) { // Only swipe left
+    if (deltaX < 0) {
+      // Only swipe left
       item.style.transform = `translateX(${deltaX}px)`;
     }
   }
 
   function handleTouchEnd(e: any, id: string) {
     const item: any = document.querySelector(`[data-id="${id}"]`);
-    const finalPosition = parseInt(item.style.transform.replace('translateX(', '').replace('px)', ''));
+    const finalPosition = parseInt(
+      item.style.transform.replace("translateX(", "").replace("px)", "")
+    );
 
-    if (finalPosition < -50) { // Threshold for swiping action
-      item.classList.add('swiped');
+    if (finalPosition < -50) {
+      // Threshold for swiping action
+      item.classList.add("swiped");
       // Perform any action like deletion here
     } else {
-      item.style.transform = 'translateX(0)';
+      item.style.transform = "translateX(0)";
     }
   }
 
@@ -327,32 +378,38 @@ function Links() {
   const remainingLinks = nonEmptyLinks.slice(4);
 
   const gotoSocialLinksPage = () => {
-    router.push(ROUTE_CONSTANTS.ADD_STUFF + `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`);
+    router.push(
+      ROUTE_CONSTANTS.ADD_STUFF + `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
+    );
 
     return;
-  }
+  };
 
   const onSaveDodoPageName = async () => {
     try {
-      const res = await updateUserDetails(userId, { dodoPageName })
+      const res = await updateUserDetails(userId, { dodoPageName });
 
-      toast.success('Your dodo page name is updated! Publish to make it live.')
+      toast.success("Your dodo page name is updated! Publish to make it live.");
 
-      setDodoPageNameModal(false)
+      setDodoPageNameModal(false);
     } catch (error) {
-      console.error('Error updating dodo page name', error);
+      console.error("Error updating dodo page name", error);
     }
-  }
+  };
 
   const publishDraftData = () => {
-    publishData({ userId }).then(() => {
-      toast.success('Wohoo! Your data is published and is live for your fans to see!')
-    }).catch((err) => {
-      toast.error('Error publishing data!');
+    publishData({ userId })
+      .then(() => {
+        toast.success(
+          "Wohoo! Your data is published and is live for your fans to see!"
+        );
+      })
+      .catch((err) => {
+        toast.error("Error publishing data!");
 
-      console.error('Error publishing data', err)
-    })
-  }
+        console.error("Error publishing data", err);
+      });
+  };
 
   return (
     <Screen>
@@ -360,7 +417,10 @@ function Links() {
         {getHeader()}
 
         <div className="flex flex-col relative items-center">
-          <label htmlFor="file-input" className="relative inline-block cursor-pointer">
+          <label
+            htmlFor="file-input"
+            className="relative inline-block cursor-pointer"
+          >
             <Image
               height={100}
               width={100}
@@ -386,32 +446,45 @@ function Links() {
         </div>
 
         <span className="text-xl flex clr-dark-text font-black mb-1">
-          {dodoPageName || userDetails?.name || 'Dodo user'}
-          <Image height={16} width={16} src={editIcon} onClick={() => setDodoPageNameModal(true)} alt="user profile" className="ml-2" />
+          {dodoPageName || userDetails?.name || "Dodo user"}
+          <Image
+            height={16}
+            width={16}
+            src={editIcon}
+            onClick={() => setDodoPageNameModal(true)}
+            alt="user profile"
+            className="ml-2"
+          />
         </span>
-        {
-          audioUrl ?
-            <span onClick={onVoiceRecordClick} className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2">
-              Edit audio bio
-              <Image
-                height={16}
-                width={16}
-                src={micIcon}
-                alt="mic icon"
-                className="ml-1"
-              />
-            </span>
-            :
-            <span onClick={onVoiceRecordClick} className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2">
-              Add audio bio
-              <Image
-                height={16}
-                width={16}
-                src={micIcon}
-                alt="mic icon"
-                className="ml-1"
-              />
-            </span>}
+        {audioUrl ? (
+          <span
+            onClick={onVoiceRecordClick}
+            className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2"
+          >
+            Edit audio bio
+            <Image
+              height={16}
+              width={16}
+              src={micIcon}
+              alt="mic icon"
+              className="ml-1"
+            />
+          </span>
+        ) : (
+          <span
+            onClick={onVoiceRecordClick}
+            className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2"
+          >
+            Add audio bio
+            <Image
+              height={16}
+              width={16}
+              src={micIcon}
+              alt="mic icon"
+              className="ml-1"
+            />
+          </span>
+        )}
         {/* <Button text="edit" className="bg-theme border px-2 my-2 py-1" /> */}
 
         <div className="flex mt-2">
@@ -436,13 +509,20 @@ function Links() {
               className="flex items-center justify-center ml-2 bg-white rounded-xl h-11 w-11 shadow-sm border border-gray-200"
               onClick={() => gotoSocialLinksPage()}
             >
-              <span className="font-bold text-lg">+{remainingLinks.length}</span>
+              <span className="font-bold text-lg">
+                +{remainingLinks.length}
+              </span>
             </div>
           )}
         </div>
 
-
-        <Reorder.Group as="div" className="w-full mt-4 mb-16 overflow-scroll" dragListener={false} values={linkList} onReorder={onReorder}>
+        <Reorder.Group
+          as="div"
+          className="w-full mt-4 mb-16 overflow-scroll"
+          dragListener={false}
+          values={linkList}
+          onReorder={onReorder}
+        >
           {linkList.map((data: any) => {
             const badgeColor = BADGE_COLORS_MAP[data?.badge?.color];
 
@@ -450,24 +530,37 @@ function Links() {
               <Reorder.Item
                 {...handlers}
                 key={data._id}
-                className={cx("swipeable-item w-full h-14 bg-white rounded-xl mb-4 flex items-center justify-between shadow-md linkCard", styles.lightBorder)}
+                className={cx(
+                  "swipeable-item w-full h-14 bg-white rounded-xl mb-4 flex items-center justify-between shadow-md linkCard",
+                  styles.lightBorder
+                )}
                 value={data}
                 dragListener={false}
                 dragControls={controls}
-                onClick={() => onLinkClick(data?.type, data?._id, data?.description)}
+                onClick={() =>
+                  onLinkClick(data?.type, data?._id, data?.description)
+                }
               >
-                {data?.type === BLOCKS.LINK &&
+                {data?.type === BLOCKS.LINK && (
                   <>
                     <div className="flex items-center">
-
                       <div className="reorder-handle mr-2">
-                        <Image onPointerDown={(e) => { controls.start(e) }} height={16} width={16} src={dragIcon} alt="drag icon" className="ml-2" />
+                        <Image
+                          onPointerDown={(e) => {
+                            controls.start(e);
+                          }}
+                          height={16}
+                          width={16}
+                          src={dragIcon}
+                          alt="drag icon"
+                          className="ml-2"
+                        />
                       </div>
 
                       {getLinkBoxUI(data, badgeColor)}
                     </div>
 
-                    {data?.audio &&
+                    {data?.audio && (
                       <Image
                         height={20}
                         width={20}
@@ -475,29 +568,45 @@ function Links() {
                         alt="mic icon"
                         className="mr-2"
                       />
-                    }
+                    )}
                   </>
-                }
+                )}
 
-                {
-                  data?.type === BLOCKS.SEPARATOR &&
+                {data?.type === BLOCKS.SEPARATOR && (
                   <div className="flex absolute-center">
-                    <div className="reorder-handle" onPointerDown={(e) => controls.start(e)}>
-                      <Image height={24} width={24} src={dragIcon} alt="drag icon" className="ml-2" />
+                    <div
+                      className="reorder-handle"
+                      onPointerDown={(e) => controls.start(e)}
+                    >
+                      <Image
+                        height={24}
+                        width={24}
+                        src={dragIcon}
+                        alt="drag icon"
+                        className="ml-2"
+                      />
                     </div>
                     {getSeperatorOptionsUI(data?.description)}
                   </div>
-                }
+                )}
 
-                {
-                  data?.type === BLOCKS.HEADING &&
+                {data?.type === BLOCKS.HEADING && (
                   <div className="flex absolute-center">
-                    <div className="reorder-handle mr-2" onPointerDown={(e) => controls.start(e)}>
-                      <Image height={16} width={16} src={dragIcon} alt="drag icon" className="ml-2" />
+                    <div
+                      className="reorder-handle mr-2"
+                      onPointerDown={(e) => controls.start(e)}
+                    >
+                      <Image
+                        height={16}
+                        width={16}
+                        src={dragIcon}
+                        alt="drag icon"
+                        className="ml-2"
+                      />
                     </div>
                     <h2 className="absolute-center">{data?.description}</h2>
                   </div>
-                }
+                )}
               </Reorder.Item>
             );
           })}
@@ -519,7 +628,9 @@ function Links() {
                 <div
                   key={data.name}
                   className="bg-theme my-2 py-3 flex justify-center items-center flex flex-col rounded-xl"
-                  style={{ width: data?.width ? "162px" : "104px" }}
+                  style={{
+                    width: data?.width ? "162px" : "104px",
+                  }}
                   onClick={() => onBlockClick(data?.pageType)}
                 >
                   <Image
@@ -544,7 +655,13 @@ function Links() {
             setVoiceRecorderModal(false);
           }}
         >
-          {voiceRecorderModal && <VoiceRecorder editMode uploadAudio={uploadAudio} audioUrl={audioUrl} />}
+          {voiceRecorderModal && (
+            <VoiceRecorder
+              editMode
+              uploadAudio={uploadAudio}
+              audioUrl={audioUrl}
+            />
+          )}
         </Modal>
 
         <Modal
@@ -572,20 +689,26 @@ function Links() {
           </div>
         </Modal>
 
-        <ThoughtsModal editMode thoughts={userDetails?.thoughts || ''} isOpen={isThoughtsModalOpen} onClose={() => setThoughtsModalOpen(false)} />
+        <ThoughtsModal
+          editMode
+          thoughts={userDetails?.thoughts || ""}
+          isOpen={isThoughtsModalOpen}
+          onClose={() => setThoughtsModalOpen(false)}
+        />
+        {/* </div> */}
+
+        {sidebarUI(isSidebarOpen, toggleSidebar)}
       </div>
-
-      {sidebarUI(isSidebarOpen, toggleSidebar)}
-
-    </Screen >
+    </Screen>
   );
 }
 
-
 const LinksPage = () => {
-  return <Suspense>
-    <Links />
-  </Suspense>
-}
+  return (
+    <Suspense>
+      <Links />
+    </Suspense>
+  );
+};
 
 export default LinksPage;

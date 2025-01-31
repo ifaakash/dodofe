@@ -13,7 +13,7 @@ export const BASE_URL = 'http://localhost:3001/api/v1/';
 
 const Request = axios.create({
     baseURL: BASE_URL,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
 });
 
 const serializeError = (error: AxiosError): any => {
@@ -21,14 +21,14 @@ const serializeError = (error: AxiosError): any => {
     if (!response) throw error;
     const { status, statusText, data } = response;
     // const { message } = data;
-    let errorMsg = '';
+    let errorMsg = "";
     // try {
     //     errorMsg = JSON.parse(message).error.debug_msg;
     // } catch (e) {
     //     errorMsg = message;
     // }
     const errorObj = {
-        name: 'API ERROR',
+        name: "API ERROR",
         message: errorMsg || statusText || `API FAILED (${status})`,
         code: status.toString(),
         stack: JSON.stringify(error.toJSON()),
@@ -36,28 +36,33 @@ const serializeError = (error: AxiosError): any => {
     return errorObj;
 };
 
-const tokenAndAppInfoHeaderInterceptor = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+const tokenAndAppInfoHeaderInterceptor = (
+    config: InternalAxiosRequestConfig
+): InternalAxiosRequestConfig => {
     const token = loadState(STORAGE_CONSTANTS.TOKEN_SESSION_KEY);
     if (!token) return config;
     if (!config?.headers) {
-        throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
+        throw new Error(
+            `Expected 'config' and 'config.headers' not to be undefined`
+        );
     }
-    config.headers['Authorization'] = `Bearer ${token}`;
-    config.headers['token'] = token;
+    config.headers["Authorization"] = `Bearer ${token}`;
+    config.headers["token"] = token;
     return config;
 };
 
 const onErrorInterceptor = (error: AxiosError): any => {
     const Error = serializeError(error);
-    console.log('------API ERROR-----', Error);
+    console.log("------API ERROR-----", Error);
 
-    console.log('sacsdv', error)
     const status = error?.response?.status;
 
     if (status === 401 || status === 403) {
-        // localStorage.clear();
-
-        return;
+        // Clear all auth related data
+        localStorage.clear();
+        // Redirect to login page
+        Router.push(ROUTE_CONSTANTS.LOGIN);
+        return Promise.reject(Error);
     }
 
     throw Error;

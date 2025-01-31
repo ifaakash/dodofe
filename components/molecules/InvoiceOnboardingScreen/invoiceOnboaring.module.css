@@ -1,0 +1,7 @@
+.invoiceOnboardingScreen{
+    background-image: url('../../../public/assets//dotted_bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}

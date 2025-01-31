@@ -1,168 +1,160 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import { Input } from "@components/atoms";
+import InvoiceUserCard from "../UserCard/InvoiceUserCard";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addCurrentRecipientDetails,
+  addClientDetailsID,
+  addRecipientDetailsID,
+} from "store/slice/invoiceSlice";
+import { Plus } from "lucide-react";
+import { RootState } from "store/store";
+import { RecipientDetails } from "types";
 
-import { useState } from "react";
-import { Button, Input } from "@components/atoms";
-import { useRouter } from "next/navigation";
-import cx from "classnames";
-import styles from "./receiverForm.module.css"; // Optional modular CSS
+interface ReceiverFormProps {
+  receiverDetails: RecipientDetails[];
+}
 
-export function ReceiverForm() {
-  const router = useRouter();
+const ReceiverForm = ({ receiverDetails }: ReceiverFormProps) => {
+  const dispatch = useDispatch();
+  const [showInputFields, setShowInputFields] = useState(true);
+  const [receiveID, setReceiveID] = useState("");
 
-  // State to manage form data
-  const [formData, setFormData] = useState({
-    name: "",
-    state: "",
-    zipCode: "",
-    city: "",
-    address: "",
-    gstin: "",
-    pan: "",
-  });
+  useEffect(() => {
+    if (receiveID) {
+      dispatch(addRecipientDetailsID(receiveID));
+    }
+  }, [receiveID, dispatch]);
 
-  // Handle input changes
-  const handleInputChange = (e: any) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
 
-  // Handle form submission
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+    useEffect(() => {
+      setShowInputFields(receiverDetails.length === 0);
+    }, [receiverDetails]);
 
-    // Process the form data (log or send to API)
-    console.log("Receiver Form Data:", formData);
-
-    // Navigate to the next page
-    router.push("/invoice/details");
-  };
+  const currentRecipientDetails = useSelector(
+    (state: RootState) => state.invoice.currentRecipientDetails
+  );
 
   return (
-    <form
-      className={cx("flex flex-col space-y-6 p-4 bg-white rounded-lg shadow-md", styles.receiverForm)}
-      onSubmit={handleSubmit}
-    >
-      {/* Basic Information */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-medium text-gray-500">Receiver Details</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <Input
-              id="name"
-              placeholder="Enter name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
+    <div className="py-4 px-5 overflow-scroll h-[calc(100vh-150px)]">
+      {showInputFields ? (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            <div className="text-[#5E6C84] text-xs font-semibold">BASIC</div>
+            <div className="flex flex-col gap-1">
+              <Input
+                placeholder="Enter name"
+                className=""
+                value={currentRecipientDetails.name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentRecipientDetails({ name: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Email"
+                className=""
+                value={currentRecipientDetails.email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(
+                    addCurrentRecipientDetails({ email: e.target.value })
+                  )
+                }
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-              State
-            </label>
-            <Input
-              id="state"
-              placeholder="State"
-              value={formData.state}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        </div>
-      </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-[#5E6C84] text-xs font-semibold">
+              FULL ADDRESS
+            </div>
+            <div className="flex flex-col gap-1">
+              <Input
+                placeholder="Zip Code"
+                className=""
+                value={currentRecipientDetails.zipcode}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(
+                    addCurrentRecipientDetails({ zipcode: e.target.value })
+                  )
+                }
+              />
 
-      {/* Full Address */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-medium text-gray-500">Full Address</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-              Zip Code
-            </label>
-            <Input
-              id="zipCode"
-              placeholder="Zip Code"
-              value={formData.zipCode}
-              onChange={handleInputChange}
-              required
-            />
+              <Input
+                placeholder="State"
+                className=""
+                value={currentRecipientDetails.state}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentRecipientDetails({ state: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="City"
+                className=""
+                value={currentRecipientDetails.city}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentRecipientDetails({ city: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Address"
+                className=""
+                value={currentRecipientDetails.address}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentRecipientDetails({ address: e.target.value }))
+                }
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-              City
-            </label>
-            <Input
-              id="city"
-              placeholder="City"
-              value={formData.city}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-              Address
-            </label>
-            <Input
-              id="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Optional Details */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-medium text-gray-500">Optional Details</h2>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="gstin" className="block text-sm font-medium text-gray-700">
-              GSTIN Number
-            </label>
-            <Input
-              id="gstin"
-              placeholder="GSTIN number"
-              value={formData.gstin}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="pan" className="block text-sm font-medium text-gray-700">
-              PAN Number
-            </label>
-            <Input
-              id="pan"
-              placeholder="PAN number"
-              value={formData.pan}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="logo" className="block text-sm font-medium text-gray-700">
-              Upload Image/Logo
-            </label>
-            <div
-              className={cx(
-                "border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50",
-                styles.uploadBox
-              )}
-            >
-              <p className="text-sm text-gray-500">Click to upload</p>
+          <div className="flex flex-col gap-3">
+            <div className="text-[#5E6C84] text-xs font-semibold">OPTIONAL</div>
+            <div className="flex flex-col gap-1">
+              <Input
+                placeholder="GSTN number"
+                className=""
+                value={currentRecipientDetails.gst}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentRecipientDetails({ gst: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="PAN number"
+                className=""
+                value={currentRecipientDetails.pan}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(addCurrentRecipientDetails({ pan: e.target.value }))
+                }
+              />
+              {/* TODO */}
+              <Input placeholder="Upload image/logo" className="" />
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Submit Button */}
-      <Button text="Done" type="submit" className="w-full" />
-    </form>
+      ) : (
+        <div className="flex flex-col gap-[10px]">
+           <div className="flex justify-end">
+            <div
+              className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full"
+              onClick={() => setShowInputFields(true)}
+            >
+              <div className="text-sm font-semibold">Add New Receiver</div>
+              <Plus
+                size={16}
+                className="text-white bg-brandPrimary rounded-full p-0.5 cursor-pointer"
+              />
+            </div>
+          </div>
+          {receiverDetails.map((detail, index) => (
+            <InvoiceUserCard
+              key={index}
+              detail={detail}
+              setUserID={setReceiveID}
+              userID={receiveID}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
-}
+};
+
+export default ReceiverForm;

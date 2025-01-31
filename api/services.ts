@@ -1,4 +1,4 @@
-import { Get, Post } from 'api';
+import { Get, Post, Put } from 'api';
 import API_CONSTANTS from './constants';
 
 export const sendOtp = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.sendOtp, payload);
@@ -33,3 +33,19 @@ export const deleteLink = async (payload: any): Promise<any> => Post<any>(API_CO
 export const publishData = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.publishData, payload);
 
 export const getPublishedData = async (userId: string): Promise<any> => Get<any>(API_CONSTANTS.publishData + API_CONSTANTS.slash + userId);
+
+export const createRecipient = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.createRecipient, payload);
+
+export const createClient = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.createClient, payload);
+
+export const addBankDetails = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.addBankDetails, payload);
+
+export const createInvoice = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.createInvoice, payload);
+
+export const getInvoiceById = async (invoiceId: any): Promise<any> => Get<any>(API_CONSTANTS.getInvoceById + API_CONSTANTS.slash + invoiceId);
+
+export const getAllInvoices = async (payload: any): Promise<any> => Post<any>(API_CONSTANTS.getAllInvoices, payload);
+
+export const getInvoiceStats = async (payload:any): Promise<any> => Post<any>(API_CONSTANTS.getInvoiceStats, payload);
+
+export const addSubHeading = async (payload: any): Promise<any> => Put<any>(API_CONSTANTS.addSubHeading, payload);

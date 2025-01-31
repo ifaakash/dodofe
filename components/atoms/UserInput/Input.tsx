@@ -1,3 +1,4 @@
+'use client'
 import cx from "classnames";
 import { Button, FlexBox } from "@components/atoms";
 import React, { useRef } from "react";

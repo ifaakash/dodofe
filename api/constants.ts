@@ -14,5 +14,13 @@ export default {
     editLink: '/link/edit',
     archiveLink: '/link/archive',
     deleteLink: '/link/delete',
-    publishData: '/publish'
+    publishData: '/publish',
+    createRecipient : '/recipient/create',
+    createClient : '/client/create',
+    addBankDetails: '/bankDetails/add',
+    createInvoice: '/invoice/create',
+    getInvoceById: '/invoice/getInvoice',
+    getAllInvoices: '/invoice/getAllInvoices',
+    getInvoiceStats : '/invoice/getInvoiceStats',
+    addSubHeading : '/invoice/addSubHeading'
 }

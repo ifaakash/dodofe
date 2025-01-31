@@ -44,6 +44,7 @@ export const UserCategory = () => {
     })
   };
 
+
   return (
     <div className="mx-4 mt-16">
       <span className="text-xl clr-heading-text mb-2">Enter</span>
