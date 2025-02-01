@@ -59,6 +59,8 @@ export const sidebarUI = (
         window.location.href = ROUTE_CONSTANTS.LOGIN;
     };
 
+    console.log(isSidebarOpen);
+
     const menuItems = [
         {
             text: "Home",

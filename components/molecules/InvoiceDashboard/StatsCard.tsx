@@ -12,6 +12,7 @@ import { userDetailsProps } from "types";
 interface InvoiceStats {
   outStandingAmount: number;
   pendingAmount: number;
+  paidAmount: number;
   invoices: {
     created: number;
     paid: number;
@@ -48,6 +49,8 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
   const [userInvoicesData, setUserInvoicesData] = useState<InvoiceStats | null>(null);
   const [loading, setLoading] = useState(false);
 
+  console.log('invoice data', userInvoicesData)
+
 
   useEffect(() => {
     const fetchStatsData = async () => {
@@ -66,9 +69,7 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
     fetchStatsData();
   }, [timePeriod, userDetails]);
 
-  if(loading) {
-    return <div>Loading...</div>
-  }
+  
   return (
     <div className="pt-5 px-5 flex flex-col gap-2">
       <div className="bg-white rounded-xl p-4 flex flex-col gap-4">
@@ -88,7 +89,10 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
 
         <div className="flex flex-col gap-3">
           <div className="flex justify-center relative">
-            <HalfDonutChart outStandingAmount={userInvoicesData?.outStandingAmount} pendingAmount={userInvoicesData?.pendingAmount} />
+            <HalfDonutChart 
+              paidAmount={userInvoicesData?.paidAmount ?? 0} 
+              pendingAmount={userInvoicesData?.pendingAmount ?? 0} 
+            />
             <div className="flex flex-col gap-0.5 absolute bottom-0 items-center">
               <div className="text-[#5E6C84] text-xs font-medium">Get paid</div>
               <div className="font-semibold text-xl">
@@ -99,10 +103,10 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
           <div className="flex justify-between">
             <div className="flex flex-col gap-0.5">
               <div className="text-[#5E6C84] text-xs font-medium">
-                Outstanding
+                Paid
               </div>
               <div className="text-[#3D4966] font-semibold">
-                ₹{userInvoicesData?.outStandingAmount?.toLocaleString('en-IN') ?? '0'}
+                ₹{userInvoicesData?.paidAmount?.toLocaleString('en-IN') ?? '0'}
               </div>
             </div>
             <div className="flex flex-col gap-0.5">

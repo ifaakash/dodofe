@@ -1,13 +1,13 @@
 import React from 'react';
 
-const HalfDonutChart = ({ outStandingAmount = 20002, pendingAmount = 15358 }) => {
-  const total = outStandingAmount + pendingAmount;
+const HalfDonutChart = ({ paidAmount, pendingAmount }: { paidAmount: number, pendingAmount: number }) => {
+  const total = paidAmount + pendingAmount;
   const radius = 120;
   const strokeWidth = 30;
   const center = radius + strokeWidth;
   const circumference = Math.PI * radius;
   
-  const outStandingPercentage = (outStandingAmount / total) * 100;
+  const outStandingPercentage = (paidAmount / total) * 100;
   const pendingPercentage = (pendingAmount / total) * 100;
   
   const outStandingStroke = (outStandingPercentage / 100) * circumference;

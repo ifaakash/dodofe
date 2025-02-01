@@ -236,8 +236,8 @@ const CreateInvoice = () => {
         tds: invoice.tds,
       });
 
-      if (res.message === "Invoice created") {
-        router.push("/invoice/review/" + res.invoiceId);
+      if (res.success) {
+        router.push("/invoice/review/" + res.data._id);
       } else {
         console.error("Failed to create invoice:", res.message);
       }
