@@ -67,7 +67,7 @@ const UserInput: React.FC<InputProps> = ({
             className
           )}
           onChange={onChange}
-          placeholder={!hasLabel ? placeholder : ""}
+          // placeholder={!hasLabel ? placeholder : ""}
           pattern={pattern || ""}
           maxLength={maxLength}
           disabled={disabled}
@@ -83,7 +83,7 @@ const UserInput: React.FC<InputProps> = ({
             btnColor="theme-1"
           />
         )}
-        {hasLabel && placeholder && (
+        {hasLabel && value === '' && placeholder && (
           <p
             className={cx(
               disabled && "clr-disabled",
@@ -126,4 +126,5 @@ const UserInput: React.FC<InputProps> = ({
     </div>
   );
 };
+
 export default UserInput;

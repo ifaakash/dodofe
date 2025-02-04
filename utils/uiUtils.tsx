@@ -46,10 +46,7 @@ export const getSeperatorOptionsUI = (seperator: string) => {
     }
 };
 
-export const sidebarUI = (
-    isSidebarOpen: boolean,
-    toggleSidebar: () => void
-) => {
+export const getSidebarUI = ({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boolean; toggleSidebar: () => void }) => {
     const handleLogout = () => {
         // Clear all storage
         localStorage.clear();
@@ -81,40 +78,18 @@ export const sidebarUI = (
     ];
 
     return (
-        <>
-            {/* Overlay with fade animation */}
-            {/* <div
-                className={`fixed inset-0 bg-black transition-all duration-300 ease-in-out ${
-                    isSidebarOpen
-                        ? "bg-opacity-50"
-                        : "bg-opacity-0 pointer-events-none"
-                }`}
-                onClick={toggleSidebar}
-                style={{
-                    zIndex: 40,
-                    backdropFilter: isSidebarOpen ? "blur(4px)" : "none",
-                }}
-            /> */}
-
-            {/* Sidebar with slide and fade animation */}
+        <div>
+            {/* Sidebar */}
             <div
-                className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-all duration-300 ease-in-out ${
-                    isSidebarOpen
-                        ? "translate-x-0 opacity-100"
-                        : "translate-x-full opacity-0"
-                }`}
-                style={{
-                    zIndex: 50,
-                    boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
-                }}
+                className={cx(
+                    "fixed h-full w-64 bg-white shadow-lg transition-all duration-300 z-50 right-0"
+                )}
+                style={{ top: isSidebarOpen ? "0" : "100%" }}
             >
-                <div className="p-4 flex justify-between items-center border-b">
+                <div className="p-4 flex justify-between items-center border-b mt-12">
                     <h2 className="text-lg font-bold">Menu</h2>
-                    <button
-                        className="text-2xl font-bold text-gray-500 hover:text-gray-700 transform transition-transform duration-200 hover:scale-110"
-                        onClick={toggleSidebar}
-                    >
-                        ×
+                    <button className="text-lg font-bold text-gray-500" onClick={toggleSidebar}>
+                        &times;
                     </button>
                 </div>
                 <nav className="p-4">
@@ -122,11 +97,10 @@ export const sidebarUI = (
                         {menuItems.map((item, index) => (
                             <li
                                 key={item.text}
-                                className={`transform transition-all duration-300 ${
-                                    isSidebarOpen
-                                        ? "translate-x-0 opacity-100"
-                                        : "translate-x-8 opacity-0"
-                                }`}
+                                className={`transform transition-all duration-300 ${isSidebarOpen
+                                    ? "translate-x-0 opacity-100"
+                                    : "translate-x-8 opacity-0"
+                                    }`}
                                 style={{
                                     transitionDelay: isSidebarOpen
                                         ? `${item.delay}ms`
@@ -144,9 +118,19 @@ export const sidebarUI = (
                     </ul>
                 </nav>
             </div>
-        </>
+
+            {/* Overlay (click outside to close sidebar) */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-30 z-40"
+                    onClick={toggleSidebar}
+                ></div>
+            )}
+        </div>
     );
 };
+
+
 
 export const getLinkBoxUI = (data: any, badgeColor: string) => {
     return (

@@ -2,13 +2,11 @@
 import { Footer, UserInput } from "@components/atoms";
 import { useState } from "react";
 import cx from "classnames";
-
 import { useRouter } from "next/navigation";
-
 import styles from "./userCategory.module.css";
-import { ROUTE_CONSTANTS, socialPlatforms, STORAGE_CONSTANTS } from "@utils/constants";
-import { createUserBlock, completeProfile } from "api";
-import { loadState, saveState } from "@utils/localStorage";
+import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
+import { completeProfile } from "api";
+import { loadState } from "@utils/localStorage";
 
 const categories = [
   { name: "tech", code: "#ffffff" },
@@ -26,40 +24,49 @@ const categories = [
 
 export const UserCategory = () => {
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("travel");
+  const [category, setCategory] = useState<string[]>([]); // Changed from string to array
   const router = useRouter();
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e?.target?.value);
+    setName(e.target.value);
+  };
+
+  const handleCategorySelection = (selectedCategory: string) => {
+    setCategory((prevCategories) => {
+      if (prevCategories.includes(selectedCategory)) {
+        // If already selected, remove it (uncheck)
+        return prevCategories.filter((cat) => cat !== selectedCategory);
+      } else {
+        // If not selected, add it
+        return [...prevCategories, selectedCategory];
+      }
+    });
   };
 
   const gotoHome = () => {
     const mobileNumber = loadState(STORAGE_CONSTANTS.MOBILE);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || '';
 
-    completeProfile({ userId, name, mobileNumber, interests: [category], socialLinks: [] }).then((res) => {
-      router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
-    }).catch(() => {
-      console.log('error');
-    })
+    completeProfile({ userId, name, mobileNumber, interests: category, socialLinks: [] })
+      .then(() => {
+        router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
+      })
+      .catch(() => {
+        console.log('error');
+      });
   };
 
 
   return (
     <div className="mx-4 mt-16">
       <span className="text-xl clr-heading-text mb-2">Enter</span>
-      <br></br>
+      <br />
       <span className="text-3xl font-black clr-heading-text">Your Name</span>
 
-      <div
-        className={cx(
-          "card my-4 px-4 flex items-center flex-col w-full",
-          styles.cardDimensions
-        )}
-      >
+      <div className={cx("card my-4 px-4 flex items-center flex-col w-full", styles.cardDimensions)}>
         <UserInput
           name="fullName"
-          className="clr-light-green w-full"
+          className="w-full"
           value={name}
           hasLabel
           placeholder="Enter your first name"
@@ -71,39 +78,35 @@ export const UserCategory = () => {
       </div>
 
       <span className="text-xl clr-heading-text mb-2">Choose</span>
-      <br></br>
-      <span className="text-3xl font-black clr-heading-text mb-2">
-        category
-      </span>
+      <br />
+      <span className="text-3xl font-black clr-heading-text mb-2">Categories</span>
 
       <div className="my-4 flex flex-wrap w-full">
-        {categories.map((data) => {
-          return (
-            <div
-              key={data.name}
-              style={{ background: "var(--white)" }}
-              className="rounded-lg mb-2 mr-2 px-3 h-10 flex justify-start items-center"
-              onClick={() => {
-                setCategory(data.name);
-              }}
-            >
-              {data?.name}
-              <input
-                value={data.name}
-                checked={category === data.name}
-                className="ml-2"
-                type="checkbox"
-              ></input>
-            </div>
-          );
-        })}
+        {categories.map((data) => (
+          <div
+            key={data.name}
+            style={{ background: category.includes(data.name) ? "#d1e7ff" : "var(--white)" }}
+            className={cx(
+              "rounded-lg mb-2 mr-2 px-3 h-10 flex justify-start items-center cursor-pointer transition",
+              {
+                "border border-blue-500": category.includes(data.name),
+              }
+            )}
+            onClick={() => handleCategorySelection(data.name)}
+          >
+            {data.name}
+            <input
+              value={data.name}
+              checked={category.includes(data.name)}
+              className="ml-2"
+              type="checkbox"
+              onChange={() => handleCategorySelection(data.name)}
+            />
+          </div>
+        ))}
       </div>
 
-      <Footer
-        variant="default"
-        primaryActionText="Continue"
-        primaryAction={gotoHome}
-      />
+      <Footer variant="default" primaryActionText="Continue" primaryAction={gotoHome} />
     </div>
   );
 };

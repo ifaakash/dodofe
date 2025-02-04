@@ -102,8 +102,8 @@ export default function loginPage() {
 
   return (
     <Screen>
-      {loginState === 0 && <div id="otpless-login-page"></div>}
-      {loginState === 1 && <UserCategory />}
+      {loginState === 1 && <div id="otpless-login-page"></div>}
+      {loginState === 0 && <UserCategory />}
     </Screen>
   );
 }

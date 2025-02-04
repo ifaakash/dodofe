@@ -8,18 +8,45 @@
 }
 
 .shimmerBg {
-  background-size: 200% 200%; /* Make the gradient larger to create a shimmer effect */
-  animation: shimmer 0.4s infinite ease-in-out; /* Apply the animation */
+  background: linear-gradient(45deg, rgba(249, 206, 52, 1) 0%, rgba(238, 42, 123, 1) 50%, rgba(98, 40, 215, 1) 100%);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  animation: shimmer 4s ease-in-out forwards; /* Runs once and stops */
 }
 
 @keyframes shimmer {
   0% {
     background-position: 0% 50%;
   }
-  50% {
+  100% {
     background-position: 100% 50%;
   }
-  100% {
-    background-position: 0% 50%;
+}
+
+.movingStripWrapper {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  bottom: 0;
+  height: 100px; /* Adjust based on strip size */
+}
+
+.movingStrip {
+  display: flex;
+  width: 200%; /* Makes sure there's always part of the strip visible */
+  animation: move-strip 10s linear infinite;
+}
+
+.stripImage {
+  width: 50%; /* Each image takes half the container */
+  flex-shrink: 0;
+}
+
+@keyframes move-strip {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%); /* Moves by half its width */
   }
 }

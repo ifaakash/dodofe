@@ -11,6 +11,7 @@ const CtaSection = ({
     title = 'DodoPage',
     description = 'Create dynamic links in your bio that stands out',
     buttonLabel = 'Create now',
+    onClick = () => { },
     onButtonClick = () => { },
     onImageClick = () => { },
     img = profileIcon,
@@ -22,14 +23,14 @@ const CtaSection = ({
     buttonTextColor = '#fff',
 }) => {
     return (
-        <div className={styles.floatingSection} style={{ color: textColor }}>
+        <div className={styles.floatingSection} style={{ color: textColor }} onClick={onClick}>
             <div className={styles.firstPart} style={{ backgroundColor: bgColor }}>
                 <h1 className='text-2xl font-bold mb-2'>{title}</h1>
                 <p className='text-lg font-thin'>{description}</p>
             </div>
             <div className={styles.secondThirdContainer}>
                 <div className={cx(styles.floatingSectionButton, styles.secondPart, floatingPosition === 'top-right' ? styles.topRight : styles.bottomRight)}
-                    style={{ backgroundColor: buttonBgColor, color: buttonTextColor, minHeight: '38px' }}
+                    style={{ backgroundColor: buttonBgColor, color: buttonTextColor, minHeight: '38px', maxHeight: '40px' }}
                     onClick={onButtonClick}
                 >
                     <span className='text-xs font-normal'>{buttonLabel}</span>

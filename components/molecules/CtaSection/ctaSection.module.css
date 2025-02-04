@@ -8,7 +8,7 @@
 }
 
 .firstPart {
-    flex: 2;
+    flex: 1.5;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -43,7 +43,7 @@
 }
 
 .floatingSectionButton {
-    margin: 0px 0 -4px 10px;
+    margin: 0px 0 -6px 10px;
     padding: 2px 6px;
     border-radius: 50px;
     cursor: pointer;
@@ -53,7 +53,7 @@
 }
 
 .floatingSectionButton:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
