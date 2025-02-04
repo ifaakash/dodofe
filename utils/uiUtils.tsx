@@ -82,9 +82,9 @@ export const getSidebarUI = ({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: 
             {/* Sidebar */}
             <div
                 className={cx(
-                    "fixed h-full w-64 bg-white shadow-lg transition-all duration-300 z-50 right-0"
+                    "fixed h-full w-64 bg-white shadow-lg transition-all duration-300 z-50 top-0"
                 )}
-                style={{ top: isSidebarOpen ? "0" : "100%" }}
+                style={{ right: isSidebarOpen ? "0" : "-100px" }}
             >
                 <div className="p-4 flex justify-between items-center border-b mt-12">
                     <h2 className="text-lg font-bold">Menu</h2>
@@ -119,13 +119,13 @@ export const getSidebarUI = ({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: 
                 </nav>
             </div>
 
-            {/* Overlay (click outside to close sidebar) */}
+            {/* Overlay (click outside to close sidebar)
             {isSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-30 z-40"
                     onClick={toggleSidebar}
                 ></div>
-            )}
+            )} */}
         </div>
     );
 };

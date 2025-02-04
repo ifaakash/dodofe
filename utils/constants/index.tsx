@@ -46,11 +46,12 @@ export const ROUTE_CONSTANTS = {
   LOGIN: "/login",
   PREVIEW: "/preview",
   INVOICE: "/invoice",
+  CREATE: "/create",
   SENDER: "/sender",
   RECEIVER: "/receiver",
   DETAILS: "/details",
   PAYMENT_DETAILS: "/payment/details",
-  FINAL_DETAILS: "/final-details"
+  FINAL_DETAILS: "/final-details",
 };
 
 export const BLOCKS = {

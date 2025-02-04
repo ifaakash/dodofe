@@ -9,13 +9,18 @@ import OnboardingIcon from "public/assets/onboardingImg.svg";
 import DoubleTick from "public/icons/doubleTick.svg";
 import DodoCoin from "public/icons/dodoCoin.svg";
 import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@utils/constants";
 
 const InvoiceOnboardingScreen = () => {
   const router = useRouter();
 
   const handleNavigation = () => {
-    router.push("/invoice/create");
+    router.push(ROUTE_CONSTANTS.INVOICE + ROUTE_CONSTANTS.CREATE);
   };
+
+  const handleBackButton = () => {
+    router.push(ROUTE_CONSTANTS.HOME);
+  }
 
   return (
     <div
@@ -24,7 +29,8 @@ const InvoiceOnboardingScreen = () => {
         styles.invoiceOnboardingScreen
       )}
     >
-      <div className="p-5">
+      <div className="p-5" onClick={handleBackButton}
+      >
         <div className="p-2 rounded-[10px] border-[1px] w-fit border-[#EAE9EC]">
           <Image
             src={LeftArrow}
@@ -89,7 +95,7 @@ const InvoiceOnboardingScreen = () => {
           <div className="font-semibold">50</div>
           <div className="font-normal">per invoice</div>
         </div>
-        <NewButton variant="primary" size="large" onClick={() => {handleNavigation()}}>
+        <NewButton variant="primary" size="large" onClick={() => { handleNavigation() }}>
           Create invoice
         </NewButton>
       </div>

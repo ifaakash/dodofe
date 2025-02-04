@@ -72,6 +72,17 @@ export default function Home() {
     });
   };
 
+  const handleInvoiceNavigation = () => {
+    const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+
+    if (!userId) {
+      router.push(ROUTE_CONSTANTS.LOGIN);
+      return;
+    }
+
+    router.push(ROUTE_CONSTANTS.INVOICE);
+  }
+
   const copyToClipboard = (textToCopy: string) => {
     navigator.clipboard
       .writeText(textToCopy)
@@ -131,8 +142,8 @@ export default function Home() {
   return (
     <Screen>
       <div className="mt-16 text-center">
-        <div className="px-4" style={{ backgroundImage: `url(${crossBg.src})` }}>
-          <div className="flex justify-between mb-6">
+        <div style={{ backgroundImage: `url(${crossBg.src})` }}>
+          <div className="flex justify-between mb-6 mx-4">
             <Image
               height={50}
               width={260}
@@ -154,7 +165,7 @@ export default function Home() {
           </div>
 
           {isEmpty(userId) ? (
-            <div>
+            <div className="mx-4">
               <CtaSection onButtonClick={gotoLinksPage} />
 
               <div
@@ -180,7 +191,7 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <div className="my-4">{getUserCard()}</div>
+            <div className="m-4">{getUserCard()}</div>
           )}
 
           <div className={cx("w-full px-4 rounded-t-2xl bg-white", styles.lowerDiv)}>
@@ -193,14 +204,13 @@ export default function Home() {
             />
 
             <div className="absolute-center flex-col">
-              <Link href={"/invoice"}>
-                <CtaSection
-                  bgColor="var(--yellow)"
-                  img={invoiceIcon}
-                  title="Invoice"
-                  description="Create stunning digital invoices in a few seconds"
-                />
-              </Link>
+              <CtaSection
+                onClick={handleInvoiceNavigation}
+                bgColor="var(--yellow)"
+                img={invoiceIcon}
+                title="Invoice"
+                description="Create stunning digital invoices in a few seconds"
+              />
 
               <div className="flex flex-row justify-between w-full gap-x-4">
                 <Image
