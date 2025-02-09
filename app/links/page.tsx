@@ -54,7 +54,11 @@ import { debounce, isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
 import VoiceRecorder from "../../components/molecules/VoiceRecorder";
 import ThoughtsModal from "./ThoughtModal";
-import { getLinkBoxUI, getSeperatorOptionsUI, sidebarUI } from "@utils/uiUtils";
+import {
+    getLinkBoxUI,
+    getSeperatorOptionsUI,
+    getSidebarUI,
+} from "@utils/uiUtils";
 
 const socialData = [
   { name: "instagram", icon: instaIcon },
@@ -412,294 +416,308 @@ function Links() {
   };
 
   return (
-    <Screen>
-      <div className="mx-4 flex flex-col items-center">
-        {getHeader()}
+      <Screen>
+          <div className="mx-4 flex flex-col items-center">
+              {getHeader()}
 
-        <div className="flex flex-col relative items-center">
-          <label
-            htmlFor="file-input"
-            className="relative inline-block cursor-pointer"
-          >
-            <Image
-              height={100}
-              width={100}
-              src={userDetailImg}
-              alt="user profile"
-              className="my-4"
-            />
-          </label>
+              <div className="flex flex-col relative items-center">
+                  <label
+                      htmlFor="file-input"
+                      className="relative inline-block cursor-pointer"
+                  >
+                      <Image
+                          height={100}
+                          width={100}
+                          src={userDetailImg}
+                          alt="user profile"
+                          className="my-4"
+                      />
+                  </label>
 
-          <div
-            className="absolute top-4 right-32 transform translate-x-1/2 -translate-y-1/2"
-            onClick={() => setThoughtsModalOpen(true)}
-          >
-            <Image
-              height={70}
-              width={70}
-              src={thoughtsImg}
-              alt="thoughts icon"
-              className="cursor-pointer"
-            />
-          </div>
-          <input className="invisible h-0" id="file-input" type="file" />
-        </div>
+                  <div
+                      className="absolute top-4 right-32 transform translate-x-1/2 -translate-y-1/2"
+                      onClick={() => setThoughtsModalOpen(true)}
+                  >
+                      <Image
+                          height={70}
+                          width={70}
+                          src={thoughtsImg}
+                          alt="thoughts icon"
+                          className="cursor-pointer"
+                      />
+                  </div>
+                  <input
+                      className="invisible h-0"
+                      id="file-input"
+                      type="file"
+                  />
+              </div>
 
-        <span className="text-xl flex clr-dark-text font-black mb-1">
-          {dodoPageName || userDetails?.name || "Dodo user"}
-          <Image
-            height={16}
-            width={16}
-            src={editIcon}
-            onClick={() => setDodoPageNameModal(true)}
-            alt="user profile"
-            className="ml-2"
-          />
-        </span>
-        {audioUrl ? (
-          <span
-            onClick={onVoiceRecordClick}
-            className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2"
-          >
-            Edit audio bio
-            <Image
-              height={16}
-              width={16}
-              src={micIcon}
-              alt="mic icon"
-              className="ml-1"
-            />
-          </span>
-        ) : (
-          <span
-            onClick={onVoiceRecordClick}
-            className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2"
-          >
-            Add audio bio
-            <Image
-              height={16}
-              width={16}
-              src={micIcon}
-              alt="mic icon"
-              className="ml-1"
-            />
-          </span>
-        )}
-        {/* <Button text="edit" className="bg-theme border px-2 my-2 py-1" /> */}
-
-        <div className="flex mt-2">
-          {firstFourLinks.map((data) => (
-            <div
-              key={data.name}
-              className="flex items-center justify-center ml-2 bg-white rounded-xl h-11 w-11 shadow-sm border border-gray-200"
-              onClick={() => gotoSocialLinksPage()}
-            >
-              <Image
-                height={20}
-                width={20}
-                src={data.icon}
-                alt={`${data.name} icon`}
-                className="object-contain"
-              />
-            </div>
-          ))}
-
-          {remainingLinks.length > 0 && (
-            <div
-              className="flex items-center justify-center ml-2 bg-white rounded-xl h-11 w-11 shadow-sm border border-gray-200"
-              onClick={() => gotoSocialLinksPage()}
-            >
-              <span className="font-bold text-lg">
-                +{remainingLinks.length}
+              <span className="text-xl flex clr-dark-text font-black mb-1">
+                  {dodoPageName || userDetails?.name || "Dodo user"}
+                  <Image
+                      height={16}
+                      width={16}
+                      src={editIcon}
+                      onClick={() => setDodoPageNameModal(true)}
+                      alt="user profile"
+                      className="ml-2"
+                  />
               </span>
-            </div>
-          )}
-        </div>
-
-        <Reorder.Group
-          as="div"
-          className="w-full mt-4 mb-16 overflow-scroll"
-          dragListener={false}
-          values={linkList}
-          onReorder={onReorder}
-        >
-          {linkList.map((data: any) => {
-            const badgeColor = BADGE_COLORS_MAP[data?.badge?.color];
-
-            return (
-              <Reorder.Item
-                {...handlers}
-                key={data._id}
-                className={cx(
-                  "swipeable-item w-full h-14 bg-white rounded-xl mb-4 flex items-center justify-between shadow-md linkCard",
-                  styles.lightBorder
-                )}
-                value={data}
-                dragListener={false}
-                dragControls={controls}
-                onClick={() =>
-                  onLinkClick(data?.type, data?._id, data?.description)
-                }
-              >
-                {data?.type === BLOCKS.LINK && (
-                  <>
-                    <div className="flex items-center">
-                      <div className="reorder-handle mr-2">
-                        <Image
-                          onPointerDown={(e) => {
-                            controls.start(e);
-                          }}
+              {audioUrl ? (
+                  <span
+                      onClick={onVoiceRecordClick}
+                      className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2"
+                  >
+                      Edit audio bio
+                      <Image
                           height={16}
                           width={16}
-                          src={dragIcon}
-                          alt="drag icon"
-                          className="ml-2"
-                        />
+                          src={micIcon}
+                          alt="mic icon"
+                          className="ml-1"
+                      />
+                  </span>
+              ) : (
+                  <span
+                      onClick={onVoiceRecordClick}
+                      className="text-base font-normal clr-text mb-2 border flex rounded-lg p-2"
+                  >
+                      Add audio bio
+                      <Image
+                          height={16}
+                          width={16}
+                          src={micIcon}
+                          alt="mic icon"
+                          className="ml-1"
+                      />
+                  </span>
+              )}
+              {/* <Button text="edit" className="bg-theme border px-2 my-2 py-1" /> */}
+
+              <div className="flex mt-2">
+                  {firstFourLinks.map((data) => (
+                      <div
+                          key={data.name}
+                          className="flex items-center justify-center ml-2 bg-white rounded-xl h-11 w-11 shadow-sm border border-gray-200"
+                          onClick={() => gotoSocialLinksPage()}
+                      >
+                          <Image
+                              height={20}
+                              width={20}
+                              src={data.icon}
+                              alt={`${data.name} icon`}
+                              className="object-contain"
+                          />
                       </div>
+                  ))}
 
-                      {getLinkBoxUI(data, badgeColor)}
-                    </div>
+                  {remainingLinks.length > 0 && (
+                      <div
+                          className="flex items-center justify-center ml-2 bg-white rounded-xl h-11 w-11 shadow-sm border border-gray-200"
+                          onClick={() => gotoSocialLinksPage()}
+                      >
+                          <span className="font-bold text-lg">
+                              +{remainingLinks.length}
+                          </span>
+                      </div>
+                  )}
+              </div>
 
-                    {data?.audio && (
-                      <Image
-                        height={20}
-                        width={20}
-                        src={micIcon}
-                        alt="mic icon"
-                        className="mr-2"
-                      />
-                    )}
-                  </>
-                )}
+              <Reorder.Group
+                  as="div"
+                  className="w-full mt-4 mb-16 overflow-scroll"
+                  dragListener={false}
+                  values={linkList}
+                  onReorder={onReorder}
+              >
+                  {linkList.map((data: any) => {
+                      const badgeColor = BADGE_COLORS_MAP[data?.badge?.color];
 
-                {data?.type === BLOCKS.SEPARATOR && (
-                  <div className="flex absolute-center">
-                    <div
-                      className="reorder-handle"
-                      onPointerDown={(e) => controls.start(e)}
-                    >
-                      <Image
-                        height={24}
-                        width={24}
-                        src={dragIcon}
-                        alt="drag icon"
-                        className="ml-2"
-                      />
-                    </div>
-                    {getSeperatorOptionsUI(data?.description)}
-                  </div>
-                )}
+                      return (
+                          <Reorder.Item
+                              {...handlers}
+                              key={data._id}
+                              className={cx(
+                                  "swipeable-item w-full h-14 bg-white rounded-xl mb-4 flex items-center justify-between shadow-md linkCard",
+                                  styles.lightBorder
+                              )}
+                              value={data}
+                              dragListener={false}
+                              dragControls={controls}
+                              onClick={() =>
+                                  onLinkClick(
+                                      data?.type,
+                                      data?._id,
+                                      data?.description
+                                  )
+                              }
+                          >
+                              {data?.type === BLOCKS.LINK && (
+                                  <>
+                                      <div className="flex items-center">
+                                          <div className="reorder-handle mr-2">
+                                              <Image
+                                                  onPointerDown={(e) => {
+                                                      controls.start(e);
+                                                  }}
+                                                  height={16}
+                                                  width={16}
+                                                  src={dragIcon}
+                                                  alt="drag icon"
+                                                  className="ml-2"
+                                              />
+                                          </div>
 
-                {data?.type === BLOCKS.HEADING && (
-                  <div className="flex absolute-center">
-                    <div
-                      className="reorder-handle mr-2"
-                      onPointerDown={(e) => controls.start(e)}
-                    >
-                      <Image
-                        height={16}
-                        width={16}
-                        src={dragIcon}
-                        alt="drag icon"
-                        className="ml-2"
-                      />
-                    </div>
-                    <h2 className="absolute-center">{data?.description}</h2>
-                  </div>
-                )}
-              </Reorder.Item>
-            );
-          })}
-        </Reorder.Group>
+                                          {getLinkBoxUI(data, badgeColor)}
+                                      </div>
 
-        {linksFooterUI()}
+                                      {data?.audio && (
+                                          <Image
+                                              height={20}
+                                              width={20}
+                                              src={micIcon}
+                                              alt="mic icon"
+                                              className="mr-2"
+                                          />
+                                      )}
+                                  </>
+                              )}
 
-        <Modal
-          visible={modalStatus}
-          isPullable={false}
-          modalHeader="Add new blocks"
-          onCloseIconClick={() => {
-            setModalStatus(false);
-          }}
-        >
-          <div className="mt-2 flex flex-wrap justify-between w-full">
-            {blocksData.map((data: any) => {
-              return (
-                <div
-                  key={data.name}
-                  className="bg-theme my-2 py-3 flex justify-center items-center flex flex-col rounded-xl"
-                  style={{
-                    width: data?.width ? "162px" : "104px",
+                              {data?.type === BLOCKS.SEPARATOR && (
+                                  <div className="flex absolute-center">
+                                      <div
+                                          className="reorder-handle"
+                                          onPointerDown={(e) =>
+                                              controls.start(e)
+                                          }
+                                      >
+                                          <Image
+                                              height={24}
+                                              width={24}
+                                              src={dragIcon}
+                                              alt="drag icon"
+                                              className="ml-2"
+                                          />
+                                      </div>
+                                      {getSeperatorOptionsUI(data?.description)}
+                                  </div>
+                              )}
+
+                              {data?.type === BLOCKS.HEADING && (
+                                  <div className="flex absolute-center">
+                                      <div
+                                          className="reorder-handle mr-2"
+                                          onPointerDown={(e) =>
+                                              controls.start(e)
+                                          }
+                                      >
+                                          <Image
+                                              height={16}
+                                              width={16}
+                                              src={dragIcon}
+                                              alt="drag icon"
+                                              className="ml-2"
+                                          />
+                                      </div>
+                                      <h2 className="absolute-center">
+                                          {data?.description}
+                                      </h2>
+                                  </div>
+                              )}
+                          </Reorder.Item>
+                      );
+                  })}
+              </Reorder.Group>
+
+              {linksFooterUI()}
+
+              <Modal
+                  visible={modalStatus}
+                  isPullable={false}
+                  modalHeader="Add new blocks"
+                  onCloseIconClick={() => {
+                      setModalStatus(false);
                   }}
-                  onClick={() => onBlockClick(data?.pageType)}
-                >
-                  <Image
-                    height={34}
-                    width={34}
-                    src={data?.icon}
-                    alt="user profile"
-                    className="mb-2"
+              >
+                  <div className="mt-2 flex flex-wrap justify-between w-full">
+                      {blocksData.map((data: any) => {
+                          return (
+                              <div
+                                  key={data.name}
+                                  className="bg-theme my-2 py-3 flex justify-center items-center flex flex-col rounded-xl"
+                                  style={{
+                                      width: data?.width ? "162px" : "104px",
+                                  }}
+                                  onClick={() => onBlockClick(data?.pageType)}
+                              >
+                                  <Image
+                                      height={34}
+                                      width={34}
+                                      src={data?.icon}
+                                      alt="user profile"
+                                      className="mb-2"
+                                  />
+                                  {data?.name}
+                              </div>
+                          );
+                      })}
+                  </div>
+              </Modal>
+
+              <Modal
+                  visible={voiceRecorderModal}
+                  isPullable={false}
+                  modalHeader="Add audio"
+                  onCloseIconClick={() => {
+                      setVoiceRecorderModal(false);
+                  }}
+              >
+                  {voiceRecorderModal && (
+                      <VoiceRecorder
+                          editMode
+                          uploadAudio={uploadAudio}
+                          audioUrl={audioUrl}
+                      />
+                  )}
+              </Modal>
+
+              <Modal
+                  visible={dodoPageNameModal}
+                  isPullable={false}
+                  modalHeader="Update your dodo page name"
+                  onCloseIconClick={() => {
+                      setDodoPageNameModal(false);
+                  }}
+              >
+                  <Input
+                      placeholder="Enter your dodo page name here!"
+                      value={dodoPageName}
+                      className="h-16 rounded-xl"
+                      onChange={(e: any) => setDodoPageName(e?.target?.value)}
                   />
-                  {data?.name}
-                </div>
-              );
-            })}
+
+                  <div className="flex justify-end mt-4">
+                      <button
+                          onClick={onSaveDodoPageName}
+                          className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+                      >
+                          Save
+                      </button>
+                  </div>
+              </Modal>
+
+              <ThoughtsModal
+                  editMode
+                  thoughts={userDetails?.thoughts || ""}
+                  isOpen={isThoughtsModalOpen}
+                  onClose={() => setThoughtsModalOpen(false)}
+              />
+              {/* </div> */}
+
+              {getSidebarUI({ isSidebarOpen, toggleSidebar })}
           </div>
-        </Modal>
-
-        <Modal
-          visible={voiceRecorderModal}
-          isPullable={false}
-          modalHeader="Add audio"
-          onCloseIconClick={() => {
-            setVoiceRecorderModal(false);
-          }}
-        >
-          {voiceRecorderModal && (
-            <VoiceRecorder
-              editMode
-              uploadAudio={uploadAudio}
-              audioUrl={audioUrl}
-            />
-          )}
-        </Modal>
-
-        <Modal
-          visible={dodoPageNameModal}
-          isPullable={false}
-          modalHeader="Update your dodo page name"
-          onCloseIconClick={() => {
-            setDodoPageNameModal(false);
-          }}
-        >
-          <Input
-            placeholder="Enter your dodo page name here!"
-            value={dodoPageName}
-            className="h-16 rounded-xl"
-            onChange={(e: any) => setDodoPageName(e?.target?.value)}
-          />
-
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={onSaveDodoPageName}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
-            >
-              Save
-            </button>
-          </div>
-        </Modal>
-
-        <ThoughtsModal
-          editMode
-          thoughts={userDetails?.thoughts || ""}
-          isOpen={isThoughtsModalOpen}
-          onClose={() => setThoughtsModalOpen(false)}
-        />
-        {/* </div> */}
-
-        {sidebarUI(isSidebarOpen, toggleSidebar)}
-      </div>
-    </Screen>
+      </Screen>
   );
 }
 
