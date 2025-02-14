@@ -28,9 +28,6 @@ build-application:
   stage: build
   tags:
     - dodo-group-runner
-  before_script:
-    - unset DOCKER_HOST
-    - docker login $GITLAB_REGISTRY -u $GITLAB_USERNAME -p $REGISTRY_PASSWORD
   script:
     - git checkout feat/deployment
     - docker build -t registry.gitlab.com/dodo1604703/dodofe/feat/refactor .
