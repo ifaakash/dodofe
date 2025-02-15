@@ -30,6 +30,7 @@ build-application:
     - dodo-group-runner
   script:
     - git checkout feat/deployment
+    - git pull
     - docker build -t registry.gitlab.com/dodo1604703/dodofe/feat/refactor .
     - docker images
     - docker push registry.gitlab.com/dodo1604703/dodofe/feat/refactor
