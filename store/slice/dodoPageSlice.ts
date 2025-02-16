@@ -1,35 +1,48 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface SocialLink {
-  key: string;
-  value: string;
+interface DodoPageState {
+  dodoPageImage: string | null;
+  dodoPageName: string | null;
+  dodoPageThought: string | null;
+  socialLinks: [] | null;
+  audioBio: string | null;
+  unsavedChanges: boolean;
 }
-
-const initialState = {
-   dodoPageImage: "",
-   dodoPageName: "",
-   dodoPageThought: "",
-   socialLinks: [] as SocialLink[],
-   audioBio: "",
-}
+const initialState: DodoPageState = {
+  dodoPageImage: null,
+  dodoPageName: null,
+  dodoPageThought: null,
+  socialLinks: null,
+  audioBio: null,
+  unsavedChanges: false,
+};
 
 const dodoPageSlice = createSlice({
-    name: 'dodoPage',
-    initialState,
-    reducers: {
-       setDodoPageImage: (state, action: PayloadAction<string>) => {
-        state.dodoPageImage = action.payload
-       },
-       setDodoPageName: (state, action: PayloadAction<string>) => {
-        state.dodoPageName = action.payload
-       },
-       setDodoPageThought: (state, action: PayloadAction<string>) => {
-        state.dodoPageThought = action.payload
-       },
-       setSocialLinks: (state, action: PayloadAction<{ [key: string]: string }>) => {
-           state.socialLinks = Object.entries(action.payload).map(([key, value]) => ({ key, value }));
-       }
+  name: "dodoPage",
+  initialState,
+  reducers: {
+    setDodoPageImage: (state, action: PayloadAction<string | null>) => {
+      state.dodoPageImage = action.payload;
+      state.unsavedChanges = true;
     },
-})
-export const { setDodoPageImage, setDodoPageName, setDodoPageThought, setSocialLinks } = dodoPageSlice.actions
-export default dodoPageSlice.reducer
+    setDodoPageName: (state, action: PayloadAction<string>) => {
+      state.dodoPageName = action.payload;
+      state.unsavedChanges = true;
+    },
+    setDodoPageThought: (state, action: PayloadAction<string | null>) => {
+      state.dodoPageThought = action.payload ?? "";
+      state.unsavedChanges = true;
+    },
+    setSocialLinks: (state, action: PayloadAction<[] | null>) => {
+      state.socialLinks = action.payload;
+      state.unsavedChanges = true;
+    },
+  },
+});
+export const {
+  setDodoPageImage,
+  setDodoPageName,
+  setDodoPageThought,
+  setSocialLinks,
+} = dodoPageSlice.actions;
+export default dodoPageSlice.reducer;

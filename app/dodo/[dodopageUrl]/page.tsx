@@ -26,6 +26,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  TouchSensor,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -53,7 +54,17 @@ const DodoPageDashboard = () => {
   const [blocks, setBlocks] = useState([]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -144,28 +155,26 @@ const DodoPageDashboard = () => {
           content = (
             <div className="grid grid-cols-2 gap-[10px] w-full">
               <SortableBlock id={block.id}>
-                <Link
-                  href={`/dodo/${url}/editBlock/${block.id}`}
-                  onClick={(e) => {
-                    if (isDragging) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <ProductBlock productData={block.blockData} mode={mode} />
-                </Link>
+                {mode === "edit" ? (
+                  <div>
+                    <ProductBlock productData={block.blockData} mode={mode} />
+                  </div>
+                ) : (
+                  <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                    <ProductBlock productData={block.blockData} mode={mode} />
+                  </Link>
+                )}
               </SortableBlock>
               <SortableBlock id={nextBlock.id}>
-                <Link
-                  href={`/dodo/${url}/editBlock/${nextBlock.id}`}
-                  onClick={(e) => {
-                    if (isDragging) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <ProductBlock productData={nextBlock.blockData} mode={mode} />
-                </Link>
+                {mode === "edit" ? (
+                  <div>
+                    <ProductBlock productData={nextBlock.blockData} mode={mode} />
+                  </div>
+                ) : (
+                  <Link href={`/dodo/${url}/editBlock/${nextBlock.id}`}>
+                    <ProductBlock productData={nextBlock.blockData} mode={mode} />
+                  </Link>
+                )}
               </SortableBlock>
             </div>
           );
@@ -173,16 +182,15 @@ const DodoPageDashboard = () => {
           content = (
             <div className="w-full">
               <SortableBlock id={block.id}>
-                <Link
-                  href={`/dodo/${url}/editBlock/${block.id}`}
-                  onClick={(e) => {
-                    if (isDragging) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <ProductBlock productData={block.blockData} mode={mode} />
-                </Link>
+                {mode === "edit" ? (
+                  <div>
+                    <ProductBlock productData={block.blockData} mode={mode} />
+                  </div>
+                ) : (
+                  <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                    <ProductBlock productData={block.blockData} mode={mode} />
+                  </Link>
+                )}
               </SortableBlock>
             </div>
           );
@@ -201,24 +209,19 @@ const DodoPageDashboard = () => {
     if (block.blockType !== "PRODUCT") {
       return (
         <SortableBlock key={block.id} id={block.id}>
-          <Link
-            href={`/dodo/${url}/editBlock/${block.id}`}
-            onClick={(e) => {
-              if (isDragging) {
-                e.preventDefault();
-              }
-            }}
-          >
-            {content}
-          </Link>
+          {mode === "edit" ? (
+            <div>{content}</div>
+          ) : (
+            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+              {content}
+            </Link>
+          )}
         </SortableBlock>
       );
     }
 
-    return content; // For PRODUCT blocks, content already includes SortableBlock
+    return content; 
   };
-
-  console.log('userID', userId);
 
   return (
     <div className={styles.dodoBackground}>
@@ -235,7 +238,7 @@ const DodoPageDashboard = () => {
         <div className="flex flex-col gap-4 mb-24">
           {mode !== "preview" && <ArchiveTab />}
 
-          <div className="px-5 flex flex-col gap-3">
+          <div className="mx-5 flex flex-col gap-3" style={{ touchAction: "none" }}>
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -254,7 +257,7 @@ const DodoPageDashboard = () => {
       </div>
       {mode === "edit" && (
         <div className="bottom-0 fixed w-full p-4">
-          <FooterBar />
+          <FooterBar mode={mode} url={url} userId={userId} dodoPageId={dodoPageDetails?.id}/>
         </div>
       )}
 

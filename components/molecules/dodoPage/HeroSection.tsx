@@ -27,19 +27,20 @@ const HeroSection = ({
   userId?: string;
   dodoPageDetails: any;
 }) => {
+  const dispatch = useDispatch();
   const [editPageName, setEditPageName] = useState(false);
   const [showThoughtsPopup, setShowThoughtsPopup] = useState(false);
   const [thaughtEditMode, setThaughtEditMode] = useState(false);
   const [thaught, setThaught] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
-  const [dodoPageName, setDodoPageName] = useState("");
+  const [pageName, setPageName] = useState("");
   const [addAudioBioPopup, setAddAudioBioPopup] = useState(false);
   const [dodoPageImage, setDodoPageImage] = useState("");
   const ImageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
-    setDodoPageName(dodoPageDetails?.name);
+    setPageName(dodoPageDetails?.name);
   }, [dodoPageDetails]);
 
   useEffect(() => {
@@ -47,7 +48,17 @@ const HeroSection = ({
   }, [thaught]);
 
   const handleNameSave = () => {
-    setEditPageName(false);
+     // const res = await updateDodoPage({
+    //   id: dodoPageId,
+    //   userId: userId,
+    //   name: dodoPageName,
+    // });
+
+    dispatch(setDodoPageName(pageName));
+
+    // if (res?.success) {
+    //   console.log("Dodo page name updated");
+    // }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -57,34 +68,33 @@ const HeroSection = ({
   };
 
   const handleSubmitThought = async () => {
-    const res = await updateDodoPage({
-      id: dodoPageId,
-      userId: userId,
-      thoughts: thaught,
-    });
-    if (res?.success) {
-      console.log("Thought saved");
-      setShowThoughtsPopup(false);
-    }
+    // const res = await updateDodoPage({
+    //   id: dodoPageId,
+    //   userId: userId,
+    //   thoughts: thaught,
+    // });
+    // if (res?.success) {
+    //   console.log("Thought saved");
+    //   setShowThoughtsPopup(false);
+    // }
+    dispatch(setDodoPageThought(thaught));
+    setShowThoughtsPopup(false);
   };
 
   const handleDeleteThought = async () => {
     console.log("delete");
-    const res = await updateDodoPage({
-      id: dodoPageId,
-      userId: userId,
-      thoughts: "",
-    });
-    if (res?.success) {
-      console.log("Thought Deleted");
-      setThaught("");
-      setShowThoughtsPopup(false);
-    }
+    // const res = await updateDodoPage({
+    //   id: dodoPageId,
+    //   userId: userId,
+    //   thoughts: "",
+    // });
+    // if (res?.success) {
+    //   console.log("Thought Deleted");
+    //   setThaught("");
+    //   setShowThoughtsPopup(false);
+    // }
+    dispatch(setDodoPageThought(""));
     setShowThoughtsPopup(false);
-  };
-
-  const handleUpdateDodoPageName = async () => {
-    console.log("Update dodo page name");
   };
 
   const handleImageUpload = async (
@@ -149,19 +159,19 @@ const HeroSection = ({
           {editPageName ? (
             <input
               type="text"
-              value={dodoPageName}
-              onChange={(e) => setDodoPageName(e.target.value)}
+              value={pageName}
+              onChange={(e) => setPageName(e.target.value)}
               onBlur={handleNameSave}
               onKeyDown={handleKeyDown}
-              className="bg-transparent text-xl w-36 outline-none text-black font-semibold text-center"
+              className="bg-transparent text-xl w-36 outline-none text-black font-semibold text-center w-fit"
               autoFocus
             />
           ) : (
             <div
-              className="text-xl font-semibold flex items-center gap-2 cursor-pointer"
+              className="text-xl font-semibold flex items-center gap-2 cursor-pointer w-fit"
               onClick={() => mode !== "public" && setEditPageName(true)}
             >
-              {dodoPageName}
+              {pageName}
               {mode === "edit" && (
                 <Image src={Pen} alt="Edit name" className="w-4 h-4" />
               )}

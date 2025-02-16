@@ -23,7 +23,8 @@
     "react-native-webview": "^13.12.3",
     "react-redux": "^9.2.0",
     "react-swipeable": "^7.0.1",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@types/mixpanel-browser": "^2.49.1",

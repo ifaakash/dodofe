@@ -6,6 +6,8 @@ import { createBlock } from "api";
 import { BLOCKS } from "@utils/constants";
 import { ROUTE_CONSTANTS } from "@utils/constants";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { addBlock } from "store/slice/blocksSlice";
 
 const AddHeading = ({
   dodoPageId,
@@ -22,20 +24,34 @@ const AddHeading = ({
 }) => {
   const [heading, setHeading] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    const res = await createBlock({
-      dodoPageId: dodoPageId,
+    // const res = await createBlock({
+    //   dodoPageId: dodoPageId,
+    //   blockType: "HEADING",
+    //   blockCardSize: "SMALL",
+    //   blockData: {
+    //     title: heading,
+    //   },
+    //   userId: userId,
+    // });
+    // if (res.success) {
+    //   router.push("/dodo/" + dodopageUrl);
+    // }
+
+    dispatch(addBlock({
       blockType: "HEADING",
       blockCardSize: "SMALL",
       blockData: {
         title: heading,
       },
-      userId: userId,
-    });
-    if (res.success) {
-      router.push("/dodo/" + dodopageUrl);
-    }
+      isActive: true,
+    }));
+
+    console.log('heading added', heading);
+
+    router.back();
   };
 
   return (

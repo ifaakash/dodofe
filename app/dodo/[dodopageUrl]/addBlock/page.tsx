@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import LinkBlock from "@components/molecules/dodoPage/addBlocks/AddLink";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { loadState } from "@utils/localStorage";
@@ -23,6 +24,7 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
   const [userDetails, setUserDetails] = useState({} as any);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const [dodoPageDetails, setDodoPageDetails] = useState({} as any);
+  const router = useRouter();
 
   useEffect(() => {
     getUserDetails(userId).then((res) => {
@@ -84,13 +86,17 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
 
     }
   };
+
+  const handleGoBack = () => {
+    router.push(`/dodo/${dodopageUrl}`);
+  }
   return (
     <div className="py-4 flex flex-col gap-4">
       <div className="flex justify-start px-5">
-        <Link href={`/dodo/${dodopageUrl}`} className="flex items-center gap-2">
+        <div onClick={handleGoBack} className="flex items-center gap-2">
           <ArrowLeft size={20} />
           <div className="text-sm font-semibold">{renderBackButtonTitle()}</div>
-        </Link>
+        </div>
       </div>
 
       <div className="px-5">{renderBlock()}</div>

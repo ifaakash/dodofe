@@ -20,6 +20,8 @@ import Behance from "public/icons/behance.svg";
 import Dribble from "public/icons/dribble.svg";
 import EmailId from "public/icons/email.svg";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setSocialLinks } from "store/slice/dodoPageSlice";
 
 const socialLinksData = [
   { title: "Website", icon: Web, placeholder: "Paste your personal website", value: "website" },
@@ -62,6 +64,7 @@ const AddSocial = ({
     email: "",
   });
     const router = useRouter();
+    const dispatch = useDispatch();
 
   useEffect(() => {
     setNewSocialLinks({
@@ -88,17 +91,28 @@ const AddSocial = ({
   };
 
   const handleSubmit = async () => {
-    const res = await updateDodoPage({
-      id: dodoPageId,
-      userId: userId,
-      socialLinks: newSocialLinks,
-    }); 
+    // const res = await updateDodoPage({
+    //   id: dodoPageId,
+    //   userId: userId,
+    //   socialLinks: newSocialLinks,
+    // }); 
 
-    if (res?.success) {
-      console.log('Saved')
-      router.push(`/dodo/${dodopageUrl}`);
-    }
+    dispatch(setSocialLinks(
+      socialLinksData.reduce((acc, { value }) => {
+        acc[value] = newSocialLinks[value];
+        return acc;
+      }, {})
+    ));
+    router.push(`/dodo/${dodopageUrl}`);
+    // if (res?.success) {
+    //   console.log('Saved')
+    //   router.push(`/dodo/${dodopageUrl}`);
+    // }
   };
+
+  console.log({
+    newSocialLinks
+  })
 
   return (
     <div className="flex flex-col h-full">

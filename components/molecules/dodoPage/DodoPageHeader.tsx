@@ -5,13 +5,27 @@ import EyeIcon from "../../../public/icons/greenEye.svg";
 import PenIcon from "../../../public/icons/EditPen.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
+  const { unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
   return (
     <div className="px-5 py-4 flex items-center justify-between">
-      <Link href="/">
-        <ArrowLeft size={20} />
-      </Link>
+      <div className="flex items-center gap-2">
+        <Link href="/">
+          <ArrowLeft size={20} />
+        </Link>
+        <div>
+          <div>
+            {unsavedChanges && mode === "edit" && (
+              <div className="text-xs font-semibold text-brandPrimary">
+                Unsaved Changes
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
       <div>
         {mode === "edit" ? (
           <Link href={`/dodo/${url}?mode=preview`}>

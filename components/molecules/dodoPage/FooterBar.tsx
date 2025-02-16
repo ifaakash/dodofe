@@ -10,6 +10,11 @@ import Heading from "public/icons/Heading.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
+import { updateDodoPage } from "api/services";
+import { loadState } from "@utils/localStorage";
+import { STORAGE_CONSTANTS } from "@utils/constants"; 
 
 const BlockModal = () => {
   const { dodopageUrl } = useParams();
@@ -67,8 +72,42 @@ const BlockModal = () => {
   );
 };
 
-const FooterBar = () => {
+
+const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, userId: string, dodoPageId: string}) => {
   const [isOpened, setIsOpened] = useState(false);
+  const { dodoPageName, dodoPageThought, dodoPageImage, socialLinks, unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
+  
+  console.log({
+    dodoPageName,
+    dodoPageThought,
+    dodoPageImage,
+    socialLinks,
+    unsavedChanges
+  })
+
+  console.log('userId', userId)
+
+  const handlePublish = async () => {
+    const dataToSend = {
+      id: dodoPageId,
+      userId: userId,
+      name: dodoPageName,
+      thoughts: dodoPageThought,
+      dodoPageImage: dodoPageImage,
+      socialLinks: socialLinks,
+    };
+
+    // Filter out null or undefined values
+    const filteredData = Object.fromEntries(
+      Object.entries(dataToSend).filter(([_, value]) => value != null)
+    );
+
+    const res = await updateDodoPage(filteredData);
+    if(res?.success) {
+      console.log("Published");
+    }
+  }
+  
   return (
     <div>
       {isOpened && <BlockModal />}
@@ -86,7 +125,7 @@ const FooterBar = () => {
           <Plus size={32} />
         </div>
 
-        <div className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary">
+        <div onClick={handlePublish} className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary">
           Publish
         </div>
       </div>
