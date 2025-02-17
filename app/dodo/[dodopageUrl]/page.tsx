@@ -23,17 +23,23 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
+  MouseSensor,
   PointerSensor,
-  useSensor,
-  useSensors,
   TouchSensor,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  useSortable,
 } from "@dnd-kit/sortable";
+
+import { useSensors, useSensor } from "@dnd-kit/core";
+
+import { CSS } from "@dnd-kit/utilities";
+
 import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
 import HeadingBlock from "@components/molecules/dodoPage/blocks/HeadingBlock";
 import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock";
@@ -43,6 +49,8 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
+import SortableItem from "@components/molecules/dodoPage/SortableItem";
+
 const DodoPageDashboard = () => {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") || "edit";
@@ -52,17 +60,18 @@ const DodoPageDashboard = () => {
   const [dodoPageDetails, setDodoPageDetails] = useState({} as any);
   const [isDragging, setIsDragging] = useState(false);
   const [blocks, setBlocks] = useState([]);
+  const [activeId, setActiveId] = useState(null);
 
   const sensors = useSensors(
-    useSensor(TouchSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
-        delay: 250,
-        tolerance: 5,
+        distance: 10,
       },
     }),
-    useSensor(PointerSensor, {
+    useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 5,
+        delay: 50,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -85,12 +94,14 @@ const DodoPageDashboard = () => {
 
   const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
 
-  const handleDragStart = () => {
+  const handleDragStart = (event: any) => {
     setIsDragging(true);
+    setActiveId(event.active.id);
   };
 
   const handleDragEnd = async (event: any) => {
     setIsDragging(false);
+    setActiveId(null);
     const { active, over } = event;
 
     if (active.id !== over.id) {
@@ -136,15 +147,75 @@ const DodoPageDashboard = () => {
   ) => {
     let content;
     switch (block.blockType) {
+      case "LINK":
+        content =
+          mode === "edit" ? (
+            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+              <LinkBlock
+                mode={mode}
+                blockData={block.blockData}
+                id={block.id}
+                blockCardSize={block.blockCardSize}
+              />
+            </Link>
+          ) : (
+            <LinkBlock
+              mode={mode}
+              blockData={block.blockData}
+              id={block.id}
+              blockCardSize={block.blockCardSize}
+            />
+          );
+        break;
       case "POLL":
-        content = <PollBlock mode={mode} blockData={block.blockData} />;
+        content =
+          mode === "edit" ? (
+            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+              <PollBlock
+                mode={mode}
+                blockData={block.blockData}
+                id={block.id}
+              />
+            </Link>
+          ) : (
+            <PollBlock mode={mode} blockData={block.blockData} id={block.id} />
+          );
         break;
       case "HEADING":
-        content = <HeadingBlock title={block.blockData?.title} mode={mode} />;
+        content =
+          mode === "edit" ? (
+            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+              <HeadingBlock
+                title={block.blockData?.title}
+                mode={mode}
+                id={block.id}
+              />
+            </Link>
+          ) : (
+            <HeadingBlock
+              title={block.blockData?.title}
+              mode={mode}
+              id={block.id}
+            />
+          );
         break;
-      case "LINK":
-        content = <LinkBlock mode={mode} blockData={block.blockData} blockCardSize={block.blockData?.blockCardSize}
-        />;
+      case "SEPARATOR":
+        content =
+          mode === "edit" ? (
+            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+              <SeparatorBlock
+                type={block.blockData?.separatorType}
+                mode={mode}
+                id={block.id}
+              />
+            </Link>
+          ) : (
+            <SeparatorBlock
+              type={block.blockData?.separatorType}
+              mode={mode}
+              id={block.id}
+            />
+          );
         break;
       case "PRODUCT":
         if (index > 0 && blocks[index - 1]?.blockType === "PRODUCT") {
@@ -154,77 +225,74 @@ const DodoPageDashboard = () => {
         if (nextBlock?.blockType === "PRODUCT") {
           content = (
             <div className="grid grid-cols-2 gap-[10px] w-full">
-              <SortableBlock id={block.id}>
-                {mode === "edit" ? (
-                  <div>
-                    <ProductBlock productData={block.blockData} mode={mode} />
-                  </div>
-                ) : (
-                  <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-                    <ProductBlock productData={block.blockData} mode={mode} />
-                  </Link>
-                )}
-              </SortableBlock>
-              <SortableBlock id={nextBlock.id}>
-                {mode === "edit" ? (
-                  <div>
-                    <ProductBlock productData={nextBlock.blockData} mode={mode} />
-                  </div>
-                ) : (
-                  <Link href={`/dodo/${url}/editBlock/${nextBlock.id}`}>
-                    <ProductBlock productData={nextBlock.blockData} mode={mode} />
-                  </Link>
-                )}
-              </SortableBlock>
+              {mode === "edit" ? (
+                <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                  <ProductBlock
+                    productData={block.blockData}
+                    mode={mode}
+                    id={block.id}
+                  />
+                </Link>
+              ) : (
+                <div>
+                  <ProductBlock
+                    productData={block.blockData}
+                    mode={mode}
+                    id={block.id}
+                  />
+                </div>
+              )}
+              {mode === "edit" ? (
+                <Link href={`/dodo/${url}/editBlock/${nextBlock.id}`}>
+                  <ProductBlock
+                    productData={nextBlock.blockData}
+                    id={nextBlock.id}
+                    mode={mode}
+                  />
+                </Link>
+              ) : (
+                <div>
+                  <ProductBlock
+                    productData={nextBlock.blockData}
+                    mode={mode}
+                    id={nextBlock.id}
+                  />
+                </div>
+              )}
             </div>
           );
         } else {
           content = (
             <div className="w-full">
-              <SortableBlock id={block.id}>
-                {mode === "edit" ? (
-                  <div>
-                    <ProductBlock productData={block.blockData} mode={mode} />
-                  </div>
-                ) : (
-                  <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-                    <ProductBlock productData={block.blockData} mode={mode} />
-                  </Link>
-                )}
-              </SortableBlock>
+              {mode === "edit" ? (
+                <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                  <ProductBlock
+                    productData={block.blockData}
+                    mode={mode}
+                    id={block.id}
+                  />
+                </Link>
+              ) : (
+                <ProductBlock
+                  productData={block.blockData}
+                  mode={mode}
+                  id={block.id}
+                />
+              )}
             </div>
           );
         }
-        return content;
-      case "SEPARATOR":
-        content = (
-          <SeparatorBlock type={block.blockData?.separatorType} mode={mode} />
-        );
         break;
       default:
         return null;
     }
-
-    // For non-PRODUCT blocks, wrap with SortableBlock
-    if (block.blockType !== "PRODUCT") {
-      return (
-        <SortableBlock key={block.id} id={block.id}>
-          {mode === "edit" ? (
-            <div>{content}</div>
-          ) : (
-            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-              {content}
-            </Link>
-          )}
-        </SortableBlock>
-      );
-    }
-
-    return content; 
+    return content;
   };
 
+  console.log("blocks", blocks);
+
   return (
-    <div className={styles.dodoBackground}>
+    <div className={`${styles.dodoBackground} ${styles.scrollableContainer}`}>
       <div className="flex flex-col gap-3">
         <DodoPageHeader mode={mode} url={url} />
         <HeroSection
@@ -233,12 +301,19 @@ const DodoPageDashboard = () => {
           userId={userId}
           dodoPageDetails={dodoPageDetails}
         />
-        <SocialLinks socialLinks={dodoPageDetails?.socialLinks} url={url} mode={mode} />
+        <SocialLinks
+          socialLinks={dodoPageDetails?.socialLinks}
+          url={url}
+          mode={mode}
+        />
 
         <div className="flex flex-col gap-4 mb-24">
           {mode !== "preview" && <ArchiveTab />}
 
-          <div className="mx-5 flex flex-col gap-3" style={{ touchAction: "none" }}>
+          <div
+            className="mx-5 flex flex-col gap-3"
+            style={{ touchAction: "auto" }}
+          >
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -251,32 +326,51 @@ const DodoPageDashboard = () => {
               >
                 {blocks.map((block, index) => renderBlock(block, index))}
               </SortableContext>
+              <DragOverlay>
+                {activeId ? (
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                    }}
+                  >
+                    <p>Dragging item...</p>
+                  </div>
+                ) : null}
+              </DragOverlay>
             </DndContext>
           </div>
         </div>
       </div>
       {mode === "edit" && (
         <div className="bottom-0 fixed w-full p-4">
-          <FooterBar mode={mode} url={url} userId={userId} dodoPageId={dodoPageDetails?.id}/>
+          <FooterBar
+            mode={mode}
+            url={url}
+            userId={userId}
+            dodoPageId={dodoPageDetails?.id}
+          />
         </div>
       )}
 
-      {
-        mode === "preview" && (
-          <div className="flex flex-col gap-3 px-5 items-center mb-20">
-        <div className="flex items-center gap-2">
-          <div className="text-[#3D4966] text-xs">powered by:</div>
-          <Image  src={DodoIcon} alt="dodo icon" height={20} />
-        </div>
-        <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
-          <div className=" font-semibold text-xs">Create your DODOpage now</div>
+      {mode === "preview" && (
+        <div className="flex flex-col gap-3 px-5 items-center mb-20">
+          <div className="flex items-center gap-2">
+            <div className="text-[#3D4966] text-xs">powered by:</div>
+            <Image src={DodoIcon} alt="dodo icon" height={20} />
+          </div>
+          <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
+            <div className=" font-semibold text-xs">
+              Create your DODOpage now
+            </div>
             <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
               <ArrowUpRight className="w-4 h-4" />
             </div>
           </div>
         </div>
-        )
-      }
+      )}
     </div>
   );
 };

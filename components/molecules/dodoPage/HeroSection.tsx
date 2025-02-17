@@ -12,9 +12,9 @@ import Quote from "public/icons/Quote.svg";
 import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
 import Speaker from "public/icons/Speaker.svg";
-import { updateDodoPage } from "api";
-import { useDispatch } from "react-redux";
-import { setDodoPageImage, setDodoPageName, setDodoPageThought, setSocialLinks } from "store/slice/dodoPageSlice";
+import { updateDodoPage, updateDodoPageProfile } from "api";
+import { useDispatch, useSelector } from "react-redux";
+import { updateDodoPageProfilePicture, setDodoPageName, setDodoPageThought, setSocialLinks } from "store/slice/dodoPageSlice";
 
 const HeroSection = ({
   mode = "public",
@@ -97,15 +97,22 @@ const HeroSection = ({
     setShowThoughtsPopup(false);
   };
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setDodoPageImage(url);
+  const handleImageUpload = async () => {
+    const file = ImageInputRef.current?.files?.[0];
+  
+    if (!file) {
+      console.error("No file selected.");
+      return;
     }
+
+    console.log('FIle', file)
+  
+
   };
+
+  const state = useSelector((state: any) => state.dodoPage);
+
+  console.log('state', state);
 
   return (
     <div

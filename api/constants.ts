@@ -32,4 +32,6 @@ export default {
     getArchivedBlocks: 'blocks/get-archived-blocks',
     getBlockById: 'blocks/getById',
     votePoll: 'blocks/poll-vote',
+    deleteBlock: 'blocks/delete',
+    updateBlock: 'blocks/update',
 }

@@ -38,6 +38,8 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
     });
   }, []);
 
+  console.log('dodoPageDetails', dodoPageDetails)
+
 
   const renderBlock = () => {
     switch (type) {
@@ -45,7 +47,7 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
         return <AddHeading dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl} mode={'add'}/>;
 
       case "link":
-        return <AddLink dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string}/>;
+        return <AddLink dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string} mode={'add'} />;
 
       case "separator":
         return <AddSeparator mode={'add'} dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl} />;

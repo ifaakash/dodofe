@@ -54,6 +54,7 @@ const DodoPage = () => {
         content = (
           <Link href={`${block.blockData.url}`}>
             <LinkBlock
+            
               mode={"public"}
               blockData={block.blockData}
               blockCardSize={block.blockData.blockCardSize}

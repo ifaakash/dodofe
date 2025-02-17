@@ -10,3 +10,11 @@
   background-repeat: no-repeat;
   min-height: 100vh;
 }
+
+.draggable {
+  touch-action: none; 
+}
+
+.scrollableContainer {
+  touch-action: auto; 
+}

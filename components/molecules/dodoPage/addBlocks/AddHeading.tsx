@@ -8,6 +8,8 @@ import { ROUTE_CONSTANTS } from "@utils/constants";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addBlock } from "store/slice/blocksSlice";
+import { updateBlock } from "api";
+import { toast } from "react-toastify";
 
 const AddHeading = ({
   dodoPageId,
@@ -22,36 +24,37 @@ const AddHeading = ({
   mode: "edit" | "add";
   blockData?: any;
 }) => {
-  const [heading, setHeading] = useState("");
+  const [heading, setHeading] = useState(blockData?.title || "");
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    // const res = await createBlock({
-    //   dodoPageId: dodoPageId,
-    //   blockType: "HEADING",
-    //   blockCardSize: "SMALL",
-    //   blockData: {
-    //     title: heading,
-    //   },
-    //   userId: userId,
-    // });
-    // if (res.success) {
-    //   router.push("/dodo/" + dodopageUrl);
-    // }
-
-    dispatch(addBlock({
+    const res = await createBlock({
+      dodoPageId: dodoPageId,
       blockType: "HEADING",
       blockCardSize: "SMALL",
       blockData: {
         title: heading,
       },
-      isActive: true,
-    }));
+      userId: userId,
+    });
+    if (res.success) {
+      router.push("/dodo/" + dodopageUrl);
+    }
+  };
 
-    console.log('heading added', heading);
+  const handleUpdateBlock = async () => {
+    const res = await updateBlock({
+      dodoPageId: dodoPageId,
+      blockId: blockData.blockId,
+      blockData: {
+        title: heading,
+      },
+    });
+    if (res.success) {
+      toast.success("Block updated successfully");
+      router.push("/dodo/" + dodopageUrl);
+    }
 
-    router.back();
   };
 
   return (
@@ -59,7 +62,7 @@ const AddHeading = ({
       {mode === "edit" ? (
         <Input
           placeholder="Heading"
-          value={blockData?.title}
+          value={heading}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setHeading(e.target.value)
           }
@@ -77,7 +80,7 @@ const AddHeading = ({
         <NewButton
           size="large"
           variant={heading ? "primary" : "disabled"}
-          onClick={handleSubmit}
+          onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >
           {mode === "edit" ? "Update" : "Add"}

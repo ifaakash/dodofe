@@ -21,7 +21,7 @@ const dodoPageSlice = createSlice({
   name: "dodoPage",
   initialState,
   reducers: {
-    setDodoPageImage: (state, action: PayloadAction<string | null>) => {
+    updateDodoPageProfilePicture: (state, action: PayloadAction<string | null>) => {
       state.dodoPageImage = action.payload;
       state.unsavedChanges = true;
     },
@@ -37,12 +37,16 @@ const dodoPageSlice = createSlice({
       state.socialLinks = action.payload;
       state.unsavedChanges = true;
     },
+    setUnsavedChanges: (state, action: PayloadAction<boolean>) => {
+      state.unsavedChanges = action.payload;
+    },
   },
 });
 export const {
-  setDodoPageImage,
+  updateDodoPageProfilePicture,
   setDodoPageName,
   setDodoPageThought,
   setSocialLinks,
+  setUnsavedChanges,
 } = dodoPageSlice.actions;
 export default dodoPageSlice.reducer;

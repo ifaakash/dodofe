@@ -15,6 +15,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
 
 const ArchivedBlocks = () => {
   const { dodopageUrl } = useParams();
@@ -24,55 +25,14 @@ const ArchivedBlocks = () => {
   useEffect(() => {
     const fetchArchivedBlocks = async () => {
       const res = await getArchivedBlocks(dodopageUrl);
+
+      console.log("res", res);
       if (res.success) {
         setArchivedBlocks(res.archivedBlocks);
       }
     };
     fetchArchivedBlocks();
   }, []);
-
-  const handleDragStart = () => {
-    setIsDragging(true);
-  };
-
-  const handleDragEnd = async (event: any) => {
-    setIsDragging(false);
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      const oldIndex = archivedBlocks.findIndex(
-        (item) => item.id === active.id
-      );
-      const newIndex = archivedBlocks.findIndex((item) => item.id === over.id);
-
-      // Create new array with updated positions
-      const updatedBlocks = arrayMove(archivedBlocks, oldIndex, newIndex).map(
-        (block, index) => ({
-          ...block,
-          blockPositionalIndex: index,
-        })
-      );
-
-      // Format blocks for API call
-      const formattedBlocks = {
-        dodoPageId: dodoPageDetails.id,
-        blocks: updatedBlocks.map((block, index) => ({
-          blockId: block.id,
-          newIndex: index,
-        })),
-      };
-
-      // Make API call and update state
-      try {
-        const res = await reorderBlocks(formattedBlocks);
-        if (res?.success) {
-          setBlocks(updatedBlocks);
-        }
-      } catch (error) {
-        console.error("Error reordering blocks:", error);
-      }
-    }
-  };
 
   const renderBlock = (block: {
     id: string;
@@ -82,18 +42,18 @@ const ArchivedBlocks = () => {
     let content;
     switch (block.blockType) {
       case "POLL":
-        content = <PollBlock mode="dashboard" blockData={block.blockData} />;
+        content = <PollBlock mode="edit" blockData={block.blockData} />;
         break;
       case "HEADING":
         content = (
-          <HeadingBlock title={block.blockData.title} mode="dashboard" />
+          <HeadingBlock title={block.blockData.title} mode="edit" />
         );
         break;
       case "PRODUCTS":
         content = (
           <div className="flex gap-[10px]">
-            <ProductBlock />
-            <ProductBlock />
+            <ProductBlock productData={block.blockData} mode="edit" />
+            <ProductBlock productData={block.blockData} mode="edit" />
           </div>
         );
         break;
@@ -101,9 +61,12 @@ const ArchivedBlocks = () => {
         content = (
           <SeparatorBlock
             type={block.blockData.separatorType}
-            mode="dashboard"
+            mode="edit"
           />
         );
+        break;
+      case "LINK":
+        content = <LinkBlock blockData={block.blockData} mode="edit" blockCardSize={block?.blockData?.blockCardSize} />;
         break;
       default:
         return null;
@@ -140,11 +103,15 @@ const ArchivedBlocks = () => {
         <span> Archived </span>
       </div>
       <div>
-        {archivedBlocks.map((block) => (
-          <div key={block.id} className="mt-4">
-            {renderBlock(block)}
-          </div>
-        ))}
+        {archivedBlocks.length === 0 ? (
+          <div>No archived blocks</div>
+        ) : (
+          archivedBlocks.map((block) => (
+            <div key={block.id} className="mt-4">
+              {renderBlock(block)}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

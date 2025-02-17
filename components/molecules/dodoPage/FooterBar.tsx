@@ -15,6 +15,9 @@ import { RootState } from "store/store";
 import { updateDodoPage } from "api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants"; 
+import { setUnsavedChanges } from "store/slice/dodoPageSlice";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const BlockModal = () => {
   const { dodopageUrl } = useParams();
@@ -76,7 +79,7 @@ const BlockModal = () => {
 const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, userId: string, dodoPageId: string}) => {
   const [isOpened, setIsOpened] = useState(false);
   const { dodoPageName, dodoPageThought, dodoPageImage, socialLinks, unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
-  
+  const dispatch = useDispatch();
   console.log({
     dodoPageName,
     dodoPageThought,
@@ -101,10 +104,14 @@ const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, 
     const filteredData = Object.fromEntries(
       Object.entries(dataToSend).filter(([_, value]) => value != null)
     );
+    
+    
 
     const res = await updateDodoPage(filteredData);
     if(res?.success) {
       console.log("Published");
+      dispatch(setUnsavedChanges(false));
+      toast.success("Published successfully");
     }
   }
   

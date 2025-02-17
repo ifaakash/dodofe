@@ -6,7 +6,9 @@ import Switcher from "@components/atoms/Switcher/Switcher";
 import AddImageIcon from "public/icons/addImage.svg";
 import Image from "next/image";
 import EditPen from "public/icons/EditPen.svg";
-import { createBlock, createBlockWithFormData } from "api";
+import { createBlockWithFormData, updateBlockWithFormData } from "api";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const badges = [
   {
@@ -44,14 +46,24 @@ const AddLink = ({
   mode: "add" | "edit";
   blockData: any;
 }) => {
-  const [selectedBadgeCategory, setSelectedBadgeCategory] =
-    useState<string>("");
-  const [displayType, setDisplayType] = useState<string>("SMALL");
+  const router = useRouter();
+  const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
+    badges.find(
+      (badge) => badge.backgroundColor === blockData?.badge?.backgroundColor
+    )?.text || ""
+  );
+  const [displayType, setDisplayType] = useState<string>(
+    blockData?.blockCardSize || "SMALL"
+  );
   const [titleEditing, setTitleEditing] = useState<boolean>(false);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-  const [link, setLink] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [badgeText, setBadgeText] = useState<string>("");
+  const [link, setLink] = useState<string>(blockData?.url || "");
+  const [title, setTitle] = useState<string>(blockData?.title || "");
+  const [badgeText, setBadgeText] = useState<string>(
+    blockData?.badge?.text || ""
+  );
+
+  console.log('dodoID', dodoPageId)
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -66,19 +78,21 @@ const AddLink = ({
 
       // Add all required fields to formData
       formData.append("blockType", "LINK");
-      formData.append("blockCardSize", displayType); // Use the actual display type instead of hardcoded "LARGE"
       formData.append("blockData[title]", title);
       formData.append("blockData[url]", link);
-      formData.append("blockData[badge][text]", badgeText);
 
-      const selectedBadge = badges.find(
-        (badge) => badge.text === selectedBadgeCategory
-      );
-      formData.append(
-        "blockData[badge][backgroundColor]",
-        selectedBadge?.backgroundColor || ""
-      );
-      formData.append("blockData[badge][color]", selectedBadge?.color || "");
+      if (badgeText) {
+        formData.append("blockData[badge][text]", badgeText);
+
+        const selectedBadge = badges.find(
+          (badge) => badge.text === selectedBadgeCategory
+        );
+        formData.append(
+          "blockData[badge][backgroundColor]",
+          selectedBadge?.backgroundColor || ""
+        );
+        formData.append("blockData[badge][color]", selectedBadge?.color || "");
+      }
 
       if (uploadedImage) {
         formData.append("linkDisplayPicture", uploadedImage);
@@ -88,11 +102,19 @@ const AddLink = ({
         dodoPageId,
         userId,
         dodopageUrl,
+        blockCardSize: displayType,
       });
-      console.log("res", res);
+      if (res?.success) {
+        toast.success("Link added successfully");
+        router.push(`/dodo/${dodopageUrl}`);
+      }
     } catch (error) {
       console.error("Error uploading:", error);
     }
+  };
+
+  const handleUpdate = async () => {
+    console.log('blockData', blockData)
   };
 
   return (
@@ -123,7 +145,7 @@ const AddLink = ({
                   alt="uploaded preview"
                   className={`${
                     displayType === "SMALL"
-                      ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px]"
+                      ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px] aspect-square"
                       : "w-full h-full object-cover rounded-[6px]"
                   }`}
                 />
@@ -137,8 +159,29 @@ const AddLink = ({
                 />
               )}
             </div>
-            <div onClick={() => setTitleEditing(true)}>
-              {titleEditing ? (
+            <div>
+              {mode === "add" ? (
+                <div onClick={() => setTitleEditing(true)}>
+                  {titleEditing ? (
+                    <Input
+                      type="text"
+                      placeholder="Add Title...."
+                      value={title}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setTitle(e.target.value)
+                      }
+                    />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div className="text-[#3D4966] font-medium">
+                        {" "}
+                        Add Title{" "}
+                      </div>
+                      <Image src={EditPen} width={20} height={20} alt="edit" />
+                    </div>
+                  )}
+                </div>
+              ) : (
                 <Input
                   type="text"
                   placeholder="Add Title...."
@@ -147,11 +190,6 @@ const AddLink = ({
                     setTitle(e.target.value)
                   }
                 />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="text-[#3D4966] font-medium"> Add Title </div>
-                  <Image src={EditPen} width={20} height={20} alt="edit" />
-                </div>
               )}
             </div>
           </div>
@@ -205,9 +243,9 @@ const AddLink = ({
       </div>
 
       <div className="bottom-0 fixed mb-4 px-4 w-full flex flex-col gap-4 items-center">
-        {mode === "add" && (
-          <Switcher displayType={displayType} setDisplayType={setDisplayType} />
-        )}
+        {/* {(mode === "add" || mode === "edit") && ( */}
+        <Switcher displayType={displayType} setDisplayType={setDisplayType} />
+        {/* )} */}
         {mode === "add" ? (
           <NewButton
             size="large"
@@ -218,7 +256,7 @@ const AddLink = ({
             Add Link
           </NewButton>
         ) : (
-          <NewButton size="large" variant="primary" className="w-full">
+          <NewButton size="large" variant="primary" className="w-full" onClick={handleUpdate}>
             Update Link
           </NewButton>
         )}

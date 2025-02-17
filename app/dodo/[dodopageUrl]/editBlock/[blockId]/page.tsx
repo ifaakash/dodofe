@@ -6,7 +6,7 @@ import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock
 import { SortableBlock } from "@components/molecules/dodoPage/SortableBlock";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { loadState } from "@utils/localStorage";
-import { archiveBlock, getBlockById } from "api";
+import { archiveBlock, deleteBlock, getBlockById } from "api";
 import { ArchiveRestore, ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -28,8 +28,10 @@ const EditBlock = () => {
   const { dodopageUrl } = useParams();
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const [blockDetails, setBlockDetails] = useState<any>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
 
-  const handleArchive = async () => {
+  const confirmArchive = async () => {
     const res = await archiveBlock({
       blockId: blockId,
       userId: userId,
@@ -41,8 +43,24 @@ const EditBlock = () => {
     }
   };
 
+  const handleArchive = () => {
+    setShowArchiveConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    const res = await deleteBlock({
+      blockId: blockId,
+      userId: userId,
+    });
+
+    if (res?.success) {
+      toast.success("Block Deleted");
+      router.push(`/dodo/${dodopageUrl}`);
+    }
+  };
+
   const handleDelete = () => {
-    console.log("Delete");
+    setShowDeleteConfirm(true);
   };
 
   useEffect(() => {
@@ -87,7 +105,7 @@ const EditBlock = () => {
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
-        )
+        );
       case "LINK":
         console.log("LINK BLOCK", blockDetails);
         return (
@@ -98,8 +116,8 @@ const EditBlock = () => {
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
-        )
-        case "PRODUCT":
+        );
+      case "PRODUCT":
         return (
           <AddProduct
             dodoPageId={blockDetails.dodoPageId}
@@ -108,7 +126,7 @@ const EditBlock = () => {
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
-        )
+        );
       default:
         return null;
     }
@@ -124,6 +142,46 @@ const EditBlock = () => {
       />
 
       <div className="px-5">{renderBlock()}</div>
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p className="mb-4">Are you sure you want to delete this block?</p>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+              onClick={confirmDelete}
+            >
+              Delete
+            </button>
+            <button
+              className="bg-gray-300 text-black px-4 py-2 rounded"
+              onClick={() => setShowDeleteConfirm(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showArchiveConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p className="mb-4">Are you sure you want to archive this block?</p>
+            <button
+              className="bg-brandPrimary text-white px-4 py-2 rounded mr-2"
+              onClick={confirmArchive}
+            >
+              Archive
+            </button>
+            <button
+              className="bg-gray-300 text-black px-4 py-2 rounded"
+              onClick={() => setShowArchiveConfirm(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

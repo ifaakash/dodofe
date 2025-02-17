@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import NewButton from "@components/atoms/Button/NewButton";
-import { createBlock } from "api";
+import { createBlock, updateBlock } from "api";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const AddSeparator = ({
   dodoPageId,
@@ -18,7 +19,7 @@ const AddSeparator = ({
   mode: "edit" | "add";
   blockData?: any;
 }) => {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState(blockData?.separatorType);
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -36,6 +37,26 @@ const AddSeparator = ({
       router.push(`/dodo/${dodopageUrl}`);
     }
   };
+  
+  console.log('blockData', blockData, selected)
+
+  const handleUpdateBlock = async () => {
+    const res = await updateBlock({
+      dodoPageId: dodoPageId,
+      blockId: blockData.blockId,
+      blockData: {
+        separatorType: selected,
+      },
+    });
+
+    console.log('res', res)
+    
+    if (res.success) {
+      toast.success("Block updated successfully");
+      router.push(`/dodo/${dodopageUrl}`);
+    }
+  };
+
   return (
     <div className="flex items-center flex-col">
       <div className="flex flex-col gap-3 mt-6 w-full">
@@ -57,7 +78,7 @@ const AddSeparator = ({
               <input
                 type="radio"
                 name="separator"
-                checked={mode === "edit" ? blockData?.separatorType === item.id : selected === item.id}
+                checked={selected === item.id}
               />
               <div className="text-xs font-medium">{item.label}</div>
             </div>
@@ -80,8 +101,8 @@ const AddSeparator = ({
       <div className="bottom-0 fixed mb-4 px-4 w-full">
         <NewButton
           size="large"
-          variant={selected ? "primary" : "disabled"}
-          onClick={handleSubmit}
+          variant={selected && (mode === "add" || selected !== blockData?.separatorType) ? "primary" : "disabled"}
+          onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >
           {mode === "edit" ? "Update" : "Add"}
