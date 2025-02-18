@@ -6,7 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 interface ProductBlockProps {
   productData: any;
   mode: string;
-  id: string;
+  id?: string;
 }
 
 const PLACEHOLDER_IMAGE = "https://picsum.photos/200";
@@ -23,7 +23,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id: id || '' });
 
   const style = {
     transform: transform

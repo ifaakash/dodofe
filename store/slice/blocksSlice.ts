@@ -31,15 +31,15 @@ interface PollBlockData {
     optionCounts?: Record<string, number>;
 }
 
-
-
 // Define the block structure
 interface Block {
     id?: string;
+    userId?: string;
+    dodoPageId?: string;
     blockType: "LINK" | "PRODUCT" | "HEADING" | "SEPARATOR" | "POLL";
     blockCardSize: "SMALL" | "MEDIUM" | "LARGE";
     blockPositionalIndex?: number;
-    isActive: boolean;
+    isActive?: boolean;
     blockData: LinkBlockData | ProductBlockData | HeadingBlockData | SeparatorBlockData | PollBlockData;
 }
 
@@ -69,9 +69,22 @@ const blocksSlice = createSlice({
                 state.blocks[index] = action.payload;
             }
         },
+        reorderBlocks: (state, action: PayloadAction<{ blocks: { blockId: string; newIndex: number }[] }>) => {
+            const { blocks } = action.payload;
+            console.log('blocks in reducer', blocks)
+            const reorderedBlocks = blocks.map(({ blockId, newIndex }) => {
+                const block = state.blocks.find(block => block.id === blockId);
+                if (block) {
+                    block.blockPositionalIndex = newIndex;
+                }
+                return block;
+            });
+            console.log('reorderedBlocks', reorderedBlocks)
+            state.blocks = reorderedBlocks.filter((block): block is Block => block !== undefined);
+        },
     },
 });
 
 // Export actions and reducer
-export const { addBlocksToStore, addBlock, removeBlock, updateBlock } = blocksSlice.actions;
+export const { addBlocksToStore, addBlock, removeBlock, updateBlock, reorderBlocks } = blocksSlice.actions;
 export default blocksSlice.reducer;

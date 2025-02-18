@@ -107,7 +107,6 @@ const EditBlock = () => {
           />
         );
       case "LINK":
-        console.log("LINK BLOCK", blockDetails);
         return (
           <AddLink
             dodoPageId={blockDetails.dodoPageId}

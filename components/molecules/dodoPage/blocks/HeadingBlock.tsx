@@ -8,7 +8,7 @@ import { useSortable } from "@dnd-kit/sortable";
 type HeadingBlockProps = {
   title: string;
   mode: string;
-  id: string;
+  id?: string;
 };
 
 const HeadingBlock = ({ title, mode = "public", id }: HeadingBlockProps) => {

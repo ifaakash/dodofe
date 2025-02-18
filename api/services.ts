@@ -118,7 +118,7 @@ export const updateBlockWithFormData = async (
   });
 
   return Patch<any>(
-    API_CONSTANTS.updateBlock + API_CONSTANTS.slash + blockData.blockId,
+    API_CONSTANTS.updateBlock,
     formData,
     { headers: { "Content-Type": "multipart/form-data" } }
   );
@@ -135,8 +135,21 @@ export const getDodoPageByURL = async (url: any): Promise<any> =>
       url
   );
 
-export const reorderBlocks = async (payload: any): Promise<any> =>
-  Post<any>(API_CONSTANTS.reorderBlocks, payload);
+export const reorderBlocks = async (formattedBlocks: { dodoPageId: string; blocks: { blockId: string; newIndex: number; }[] }): Promise<{ success: boolean; message?: string }> => {
+    const response = await fetch('/api/reorderBlocks', {
+        method: 'POST',
+        body: JSON.stringify(formattedBlocks),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to reorder blocks');
+    }
+
+    return response.json(); // Ensure this returns an object with a 'success' property
+};
 
 export const updateDodoPage = async (payload: any): Promise<any> =>
   Patch<any>(API_CONSTANTS.updateDodoPage, payload);

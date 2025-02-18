@@ -44,7 +44,7 @@ const AddLink = ({
   userId: string;
   dodopageUrl: string;
   mode: "add" | "edit";
-  blockData: any;
+  blockData?: any;
 }) => {
   const router = useRouter();
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
@@ -63,8 +63,6 @@ const AddLink = ({
     blockData?.badge?.text || ""
   );
 
-  console.log('dodoID', dodoPageId)
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -79,7 +77,7 @@ const AddLink = ({
       // Add all required fields to formData
       formData.append("blockType", "LINK");
       formData.append("blockData[title]", title);
-      formData.append("blockData[url]", link);
+      formData.append("blockData[url]", dodopageUrl);
 
       if (badgeText) {
         formData.append("blockData[badge][text]", badgeText);
@@ -113,8 +111,56 @@ const AddLink = ({
     }
   };
 
+  console.log({
+    userId,
+    blockId: blockData?.blockId,
+  });
+
   const handleUpdate = async () => {
-    console.log('blockData', blockData)
+    try {
+      const formData = new FormData();
+      formData.append("blockType", "LINK");
+      formData.append("blockData[title]", title);
+      formData.append("blockData[url]", link);
+
+      if (badgeText) {
+        formData.append("blockData[badge][text]", badgeText);
+
+        const selectedBadge = badges.find(
+          (badge) => badge.text === selectedBadgeCategory
+        );
+        formData.append(
+          "blockData[badge][backgroundColor]",
+          selectedBadge?.backgroundColor || ""
+        );
+        formData.append("blockData[badge][color]", selectedBadge?.color || "");
+      }
+
+      if (uploadedImage) {
+        formData.append("linkDisplayPicture", uploadedImage);
+      }
+
+      if (badgeText) {
+        formData.append("blockData[badge][text]", badgeText);
+      }
+
+      if (uploadedImage) {
+        formData.append("linkDisplayPicture", uploadedImage);
+      }
+
+      const res = await updateBlockWithFormData(formData, {
+        dodoPageId,
+        userId,
+        dodopageUrl,
+        blockId: blockData?.blockId,
+      });
+
+      console.log({
+        res,
+      });
+    } catch (error) {
+      console.error("Error updating:", error);
+    }
   };
 
   return (
@@ -256,7 +302,12 @@ const AddLink = ({
             Add Link
           </NewButton>
         ) : (
-          <NewButton size="large" variant="primary" className="w-full" onClick={handleUpdate}>
+          <NewButton
+            size="large"
+            variant="primary"
+            className="w-full"
+            onClick={handleUpdate}
+          >
             Update Link
           </NewButton>
         )}

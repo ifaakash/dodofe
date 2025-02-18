@@ -12,7 +12,7 @@ const LinkBlock = ({
 }: {
   mode: string;
   blockData: any;
-  blockCardSize: string;
+  blockCardSize: string | "";
   id?: string;
 }) => {
   const PLACEHOLDER_IMAGE = "https://picsum.photos/200";
@@ -24,7 +24,7 @@ const LinkBlock = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id: blockData.id });
 
   const style = {
     transform: transform

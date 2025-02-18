@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { addBlock } from "store/slice/blocksSlice";
 import { updateBlock } from "api";
 import { toast } from "react-toastify";
-
+import { v4 as uuidv4 } from 'uuid';
 const AddHeading = ({
   dodoPageId,
   userId,
@@ -26,6 +26,7 @@ const AddHeading = ({
 }) => {
   const [heading, setHeading] = useState(blockData?.title || "");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     const res = await createBlock({
@@ -40,6 +41,17 @@ const AddHeading = ({
     if (res.success) {
       router.push("/dodo/" + dodopageUrl);
     }
+
+    // dispatch(addBlock({
+    //   id: uuidv4(),
+    //   blockType: "HEADING",
+    //   blockCardSize: "SMALL",
+    //   blockData: {
+    //     title: heading,
+    //   },
+    //   userId: userId,
+    //   dodoPageId: dodoPageId,
+    // }))
   };
 
   const handleUpdateBlock = async () => {

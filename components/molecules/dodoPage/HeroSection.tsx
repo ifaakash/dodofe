@@ -14,7 +14,13 @@ import AudioRecord from "public/icons/AudioRecord.svg";
 import Speaker from "public/icons/Speaker.svg";
 import { updateDodoPage, updateDodoPageProfile } from "api";
 import { useDispatch, useSelector } from "react-redux";
-import { updateDodoPageProfilePicture, setDodoPageName, setDodoPageThought, setSocialLinks } from "store/slice/dodoPageSlice";
+import Waves from "public/assets/Waves.gif";
+import {
+  updateDodoPageProfilePicture,
+  setDodoPageName,
+  setDodoPageThought,
+  setSocialLinks,
+} from "store/slice/dodoPageSlice";
 
 const HeroSection = ({
   mode = "public",
@@ -37,6 +43,16 @@ const HeroSection = ({
   const [addAudioBioPopup, setAddAudioBioPopup] = useState(false);
   const [dodoPageImage, setDodoPageImage] = useState("");
   const ImageInputRef = useRef<HTMLInputElement>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
@@ -48,7 +64,7 @@ const HeroSection = ({
   }, [thaught]);
 
   const handleNameSave = () => {
-     // const res = await updateDodoPage({
+    // const res = await updateDodoPage({
     //   id: dodoPageId,
     //   userId: userId,
     //   name: dodoPageName,
@@ -99,20 +115,85 @@ const HeroSection = ({
 
   const handleImageUpload = async () => {
     const file = ImageInputRef.current?.files?.[0];
-  
+
     if (!file) {
       console.error("No file selected.");
       return;
     }
 
-    console.log('FIle', file)
-  
-
+    console.log("FIle", file);
   };
 
   const state = useSelector((state: any) => state.dodoPage);
 
-  console.log('state', state);
+  console.log("state", state);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      setMediaRecorder(recorder);
+
+      // Set up audio visualization
+      audioContextRef.current = new AudioContext();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      const analyser = audioContextRef.current.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+      analyserRef.current = analyser;
+
+      const chunks: Blob[] = [];
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "audio/wav" });
+        setAudioBlob(blob);
+        console.log("Audio saved", blob);
+      };
+
+      recorder.start();
+      setIsRecording(true);
+      setAudioChunks([]);
+
+      // Stop recording after 20 seconds
+      setTimeout(() => {
+        if (recorder.state === "recording") {
+          stopRecording();
+        }
+      }, 20000);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+      setIsRecording(false);
+    }
+  };
+
+  const playAudio = () => {
+    if (!audioBlob) {
+      console.log("No audio recorded yet");
+      return;
+    }
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio(URL.createObjectURL(audioBlob));
+      audioRef.current.onended = () => {
+        setIsPlaying(false);
+      };
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
 
   return (
     <div
@@ -304,16 +385,29 @@ const HeroSection = ({
                   <span className="text-brandPrimary text-[8px]">upload</span>
                 </div>
               </div>
-              <div>Sound Wave</div>
+              <div className="h-16 w-full flex items-center justify-center">
+                {isRecording && <Image src={Waves} alt="Audio Record" />}
+              </div>
               <div className="flex items-center flex-col">
-                <Image src={AudioRecord} alt="Audio Record" />
+                <Image
+                  src={AudioRecord}
+                  alt="Audio Record"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  className="cursor-pointer"
+                />
                 <span className="text-[#3D4966] text-xs font-medium">
-                  Press to start
+                  {isRecording ? "Press to stop" : "Press to start"}
                 </span>
               </div>
               <div className="flex gap-3">
-                <button className="border-[1px] border-[#979EAD] rounded-full flex items-center gap-1 py-[14px] pl-[26px] pr-10">
-                  <span className="text-xs font-medium"> Listen </span>
+                <button 
+                  className="border-[1px] border-[#979EAD] rounded-full flex items-center gap-1 py-[14px] pl-[26px] pr-10"
+                  onClick={playAudio}
+                  disabled={!audioBlob}
+                >
+                  <span className="text-xs font-medium">
+                    {isPlaying ? "Stop" : "Listen"}
+                  </span>
                   <Image src={Speaker} alt="Speaker" />
                 </button>
                 <button className="w-full bg-brandPrimary text-white font-semibold rounded-full">

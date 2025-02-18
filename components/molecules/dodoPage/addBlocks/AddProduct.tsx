@@ -66,13 +66,23 @@ const AddProduct = ({
   };
 }) => {
   const router = useRouter();
-  const [product1, setProduct1] = useState({
+  const [product1, setProduct1] = useState<{
+    name: string;
+    link: string;
+    imgUrl: string;
+    file?: File;
+  }>({
     name: "",
     link: "",
     imgUrl: "",
   });
 
-  const [product2, setProduct2] = useState({
+  const [product2, setProduct2] = useState<{
+    name: string;
+    link: string;
+    imgUrl: string;
+    file?: File;
+  }>({
     name: "",
     link: "",
     imgUrl: "",
@@ -94,7 +104,9 @@ const AddProduct = ({
     try {
       // Create FormData for product 1
       const formData1 = new FormData();
-      formData1.append("productImage", product1.file);
+      if (product1.file) {
+        formData1.append("productImage", product1.file);
+      }
       formData1.append("blockData[title]", product1.name);
       formData1.append("blockData[link]", product1.link);
       formData1.append("blockType", "PRODUCT");
@@ -102,7 +114,9 @@ const AddProduct = ({
 
       // Create FormData for product 2
       const formData2 = new FormData();
-      formData2.append("productImage", product2.file);
+      if (product2.file) {
+        formData2.append("productImage", product2.file);
+      }
       formData2.append("blockData[title]", product2.name);
       formData2.append("blockData[link]", product2.link);
       formData2.append("blockType", "PRODUCT");
@@ -213,13 +227,13 @@ const AddProduct = ({
           <div className="flex flex-col gap-[5px]">
             <Input
               placeholder="Product Name"
-              value={blockData.title}
+              value={blockData?.title}
               disabled={true}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
             />
             <Input
               placeholder="Paste product link here....."
-              value={blockData.link}
+              value={blockData?.link}
               disabled={true}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
             />
@@ -229,11 +243,11 @@ const AddProduct = ({
               <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
                 <img
                   src={'https://picsum.photos/400'}
-                  alt={blockData.title}
+                  alt={blockData?.title}
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </div>
-              <p className="text-sm font-medium">{blockData.title}</p>
+              <p className="text-sm font-medium">{blockData?.title}</p>
             </div>
           </div>
         </div>

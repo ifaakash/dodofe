@@ -4,7 +4,7 @@ interface DodoPageState {
   dodoPageImage: string | null;
   dodoPageName: string | null;
   dodoPageThought: string | null;
-  socialLinks: [] | null;
+  socialLinks: { key: string; value: string; }[] | null;
   audioBio: string | null;
   unsavedChanges: boolean;
 }

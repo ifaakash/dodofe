@@ -11,12 +11,7 @@ import { STORAGE_CONSTANTS } from "@utils/constants";
 import { loadState } from "@utils/localStorage";
 import DodoIcon from "public/icons/dodoIconName.svg";
 
-import {
-  getUserDetails,
-  getDodoPageByURL,
-  registerUser,
-  reorderBlocks,
-} from "api";
+import { getDodoPageByURL } from "api";
 import { useState, useEffect } from "react";
 
 import {
@@ -24,7 +19,6 @@ import {
   closestCenter,
   KeyboardSensor,
   MouseSensor,
-  PointerSensor,
   TouchSensor,
   DragOverlay,
 } from "@dnd-kit/core";
@@ -33,35 +27,31 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
-
 import { useSensors, useSensor } from "@dnd-kit/core";
-
-import { CSS } from "@dnd-kit/utilities";
-
 import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
 import HeadingBlock from "@components/molecules/dodoPage/blocks/HeadingBlock";
 import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock";
 import ProductBlock from "@components/molecules/dodoPage/blocks/ProductBlock";
-import { SortableBlock } from "@components/molecules/dodoPage/SortableBlock";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
-import SortableItem from "@components/molecules/dodoPage/SortableItem";
+import { Block } from "types";
+import { addBlocksToStore } from "store/slice/blocksSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/store";
+import { reorderBlocks } from "api";
 
 const DodoPageDashboard = () => {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") || "edit";
   const { dodopageUrl } = useParams();
-  const [userDetails, setUserDetails] = useState({} as any);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const [dodoPageDetails, setDodoPageDetails] = useState({} as any);
-  const [isDragging, setIsDragging] = useState(false);
-  const [blocks, setBlocks] = useState([]);
+  const [blocks, setBlocks] = useState<Block[]>([]);
   const [activeId, setActiveId] = useState(null);
-
+  const dispatch = useDispatch();
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -78,29 +68,35 @@ const DodoPageDashboard = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const existingBlocks = useSelector((state: RootState) => state.blocks.blocks);
 
-  useEffect(() => {
-    getUserDetails(userId).then((res) => {
-      setUserDetails(res?.user);
-    });
-  }, []);
+  // useEffect(() => {
+  //   if (existingBlocks.length === 0) {
+  //     getDodoPageByURL(dodopageUrl).then((res) => {
+  //       setDodoPageDetails(res?.dodoPage);
+  //       setBlocks(res?.dodoPage?.blocks || []);
+  //       dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
+  //     });
+  //   } else {
+  //     setBlocks(existingBlocks);
+  //   }
+  // }, [dodopageUrl, existingBlocks.length, dispatch]);
 
   useEffect(() => {
     getDodoPageByURL(dodopageUrl).then((res) => {
       setDodoPageDetails(res?.dodoPage);
-      setBlocks(res?.dodoPage?.blocks);
+      setBlocks(res?.dodoPage?.blocks || []);
+      dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
     });
   }, []);
 
   const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
 
   const handleDragStart = (event: any) => {
-    setIsDragging(true);
     setActiveId(event.active.id);
   };
 
   const handleDragEnd = async (event: any) => {
-    setIsDragging(false);
     setActiveId(null);
     const { active, over } = event;
 
@@ -108,7 +104,6 @@ const DodoPageDashboard = () => {
       const oldIndex = blocks.findIndex((item) => item.id === active.id);
       const newIndex = blocks.findIndex((item) => item.id === over.id);
 
-      // Create new array with updated positions
       const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
         (block, index) => ({
           ...block,
@@ -116,19 +111,19 @@ const DodoPageDashboard = () => {
         })
       );
 
-      // Format blocks for API call
       const formattedBlocks = {
         dodoPageId: dodoPageDetails.id,
-        blocks: updatedBlocks.map((block, index) => ({
-          blockId: block.id,
-          newIndex: index,
-        })),
+        blocks: updatedBlocks
+          .filter(block => block.id !== undefined)
+          .map((block, index) => ({
+            blockId: block.id as string,
+            newIndex: index,
+          })),
       };
 
-      // Make API call and update state
       try {
         const res = await reorderBlocks(formattedBlocks);
-        if (res?.success) {
+        if (res.success) {
           setBlocks(updatedBlocks);
         }
       } catch (error) {
@@ -137,14 +132,7 @@ const DodoPageDashboard = () => {
     }
   };
 
-  const renderBlock = (
-    block: {
-      id: string;
-      blockType: string;
-      blockData: any;
-    },
-    index: number
-  ) => {
+  const renderBlock = (block: Block, index: number) => {
     let content;
     switch (block.blockType) {
       case "LINK":
@@ -174,11 +162,11 @@ const DodoPageDashboard = () => {
               <PollBlock
                 mode={mode}
                 blockData={block.blockData}
-                id={block.id}
+                id={block.id as string}
               />
             </Link>
           ) : (
-            <PollBlock mode={mode} blockData={block.blockData} id={block.id} />
+            <PollBlock mode={mode} blockData={block.blockData} id={block.id as string} />
           );
         break;
       case "HEADING":
@@ -188,14 +176,14 @@ const DodoPageDashboard = () => {
               <HeadingBlock
                 title={block.blockData?.title}
                 mode={mode}
-                id={block.id}
+                id={block.id as string}
               />
             </Link>
           ) : (
             <HeadingBlock
               title={block.blockData?.title}
               mode={mode}
-              id={block.id}
+              id={block.id as string}
             />
           );
         break;
@@ -206,21 +194,18 @@ const DodoPageDashboard = () => {
               <SeparatorBlock
                 type={block.blockData?.separatorType}
                 mode={mode}
-                id={block.id}
+                id={block.id as string}
               />
             </Link>
           ) : (
             <SeparatorBlock
               type={block.blockData?.separatorType}
               mode={mode}
-              id={block.id}
+              id={block.id as string}
             />
           );
         break;
       case "PRODUCT":
-        if (index > 0 && blocks[index - 1]?.blockType === "PRODUCT") {
-          return null;
-        }
         const nextBlock = blocks[index + 1];
         if (nextBlock?.blockType === "PRODUCT") {
           content = (
@@ -230,7 +215,7 @@ const DodoPageDashboard = () => {
                   <ProductBlock
                     productData={block.blockData}
                     mode={mode}
-                    id={block.id}
+                    id={block.blockData.id}
                   />
                 </Link>
               ) : (
@@ -238,7 +223,7 @@ const DodoPageDashboard = () => {
                   <ProductBlock
                     productData={block.blockData}
                     mode={mode}
-                    id={block.id}
+                    id={block.blockData.id}
                   />
                 </div>
               )}
@@ -246,7 +231,7 @@ const DodoPageDashboard = () => {
                 <Link href={`/dodo/${url}/editBlock/${nextBlock.id}`}>
                   <ProductBlock
                     productData={nextBlock.blockData}
-                    id={nextBlock.id}
+                    id={nextBlock.blockData.id}
                     mode={mode}
                   />
                 </Link>
@@ -255,7 +240,7 @@ const DodoPageDashboard = () => {
                   <ProductBlock
                     productData={nextBlock.blockData}
                     mode={mode}
-                    id={nextBlock.id}
+                    id={nextBlock.blockData.id}
                   />
                 </div>
               )}
@@ -269,14 +254,14 @@ const DodoPageDashboard = () => {
                   <ProductBlock
                     productData={block.blockData}
                     mode={mode}
-                    id={block.id}
+                    id={block.blockData.id}
                   />
                 </Link>
               ) : (
                 <ProductBlock
                   productData={block.blockData}
                   mode={mode}
-                  id={block.id}
+                  id={block.blockData.id}
                 />
               )}
             </div>
@@ -288,8 +273,6 @@ const DodoPageDashboard = () => {
     }
     return content;
   };
-
-  console.log("blocks", blocks);
 
   return (
     <div className={`${styles.dodoBackground} ${styles.scrollableContainer}`}>
@@ -321,7 +304,7 @@ const DodoPageDashboard = () => {
               onDragStart={handleDragStart}
             >
               <SortableContext
-                items={blocks.map((block) => block.id)}
+                items={blocks.map((block) => block.id).filter((id): id is string => id !== undefined)}
                 strategy={verticalListSortingStrategy}
               >
                 {blocks.map((block, index) => renderBlock(block, index))}

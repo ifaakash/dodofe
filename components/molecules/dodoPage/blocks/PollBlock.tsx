@@ -15,7 +15,7 @@ const PollBlock = ({
 }: {
   mode: string;
   blockData: any;
-  id: string;
+  id?: string;
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [hasVoted, setHasVoted] = useState<boolean>(() => {
@@ -73,7 +73,9 @@ const PollBlock = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ 
+    id: id || ''
+  });
 
   const style = {
     transform: transform

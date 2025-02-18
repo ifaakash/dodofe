@@ -38,6 +38,9 @@ const socialLinksData = [
   { title: "Email", icon: EmailId, placeholder: "Paste your Email ID", value: "email" },
 ];
 
+type SocialLinkKeys = 'website' | 'instagram' | 'facebook' | 'youtube' | 'telegram' | 
+  'snapchat' | 'twitter' | 'github' | 'discord' | 'behance' | 'dribble' | 'email';
+
 const AddSocial = ({
   dodoPageId,
   userId,
@@ -49,7 +52,7 @@ const AddSocial = ({
   dodopageUrl: string;
   socialLinks: Record<string, string>;
 }) => {
-  const [newSocialLinks, setNewSocialLinks] = useState({
+  const [newSocialLinks, setNewSocialLinks] = useState<Record<SocialLinkKeys, string>>({
     website: "",
     instagram: "",
     facebook: "",
@@ -87,7 +90,7 @@ const AddSocial = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewSocialLinks((prev) => ({ ...prev, [name]: value }));
+    setNewSocialLinks((prev) => ({ ...prev, [name as SocialLinkKeys]: value }));
   };
 
   const handleSubmit = async () => {
@@ -99,9 +102,9 @@ const AddSocial = ({
 
     dispatch(setSocialLinks(
       socialLinksData.reduce((acc, { value }) => {
-        acc[value] = newSocialLinks[value];
+        acc[value as SocialLinkKeys] = newSocialLinks[value as SocialLinkKeys];
         return acc;
-      }, {})
+      }, {} as Record<SocialLinkKeys, string>)
     ));
     router.push(`/dodo/${dodopageUrl}`);
     // if (res?.success) {
@@ -125,8 +128,8 @@ const AddSocial = ({
               </div>
 
               <input
-                name={value}
-                value={newSocialLinks[value]}
+                name={value as SocialLinkKeys}
+                value={newSocialLinks[value as SocialLinkKeys]}
                 onChange={handleChange}
                 className="w-full border-[1px] placeholder:text-sm placeholder:text-gray-500 rounded-lg px-2 py-[13px]"
                 placeholder={placeholder}

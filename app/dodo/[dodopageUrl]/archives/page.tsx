@@ -9,12 +9,6 @@ import ProductBlock from "@components/molecules/dodoPage/blocks/ProductBlock";
 import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock";
 import { getArchivedBlocks, reorderBlocks } from "api/services";
 import { SortableBlock } from "@components/molecules/dodoPage/SortableBlock";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
 
 const ArchivedBlocks = () => {
@@ -86,12 +80,6 @@ const ArchivedBlocks = () => {
         </Link>
       </SortableBlock>
     );
-
-    // return (
-    //   <SortableBlock key={block.id} id={block.id}>
-    //     {content}
-    //   </SortableBlock>
-    // );
   };
 
   return (

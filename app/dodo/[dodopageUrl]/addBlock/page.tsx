@@ -90,8 +90,10 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
   };
 
   const handleGoBack = () => {
-    router.push(`/dodo/${dodopageUrl}`);
+    router.back();
+    console.log('router')
   }
+  
   return (
     <div className="py-4 flex flex-col gap-4">
       <div className="flex justify-start px-5">

@@ -11,7 +11,7 @@ const SeparatorBlock = ({
 }: {
   type: string;
   mode: string;
-  id: string;
+  id?: string;
 }) => {
   const separator = type;
 
@@ -22,7 +22,7 @@ const SeparatorBlock = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id: id || '' });
 
   const style = {
     transform: transform

@@ -4,7 +4,7 @@ import FullDonutChart from "@components/atoms/Charts/FullDonutChart";
 const PollResponses = ({ pollData }: { pollData: any }) => {
   // Calculate total votes and individual option percentages
   const totalVotes = Object.values(pollData?.optionCounts || {}).reduce(
-    (sum: number, count: number) => sum + count,
+    (sum: number, count) => sum + (count as number),
     0
   );
 

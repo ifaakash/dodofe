@@ -83,7 +83,7 @@ const AddPoll = ({
             name="question"
             value={mode === "edit" ? blockData?.question : poll.question}
             placeholder="Enter your question here"
-            onChange={(e) => setPoll({ ...poll, question: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPoll({ ...poll, question: e.target.value })}
             maxLength={200}
           />
         </div>
@@ -107,7 +107,7 @@ const AddPoll = ({
                       name={`option-${index}`}
                       value={option}
                       placeholder={`Option`}
-                      onChange={(e) =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleOptionChange(index, e.target.value)
                       }
                       maxLength={100}
