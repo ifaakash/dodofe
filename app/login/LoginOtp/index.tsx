@@ -89,6 +89,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
                 otplessId: userCredential.uid,
                 token: await userCredential.getIdToken(),
             });
+            console.log("Response from backend:", response);
 
             saveState(STORAGE_CONSTANTS.TOKEN_SESSION_KEY, response.token);
             saveState(STORAGE_CONSTANTS.userId, response?.userId);
@@ -97,7 +98,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
             toast.success("Login successful!");
 
             if (response?.isNewUser) {
-                router.push(ROUTE_CONSTANTS.BASIC_DETAILS);
+                router.push(ROUTE_CONSTANTS.USER_CATEGORY);
             } else {
                 router.push(ROUTE_CONSTANTS.HOME);
             }
