@@ -77,17 +77,9 @@ export const getSidebarUI = ({
             delay: 50,
         },
         {
-            text: "Settings",
-            action: () => {
-                window.location.href = ROUTE_CONSTANTS.THEME_SELECT;
-                toggleSidebar();
-            },
-            delay: 100,
-        },
-        {
             text: "Logout",
             action: handleLogout,
-            delay: 150,
+            delay: 100,
         },
     ];
 
@@ -95,26 +87,43 @@ export const getSidebarUI = ({
     if (!isSidebarOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex">
+        <div className="fixed inset-0 z-50 flex justify-end">
+            {/* Semi-transparent overlay with blur */}
+            <div
+                className="absolute inset-0"
+                onClick={toggleSidebar}
+                style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)", // For Safari support
+                }}
+            />
             {/* Sidebar */}
-            <div className="w-64 h-full bg-white">
+            <div className="relative w-64 h-full bg-white">
                 <div className="flex flex-col h-full">
                     <div className="flex justify-between items-center p-4">
-                        <h2 className="text-2xl font-normal">Menu</h2>
+                        <h2
+                            className="text-2xl"
+                            style={{ fontFamily: "Clash Display" }}
+                        >
+                            Menu
+                        </h2>
                         <button
                             onClick={toggleSidebar}
-                            className="p-2 hover:bg-gray-100 rounded-full text-xl"
+                            className="text-2xl px-2"
+                            style={{ fontFamily: "Clash Display" }}
                         >
                             ×
                         </button>
                     </div>
-                    <div className="flex-1 pt-4">
+                    <div className="flex-1 pt-8">
                         {menuItems.map((item, index) => (
                             <div
                                 key={index}
-                                className="py-4 px-4 cursor-pointer hover:bg-gray-100 transition-colors duration-200 text-xl font-normal"
+                                className="py-4 px-4 cursor-pointer text-xl"
                                 onClick={item.action}
                                 style={{
+                                    fontFamily: "Clash Display",
                                     animation: `slideIn 0.3s ease-out forwards ${item.delay}ms`,
                                 }}
                             >
@@ -124,11 +133,6 @@ export const getSidebarUI = ({
                     </div>
                 </div>
             </div>
-            {/* Overlay */}
-            <div
-                className="flex-1 bg-black bg-opacity-50"
-                onClick={toggleSidebar}
-            />
         </div>
     );
 };
