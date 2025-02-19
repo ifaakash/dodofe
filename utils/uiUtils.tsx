@@ -46,91 +46,92 @@ export const getSeperatorOptionsUI = (seperator: string) => {
     }
 };
 
-export const getSidebarUI = ({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boolean; toggleSidebar: () => void }) => {
+export const getSidebarUI = ({
+    isSidebarOpen,
+    toggleSidebar,
+}: {
+    isSidebarOpen: boolean;
+    toggleSidebar: () => void;
+}) => {
     const handleLogout = () => {
-        // Clear all storage
         localStorage.clear();
-        // Close sidebar
         toggleSidebar();
-        // Redirect to login
         window.location.href = ROUTE_CONSTANTS.LOGIN;
     };
-
-    console.log(isSidebarOpen);
 
     const menuItems = [
         {
             text: "Home",
-            action: () => (window.location.href = ROUTE_CONSTANTS.HOME),
+            action: () => {
+                window.location.href = ROUTE_CONSTANTS.HOME;
+                toggleSidebar();
+            },
             delay: 0,
         },
         {
             text: "Profile",
-            action: () => (window.location.href = ROUTE_CONSTANTS.LINKS),
+            action: () => {
+                window.location.href = ROUTE_CONSTANTS.LINKS;
+                toggleSidebar();
+            },
             delay: 50,
         },
         {
             text: "Settings",
-            action: () => (window.location.href = ROUTE_CONSTANTS.THEME_SELECT),
+            action: () => {
+                window.location.href = ROUTE_CONSTANTS.THEME_SELECT;
+                toggleSidebar();
+            },
             delay: 100,
         },
-        { text: "Logout", action: handleLogout, delay: 150 },
+        {
+            text: "Logout",
+            action: handleLogout,
+            delay: 150,
+        },
     ];
 
+    // Only render the sidebar content when it's open
+    if (!isSidebarOpen) return null;
+
     return (
-        <div>
+        <div className="fixed inset-0 z-50 flex">
             {/* Sidebar */}
-            <div
-                className={cx(
-                    "fixed h-full w-64 bg-white shadow-lg transition-all duration-300 z-50 top-0"
-                )}
-                style={{ right: isSidebarOpen ? "0" : "-100px" }}
-            >
-                <div className="p-4 flex justify-between items-center border-b mt-12">
-                    <h2 className="text-lg font-bold">Menu</h2>
-                    <button className="text-lg font-bold text-gray-500" onClick={toggleSidebar}>
-                        &times;
-                    </button>
-                </div>
-                <nav className="p-4">
-                    <ul className="space-y-4">
+            <div className="w-64 h-full bg-white">
+                <div className="flex flex-col h-full">
+                    <div className="flex justify-between items-center p-4">
+                        <h2 className="text-2xl font-normal">Menu</h2>
+                        <button
+                            onClick={toggleSidebar}
+                            className="p-2 hover:bg-gray-100 rounded-full text-xl"
+                        >
+                            ×
+                        </button>
+                    </div>
+                    <div className="flex-1 pt-4">
                         {menuItems.map((item, index) => (
-                            <li
-                                key={item.text}
-                                className={`transform transition-all duration-300 ${isSidebarOpen
-                                    ? "translate-x-0 opacity-100"
-                                    : "translate-x-8 opacity-0"
-                                    }`}
+                            <div
+                                key={index}
+                                className="py-4 px-4 cursor-pointer hover:bg-gray-100 transition-colors duration-200 text-xl font-normal"
+                                onClick={item.action}
                                 style={{
-                                    transitionDelay: isSidebarOpen
-                                        ? `${item.delay}ms`
-                                        : "0ms",
+                                    animation: `slideIn 0.3s ease-out forwards ${item.delay}ms`,
                                 }}
                             >
-                                <button
-                                    onClick={item.action}
-                                    className="w-full text-left text-gray-700 hover:text-gray-900 block py-2 transition-all duration-200 hover:pl-2"
-                                >
-                                    {item.text}
-                                </button>
-                            </li>
+                                {item.text}
+                            </div>
                         ))}
-                    </ul>
-                </nav>
+                    </div>
+                </div>
             </div>
-
-            {/* Overlay (click outside to close sidebar)
-            {isSidebarOpen && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-30 z-40"
-                    onClick={toggleSidebar}
-                ></div>
-            )} */}
+            {/* Overlay */}
+            <div
+                className="flex-1 bg-black bg-opacity-50"
+                onClick={toggleSidebar}
+            />
         </div>
     );
 };
-
-
 
 export const getLinkBoxUI = (data: any, badgeColor: string) => {
     return (

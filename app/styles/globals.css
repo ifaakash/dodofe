@@ -558,6 +558,36 @@ body {
   animation: modal-zoom-leave both;
 }
 
+@keyframes slideIn {
+  from {
+      opacity: 0;
+      transform: translateX(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateX(0);
+  }
+}
+
+/* Optional: Add smooth transitions for the sidebar */
+.sidebar-enter {
+  transform: translateX(100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+.sidebar-exit {
+  transform: translateX(0);
+}
+
+.sidebar-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}
+
 /* -- slideDown -- */
 @keyframes modal-slideDown-enter {
   from {
