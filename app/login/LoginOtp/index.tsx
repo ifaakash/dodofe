@@ -19,7 +19,6 @@ export const LoginOtp = ({ setLoginState }: any) => {
     const [activeOtpIndex, setActiveOtpIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-
     const inputRefs = useRef<(HTMLInputElement | null)[]>(
         Array.from({ length: otpLength }, () => null)
     );
@@ -30,16 +29,19 @@ export const LoginOtp = ({ setLoginState }: any) => {
     ) => {
         const value = e.target.value.replace(/[^0-9]/g, "");
         const updatedOtp = [...otp];
-        updatedOtp[index] = value.slice(-1); // Take only the last digit
+        updatedOtp[index] = value.slice(-1);
         setOtp(updatedOtp);
 
         if (value !== "" && index < otpLength - 1) {
             setActiveOtpIndex(index + 1);
         }
 
-        // Auto-submit when all digits are filled
-        if (index === otpLength - 1 && value !== "") {
-            verifyOTP();
+        // Check if all digits are filled
+        if (
+            updatedOtp.every((digit) => digit !== "") &&
+            updatedOtp.join("").length === otpLength
+        ) {
+            verifyOTP(updatedOtp.join(""));
         }
     };
 
@@ -64,9 +66,9 @@ export const LoginOtp = ({ setLoginState }: any) => {
         }
     }, [activeOtpIndex]);
 
-    const verifyOTP = async () => {
-        const otpCode = otp.join("");
-        if (otpCode.length !== otpLength) {
+    const verifyOTP = async (otpCode?: string) => {
+        const codeToVerify = otpCode || otp.join("");
+        if (codeToVerify.length !== otpLength) {
             toast.error("Please enter complete OTP");
             return;
         }
@@ -75,7 +77,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
         try {
             console.log("Verifying OTP...");
             const confirmationResult = window.confirmationResult;
-            const result = await confirmationResult.confirm(otpCode);
+            const result = await confirmationResult.confirm(codeToVerify);
             console.log("Firebase auth successful:", result);
 
             const mobileNumber = loadState(STORAGE_CONSTANTS.MOBILE);
@@ -84,12 +86,10 @@ export const LoginOtp = ({ setLoginState }: any) => {
             console.log("Registering user with backend...");
             const response = await registerUser({
                 mobileNumber,
-                otplessId: userCredential.uid, // Using Firebase UID as otplessId
+                otplessId: userCredential.uid,
                 token: await userCredential.getIdToken(),
             });
-            console.log("Backend registration response:", response);
 
-            // Save necessary data to localStorage
             saveState(STORAGE_CONSTANTS.TOKEN_SESSION_KEY, response.token);
             saveState(STORAGE_CONSTANTS.userId, response?.userId);
             saveState(STORAGE_CONSTANTS.MOBILE, mobileNumber);
@@ -97,12 +97,8 @@ export const LoginOtp = ({ setLoginState }: any) => {
             toast.success("Login successful!");
 
             if (response?.isNewUser) {
-                console.log(
-                    "New user detected, redirecting to profile completion"
-                );
                 router.push(ROUTE_CONSTANTS.BASIC_DETAILS);
             } else {
-                console.log("Existing user, redirecting to home");
                 router.push(ROUTE_CONSTANTS.HOME);
             }
         } catch (error: any) {
@@ -116,7 +112,6 @@ export const LoginOtp = ({ setLoginState }: any) => {
             }
 
             toast.error(errorMessage);
-            // Clear OTP fields on error
             setOtp(Array.from({ length: otpLength }, () => ""));
             setActiveOtpIndex(0);
         } finally {
@@ -170,7 +165,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
             <Footer
                 variant="default"
                 primaryActionText={isLoading ? "Verifying..." : "Verify OTP"}
-                primaryAction={verifyOTP}
+                primaryAction={() => verifyOTP()}
                 disablePrimaryButton={
                     isLoading || otp.join("").length !== otpLength
                 }
