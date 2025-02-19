@@ -14,7 +14,16 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        'brandPrimary': '#17CF62',
+        brandPrimary: "#17CF62",
+      },
+      keyframes: {
+        "slide-up": {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "slide-up": "slide-up 0.3s ease-out",
       },
     },
   },

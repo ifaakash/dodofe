@@ -147,3 +147,13 @@ export interface InvoiceUserCardProps {
   userID: string;
   setUserID: (id: string) => void;
 }
+
+export interface Block {
+  id?: string;
+  blockType: string;
+  blockData: any;
+  blockPositionalIndex?: number;
+  blockCardSize: string;
+  userId?: string;
+  dodoPageId?: string;
+}

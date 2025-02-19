@@ -68,15 +68,15 @@ export default function Home() {
             return;
         }
 
-        if (isEmpty(userDetails?.socialLinks)) {
-            router.push(
-                ROUTE_CONSTANTS.ADD_STUFF +
-                    `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
-            );
-            return;
-        }
+    if (isEmpty(userDetails?.socialLinks)) {
+      router.push(
+        ROUTE_CONSTANTS.ADD_STUFF +
+          `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
+      );
+      return;
+    }
 
-        router.push(ROUTE_CONSTANTS.LINKS + `?userId=${userId}`, {
+        router.push(ROUTE_CONSTANTS.DODOPAGE + `?userId=${userId}`, {
             scroll: false,
         });
     };
@@ -89,8 +89,8 @@ export default function Home() {
             return;
         }
 
-        router.push(ROUTE_CONSTANTS.INVOICE);
-    };
+    router.push(ROUTE_CONSTANTS.INVOICE);
+  };
 
     const copyToClipboard = (textToCopy: string) => {
         navigator.clipboard
@@ -133,20 +133,26 @@ export default function Home() {
             return <></>;
         }
 
-        return (
-            <CtaSection
-                title={dodoPageDetail?.name || "Dodo user"}
-                description={dodoPageDetail?.url}
-                buttonBgColor="var(--pink)"
-                onClick={gotoLinksPage}
-                onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
-                img={copy}
-                imgSize={32}
-                onButtonClick={shareContent}
-                buttonLabel=""
-            />
-        );
+    const gotoDodoPageDashboard = () => {
+      router.push(ROUTE_CONSTANTS.DODOPAGE + `/${dodoPageDetail?.url}`, {
+        scroll: false,
+      });
     };
+
+    return (
+      <CtaSection
+        title={dodoPageDetail?.name || "Dodo user"}
+        description={dodoPageDetail?.url}
+        buttonBgColor="var(--pink)"
+        onClick={gotoDodoPageDashboard}
+        onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
+        img={copy}
+        imgSize={32}
+        onButtonClick={shareContent}
+        buttonLabel=""
+      />
+    );
+  };
 
     return (
         <Screen>
@@ -209,19 +215,19 @@ export default function Home() {
                         <div className="m-4">{getUserCard()}</div>
                     )}
 
-                    <div
-                        className={cx(
-                            "w-full px-4 rounded-t-2xl bg-white",
-                            styles.lowerDiv
-                        )}
-                    >
-                        <Image
-                            height={53}
-                            width={251}
-                            src={otherFeatures}
-                            alt="user profile"
-                            className="mx-auto my-6"
-                        />
+          <div
+            className={cx(
+              "w-full px-4 rounded-t-2xl bg-white",
+              styles.lowerDiv
+            )}
+          >
+            <Image
+              height={53}
+              width={251}
+              src={otherFeatures}
+              alt="user profile"
+              className="mx-auto my-6"
+            />
 
                         <div className="absolute-center flex-col">
                             <CtaSection
@@ -259,7 +265,9 @@ export default function Home() {
                         />
 
                         <span className="absolute-center text-sm mt-4">
+              
                             more coming soon.
+            
                         </span>
                     </div>
 
