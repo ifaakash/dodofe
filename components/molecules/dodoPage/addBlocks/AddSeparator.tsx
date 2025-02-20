@@ -5,6 +5,9 @@ import NewButton from "@components/atoms/Button/NewButton";
 import { createBlock, updateBlock } from "api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addBlock } from "store/slice/blocksSlice";
+import { v4 as uuidv4 } from 'uuid'
 
 const AddSeparator = ({
   dodoPageId,
@@ -21,39 +24,50 @@ const AddSeparator = ({
 }) => {
   const [selected, setSelected] = useState(blockData?.separatorType);
   const router = useRouter();
-
+  const dispatch = useDispatch();
+  
   const handleSubmit = async () => {
-    const res = await createBlock({
-      dodoPageId: dodoPageId,
+    // const res = await createBlock({
+    //   dodoPageId: dodoPageId,
+    //   blockType: "SEPARATOR",
+    //   blockCardSize: "SMALL",
+    //   blockData: {
+    //     separatorType: selected,
+    //   },
+    //   userId: userId,
+    // });
+
+    // if(res.success) {
+    //   router.push(`/dodo/${dodopageUrl}`);
+    // }
+
+    dispatch(addBlock({
+      id: uuidv4(),
       blockType: "SEPARATOR",
       blockCardSize: "SMALL",
       blockData: {
         separatorType: selected,
       },
       userId: userId,
-    });
+      isNew: true,
+      dodoPageId: dodoPageId,
+    }))
 
-    if(res.success) {
-      router.push(`/dodo/${dodopageUrl}`);
-    }
+    router.back()
   };
   
-  console.log('blockData', blockData, selected)
-
   const handleUpdateBlock = async () => {
     const res = await updateBlock({
-      dodoPageId: dodoPageId,
       blockId: blockData.blockId,
       blockData: {
         separatorType: selected,
       },
+      userId: userId,
     });
-
-    console.log('res', res)
     
     if (res.success) {
       toast.success("Block updated successfully");
-      router.push(`/dodo/${dodopageUrl}`);
+      router.back();
     }
   };
 

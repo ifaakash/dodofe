@@ -4,9 +4,10 @@ interface DodoPageState {
   dodoPageImage: string | null;
   dodoPageName: string | null;
   dodoPageThought: string | null;
-  socialLinks: { key: string; value: string; }[] | null;
+  socialLinks: Record<string, string> | null;
   audioBio: string | null;
   unsavedChanges: boolean;
+  dodoPageId: string | null;
 }
 const initialState: DodoPageState = {
   dodoPageImage: null,
@@ -15,13 +16,17 @@ const initialState: DodoPageState = {
   socialLinks: null,
   audioBio: null,
   unsavedChanges: false,
+  dodoPageId: null,
 };
 
 const dodoPageSlice = createSlice({
   name: "dodoPage",
   initialState,
   reducers: {
-    updateDodoPageProfilePicture: (state, action: PayloadAction<string | null>) => {
+    updateDodoPageProfilePicture: (
+      state,
+      action: PayloadAction<string | null>
+    ) => {
       state.dodoPageImage = action.payload;
       state.unsavedChanges = true;
     },
@@ -33,12 +38,15 @@ const dodoPageSlice = createSlice({
       state.dodoPageThought = action.payload ?? "";
       state.unsavedChanges = true;
     },
-    setSocialLinks: (state, action: PayloadAction<[] | null>) => {
+    setSocialLinks: (state, action: PayloadAction<Record<string, string>>) => {
       state.socialLinks = action.payload;
       state.unsavedChanges = true;
     },
     setUnsavedChanges: (state, action: PayloadAction<boolean>) => {
       state.unsavedChanges = action.payload;
+    },
+    setDodoPageId: (state, action: PayloadAction<string | null>) => {
+      state.dodoPageId = action.payload;
     },
   },
 });
@@ -48,5 +56,6 @@ export const {
   setDodoPageThought,
   setSocialLinks,
   setUnsavedChanges,
+  setDodoPageId,
 } = dodoPageSlice.actions;
 export default dodoPageSlice.reducer;

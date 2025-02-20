@@ -13,6 +13,8 @@ import Behance from "public/icons/behance.svg";
 import Dribble from "public/icons/dribble.svg";
 import EmailId from "public/icons/email.svg";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 interface SocialLink {
   name: string;

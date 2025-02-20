@@ -155,5 +155,6 @@ export interface Block {
   blockPositionalIndex?: number;
   blockCardSize: string;
   userId?: string;
+  isNew?: boolean;
   dodoPageId?: string;
 }

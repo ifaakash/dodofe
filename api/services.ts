@@ -1,5 +1,6 @@
 import { Get, Patch, Post, Put, Delete } from "api";
 import API_CONSTANTS from "./constants";
+import axios from "axios";
 
 export const sendOtp = async (payload: any): Promise<any> =>
   Post<any>(API_CONSTANTS.sendOtp, payload);
@@ -107,17 +108,10 @@ export const createBlockWithFormData = async (
 
 export const updateBlockWithFormData = async (
   formData: FormData,
-  blockData: any
 ): Promise<any> => {
-  Object.keys(blockData).forEach((key) => {
-    if (typeof blockData[key] === "object") {
-      formData.append(key, JSON.stringify(blockData[key]));
-    } else {
-      formData.append(key, blockData[key]);
-    }
+  return Patch<any>(API_CONSTANTS.updateBlock, formData, {
+    "Content-Type": "multipart/form-data",
   });
-
-  return Patch<any>(API_CONSTANTS.updateBlock, formData);
 };
 
 export const createBlock = async (payload: any): Promise<any> =>
@@ -131,36 +125,29 @@ export const getDodoPageByURL = async (url: any): Promise<any> =>
       url
   );
 
-export const reorderBlocks = async (formattedBlocks: {
-  dodoPageId: string;
-  blocks: { blockId: string; newIndex: number }[];
-}): Promise<{ success: boolean; message?: string }> => {
-  const response = await fetch("/api/reorderBlocks", {
-    method: "POST",
-    body: JSON.stringify(formattedBlocks),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to reorder blocks");
-  }
-
-  return response.json(); // Ensure this returns an object with a 'success' property
-};
+export const reorderBlocks = async (payload: any): Promise<any> =>
+  Post<any>(API_CONSTANTS.reorderBlocks, payload);
 
 export const updateDodoPage = async (payload: any): Promise<any> =>
   Patch<any>(API_CONSTANTS.updateDodoPage, payload);
 
-export const updateDodoPageProfile = async (
-  formData: FormData
-): Promise<any> => {
-  // Add request logging
-  console.log("Making request to:", API_CONSTANTS.updateDodoPage);
+// export const updateDodoPageProfile = async (formData: any): Promise<any> =>{
+//   const res = await axios.patch('http://localhost:3002/api/v1/dodo-pages/update', formData, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
 
-  return Patch<any>(API_CONSTANTS.updateDodoPage, formData);
-};
+//   return res;
+// }
+
+export const updateDodoPageProfile = async (formData: any): Promise<any> =>{
+  return Patch<any>(API_CONSTANTS.updateDodoPage, formData, {
+    "Content-Type": "multipart/form-data",
+  });
+}
+
+
 export const archiveBlock = async (payload: any): Promise<any> =>
   Post<any>(API_CONSTANTS.archiveBlock, payload);
 
@@ -177,7 +164,4 @@ export const deleteBlock = async (payload: any): Promise<any> =>
   Delete<any>(API_CONSTANTS.deleteBlock, payload);
 
 export const updateBlock = async (payload: any): Promise<any> =>
-  Patch<any>(
-    API_CONSTANTS.updateBlock + API_CONSTANTS.slash + payload.blockId,
-    payload
-  );
+  Patch<any>(API_CONSTANTS.updateBlock, payload);

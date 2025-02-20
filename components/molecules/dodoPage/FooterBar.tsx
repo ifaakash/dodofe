@@ -12,12 +12,19 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { updateDodoPage } from "api/services";
+import {
+  createBlock,
+  deleteBlock,
+  reorderBlocks,
+  updateBlock,
+  updateDodoPage,
+} from "api/services";
 import { loadState } from "@utils/localStorage";
-import { STORAGE_CONSTANTS } from "@utils/constants"; 
+import { STORAGE_CONSTANTS } from "@utils/constants";
 import { setUnsavedChanges } from "store/slice/dodoPageSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { resetState, updateState } from "store/slice/blocksSlice";
 
 const BlockModal = () => {
   const { dodopageUrl } = useParams();
@@ -75,20 +82,29 @@ const BlockModal = () => {
   );
 };
 
-
-const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, userId: string, dodoPageId: string}) => {
+const FooterBar = ({
+  mode,
+  url,
+  userId,
+}: {
+  mode: string;
+  url: string;
+  userId: string;
+}) => {
   const [isOpened, setIsOpened] = useState(false);
-  const { dodoPageName, dodoPageThought, dodoPageImage, socialLinks, unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
-  const dispatch = useDispatch();
-  console.log({
+  const {
     dodoPageName,
     dodoPageThought,
     dodoPageImage,
     socialLinks,
-    unsavedChanges
-  })
+    unsavedChanges,
+  } = useSelector((state: RootState) => state.dodoPage);
+  const dispatch = useDispatch();
 
-  console.log('userId', userId)
+  const blockState = useSelector((state: RootState) => state.blocks);
+  const dodoPageId = useSelector(
+    (state: RootState) => state.dodoPage.dodoPageId
+  );
 
   const handlePublish = async () => {
     const dataToSend = {
@@ -100,31 +116,74 @@ const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, 
       socialLinks: socialLinks,
     };
 
-    // Filter out null or undefined values
     const filteredData = Object.fromEntries(
       Object.entries(dataToSend).filter(([_, value]) => value != null)
     );
-    
-    
-
     const res = await updateDodoPage(filteredData);
-    if(res?.success) {
+
+    if (blockState.isPositionChanged) {
+      const reorderRes = await reorderBlocks({
+        dodoPageId: dodoPageId as string,
+        blocks: blockState.blocks.map((block) => ({
+          blockId: block.id as string,
+          newIndex: block.blockPositionalIndex as number,
+        })),
+        userId: userId,
+      });
+      console.log("reorderRes", reorderRes);
+    }
+
+    if (blockState.isNewBlocksAdded) {
+      blockState.blocks.forEach(async (block) => {
+        if (block.isNew) {
+          const createRes = await createBlock({
+            ...block,
+            dodoPageId: dodoPageId as string,
+            userId: userId,
+          });
+          console.log("createRes", createRes);
+        }
+      });
+    }
+
+    if (blockState.isBlockRemoved) {
+      blockState.blocksToDelete.forEach(async (blockId) => {
+        const deleteRes = await deleteBlock({
+          blockId: blockId,
+          userId: userId,
+        });
+      });
+    }
+
+    if (res?.success) {
       console.log("Published");
       dispatch(setUnsavedChanges(false));
+      dispatch(resetState());
       toast.success("Published successfully");
     }
-  }
-  
+  };
+
+  const blockChanges = useSelector((state: RootState) => state.blocks);
+  const isUpdated = useSelector((state: RootState) => state.blocks.isUpdated);
+
+  const hasUnsavedChanges =
+    blockChanges.isBlockUpdated ||
+    blockChanges.isBlockArchived ||
+    blockChanges.isBlockRemoved ||
+    blockChanges.isPositionChanged ||
+    isUpdated ||
+    blockChanges.isNewBlocksAdded;
+
   return (
     <div>
       {isOpened && <BlockModal />}
       <div className="flex gap-2">
-        <div className="bg-white py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary">
+        <div className="bg-white shadow-md py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary">
           Analytics
         </div>
 
         <div
-          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
+          className={`p-3 bg-brandPrimary shadow-md rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
             isOpened ? "rotate-45" : "rotate-0"
           }`}
           onClick={() => setIsOpened(!isOpened)}
@@ -132,7 +191,18 @@ const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, 
           <Plus size={32} />
         </div>
 
-        <div onClick={handlePublish} className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary">
+        <div
+          onClick={handlePublish}
+          className="bg-white relative shadow-md py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary"
+        >
+          {hasUnsavedChanges && (
+            <div className="absolute top-0 right-0">
+              <div className="relative">
+                <div className="absolute h-5 w-5 rounded-full bg-brandPrimary" />
+                <div className="h-5 w-5 rounded-full bg-brandPrimary/50 animate-ping" />
+              </div>
+            </div>
+          )}
           Publish
         </div>
       </div>

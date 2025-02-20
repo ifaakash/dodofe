@@ -39,12 +39,14 @@ const AddLink = ({
   dodopageUrl,
   mode,
   blockData,
+  blockCardSize,
 }: {
   dodoPageId: string;
   userId: string;
   dodopageUrl: string;
   mode: "add" | "edit";
   blockData?: any;
+  blockCardSize?: string;
 }) => {
   const router = useRouter();
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
@@ -53,7 +55,7 @@ const AddLink = ({
     )?.text || ""
   );
   const [displayType, setDisplayType] = useState<string>(
-    blockData?.blockCardSize || "SMALL"
+    blockCardSize || "SMALL"
   );
   const [titleEditing, setTitleEditing] = useState<boolean>(false);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -63,6 +65,11 @@ const AddLink = ({
     blockData?.badge?.text || ""
   );
 
+  const [linkDisplayPicture, setLinkDisplayPicture] = useState<string>(
+    blockData?.linkDisplayPicture || ""
+  );
+
+  console.log("blockData LIN", blockData);
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -79,17 +86,19 @@ const AddLink = ({
       formData.append("blockData[title]", title);
       formData.append("blockData[url]", dodopageUrl);
 
-      if (badgeText) {
+      if (badgeText && selectedBadgeCategory) {
         formData.append("blockData[badge][text]", badgeText);
 
         const selectedBadge = badges.find(
           (badge) => badge.text === selectedBadgeCategory
         );
-        formData.append(
-          "blockData[badge][backgroundColor]",
-          selectedBadge?.backgroundColor || ""
-        );
-        formData.append("blockData[badge][color]", selectedBadge?.color || "");
+        if (selectedBadge) {
+          formData.append(
+            "blockData[badge][backgroundColor]",
+            selectedBadge.backgroundColor
+          );
+          formData.append("blockData[badge][color]", selectedBadge.color);
+        }
       }
 
       if (uploadedImage) {
@@ -111,58 +120,47 @@ const AddLink = ({
     }
   };
 
-  console.log({
-    userId,
-    blockId: blockData?.blockId,
-  });
-
   const handleUpdate = async () => {
     try {
       const formData = new FormData();
       formData.append("blockType", "LINK");
       formData.append("blockData[title]", title);
       formData.append("blockData[url]", link);
+      formData.append("blockId", blockData?.blockId);
+      formData.append("userId", userId);
+      formData.append("blockCardSize", displayType);
 
-      if (badgeText) {
+      if (badgeText && selectedBadgeCategory) {
         formData.append("blockData[badge][text]", badgeText);
 
         const selectedBadge = badges.find(
           (badge) => badge.text === selectedBadgeCategory
         );
-        formData.append(
-          "blockData[badge][backgroundColor]",
-          selectedBadge?.backgroundColor || ""
-        );
-        formData.append("blockData[badge][color]", selectedBadge?.color || "");
+        if (selectedBadge) {
+          formData.append(
+            "blockData[badge][backgroundColor]",
+            selectedBadge.backgroundColor
+          );
+          formData.append("blockData[badge][color]", selectedBadge.color);
+        }
       }
 
       if (uploadedImage) {
         formData.append("linkDisplayPicture", uploadedImage);
       }
 
-      if (badgeText) {
-        formData.append("blockData[badge][text]", badgeText);
+      const res = await updateBlockWithFormData(formData);
+
+      if (res?.success) {
+        toast.success("Link updated successfully");
+        router.back();
       }
-
-      if (uploadedImage) {
-        formData.append("linkDisplayPicture", uploadedImage);
-      }
-
-      const res = await updateBlockWithFormData(formData, {
-        dodoPageId,
-        userId,
-        dodopageUrl,
-        blockId: blockData?.blockId,
-      });
-
-      console.log({
-        res,
-      });
     } catch (error) {
       console.error("Error updating:", error);
     }
   };
 
+  console.log("displayType", displayType);
   return (
     <div className="py-5 flex flex-col items-center">
       <div className="flex flex-col gap-8 w-full">
@@ -174,40 +172,70 @@ const AddLink = ({
           >
             <div
               className={`bg-[#979EAD] ${
-                uploadedImage ? "" : "p-[15px]"
+                uploadedImage ? "" : " "
               } rounded-[10px] ${
-                displayType === "SMALL" ? "" : "w-full h-32"
+                displayType === "SMALL" ? "w-[50px] h-[50px]" : "w-full h-32"
               } flex items-center justify-center relative cursor-pointer`}
             >
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                className="absolute inset-0 opacity-0 cursor-pointer z-10"
               />
-              {uploadedImage ? (
-                <img
-                  src={URL.createObjectURL(uploadedImage)}
-                  alt="uploaded preview"
-                  className={`${
-                    displayType === "SMALL"
-                      ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px] aspect-square"
-                      : "w-full h-full object-cover rounded-[6px]"
-                  }`}
-                />
-              ) : (
-                <Image
-                  src={AddImageIcon}
-                  width={20}
-                  height={20}
-                  alt="add image"
-                  className=""
-                />
-              )}
+              <div className="w-full h-full flex items-center justify-center">
+                {mode === "add" ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    {uploadedImage ? (
+                      <img
+                        src={URL.createObjectURL(uploadedImage)}
+                        alt="uploaded preview"
+                        className={`${
+                          displayType === "SMALL"
+                            ? "w-[50px] h-[50px] object-cover rounded-[6px]"
+                            : "w-full h-full object-cover rounded-[6px]"
+                        }`}
+                      />
+                    ) : (
+                      <Image
+                        src={AddImageIcon}
+                        width={20}
+                        height={20}
+                        alt="add image"
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    {uploadedImage ? (
+                      <img
+                        src={URL.createObjectURL(uploadedImage)}
+                        alt="uploaded preview"
+                        className={`${
+                          displayType === "SMALL"
+                            ? "w-[50px] h-[50px] object-cover rounded-[6px]"
+                            : "w-full h-full object-cover rounded-[6px]"
+                        }`}
+                      />
+                    ) : (
+                      <Image
+                        src={linkDisplayPicture || AddImageIcon}
+                        fill
+                        alt="add image"
+                        className={
+                          linkDisplayPicture
+                            ? "aspect-video rounded-md object-cover"
+                            : ""
+                        }
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-            <div>
+            <div className="w-full">
               {mode === "add" ? (
-                <div onClick={() => setTitleEditing(true)}>
+                <div onClick={() => setTitleEditing(true)} className="w-full">
                   {titleEditing ? (
                     <Input
                       type="text"
@@ -220,8 +248,7 @@ const AddLink = ({
                   ) : (
                     <div className="flex items-center gap-2">
                       <div className="text-[#3D4966] font-medium">
-                        {" "}
-                        Add Title{" "}
+                        Add Title
                       </div>
                       <Image src={EditPen} width={20} height={20} alt="edit" />
                     </div>

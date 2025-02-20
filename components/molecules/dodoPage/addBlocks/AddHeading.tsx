@@ -29,38 +29,41 @@ const AddHeading = ({
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    const res = await createBlock({
-      dodoPageId: dodoPageId,
-      blockType: "HEADING",
-      blockCardSize: "SMALL",
-      blockData: {
-        title: heading,
-      },
-      userId: userId,
-    });
-    if (res.success) {
-      router.push("/dodo/" + dodopageUrl);
-    }
-
-    // dispatch(addBlock({
-    //   id: uuidv4(),
+    // const res = await createBlock({
+    //   dodoPageId: dodoPageId,
     //   blockType: "HEADING",
     //   blockCardSize: "SMALL",
     //   blockData: {
     //     title: heading,
     //   },
     //   userId: userId,
-    //   dodoPageId: dodoPageId,
-    // }))
+    // });
+    // if (res.success) {
+    //   router.push("/dodo/" + dodopageUrl);
+    // }
+
+    dispatch(addBlock({
+      id: uuidv4(),
+      blockType: "HEADING",
+      blockCardSize: "SMALL",
+      blockData: {
+        title: heading,
+      },
+      userId: userId,
+      dodoPageId: dodoPageId,
+      isNew: true,
+    }))
+
+    router.back()
   };
 
   const handleUpdateBlock = async () => {
     const res = await updateBlock({
-      dodoPageId: dodoPageId,
       blockId: blockData.blockId,
       blockData: {
         title: heading,
       },
+      userId: userId,
     });
     if (res.success) {
       toast.success("Block updated successfully");

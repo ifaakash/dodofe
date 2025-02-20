@@ -22,6 +22,7 @@ import EmailId from "public/icons/email.svg";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setSocialLinks } from "store/slice/dodoPageSlice";
+import { updateState } from "store/slice/blocksSlice";
 
 const socialLinksData = [
   { title: "Website", icon: Web, placeholder: "Paste your personal website", value: "website" },
@@ -106,7 +107,8 @@ const AddSocial = ({
         return acc;
       }, {} as Record<SocialLinkKeys, string>)
     ));
-    router.push(`/dodo/${dodopageUrl}`);
+    router.back();
+    dispatch(updateState());
     // if (res?.success) {
     //   console.log('Saved')
     //   router.push(`/dodo/${dodopageUrl}`);

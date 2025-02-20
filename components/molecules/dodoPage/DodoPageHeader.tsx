@@ -9,7 +9,17 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
-  const { unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
+  const blockChanges = useSelector((state: RootState) => state.blocks);
+  const isUpdated = useSelector((state: RootState) => state.blocks.isUpdated);
+  
+  const hasUnsavedChanges = 
+    blockChanges.isBlockUpdated ||
+    blockChanges.isBlockArchived ||
+    blockChanges.isBlockRemoved ||
+    blockChanges.isPositionChanged ||
+    blockChanges.isNewBlocksAdded ||
+    isUpdated;
+
   return (
     <div className="px-5 py-4 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -18,7 +28,7 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
         </Link>
         <div>
           <div>
-            {unsavedChanges && mode === "edit" && (
+            {hasUnsavedChanges && (
               <div className="text-xs font-semibold text-brandPrimary">
                 Unsaved Changes
               </div>

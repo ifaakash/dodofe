@@ -15,7 +15,6 @@ const LinkBlock = ({
   blockCardSize: string | "";
   id?: string;
 }) => {
-  const PLACEHOLDER_IMAGE = "https://picsum.photos/200";
 
   const {
     attributes,
@@ -24,7 +23,7 @@ const LinkBlock = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: blockData.id });
+  } = useSortable({ id: id || "" });
 
   const style = {
     transform: transform
@@ -53,7 +52,7 @@ const LinkBlock = ({
             />
           )}
           <img
-            src={PLACEHOLDER_IMAGE}
+            src={blockData?.linkDisplayPicture}
             alt="Link"
             className="w-[50px] h-[50px] object-cover rounded-lg"
           />
@@ -77,7 +76,7 @@ const LinkBlock = ({
       ) : (
         <div className="flex flex-col gap-2">
           <img
-            src={PLACEHOLDER_IMAGE}
+            src={blockData?.linkDisplayPicture}
             alt="Link"
             className="w-full h-[130px] object-cover rounded-lg"
           />
@@ -98,10 +97,11 @@ const LinkBlock = ({
 
             {blockData?.badge && (
               <div
-                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center"
+                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center w-fit"
                 style={{
                   backgroundColor: blockData.badge.backgroundColor,
                   color: blockData.badge.color,
+                  width: "fit-content",
                 }}
               >
                 {blockData.badge.text}

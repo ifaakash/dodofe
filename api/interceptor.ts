@@ -99,8 +99,8 @@ export const Post = <T>(path: string, payload: unknown, headers?: any, cancelTok
 export const Put = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
     Request.put<IAPIResponse<T>>(path, payload, { cancelToken }).then(extractor).catch(onErrorInterceptor);
 
-export const Patch = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
-    Request.patch<IAPIResponse<T>>(path, payload, { cancelToken }).then(extractor).catch(onErrorInterceptor);
+export const Patch = <T>(path: string, payload: unknown, headers?: any, cancelToken?: CancelToken): Promise<T> =>
+    Request.patch<IAPIResponse<T>>(path, payload, { cancelToken, headers }).then(extractor).catch(onErrorInterceptor);
 
 export const Delete = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
     Request.delete<IAPIResponse<T>>(path, { data: payload, cancelToken }).then(extractor).catch(onErrorInterceptor);

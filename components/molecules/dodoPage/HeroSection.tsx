@@ -22,6 +22,8 @@ import {
   setSocialLinks,
 } from "store/slice/dodoPageSlice";
 import { toast } from "react-toastify";
+import PlayIcon from "public/icons/playIcon.svg";
+import { AudioLines } from "lucide-react";
 
 const HeroSection = ({
   mode = "public",
@@ -54,10 +56,13 @@ const HeroSection = ({
   const analyserRef = useRef<AnalyserNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlayingBio, setIsPlayingBio] = useState(false);
+  const audioBioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
     setPageName(dodoPageDetails?.name);
+    setDodoPageImage(dodoPageDetails?.profilePicture || "");
   }, [dodoPageDetails]);
 
   useEffect(() => {
@@ -116,18 +121,33 @@ const HeroSection = ({
 
   const handleImageUpload = async () => {
     const file = ImageInputRef.current?.files?.[0];
-
     if (!file) {
       console.error("No file selected.");
       return;
     }
 
-    console.log("FIle", file);
+    if (!userId) {
+      console.log("No user id");
+      return;
+    }
+
+    const fileUrl = URL.createObjectURL(file);
+    setDodoPageImage(fileUrl);
+
+    // Create FormData and send to server
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+    formData.append("userId", userId);
+    formData.append("id", dodoPageId);
+
+    const res = await updateDodoPageProfile(formData);
+    if (res?.success) {
+      dispatch(updateDodoPageProfilePicture(fileUrl));
+      toast.success("Profile picture updated successfully");
+    }
   };
 
   const state = useSelector((state: any) => state.dodoPage);
-
-  console.log("state", state);
 
   const startRecording = async () => {
     try {
@@ -197,10 +217,20 @@ const HeroSection = ({
   };
 
   const handleSaveAudio = async () => {
+    if (!audioBlob) {
+      console.log("No audio recorded");
+      return;
+    }
+
+    if (!userId) {
+      console.log("No user id");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("audio", audioBlob);
+    formData.append("audioBio", audioBlob);
     formData.append("userId", userId);
-    formData.append("dodoPageId", dodoPageId);
+    formData.append("id", dodoPageId);
 
     const res = await updateDodoPageProfile(formData);
 
@@ -211,13 +241,32 @@ const HeroSection = ({
     setAddAudioBioPopup(false);
   };
 
+  const playAudioBio = () => {
+    if (!dodoPageDetails.audioBio) return;
+
+    if (!audioBioRef.current) {
+      audioBioRef.current = new Audio(dodoPageDetails.audioBio);
+      audioBioRef.current.onended = () => {
+        setIsPlayingBio(false);
+      };
+    }
+
+    if (isPlayingBio) {
+      audioBioRef.current.pause();
+      setIsPlayingBio(false);
+    } else {
+      audioBioRef.current.play();
+      setIsPlayingBio(true);
+    }
+  };
+
   return (
     <div
       className={`flex flex-col items-center ${
         mode === "preview" ? "gap-[10px]" : "gap-3"
       } px-5 mt-8`}
     >
-      <div className="relative flex justify-center items-center w-fit">
+      <div className={`relative flex justify-center items-center w-fit `}>
         <input
           type="file"
           accept="image/*"
@@ -227,7 +276,7 @@ const HeroSection = ({
         />
         <div onClick={() => mode === "edit" && ImageInputRef.current?.click()}>
           {dodoPageImage ? (
-            <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
+            <div className="w-[88px] h-[88px] rounded-full overflow-hidden border-[1px] border-white bg-white">
               <Image
                 src={dodoPageImage}
                 alt="Dodo Page Image"
@@ -252,12 +301,26 @@ const HeroSection = ({
             onClick={() => setShowThoughtsPopup(true)}
           />
         </div>
+        {dodoPageDetails.audioBio && (
+          <div
+            className="absolute -bottom-5 border-[1px] bg-white border-brandPrimary p-1 rounded-full cursor-pointer"
+            onClick={playAudioBio}
+          >
+            {isPlayingBio ? (
+              <div className="flex relative justify-center items-center">
+                <div className="bg-brandPrimary w-8 h-8 animate-pulse duration-75 ease-in-out absolute rounded-full" />
+                <AudioLines className="w-4 h-4 relative z-10" />
+              </div>
+            ) : (
+              <Image src={PlayIcon} alt="Play" />
+            )}
+          </div>
+        )}
       </div>
-
       <div
         className={`flex flex-col ${
           mode === "preview" ? "gap-5" : "gap-3"
-        } items-center`}
+        } items-center ${dodoPageDetails.audioBio && "pt-10"} `}
       >
         <div>
           {editPageName ? (

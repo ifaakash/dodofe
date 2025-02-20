@@ -5,6 +5,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import FullDonutChart from "@components/atoms/Charts/FullDonutChart";
 import PollResponses from "../PollResponses";
+import { useDispatch } from "react-redux";
+import { addBlock } from "store/slice/blocksSlice";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 
 const AddPoll = ({
   dodoPageId,
@@ -25,7 +29,7 @@ const AddPoll = ({
     allowMultipleOptions: false,
   });
   const router = useRouter();
-
+  const dispatch = useDispatch();
   const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...poll.options];
     newOptions[index] = value;
@@ -37,20 +41,38 @@ const AddPoll = ({
   };
 
   const handleSubmit = async () => {
-    const res = await createBlock({
-      dodoPageId: dodoPageId,
-      blockType: "POLL",
-      blockCardSize: "LARGE",
-      blockData: {
-        question: poll.question,
-        options: poll.options,
-        isMultipleOptionsAllowed: poll.allowMultipleOptions,
-      },
-      userId: userId,
-    });
-    if (res.success) {
-      router.push("/dodo/" + dodopageUrl);
-    }
+    // const res = await createBlock({
+    //   dodoPageId: dodoPageId,
+    //   blockType: "POLL",
+    //   blockCardSize: "LARGE",
+    //   blockData: {
+    //     question: poll.question,
+    //     options: poll.options,
+    //     isMultipleOptionsAllowed: poll.allowMultipleOptions,
+    //   },
+    //   userId: userId,
+    // });
+    // if (res.success) {
+    //   router.push("/dodo/" + dodopageUrl);
+    // }
+
+    dispatch(
+      addBlock({
+        id: uuidv4(),
+        blockType: "POLL",
+        blockCardSize: "LARGE",
+        blockData: {
+          question: poll.question,
+          options: poll.options,
+          isMultipleOptionsAllowed: poll.allowMultipleOptions,
+        },
+        userId: userId,
+        dodoPageId: dodoPageId,
+        isNew: true,
+      })
+    );
+
+    router.back();
   };
 
   const handleUpdate = async () => {
@@ -75,7 +97,6 @@ const AddPoll = ({
         </div>
       )}
 
-
       <div className="flex flex-col gap-6 w-full items-center">
         <div className="flex flex-col gap-2 w-full">
           <div className="text-[#414D55] font-semibold">Question</div>
@@ -83,7 +104,9 @@ const AddPoll = ({
             name="question"
             value={mode === "edit" ? blockData?.question : poll.question}
             placeholder="Enter your question here"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPoll({ ...poll, question: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPoll({ ...poll, question: e.target.value })
+            }
             maxLength={200}
           />
         </div>

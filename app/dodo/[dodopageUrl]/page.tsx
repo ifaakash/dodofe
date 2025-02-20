@@ -38,10 +38,13 @@ import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
 import { Block } from "types";
-import { addBlocksToStore } from "store/slice/blocksSlice";
+import { addBlocksToStore, reorderBlocks } from "store/slice/blocksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { reorderBlocks } from "api";
+import { setDodoPageId, setSocialLinks } from "store/slice/dodoPageSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+// import { reorderBlocks } from "api";
 
 const DodoPageDashboard = () => {
   const searchParams = useSearchParams();
@@ -52,6 +55,7 @@ const DodoPageDashboard = () => {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [activeId, setActiveId] = useState(null);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -71,28 +75,28 @@ const DodoPageDashboard = () => {
   );
 
   const existingBlocks = useSelector((state: RootState) => state.blocks.blocks);
-
-  // useEffect(() => {
-  //   if (existingBlocks.length === 0) {
-  //     getDodoPageByURL(dodopageUrl).then((res) => {
-  //       setDodoPageDetails(res?.dodoPage);
-  //       setBlocks(res?.dodoPage?.blocks || []);
-  //       dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
-  //     });
-  //   } else {
-  //     setBlocks(existingBlocks);
-  //   }
-  // }, [dodopageUrl, existingBlocks.length, dispatch]);
+  const isUpdated = useSelector((state: RootState) => state.blocks.isUpdated);
 
   useEffect(() => {
-    getDodoPageByURL(dodopageUrl).then((res) => {
+    const fetchDodoPage = async () => {
+      const res = await getDodoPageByURL(dodopageUrl);
       setDodoPageDetails(res?.dodoPage);
       setBlocks(res?.dodoPage?.blocks || []);
       dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
-    });
-  }, []);
+      dispatch(setDodoPageId(res?.dodoPage?.id));
+      dispatch(setSocialLinks(res?.dodoPage?.socialLinks));
+    };
+
+    if (existingBlocks.length === 0) {
+      fetchDodoPage();
+    } else {
+      setBlocks(existingBlocks);
+    }
+  }, [dodopageUrl, dispatch]);
 
   const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
+
+  const socialLinks = useSelector((state: RootState) => state.dodoPage.socialLinks); 
 
   const handleDragStart = (event: any) => {
     setActiveId(event.active.id);
@@ -106,17 +110,20 @@ const DodoPageDashboard = () => {
       const oldIndex = blocks.findIndex((item) => item.id === active.id);
       const newIndex = blocks.findIndex((item) => item.id === over.id);
 
-      const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
+      // Update local state first
+      const newBlocks = arrayMove(blocks, oldIndex, newIndex).map(
         (block, index) => ({
           ...block,
           blockPositionalIndex: index,
         })
       );
+      setBlocks(newBlocks);
 
+      // Format blocks for the dispatch
       const formattedBlocks = {
         dodoPageId: dodoPageDetails.id,
-        blocks: updatedBlocks
-          .filter(block => block.id !== undefined)
+        blocks: newBlocks
+          .filter((block) => block.id !== undefined)
           .map((block, index) => ({
             blockId: block.id as string,
             newIndex: index,
@@ -124,30 +131,38 @@ const DodoPageDashboard = () => {
       };
 
       try {
-        const res = await reorderBlocks(formattedBlocks);
-        if (res.success) {
-          setBlocks(updatedBlocks);
-        }
+        await dispatch(reorderBlocks(formattedBlocks));
       } catch (error) {
+        // Revert to original order if the API call fails
+        setBlocks(blocks);
         console.error("Error reordering blocks:", error);
+        toast.error("Failed to reorder blocks");
       }
     }
   };
 
   const renderBlock = (block: Block, index: number) => {
     let content;
+    const handleBlockClick = (e: React.MouseEvent, block: Block) => {
+      if (block.isNew) {
+        toast.error("Publish to edit");
+        return;
+      }
+      router.push(`/dodo/${url}/editBlock/${block.id}`);
+    };
+
     switch (block.blockType) {
       case "LINK":
         content =
           mode === "edit" ? (
-            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+            <div onClick={(e) => handleBlockClick(e, block)}>
               <LinkBlock
                 mode={mode}
                 blockData={block.blockData}
                 id={block.id}
                 blockCardSize={block.blockCardSize}
               />
-            </Link>
+            </div>
           ) : (
             <LinkBlock
               mode={mode}
@@ -160,27 +175,31 @@ const DodoPageDashboard = () => {
       case "POLL":
         content =
           mode === "edit" ? (
-            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+            <div onClick={(e) => handleBlockClick(e, block)}>
               <PollBlock
                 mode={mode}
                 blockData={block.blockData}
                 id={block.id as string}
               />
-            </Link>
+            </div>
           ) : (
-            <PollBlock mode={mode} blockData={block.blockData} id={block.id as string} />
+            <PollBlock
+              mode={mode}
+              blockData={block.blockData}
+              id={block.id as string}
+            />
           );
         break;
       case "HEADING":
         content =
           mode === "edit" ? (
-            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+            <div onClick={(e) => handleBlockClick(e, block)}>
               <HeadingBlock
                 title={block.blockData?.title}
                 mode={mode}
                 id={block.id as string}
               />
-            </Link>
+            </div>
           ) : (
             <HeadingBlock
               title={block.blockData?.title}
@@ -192,13 +211,13 @@ const DodoPageDashboard = () => {
       case "SEPARATOR":
         content =
           mode === "edit" ? (
-            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+            <div onClick={(e) => handleBlockClick(e, block)}>
               <SeparatorBlock
                 type={block.blockData?.separatorType}
                 mode={mode}
                 id={block.id as string}
               />
-            </Link>
+            </div>
           ) : (
             <SeparatorBlock
               type={block.blockData?.separatorType}
@@ -208,67 +227,25 @@ const DodoPageDashboard = () => {
           );
         break;
       case "PRODUCT":
-        const nextBlock = blocks[index + 1];
-        if (nextBlock?.blockType === "PRODUCT") {
-          content = (
-            <div className="grid grid-cols-2 gap-[10px] w-full">
-              {mode === "edit" ? (
-                <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-                  <ProductBlock
-                    productData={block.blockData}
-                    mode={mode}
-                    id={block.blockData.id}
-                  />
-                </Link>
-              ) : (
-                <div>
-                  <ProductBlock
-                    productData={block.blockData}
-                    mode={mode}
-                    id={block.blockData.id}
-                  />
-                </div>
-              )}
-              {mode === "edit" ? (
-                <Link href={`/dodo/${url}/editBlock/${nextBlock.id}`}>
-                  <ProductBlock
-                    productData={nextBlock.blockData}
-                    id={nextBlock.blockData.id}
-                    mode={mode}
-                  />
-                </Link>
-              ) : (
-                <div>
-                  <ProductBlock
-                    productData={nextBlock.blockData}
-                    mode={mode}
-                    id={nextBlock.blockData.id}
-                  />
-                </div>
-              )}
-            </div>
-          );
-        } else {
-          content = (
-            <div className="w-full">
-              {mode === "edit" ? (
-                <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-                  <ProductBlock
-                    productData={block.blockData}
-                    mode={mode}
-                    id={block.blockData.id}
-                  />
-                </Link>
-              ) : (
+        content = (
+          <div className="w-full">
+            {mode === "edit" ? (
+              <div onClick={(e) => handleBlockClick(e, block)}>
                 <ProductBlock
                   productData={block.blockData}
                   mode={mode}
-                  id={block.blockData.id}
+                  id={block.id as string}
                 />
-              )}
-            </div>
-          );
-        }
+              </div>
+            ) : (
+              <ProductBlock
+                productData={block.blockData}
+                mode={mode}
+                id={block.id as string}
+              />
+            )}
+          </div>
+        );
         break;
       default:
         return null;
@@ -287,9 +264,9 @@ const DodoPageDashboard = () => {
           dodoPageDetails={dodoPageDetails}
         />
         <SocialLinks
-          socialLinks={dodoPageDetails?.socialLinks}
           url={url}
           mode={mode}
+          socialLinks={socialLinks as any}
         />
 
         <div className="flex flex-col gap-4 mb-24">
@@ -306,7 +283,9 @@ const DodoPageDashboard = () => {
               onDragStart={handleDragStart}
             >
               <SortableContext
-                items={blocks.map((block) => block.id).filter((id): id is string => id !== undefined)}
+                items={blocks
+                  .map((block) => block.id)
+                  .filter((id): id is string => id !== undefined)}
                 strategy={verticalListSortingStrategy}
               >
                 {blocks.map((block, index) => renderBlock(block, index))}
@@ -331,12 +310,7 @@ const DodoPageDashboard = () => {
       </div>
       {mode === "edit" && (
         <div className="bottom-0 fixed w-full p-4">
-          <FooterBar
-            mode={mode}
-            url={url}
-            userId={userId}
-            dodoPageId={dodoPageDetails?.id}
-          />
+          <FooterBar mode={mode} url={url} userId={userId} />
         </div>
       )}
 

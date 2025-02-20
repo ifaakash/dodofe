@@ -19,7 +19,7 @@ const HeadingBlock = ({ title, mode = "public", id }: HeadingBlockProps) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id: id as string });
 
   const style = {
     transform: transform

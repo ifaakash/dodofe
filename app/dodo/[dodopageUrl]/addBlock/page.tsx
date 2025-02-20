@@ -56,6 +56,7 @@ const AddBlock = () => {
             userId={userId}
             dodopageUrl={dodopageUrl as string}
             mode={"add"}
+            
           />
         );
 

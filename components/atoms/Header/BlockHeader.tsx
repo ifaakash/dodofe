@@ -1,7 +1,7 @@
 import React from "react";
 import { ArchiveRestore, ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
 const BlockHeader = ({
   dodopageUrl,
   handleArchive,
@@ -13,11 +13,17 @@ const BlockHeader = ({
   handleDelete: () => void;
   mode: "edit" | "add";
 }) => {
+
+  const router = useRouter();
+
+  const handleNavigateBack = () => {
+    router.back();
+  }
   return (
     <div className="flex justify-between px-5 py-4 ">
-      <Link href={`/dodo/${dodopageUrl}`}>
+      <div onClick={handleNavigateBack}>
         <ArrowLeft size={20} />
-      </Link>
+      </div>
 
       {mode === "edit" && (
         <div className="flex gap-10 items-center">

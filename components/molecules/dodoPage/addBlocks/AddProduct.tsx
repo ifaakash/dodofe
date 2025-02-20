@@ -3,8 +3,15 @@ import React, { useState } from "react";
 import EmptyImage from "public/assets/emptyImage.svg";
 import Image from "next/image";
 import NewButton from "@components/atoms/Button/NewButton";
-import { createBlock, createBlockWithFormData } from "api";
+import {
+  createBlock,
+  createBlockWithFormData,
+  updateBlockWithFormData,
+} from "api";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
+import plusCircle from "public/icons/plusCircle.svg";
+import { toast } from "react-toastify";
 
 const ProductCard = ({
   data,
@@ -62,19 +69,21 @@ const AddProduct = ({
   blockData?: {
     title: string;
     link: string;
-    imgUrl: string;
+    productImage: string;
+    blockId: string;
   };
 }) => {
   const router = useRouter();
+  const [showSecondProduct, setShowSecondProduct] = useState(false);
   const [product1, setProduct1] = useState<{
     name: string;
     link: string;
     imgUrl: string;
     file?: File;
   }>({
-    name: "",
-    link: "",
-    imgUrl: "",
+    name: mode === "edit" ? blockData?.title || "" : "",
+    link: mode === "edit" ? blockData?.link || "" : "",
+    imgUrl: mode === "edit" ? blockData?.productImage || "" : "",
   });
 
   const [product2, setProduct2] = useState<{
@@ -112,37 +121,44 @@ const AddProduct = ({
       formData1.append("blockType", "PRODUCT");
       formData1.append("blockCardSize", "MEDIUM");
 
-      // Create FormData for product 2
-      const formData2 = new FormData();
-      if (product2.file) {
-        formData2.append("productImage", product2.file);
-      }
-      formData2.append("blockData[title]", product2.name);
-      formData2.append("blockData[link]", product2.link);
-      formData2.append("blockType", "PRODUCT");
-      formData2.append("blockCardSize", "MEDIUM");
+      if (showSecondProduct) {
+        // Create and submit both products if second product is shown
+        const formData2 = new FormData();
+        if (product2.file) {
+          formData2.append("productImage", product2.file);
+        }
+        formData2.append("blockData[title]", product2.name);
+        formData2.append("blockData[link]", product2.link);
+        formData2.append("blockType", "PRODUCT");
+        formData2.append("blockCardSize", "MEDIUM");
 
-      // Make both requests
-      const [res1, res2] = await Promise.all([
-        createBlockWithFormData(formData1, {
-          dodoPageId,
-          userId,
-          dodopageUrl,
-        }),
-        createBlockWithFormData(formData2, {
-          dodoPageId,
-          userId,
-          dodopageUrl,
-        }),
-      ]);
+        const [res1, res2] = await Promise.all([
+          createBlockWithFormData(formData1, {
+            dodoPageId,
+            userId,
+            dodopageUrl,
+          }),
+          createBlockWithFormData(formData2, {
+            dodoPageId,
+            userId,
+            dodopageUrl,
+          }),
+        ]);
 
-      console.log(res1, res2);
-
-      if (res1.success && res2.success) {
-        console.log("Products added successfully");
-        router.push(`/dodo/${dodopageUrl}`);
+        if (res1.success && res2.success) {
+          router.back();
+        }
       } else {
-        console.log("Failed to add products");
+        // Submit only first product
+        const res1 = await createBlockWithFormData(formData1, {
+          dodoPageId,
+          userId,
+          dodopageUrl,
+        });
+
+        if (res1.success) {
+          router.back();
+        }
       }
     } catch (error) {
       console.error("Error uploading products:", error);
@@ -171,44 +187,55 @@ const AddProduct = ({
               }}
             />
           </div>
-        </div>
-
-        <div className="flex flex-col gap-2 w-full">
-          <div className="font-semibold">Product 2</div>
-          <div className="flex flex-col gap-[5px]">
-            <Input
-              placeholder="Product Name"
-              value={product2.name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setProduct2({ ...product2, name: e.target.value })
-              }
-            />
-            <Input
-              placeholder="Paste product link here....."
-              value={product2.link}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const link = e.target.value;
-                setProduct2({ ...product2, link });
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-row gap-2 w-full">
           <ProductCard
             data={product1}
             onImageUpload={(file) => handleImageUpload(file, 1)}
           />
-          <ProductCard
-            data={product2}
-            onImageUpload={(file) => handleImageUpload(file, 2)}
-          />
         </div>
+
+        {!showSecondProduct && (
+          <div className="flex justify-end w-full">
+            <button
+              onClick={() => setShowSecondProduct(true)}
+              className="text-sm font-medium p-1 rounded-full border-[1px] border-brandPrimary flex items-center gap-1"
+            >
+              <Image src={plusCircle} alt="Add Product" />
+              Add Another Product
+            </button>
+          </div>
+        )}
+
+        {showSecondProduct && (
+          <div className="flex flex-col gap-2 w-full">
+            <div className="font-semibold">Product 2</div>
+            <div className="flex flex-col gap-[5px]">
+              <Input
+                placeholder="Product Name"
+                value={product2.name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setProduct2({ ...product2, name: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Paste product link here....."
+                value={product2.link}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const link = e.target.value;
+                  setProduct2({ ...product2, link });
+                }}
+              />
+            </div>
+            <ProductCard
+              data={product2}
+              onImageUpload={(file) => handleImageUpload(file, 2)}
+            />
+          </div>
+        )}
 
         <div className="bottom-0 fixed mb-4 px-4 w-full">
           <NewButton
             size="large"
-            variant={"primary"}
+            variant="primary"
             onClick={handleSubmit}
             className="w-full"
           >
@@ -219,6 +246,31 @@ const AddProduct = ({
     );
   }
 
+  const handleUpdate = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("blockType", "PRODUCT");
+      formData.append("blockCardSize", "MEDIUM");
+      formData.append("blockId", blockData?.blockId as string);
+      formData.append("userId", userId);
+
+      if (product1.file) {
+        formData.append("productImage", product1.file);
+      }
+      formData.append("blockData[title]", product1.name);
+      formData.append("blockData[link]", product1.link);
+
+      const res = await updateBlockWithFormData(formData);
+
+      if (res?.success) {
+        toast.success("Product updated successfully");
+        router.back();
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
   if (mode === "edit") {
     return (
       <div className="flex flex-col gap-4 items-center">
@@ -227,38 +279,81 @@ const AddProduct = ({
           <div className="flex flex-col gap-[5px]">
             <Input
               placeholder="Product Name"
-              value={blockData?.title}
-              disabled={true}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
+              value={product1.name}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setProduct1({ ...product1, name: e.target.value })
+              }
             />
             <Input
               placeholder="Paste product link here....."
-              value={blockData?.link}
-              disabled={true}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
+              value={product1.link}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setProduct1({ ...product1, link: e.target.value })
+              }
             />
           </div>
-          <div className="flex flex-row gap-2 w-full">
-            <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
-              <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
-                <img
-                  src={'https://picsum.photos/400'}
-                  alt={blockData?.title}
-                  className="w-full h-full object-cover rounded-2xl"
-                />
-              </div>
-              <p className="text-sm font-medium">{blockData?.title}</p>
-            </div>
-          </div>
+          <ProductCard
+            data={product1}
+            onImageUpload={(file) => handleImageUpload(file, 1)}
+          />
         </div>
         <div className="bottom-0 fixed mb-4 px-4 w-full">
-          <NewButton size="large" variant={"primary"} className="w-full">
-            Okay
+          <NewButton
+            onClick={handleUpdate}
+            size="large"
+            variant="primary"
+            className="w-full"
+          >
+            Update
           </NewButton>
         </div>
       </div>
     );
   }
+
+  return (
+    <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col gap-2 w-full">
+        <div className="font-semibold">Product</div>
+        <div className="flex flex-col gap-[5px]">
+          <Input
+            placeholder="Product Name"
+            value={blockData?.title}
+            disabled={true}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
+          />
+          <Input
+            placeholder="Paste product link here....."
+            value={blockData?.link}
+            disabled={true}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
+          />
+        </div>
+        <div className="flex flex-row gap-2 w-full">
+          <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
+            <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
+              <img
+                src={blockData?.productImage}
+                alt={blockData?.title}
+                className="w-full h-full object-cover rounded-2xl"
+              />
+            </div>
+            <p className="text-sm font-medium">{blockData?.title}</p>
+          </div>
+        </div>
+      </div>
+      <div className="bottom-0 fixed mb-4 px-4 w-full">
+        <NewButton
+          onClick={handleUpdate}
+          size="large"
+          variant={"primary"}
+          className="w-full"
+        >
+          Update
+        </NewButton>
+      </div>
+    </div>
+  );
 };
 
 export default AddProduct;

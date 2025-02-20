@@ -9,8 +9,6 @@ interface ProductBlockProps {
   id?: string;
 }
 
-const PLACEHOLDER_IMAGE = "https://picsum.photos/200";
-
 const ProductBlock: React.FC<ProductBlockProps> = ({
   productData,
   mode,
@@ -40,12 +38,12 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
       className={`p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200`}
     >
       <div className="flex flex-col items-center space-y-3">
-        <div className="relative w-full max-w-[200px] aspect-square">
+        <div className="relative w-full aspect-video">
           <Image
-            src={productData?.imageUrl || PLACEHOLDER_IMAGE}
+            src={productData?.productImage}
             alt={productData?.title}
             fill
-            className="object-contain rounded-lg"
+            className="object-cover rounded-lg"
           />
         </div>
         <div

@@ -3,10 +3,9 @@ import HeadingBlock from "@components/molecules/dodoPage/blocks/HeadingBlock";
 import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
 import ProductBlock from "@components/molecules/dodoPage/blocks/ProductBlock";
 import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock";
-import { SortableBlock } from "@components/molecules/dodoPage/SortableBlock";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { loadState } from "@utils/localStorage";
-import { archiveBlock, deleteBlock, getBlockById } from "api";
+import { deleteBlock, getBlockById } from "api";
 import { ArchiveRestore, ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -19,6 +18,8 @@ import AddSeparator from "@components/molecules/dodoPage/addBlocks/AddSeparator"
 import AddPoll from "@components/molecules/dodoPage/addBlocks/AddPoll";
 import AddProduct from "@components/molecules/dodoPage/addBlocks/AddProduct";
 import AddLink from "@components/molecules/dodoPage/addBlocks/AddLink";
+import { useDispatch } from "react-redux";
+import { removeBlock, archiveBlock } from "../../../../../store/slice/blocksSlice";
 
 const EditBlock = () => {
   const searchParams = useSearchParams();
@@ -30,17 +31,22 @@ const EditBlock = () => {
   const [blockDetails, setBlockDetails] = useState<any>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
+  const dispatch = useDispatch();
 
   const confirmArchive = async () => {
-    const res = await archiveBlock({
-      blockId: blockId,
-      userId: userId,
-    });
+    // const res = await archiveBlock({
+    //   blockId: blockId,
+    //   userId: userId,
+    // });
 
-    if (res?.success) {
-      toast.success("Block Archived");
-      router.push(`/dodo/${dodopageUrl}`);
-    }
+    // if (res?.success) {
+    //   toast.success("Block Archived");
+    //   router.push(`/dodo/${dodopageUrl}`);
+    // }
+
+    dispatch(archiveBlock(blockId as string));
+    setShowArchiveConfirm(false);
+    router.back();
   };
 
   const handleArchive = () => {
@@ -48,15 +54,19 @@ const EditBlock = () => {
   };
 
   const confirmDelete = async () => {
-    const res = await deleteBlock({
-      blockId: blockId,
-      userId: userId,
-    });
+    // const res = await deleteBlock({
+    //   blockId: blockId,
+    //   userId: userId,
+    // });
 
-    if (res?.success) {
-      toast.success("Block Deleted");
-      router.push(`/dodo/${dodopageUrl}`);
-    }
+    // if (res?.success) {
+    //   toast.success("Block Deleted");
+    //   router.push(`/dodo/${dodopageUrl}`);
+    // }
+
+    dispatch(removeBlock(blockId as string));
+    setShowDeleteConfirm(false);
+    router.back()
   };
 
   const handleDelete = () => {
@@ -73,6 +83,9 @@ const EditBlock = () => {
 
     getBlockDetails();
   }, []);
+
+
+  console.log('blockDetails', blockDetails)
 
   const renderBlock = () => {
     switch (blockDetails?.blockType) {
@@ -114,6 +127,7 @@ const EditBlock = () => {
             blockData={blockDetails.blockData}
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
+            blockCardSize={blockDetails.blockCardSize}
           />
         );
       case "PRODUCT":
