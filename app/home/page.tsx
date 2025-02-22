@@ -34,218 +34,239 @@ import HomeFooter from "./homeFooter";
 import Link from "next/link";
 
 export default function Home() {
-  const router = useRouter();
-  const [userDetails, setUserDetails] = useState({} as any);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  useEffect(() => {
-    if (userId) {
-      getUserDetails(userId).then((res) => {
-        setUserDetails(res?.user);
-      });
-    }
-  }, []);
-
-  const gotoLinksPage = () => {
+    const router = useRouter();
+    const [userDetails, setUserDetails] = useState({} as any);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
-    if (!userId) {
-      router.push(ROUTE_CONSTANTS.LOGIN);
-      return;
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    useEffect(() => {
+        if (userId) {
+            getUserDetails(userId).then((res) => {
+                setUserDetails(res?.user);
+            });
+        }
+    }, [userId]);
+
+    if (!isMounted) {
+        return null;
     }
 
-    if (isEmpty(userDetails?.socialLinks)) {
-      router.push(
-        ROUTE_CONSTANTS.ADD_STUFF +
-        `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
-      );
-      return;
-    }
+    const gotoLinksPage = () => {
+        const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
-    router.push(ROUTE_CONSTANTS.LINKS + `?userId=${userId}`, {
-      scroll: false,
-    });
-  };
+        if (!userId) {
+            router.push(ROUTE_CONSTANTS.LOGIN);
+            return;
+        }
 
-  const handleInvoiceNavigation = () => {
-    const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+        if (isEmpty(userDetails?.socialLinks)) {
+            router.push(
+                ROUTE_CONSTANTS.ADD_STUFF +
+                    `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
+            );
+            return;
+        }
 
-    if (!userId) {
-      router.push(ROUTE_CONSTANTS.LOGIN);
-      return;
-    }
-
-    router.push(ROUTE_CONSTANTS.INVOICE);
-  }
-
-  const copyToClipboard = (textToCopy: string) => {
-    navigator.clipboard
-      .writeText(textToCopy)
-      .then(() => {
-        toast.success("Your link is copied");
-      })
-      .catch((error) => {
-        console.error("Failed to copy text: ", error);
-        toast.error("Failed to copy text.");
-      });
-  };
-
-  const shareContent = () => {
-    const dodoPageDetail = userDetails?.dodoPages?.[0];
-
-    if (navigator.share && !isEmpty(dodoPageDetail)) {
-      navigator
-        .share({
-          title: "Check out my Dodo Page",
-          text: "Here's my Dodo Page, check it out!",
-          url: `https://dodoclub.in/${dodoPageDetail?.url}`, // Replace with dynamic URL
-        })
-        .then(() => toast.success("Shared successfully!"))
-        .catch((error) => {
-          if (error.name !== "AbortError") {
-            console.error("Error sharing:", error);
-            toast.error("Failed to share content.");
-          }
+        router.push(ROUTE_CONSTANTS.LINKS + `?userId=${userId}`, {
+            scroll: false,
         });
-    } else {
-      toast.error("Sharing is not supported on this browser.");
-    }
-  };
+    };
 
-  const getUserCard = () => {
-    const dodoPageDetail = userDetails?.dodoPages?.[0];
+    const handleInvoiceNavigation = () => {
+        const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
-    if (isEmpty(dodoPageDetail)) {
-      return <></>;
-    }
+        if (!userId) {
+            router.push(ROUTE_CONSTANTS.LOGIN);
+            return;
+        }
+
+        router.push(ROUTE_CONSTANTS.INVOICE);
+    };
+
+    const copyToClipboard = (textToCopy: string) => {
+        navigator.clipboard
+            .writeText(textToCopy)
+            .then(() => {
+                toast.success("Your link is copied");
+            })
+            .catch((error) => {
+                console.error("Failed to copy text: ", error);
+                toast.error("Failed to copy text.");
+            });
+    };
+
+    const shareContent = () => {
+        const dodoPageDetail = userDetails?.dodoPages?.[0];
+
+        if (navigator.share && !isEmpty(dodoPageDetail)) {
+            navigator
+                .share({
+                    title: "Check out my Dodo Page",
+                    text: "Here's my Dodo Page, check it out!",
+                    url: `https://dodoclub.in/${dodoPageDetail?.url}`, // Replace with dynamic URL
+                })
+                .then(() => toast.success("Shared successfully!"))
+                .catch((error) => {
+                    if (error.name !== "AbortError") {
+                        console.error("Error sharing:", error);
+                        toast.error("Failed to share content.");
+                    }
+                });
+        } else {
+            toast.error("Sharing is not supported on this browser.");
+        }
+    };
+
+    const getUserCard = () => {
+        const dodoPageDetail = userDetails?.dodoPages?.[0];
+
+        if (isEmpty(dodoPageDetail)) {
+            return <></>;
+        }
+
+        return (
+            <CtaSection
+                title={dodoPageDetail?.name || "Dodo user"}
+                description={dodoPageDetail?.url}
+                buttonBgColor="var(--pink)"
+                onClick={gotoLinksPage}
+                onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
+                img={copy}
+                imgSize={32}
+                onButtonClick={shareContent}
+                buttonLabel=""
+            />
+        );
+    };
 
     return (
-      <CtaSection
-        title={dodoPageDetail?.name || "Dodo user"}
-        description={dodoPageDetail?.url}
-        buttonBgColor="var(--pink)"
-        onClick={gotoLinksPage}
-        onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
-        img={copy}
-        imgSize={32}
-        onButtonClick={shareContent}
-        buttonLabel=""
-      />
-    );
-  };
+        <Screen>
+            <div className="mt-16 text-center">
+                <div style={{ backgroundImage: `url(${crossBg.src})` }}>
+                    <div className="flex justify-between mb-6 mx-4">
+                        <Image
+                            height={50}
+                            width={260}
+                            src={welcomeToDodo}
+                            alt="welcome"
+                            className="ml-16"
+                        />
 
-  return (
-    <Screen>
-      <div className="mt-16 text-center">
-        <div style={{ backgroundImage: `url(${crossBg.src})` }}>
-          <div className="flex justify-between mb-6 mx-4">
-            <Image
-              height={50}
-              width={260}
-              src={welcomeToDodo}
-              alt="side bar"
-              className="ml-16"
-              onClick={toggleSidebar}
-            />
+                        {userId && (
+                            <Image
+                                height={24}
+                                width={24}
+                                src={sideBarIcon}
+                                alt="side bar"
+                                onClick={toggleSidebar}
+                                data-sidebar-toggle
+                                className="cursor-pointer"
+                            />
+                        )}
+                    </div>
 
-            {userId && (
-              <Image
-                height={24}
-                width={24}
-                src={sideBarIcon}
-                alt="side bar"
-                onClick={toggleSidebar}
-              />
-            )}
-          </div>
+                    {isEmpty(userId) ? (
+                        <div className="mx-4">
+                            <CtaSection onButtonClick={gotoLinksPage} />
 
-          {isEmpty(userId) ? (
-            <div className="mx-4">
-              <CtaSection onButtonClick={gotoLinksPage} />
+                            <div
+                                className={cx(
+                                    "rounded-2xl flex p-3 clr-white my-4 pl-4 shimmer-bg justify-between",
+                                    styles.shimmerBg
+                                )}
+                                onClick={gotoLinksPage}
+                            >
+                                <div className="flex text-sm">
+                                    Login to get free
+                                    <Image
+                                        className="mx-1"
+                                        height={18}
+                                        width={22}
+                                        src={dodoCoinIcon}
+                                        alt="dodo coin"
+                                    />
+                                    1000 dodo coins
+                                </div>
 
-              <div
-                className={cx(
-                  "rounded-2xl flex p-3 clr-white my-4 pl-4 shimmer-bg justify-between",
-                  styles.shimmerBg
-                )}
-                onClick={gotoLinksPage}
-              >
-                <div className="flex text-sm">
-                  Login to get free
-                  <Image
-                    className="mx-1"
-                    height={18}
-                    width={22}
-                    src={dodoCoinIcon}
-                    alt="dodo coin"
-                  />
-                  1000 dodo coins
+                                <Image
+                                    width={20}
+                                    height={20}
+                                    src={gotoIcon}
+                                    alt="creators"
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="m-4">{getUserCard()}</div>
+                    )}
+
+                    <div
+                        className={cx(
+                            "w-full px-4 rounded-t-2xl bg-white",
+                            styles.lowerDiv
+                        )}
+                    >
+                        <Image
+                            height={53}
+                            width={251}
+                            src={otherFeatures}
+                            alt="user profile"
+                            className="mx-auto my-6"
+                        />
+
+                        <div className="absolute-center flex-col">
+                            <CtaSection
+                                onClick={handleInvoiceNavigation}
+                                bgColor="var(--yellow)"
+                                img={invoiceIcon}
+                                title="Invoice"
+                                description="Create stunning digital invoices in a few seconds"
+                            />
+
+                            <div className="flex flex-row justify-between w-full gap-x-4">
+                                <Image
+                                    height={320}
+                                    width={172}
+                                    src={engagementCalc}
+                                    alt="engagement calc"
+                                    className="ml-2 my-6"
+                                />
+                                <Image
+                                    height={320}
+                                    width={172}
+                                    src={priceCalc}
+                                    alt="price calc"
+                                    className="mr-2 my-6"
+                                />
+                            </div>
+                        </div>
+
+                        <CtaSection
+                            bgColor="var(--warm-green)"
+                            img={mediakitIcon}
+                            title="MediaKit"
+                            description="Your digital resume"
+                            buttonLabel="Coming soon..."
+                        />
+
+                        <span className="absolute-center text-sm mt-4">
+                            more coming soon.
+                        </span>
+                    </div>
+
+                    <HomeFooter />
                 </div>
-
-                <Image width={20} height={20} src={gotoIcon} alt="creators" />
-              </div>
             </div>
-          ) : (
-            <div className="m-4">{getUserCard()}</div>
-          )}
-
-          <div className={cx("w-full px-4 rounded-t-2xl bg-white", styles.lowerDiv)}>
-            <Image
-              height={53}
-              width={251}
-              src={otherFeatures}
-              alt="user profile"
-              className="mx-auto my-6"
-            />
-
-            <div className="absolute-center flex-col">
-              <CtaSection
-                onClick={handleInvoiceNavigation}
-                bgColor="var(--yellow)"
-                img={invoiceIcon}
-                title="Invoice"
-                description="Create stunning digital invoices in a few seconds"
-              />
-
-              <div className="flex flex-row justify-between w-full gap-x-4">
-                <Image
-                  height={320}
-                  width={172}
-                  src={engagementCalc}
-                  alt="engagement calc"
-                  className="ml-2 my-6"
-                />
-                <Image
-                  height={320}
-                  width={172}
-                  src={priceCalc}
-                  alt="price calc"
-                  className="mr-2 my-6"
-                />
-              </div>
-            </div>
-
-            <CtaSection
-              bgColor="var(--warm-green)"
-              img={mediakitIcon}
-              title="MediaKit"
-              description="Your digital resume"
-              buttonLabel="Coming soon..."
-            />
-
-            <span className="absolute-center text-sm mt-4">more coming soon.</span>
-
-            {getSidebarUI({ isSidebarOpen, toggleSidebar })}
-          </div>
-
-          <HomeFooter />
-        </div>
-      </div>
-    </Screen>
-  );
+            {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
+        </Screen>
+    );
 }
