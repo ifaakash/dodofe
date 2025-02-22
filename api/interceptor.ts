@@ -7,8 +7,8 @@ import { loadState } from 'utils/localStorage';
 import Router from 'next/router';
 
 // export const BASE_URL = 'http://13.202.63.227/api/v1';
-// export const BASE_URL = 'http://localhost:3002/api/v1/';
-export const BASE_URL = 'http://192.168.1.131:3002/api/v1/';
+export const BASE_URL = 'http://localhost:3002/api/v1/';
+
 
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
