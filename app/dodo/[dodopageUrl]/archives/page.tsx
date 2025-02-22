@@ -1,0 +1,153 @@
+"use client";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
+import HeadingBlock from "@components/molecules/dodoPage/blocks/HeadingBlock";
+import ProductBlock from "@components/molecules/dodoPage/blocks/ProductBlock";
+import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock";
+import { getArchivedBlocks, reorderBlocks } from "api/services";
+import { SortableBlock } from "@components/molecules/dodoPage/SortableBlock";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
+const ArchivedBlocks = () => {
+  const { dodopageUrl } = useParams();
+  const [archivedBlocks, setArchivedBlocks] = useState<any[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    const fetchArchivedBlocks = async () => {
+      const res = await getArchivedBlocks(dodopageUrl);
+      if (res.success) {
+        setArchivedBlocks(res.archivedBlocks);
+      }
+    };
+    fetchArchivedBlocks();
+  }, []);
+
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = async (event: any) => {
+    setIsDragging(false);
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = archivedBlocks.findIndex(
+        (item) => item.id === active.id
+      );
+      const newIndex = archivedBlocks.findIndex((item) => item.id === over.id);
+
+      // Create new array with updated positions
+      const updatedBlocks = arrayMove(archivedBlocks, oldIndex, newIndex).map(
+        (block, index) => ({
+          ...block,
+          blockPositionalIndex: index,
+        })
+      );
+
+      // Format blocks for API call
+      const formattedBlocks = {
+        dodoPageId: dodoPageDetails.id,
+        blocks: updatedBlocks.map((block, index) => ({
+          blockId: block.id,
+          newIndex: index,
+        })),
+      };
+
+      // Make API call and update state
+      try {
+        const res = await reorderBlocks(formattedBlocks);
+        if (res?.success) {
+          setBlocks(updatedBlocks);
+        }
+      } catch (error) {
+        console.error("Error reordering blocks:", error);
+      }
+    }
+  };
+
+  const renderBlock = (block: {
+    id: string;
+    blockType: string;
+    blockData: any;
+  }) => {
+    let content;
+    switch (block.blockType) {
+      case "POLL":
+        content = <PollBlock mode="dashboard" blockData={block.blockData} />;
+        break;
+      case "HEADING":
+        content = (
+          <HeadingBlock title={block.blockData.title} mode="dashboard" />
+        );
+        break;
+      case "PRODUCTS":
+        content = (
+          <div className="flex gap-[10px]">
+            <ProductBlock />
+            <ProductBlock />
+          </div>
+        );
+        break;
+      case "SEPARATOR":
+        content = (
+          <SeparatorBlock
+            type={block.blockData.separatorType}
+            mode="dashboard"
+          />
+        );
+        break;
+      default:
+        return null;
+    }
+
+    return (
+      <SortableBlock key={block.id} id={block.id}>
+        <Link
+          href={`/dodo/${dodopageUrl}/editBlock/${block.id}`}
+          onClick={(e) => {
+            if (isDragging) {
+              e.preventDefault();
+            }
+          }}
+        >
+          {content}
+        </Link>
+      </SortableBlock>
+    );
+
+    // return (
+    //   <SortableBlock key={block.id} id={block.id}>
+    //     {content}
+    //   </SortableBlock>
+    // );
+  };
+
+  return (
+    <div className="px-5 py-4 flex flex-col gap-4">
+      <div className="flex gap-2 items-center font-semibold">
+        <Link href={`/dodo/${dodopageUrl}`}>
+          <ArrowLeft size={20} />
+        </Link>
+        <span> Archived </span>
+      </div>
+      <div>
+        {archivedBlocks.map((block) => (
+          <div key={block.id} className="mt-4">
+            {renderBlock(block)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ArchivedBlocks;

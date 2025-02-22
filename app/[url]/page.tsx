@@ -1,0 +1,129 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { getDodoPageByURL } from "api";
+import HeroSection from "@components/molecules/dodoPage/HeroSection";
+import SocialLinks from "@components/molecules/dodoPage/SocialLinks";
+import ProductBlock from "@components/molecules/dodoPage/blocks/ProductBlock";
+import HeadingBlock from "@components/molecules/dodoPage/blocks/HeadingBlock";
+import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock";
+import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
+import DodoIcon from "public/icons/dodoIconName.svg";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
+import styles from "./dodoPage.module.css";
+import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
+import Link from "next/link";
+
+const DodoPage = () => {
+  const { url } = useParams();
+  const [dodoPageDetails, setDodoPageDetails] = useState<any>(null);
+  const mode = "preview";
+
+  useEffect(() => {
+    getDodoPageByURL(url as string).then((res) => {
+      if (res.success) {
+        setDodoPageDetails(res.dodoPage);
+        console.log("Page Fetched");
+      }
+    });
+  }, []);
+
+  const renderBlock = (
+    block: {
+      id: string;
+      blockType: string;
+      blockData: any;
+    },
+    index: number
+  ) => {
+    let content;
+    switch (block.blockType) {
+      case "POLL":
+        content = <PollBlock mode={"public"} blockData={block.blockData} />;
+        break;
+      case "HEADING":
+        content = <HeadingBlock title={block.blockData.title} mode={mode} />;
+        break;
+      case "SEPARATOR":
+        content = (
+          <SeparatorBlock type={block.blockData.separatorType} mode={mode} />
+        );
+        break;
+      case "LINK":
+        content = (
+          <Link href={`${block.blockData.url}`}>
+            <LinkBlock
+              mode={"public"}
+              blockData={block.blockData}
+              blockCardSize={block.blockData.blockCardSize}
+            />
+          </Link>
+        );
+        break;
+      case "PRODUCT":
+        if (
+          index > 0 &&
+          dodoPageDetails?.blocks[index - 1]?.blockType === "PRODUCT"
+        ) {
+          return null;
+        }
+        const nextBlock = dodoPageDetails?.blocks[index + 1];
+
+        if (nextBlock?.blockType === "PRODUCT") {
+          console.log("dodoPageDetails?.blocks", dodoPageDetails?.blocks);
+          content = (
+            <div className="grid grid-cols-2 gap-[10px] w-full">
+              <Link href={`${block.blockData.link}`}>
+                <ProductBlock productData={block.blockData} mode={mode} />
+              </Link>
+
+              <Link href={`${nextBlock.blockData.link}`}>
+                <ProductBlock productData={nextBlock.blockData} mode={mode} />
+              </Link>
+            </div>
+          );
+        }
+        return content;
+      default:
+        return null;
+    }
+
+    return content; // For PRODUCT blocks, content already includes SortableBlock
+  };
+
+  return (
+    <div className={`flex flex-col gap-3 pt-10 ${styles.dodoBackground} `}>
+      <HeroSection
+        mode={"public"}
+        dodoPageId={dodoPageDetails?.id}
+        dodoPageDetails={dodoPageDetails}
+      />
+      <SocialLinks
+        socialLinks={dodoPageDetails?.socialLinks}
+        url={url as string}
+        mode={"public"}
+      />
+      <div className="flex flex-col gap-3 px-5">
+        {dodoPageDetails?.blocks?.map((block: any, index: number) =>
+          renderBlock(block, index)
+        )}
+      </div>
+
+      <div className="flex flex-col gap-3 px-5 items-center mb-20">
+        <div className="flex items-center gap-2">
+          <div className="text-[#3D4966] text-xs">powered by:</div>
+          <Image src={DodoIcon} alt="dodo icon" height={20} />
+        </div>
+        <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
+          <div className=" font-semibold text-xs">Create your DODOpage now</div>
+          <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
+            <ArrowUpRight className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DodoPage;

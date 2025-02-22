@@ -6,7 +6,13 @@ import { loadState } from 'utils/localStorage';
 
 import Router from 'next/router';
 
+<<<<<<< HEAD
 export const BASE_URL = 'http://13.202.63.227/api/v1';
+=======
+// export const BASE_URL = 'http://localhost:3002/api/v1/';
+export const BASE_URL = 'http://192.168.1.131:3002/api/v1/';
+
+>>>>>>> f8ae5db (Blocks + DodoPage Done)
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
 // http://localhost:3000
@@ -96,3 +102,6 @@ export const Post = <T>(path: string, payload: unknown, headers?: any, cancelTok
 
 export const Put = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
     Request.put<IAPIResponse<T>>(path, payload, { cancelToken }).then(extractor).catch(onErrorInterceptor);
+
+export const Patch = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
+    Request.patch<IAPIResponse<T>>(path, payload, { cancelToken }).then(extractor).catch(onErrorInterceptor);

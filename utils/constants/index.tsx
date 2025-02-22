@@ -53,7 +53,8 @@ export const ROUTE_CONSTANTS = {
   PAYMENT_DETAILS: "/payment/details",
   FINAL_DETAILS: "/final-details",
   USER_CATEGORY: "/user-category",
-  COINS: '/coins'
+  COINS: '/coins',
+  DODOPAGE: "/dodo",
 };
 
 export const BLOCKS = {

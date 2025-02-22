@@ -16,7 +16,7 @@ import { BLOCKS, ROUTE_CONSTANTS } from "@utils/constants";
 import { isEmpty } from "@utils/index";
 import { createLink } from "api";
 
-export default function AddHeading({ pageTitle, headingName }: any) {
+export default function AddHeading({ pageTitle, headingName, mode }: any) {
   const [heading, setHeading] = useState(headingName || '');
   const router = useRouter();
   const searchParams = useSearchParams();
