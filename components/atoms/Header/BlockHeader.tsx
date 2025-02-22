@@ -21,9 +21,9 @@ const BlockHeader = ({
 
       {mode === "edit" && (
         <div className="flex gap-10 items-center">
-          <div onClick={handleArchive}>
+          {/* <div onClick={handleArchive}>
             <ArchiveRestore size={20} className="" />{" "}
-          </div>
+          </div> */}
           <div onClick={handleDelete}>
             <Trash2 size={20} className="text-red-500" />
           </div>

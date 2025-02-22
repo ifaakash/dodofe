@@ -1,15 +1,32 @@
 import Button from "@components/atoms/Button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import React from "react";
 import EyeIcon from "../../../public/icons/greenEye.svg";
 import PenIcon from "../../../public/icons/EditPen.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
+import { resetDodoPage } from "store/slice/dodoPageSlice";
+import { toast } from "react-toastify";
+import { resetUnPublishedBlocks } from "store/slice/blocksSlice";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
   const { unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
+  const { unPublishedBlocks } = useSelector((state: RootState) => state.blocks);
+  const dispatch = useDispatch();
+
+  const handleDiscardChanges = () => {
+    dispatch(resetDodoPage());
+    dispatch(resetUnPublishedBlocks());
+    window.location.href = `/dodo/${url}`;
+  };
+  
+  console.log({
+    unsavedChanges,
+    unPublishedBlocks,
+  })
+
   return (
     <div className="px-5 py-4 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -18,9 +35,14 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
         </Link>
         <div>
           <div>
-            {unsavedChanges && mode === "edit" && (
-              <div className="text-xs font-semibold text-brandPrimary">
-                Unsaved Changes
+            {unsavedChanges || unPublishedBlocks && mode === "edit" && (
+              <div>
+                <button
+                  onClick={handleDiscardChanges}
+                  className="text-xs font-semibold flex items-center gap-1 text-red-500"
+                >
+                  Discard Chanegs <X size={16} />{" "}
+                </button>
               </div>
             )}
           </div>

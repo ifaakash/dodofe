@@ -1,0 +1,44 @@
+{
+  "pages": {
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/page.css",
+      "static/chunks/app/page.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/dodo/[dodopageUrl]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/dodo/[dodopageUrl]/page.css",
+      "static/chunks/app/dodo/[dodopageUrl]/page.js"
+    ],
+    "/dodo/[dodopageUrl]/editBlock/[blockId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/dodo/[dodopageUrl]/editBlock/[blockId]/page.css",
+      "static/chunks/app/dodo/[dodopageUrl]/editBlock/[blockId]/page.js"
+    ],
+    "/dodo/[dodopageUrl]/archives/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dodo/[dodopageUrl]/archives/page.js"
+    ],
+    "/dodo/[dodopageUrl]/addBlock/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/dodo/[dodopageUrl]/addBlock/page.css",
+      "static/chunks/app/dodo/[dodopageUrl]/addBlock/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
+    ]
+  }
+}

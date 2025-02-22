@@ -10,23 +10,13 @@ import SeparatorBlock from "@components/molecules/dodoPage/blocks/SeparatorBlock
 import { getArchivedBlocks, reorderBlocks } from "api/services";
 import { SortableBlock } from "@components/molecules/dodoPage/SortableBlock";
 import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
+import { useSelector } from "react-redux";
 
 const ArchivedBlocks = () => {
   const { dodopageUrl } = useParams();
-  const [archivedBlocks, setArchivedBlocks] = useState<any[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-
-  useEffect(() => {
-    const fetchArchivedBlocks = async () => {
-      const res = await getArchivedBlocks(dodopageUrl);
-
-      console.log("res", res);
-      if (res.success) {
-        setArchivedBlocks(res.archivedBlocks);
-      }
-    };
-    fetchArchivedBlocks();
-  }, []);
+  const blocks = useSelector((state: any) => state.blocks.blocks);
+  const archivedBlocks = useSelector((state: any) => state.blocks.blocks.filter((block: any) => block.toArchive && block.isActive));
 
   const renderBlock = (block: {
     id: string;
@@ -60,7 +50,7 @@ const ArchivedBlocks = () => {
         );
         break;
       case "LINK":
-        content = <LinkBlock blockData={block.blockData} mode="edit" blockCardSize={block?.blockData?.blockCardSize} />;
+        content = <LinkBlock block={block} mode="edit" />;
         break;
       default:
         return null;
@@ -94,7 +84,8 @@ const ArchivedBlocks = () => {
         {archivedBlocks.length === 0 ? (
           <div>No archived blocks</div>
         ) : (
-          archivedBlocks.map((block) => (
+          // to be fixed
+          archivedBlocks.map((block: any) => (
             <div key={block.id} className="mt-4">
               {renderBlock(block)}
             </div>

@@ -5,6 +5,9 @@ import NewButton from "@components/atoms/Button/NewButton";
 import { createBlock, updateBlock } from "api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addBlock } from "store/slice/blocksSlice";
+import { v4 as uuidv4 } from "uuid";
 
 const AddSeparator = ({
   dodoPageId,
@@ -21,24 +24,40 @@ const AddSeparator = ({
 }) => {
   const [selected, setSelected] = useState(blockData?.separatorType);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    const res = await createBlock({
-      dodoPageId: dodoPageId,
-      blockType: "SEPARATOR",
-      blockCardSize: "SMALL",
-      blockData: {
-        separatorType: selected,
-      },
-      userId: userId,
-    });
+    // const res = await createBlock({
+    //   dodoPageId: dodoPageId,
+    //   blockType: "SEPARATOR",
+    //   blockCardSize: "SMALL",
+    //   blockData: {
+    //     separatorType: selected,
+    //   },
+    //   userId: userId,
+    // });
 
-    if(res.success) {
-      router.push(`/dodo/${dodopageUrl}`);
-    }
+    // if(res.success) {
+    //   router.push(`/dodo/${dodopageUrl}`);
+    // }
+
+    dispatch(
+      addBlock({
+        id: uuidv4(),
+        blockType: "SEPARATOR",
+        blockCardSize: "SMALL",
+        blockData: {
+          separatorType: selected,
+        },
+        userId: userId,
+        dodoPageId: dodoPageId,
+        isNew: true,
+      })
+    );
+    router.back();
   };
-  
-  console.log('blockData', blockData, selected)
+
+  console.log("blockData", blockData, selected);
 
   const handleUpdateBlock = async () => {
     const res = await updateBlock({
@@ -49,8 +68,8 @@ const AddSeparator = ({
       },
     });
 
-    console.log('res', res)
-    
+    console.log("res", res);
+
     if (res.success) {
       toast.success("Block updated successfully");
       router.push(`/dodo/${dodopageUrl}`);
@@ -101,7 +120,12 @@ const AddSeparator = ({
       <div className="bottom-0 fixed mb-4 px-4 w-full">
         <NewButton
           size="large"
-          variant={selected && (mode === "add" || selected !== blockData?.separatorType) ? "primary" : "disabled"}
+          variant={
+            selected &&
+            (mode === "add" || selected !== blockData?.separatorType)
+              ? "primary"
+              : "disabled"
+          }
           onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >

@@ -157,4 +157,7 @@ export interface Block {
   blockCardSize: string;
   userId?: string;
   dodoPageId?: string;
+  toRemove? :boolean
+  toArchive? :boolean
+  isActive?: boolean
 }

@@ -4,19 +4,7 @@ import Image from "next/image";
 import { useDraggable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 
-const LinkBlock = ({
-  mode,
-  blockData,
-  blockCardSize,
-  id,
-}: {
-  mode: string;
-  blockData: any;
-  blockCardSize: string | "";
-  id?: string;
-}) => {
-  const PLACEHOLDER_IMAGE = "https://picsum.photos/200";
-
+const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
   const {
     attributes,
     listeners,
@@ -24,7 +12,7 @@ const LinkBlock = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: blockData.id });
+  } = useSortable({ id: block.id });
 
   const style = {
     transform: transform
@@ -33,6 +21,16 @@ const LinkBlock = ({
     transition,
   };
 
+  console.log("Link Block", block);
+
+  const displayImage = () => {
+    if (block.isNew) {
+      const blogURL = URL.createObjectURL(block?.blockData?.linkDisplayPicture);
+      return blogURL;
+    } else {
+      return block?.blockData?.linkDisplayPicture;
+    }
+  };
 
   return (
     <div
@@ -41,7 +39,7 @@ const LinkBlock = ({
       style={style}
       {...attributes}
     >
-      {blockCardSize === "SMALL" ? (
+      {block.blockCardSize === "SMALL" ? (
         <div className="flex gap-2">
           {mode === "edit" && (
             <Image
@@ -53,23 +51,23 @@ const LinkBlock = ({
             />
           )}
           <img
-            src={PLACEHOLDER_IMAGE}
+            src={displayImage()}
             alt="Link"
             className="w-[50px] h-[50px] object-cover rounded-lg"
           />
           <div>
             <div className="text-sm font-medium text-[#3D4966]">
-              {blockData?.title}
+              {block.blockData?.title}
             </div>
-            {blockData?.badge && (
+            {block.blockData?.badge && (
               <div
                 className="px-2 py-1 rounded-lg text-xs font-medium flex items-center"
                 style={{
-                  backgroundColor: blockData.badge.backgroundColor,
-                  color: blockData.badge.color,
+                  backgroundColor: block.blockData.badge.backgroundColor,
+                  color: block.blockData.badge.color,
                 }}
               >
-                {blockData.badge.text}
+                {block.blockData.badge.text}
               </div>
             )}
           </div>
@@ -77,7 +75,7 @@ const LinkBlock = ({
       ) : (
         <div className="flex flex-col gap-2">
           <img
-            src={PLACEHOLDER_IMAGE}
+            src={displayImage()}
             alt="Link"
             className="w-full h-[130px] object-cover rounded-lg"
           />
@@ -93,18 +91,18 @@ const LinkBlock = ({
                   {...listeners}
                 />
               )}
-              <div>{blockData?.title}</div>
+              <div>{block.blockData?.title}</div>
             </div>
 
-            {blockData?.badge && (
+            {block.blockData?.badge && (
               <div
                 className="px-2 py-1 rounded-lg text-xs font-medium flex items-center"
                 style={{
-                  backgroundColor: blockData.badge.backgroundColor,
-                  color: blockData.badge.color,
+                  backgroundColor: block.blockData.badge.backgroundColor,
+                  color: block.blockData.badge.color,
                 }}
               >
-                {blockData.badge.text}
+                {block.blockData.badge.text}
               </div>
             )}
           </div>

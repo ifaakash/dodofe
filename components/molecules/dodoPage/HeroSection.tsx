@@ -12,7 +12,6 @@ import Quote from "public/icons/Quote.svg";
 import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
 import Speaker from "public/icons/Speaker.svg";
-import { updateDodoPage, updateDodoPageProfile } from "api";
 import { useDispatch, useSelector } from "react-redux";
 import Waves from "public/assets/Waves.gif";
 import {
@@ -20,6 +19,7 @@ import {
   setDodoPageName,
   setDodoPageThought,
   setSocialLinks,
+  updateDodoPageAudioBio,
 } from "store/slice/dodoPageSlice";
 
 const HeroSection = ({
@@ -34,12 +34,14 @@ const HeroSection = ({
   dodoPageDetails: any;
 }) => {
   const dispatch = useDispatch();
+  const state = useSelector((state: any) => state.dodoPage);
+
   const [editPageName, setEditPageName] = useState(false);
   const [showThoughtsPopup, setShowThoughtsPopup] = useState(false);
   const [thaughtEditMode, setThaughtEditMode] = useState(false);
   const [thaught, setThaught] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
-  const [pageName, setPageName] = useState("");
+  const [pageName, setPageName] = useState<string | null>(state.dodoPageName);
   const [addAudioBioPopup, setAddAudioBioPopup] = useState(false);
   const [dodoPageImage, setDodoPageImage] = useState("");
   const ImageInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +55,7 @@ const HeroSection = ({
   const analyserRef = useRef<AnalyserNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
@@ -64,17 +67,8 @@ const HeroSection = ({
   }, [thaught]);
 
   const handleNameSave = () => {
-    // const res = await updateDodoPage({
-    //   id: dodoPageId,
-    //   userId: userId,
-    //   name: dodoPageName,
-    // });
-
-    dispatch(setDodoPageName(pageName));
-
-    // if (res?.success) {
-    //   console.log("Dodo page name updated");
-    // }
+    dispatch(setDodoPageName(pageName || ""));
+    setEditPageName(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -84,31 +78,11 @@ const HeroSection = ({
   };
 
   const handleSubmitThought = async () => {
-    // const res = await updateDodoPage({
-    //   id: dodoPageId,
-    //   userId: userId,
-    //   thoughts: thaught,
-    // });
-    // if (res?.success) {
-    //   console.log("Thought saved");
-    //   setShowThoughtsPopup(false);
-    // }
     dispatch(setDodoPageThought(thaught));
     setShowThoughtsPopup(false);
   };
 
   const handleDeleteThought = async () => {
-    console.log("delete");
-    // const res = await updateDodoPage({
-    //   id: dodoPageId,
-    //   userId: userId,
-    //   thoughts: "",
-    // });
-    // if (res?.success) {
-    //   console.log("Thought Deleted");
-    //   setThaught("");
-    //   setShowThoughtsPopup(false);
-    // }
     dispatch(setDodoPageThought(""));
     setShowThoughtsPopup(false);
   };
@@ -121,12 +95,11 @@ const HeroSection = ({
       return;
     }
 
-    console.log("FIle", file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+
+    dispatch(updateDodoPageProfilePicture(file));
   };
-
-  const state = useSelector((state: any) => state.dodoPage);
-
-  console.log("state", state);
 
   const startRecording = async () => {
     try {
@@ -195,6 +168,21 @@ const HeroSection = ({
     }
   };
 
+  const handleSaveAudioBio = () => {
+    if (!audioBlob) {
+      console.log("No audio recorded yet");
+      return;
+    }
+
+    // Create a File object from the Blob
+    const audioFile = new File([audioBlob], "audio-bio.wav", {
+      type: "audio/wav",
+    });
+    console.log("audioFile", audioFile);
+    dispatch(updateDodoPageAudioBio(audioFile));
+    setAddAudioBioPopup(false);
+  };
+
   return (
     <div
       className={`flex flex-col items-center ${
@@ -210,10 +198,10 @@ const HeroSection = ({
           ref={ImageInputRef}
         />
         <div onClick={() => mode === "edit" && ImageInputRef.current?.click()}>
-          {dodoPageImage ? (
+          {imagePreview || state.dodoPageImage ? (
             <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
               <Image
-                src={dodoPageImage}
+                src={imagePreview || state.dodoPageImage}
                 alt="Dodo Page Image"
                 width={88}
                 height={88}
@@ -247,11 +235,11 @@ const HeroSection = ({
           {editPageName ? (
             <input
               type="text"
-              value={pageName}
+              value={editPageName ? pageName : state.dodoPageName}
               onChange={(e) => setPageName(e.target.value)}
               onBlur={handleNameSave}
               onKeyDown={handleKeyDown}
-              className="bg-transparent text-xl w-36 outline-none text-black font-semibold text-center w-fit"
+              className="bg-transparent text-xl min-w-36 w-fit outline-none text-black font-semibold text-center"
               autoFocus
             />
           ) : (
@@ -400,7 +388,7 @@ const HeroSection = ({
                 </span>
               </div>
               <div className="flex gap-3">
-                <button 
+                <button
                   className="border-[1px] border-[#979EAD] rounded-full flex items-center gap-1 py-[14px] pl-[26px] pr-10"
                   onClick={playAudio}
                   disabled={!audioBlob}
@@ -410,7 +398,11 @@ const HeroSection = ({
                   </span>
                   <Image src={Speaker} alt="Speaker" />
                 </button>
-                <button className="w-full bg-brandPrimary text-white font-semibold rounded-full">
+                <button
+                  className="w-full bg-brandPrimary text-white font-semibold rounded-full"
+                  onClick={handleSaveAudioBio}
+                  disabled={!audioBlob}
+                >
                   Save
                 </button>
               </div>

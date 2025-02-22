@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { addBlock } from "store/slice/blocksSlice";
 import { updateBlock } from "api";
 import { toast } from "react-toastify";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 const AddHeading = ({
   dodoPageId,
   userId,
@@ -29,29 +29,33 @@ const AddHeading = ({
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    const res = await createBlock({
-      dodoPageId: dodoPageId,
-      blockType: "HEADING",
-      blockCardSize: "SMALL",
-      blockData: {
-        title: heading,
-      },
-      userId: userId,
-    });
-    if (res.success) {
-      router.push("/dodo/" + dodopageUrl);
-    }
-
-    // dispatch(addBlock({
-    //   id: uuidv4(),
+    // const res = await createBlock({
+    //   dodoPageId: dodoPageId,
     //   blockType: "HEADING",
     //   blockCardSize: "SMALL",
     //   blockData: {
     //     title: heading,
     //   },
     //   userId: userId,
-    //   dodoPageId: dodoPageId,
-    // }))
+    // });
+    // if (res.success) {
+    //   router.push("/dodo/" + dodopageUrl);
+    // }
+
+    dispatch(
+      addBlock({
+        id: uuidv4(),
+        blockType: "HEADING",
+        blockCardSize: "SMALL",
+        blockData: {
+          title: heading,
+        },
+        userId: userId,
+        dodoPageId: dodoPageId,
+        isNew: true,
+      })
+    );
+    router.back();
   };
 
   const handleUpdateBlock = async () => {
@@ -66,7 +70,6 @@ const AddHeading = ({
       toast.success("Block updated successfully");
       router.push("/dodo/" + dodopageUrl);
     }
-
   };
 
   return (

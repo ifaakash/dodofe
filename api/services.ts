@@ -1,5 +1,6 @@
-import { Get, Patch, Post, Put, Delete } from "api";
+import { Get, Patch, Post, Put, Delete, BASE_URL } from "api";
 import API_CONSTANTS from "./constants";
+import axios from "axios";
 
 export const sendOtp = async (payload: any): Promise<any> =>
   Post<any>(API_CONSTANTS.sendOtp, payload);
@@ -87,22 +88,19 @@ export const getInvoiceStats = async (payload: any): Promise<any> =>
 export const addSubHeading = async (payload: any): Promise<any> =>
   Put<any>(API_CONSTANTS.addSubHeading, payload);
 
-// to be fixed
-export const createBlockWithFormData = async (
-  formData: FormData,
-  blockData: any
-): Promise<any> => {
-  Object.keys(blockData).forEach((key) => {
-    if (typeof blockData[key] === "object") {
-      formData.append(key, JSON.stringify(blockData[key]));
-    } else {
-      formData.append(key, blockData[key]);
-    }
-  });
+// export const createBlockWithMedia = async (payload: any): Promise<any> =>
+//   Post<any>(API_CONSTANTS.createBlock, payload, {
+//     "Content-Type": "multipart/form-data",
+//   });
 
-  return Post<any>(API_CONSTANTS.createBlock, formData, {
-    "Content-Type": "multipart/form-data",
-  });
+export const createBlockWithMedia = async (payload: any): Promise<any> => {
+  const res = await axios.post(
+    `${BASE_URL}${API_CONSTANTS.createBlock}`,
+    payload,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
 };
 
 export const updateBlockWithFormData = async (
@@ -117,11 +115,9 @@ export const updateBlockWithFormData = async (
     }
   });
 
-  return Patch<any>(
-    API_CONSTANTS.updateBlock,
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
-  );
+  return Patch<any>(API_CONSTANTS.updateBlock, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
 
 export const createBlock = async (payload: any): Promise<any> =>
@@ -135,39 +131,31 @@ export const getDodoPageByURL = async (url: any): Promise<any> =>
       url
   );
 
-export const reorderBlocks = async (formattedBlocks: { dodoPageId: string; blocks: { blockId: string; newIndex: number; }[] }): Promise<{ success: boolean; message?: string }> => {
-    const response = await fetch('/api/reorderBlocks', {
-        method: 'POST',
-        body: JSON.stringify(formattedBlocks),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+export const reorderBlocks = async (formattedBlocks: {
+  dodoPageId: string;
+  blocks: { blockId: string; newIndex: number }[];
+}): Promise<{ success: boolean; message?: string }> => {
+  return Post<any>(API_CONSTANTS.reorderBlocks, formattedBlocks);
+};
 
-    if (!response.ok) {
-        throw new Error('Failed to reorder blocks');
+export const updateDodoPageMedia = async (payload: any): Promise<any> => {
+  const res = await axios.patch(
+    `${BASE_URL}${API_CONSTANTS.updateDodoPage}`,
+    payload,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     }
+  );
 
-    return response.json(); // Ensure this returns an object with a 'success' property
+  return res.data;
 };
 
-export const updateDodoPage = async (payload: any): Promise<any> =>
+export const updateDodoPage = async (payload: any): Promise<any> => {
   Patch<any>(API_CONSTANTS.updateDodoPage, payload);
-
-export const updateDodoPageProfile = async (
-  formData: FormData
-): Promise<any> => {
-  // Add request logging
-  console.log("Making request to:", API_CONSTANTS.updateDodoPage);
-
-  return Patch<any>(API_CONSTANTS.updateDodoPage, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      // You might need to remove the Content-Type header completely
-      // as the browser will set it automatically with the boundary
-    },
-  });
 };
+
 export const archiveBlock = async (payload: any): Promise<any> =>
   Post<any>(API_CONSTANTS.archiveBlock, payload);
 

@@ -2,13 +2,32 @@ import { configureStore } from "@reduxjs/toolkit";
 import invoiceReducer from "./slice/invoiceSlice";
 import dodoPageReducer from "./slice/dodoPageSlice";
 import blocksReducer from "./slice/blocksSlice";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { combineReducers } from "redux";
 
-export const store = configureStore({
-  reducer: {
-    invoice: invoiceReducer,
-    dodoPage: dodoPageReducer,
-    blocks: blocksReducer,
-  },
+const rootReducer = combineReducers({
+  invoice: invoiceReducer,
+  dodoPage: dodoPageReducer,
+  blocks: blocksReducer,
 });
 
+const persistConfig = {
+  key: "root",
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Redux Persist saves non-serializable state
+    }),
+});
+
+export const persistor = persistStore(store);
+
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

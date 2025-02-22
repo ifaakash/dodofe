@@ -6,10 +6,12 @@ import Switcher from "@components/atoms/Switcher/Switcher";
 import AddImageIcon from "public/icons/addImage.svg";
 import Image from "next/image";
 import EditPen from "public/icons/EditPen.svg";
-import { createBlockWithFormData, updateBlockWithFormData } from "api";
+import { createBlockWithMedia, updateBlockWithFormData } from "api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
+import { addBlock } from "store/slice/blocksSlice";
+import { useDispatch } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 const badges = [
   {
     text: "Sunflower",
@@ -47,6 +49,7 @@ const AddLink = ({
   blockData?: any;
 }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
     badges.find(
       (badge) => badge.backgroundColor === blockData?.badge?.backgroundColor
@@ -72,50 +75,65 @@ const AddLink = ({
 
   const handleSubmit = async () => {
     try {
-      const formData = new FormData();
+      // const formData = new FormData();
 
-      // Add all required fields to formData
-      formData.append("blockType", "LINK");
-      formData.append("blockData[title]", title);
-      formData.append("blockData[url]", dodopageUrl);
+      // // Add all required fields to formData
+      // formData.append("blockType", "LINK");
+      // formData.append("blockData[title]", title);
+      // formData.append("blockData[url]", dodopageUrl);
+      // formData.append("dodoPageId", dodoPageId);
+      // formData.append("userId", userId);
 
-      if (badgeText) {
-        formData.append("blockData[badge][text]", badgeText);
+      // if (badgeText) {
+      //   formData.append("blockData[badge][text]", badgeText);
 
-        const selectedBadge = badges.find(
-          (badge) => badge.text === selectedBadgeCategory
-        );
-        formData.append(
-          "blockData[badge][backgroundColor]",
-          selectedBadge?.backgroundColor || ""
-        );
-        formData.append("blockData[badge][color]", selectedBadge?.color || "");
-      }
+      //   const selectedBadge = badges.find(
+      //     (badge) => badge.text === selectedBadgeCategory
+      //   );
+      //   formData.append(
+      //     "blockData[badge][backgroundColor]",
+      //     selectedBadge?.backgroundColor || ""
+      //   );
+      //   formData.append("blockData[badge][color]", selectedBadge?.color || "");
+      // }
 
-      if (uploadedImage) {
-        formData.append("linkDisplayPicture", uploadedImage);
-      }
+      // if (uploadedImage) {
+      //   formData.append("linkDisplayPicture", uploadedImage);
+      // }
 
-      const res = await createBlockWithFormData(formData, {
-        dodoPageId,
-        userId,
-        dodopageUrl,
-        blockCardSize: displayType,
-      });
-      if (res?.success) {
-        toast.success("Link added successfully");
-        router.push(`/dodo/${dodopageUrl}`);
-      }
+
+
+      dispatch(
+        addBlock({
+          id: uuidv4(),
+          blockType: "LINK",
+          blockCardSize: displayType as "SMALL" | "MEDIUM" | "LARGE",
+          blockData: {
+            title,
+            url: link,
+            linkDisplayPicture: uploadedImage as File,
+            badge: {
+              text: badgeText,
+              backgroundColor: selectedBadgeCategory,
+              color:
+                badges.find((badge) => badge.text === selectedBadgeCategory)
+                  ?.color || "",
+            },
+          },
+          hasMedia: uploadedImage ? true : false,
+          isNew: true,
+        })
+      );
+      router.back()
+      // const res = await createBlockWithMedia(formData);
+      // if (res?.success) {
+      //   toast.success("Link added successfully");
+      //   // router.push(`/dodo/${dodopageUrl}`);
+      // }
     } catch (error) {
       console.error("Error uploading:", error);
     }
   };
-
-  console.log({
-    userId,
-    blockId: blockData?.blockId,
-  });
-
   const handleUpdate = async () => {
     try {
       const formData = new FormData();

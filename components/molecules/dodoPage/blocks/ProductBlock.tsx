@@ -4,17 +4,13 @@ import DragIcon from "public/icons/drag.svg";
 import { useSortable } from "@dnd-kit/sortable";
 
 interface ProductBlockProps {
-  productData: any;
+  block: any;
   mode: string;
-  id?: string;
 }
 
-const PLACEHOLDER_IMAGE = "https://picsum.photos/200";
-
 const ProductBlock: React.FC<ProductBlockProps> = ({
-  productData,
+  block,
   mode,
-  id,
 }) => {
   const {
     attributes,
@@ -23,7 +19,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: id || '' });
+  } = useSortable({ id: block.id });
 
   const style = {
     transform: transform
@@ -31,6 +27,18 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
       : undefined,
     transition,
   };
+
+  const displayImage = () => {
+    if (block.isNew) {
+      const blogURL = URL.createObjectURL(block.blockData.productImage);
+      return blogURL;
+    } else {
+      return block.blockData.productImage;
+    }
+  };
+
+
+  console.log('block,', block)
 
   return (
     <div
@@ -40,12 +48,12 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
       className={`p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200`}
     >
       <div className="flex flex-col items-center space-y-3">
-        <div className="relative w-full max-w-[200px] aspect-square">
+        <div className="relative w-full h-[130px]">
           <Image
-            src={productData?.imageUrl || PLACEHOLDER_IMAGE}
-            alt={productData?.title}
+            src={displayImage()}
+            alt={block.blockData?.title}
             fill
-            className="object-contain rounded-lg"
+            className="rounded-lg object-cover"
           />
         </div>
         <div
@@ -56,7 +64,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
             <Image src={DragIcon} {...listeners} alt="Drag handle" width={20} height={20} />
           )}
           <span className="text-gray-800 font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">
-            {productData?.title}
+            {block.blockData?.title}
           </span>
         </div>
       </div>

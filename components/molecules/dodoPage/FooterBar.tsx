@@ -12,12 +12,20 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { updateDodoPage } from "api/services";
+import { resetUnPublishedBlocks } from "store/slice/blocksSlice";
+import {
+  createBlock,
+  createBlockWithMedia,
+  deleteBlock,
+  reorderBlocks,
+  updateDodoPage,
+  updateDodoPageMedia,
+} from "api/services";
 import { loadState } from "@utils/localStorage";
-import { STORAGE_CONSTANTS } from "@utils/constants"; 
-import { setUnsavedChanges } from "store/slice/dodoPageSlice";
+import { STORAGE_CONSTANTS } from "@utils/constants";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { resetDodoPage } from "store/slice/dodoPageSlice";
 
 const BlockModal = () => {
   const { dodopageUrl } = useParams();
@@ -75,46 +83,118 @@ const BlockModal = () => {
   );
 };
 
-
-const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, userId: string, dodoPageId: string}) => {
+const FooterBar = ({
+  mode,
+  url,
+  userId,
+  dodoPageId,
+}: {
+  mode: string;
+  url: string;
+  userId: string;
+  dodoPageId: string;
+}) => {
   const [isOpened, setIsOpened] = useState(false);
-  const { dodoPageName, dodoPageThought, dodoPageImage, socialLinks, unsavedChanges } = useSelector((state: RootState) => state.dodoPage);
-  const dispatch = useDispatch();
-  console.log({
+  const {
     dodoPageName,
     dodoPageThought,
     dodoPageImage,
     socialLinks,
-    unsavedChanges
-  })
-
-  console.log('userId', userId)
+    unsavedChanges,
+    audioBio,
+  } = useSelector((state: RootState) => state.dodoPage);
+  const dispatch = useDispatch();
+  const blockState = useSelector((state: RootState) => state.blocks);
 
   const handlePublish = async () => {
-    const dataToSend = {
-      id: dodoPageId,
-      userId: userId,
-      name: dodoPageName,
-      thoughts: dodoPageThought,
-      dodoPageImage: dodoPageImage,
-      socialLinks: socialLinks,
-    };
+    if (blockState.newBlocksAdded) {
+      console.log("newBlocksAdded");
+      const newBlocks = blockState.blocks.filter((block) => block.isNew);
 
-    // Filter out null or undefined values
-    const filteredData = Object.fromEntries(
-      Object.entries(dataToSend).filter(([_, value]) => value != null)
-    );
-    
-    
+      newBlocks.forEach(async (block) => {
+        switch (block.blockType) {
+          case "LINK":
+            const formData = new FormData();
+            formData.append("dodoPageId", dodoPageId);
+            formData.append("blockType", "LINK");
+            formData.append("blockCardSize", block.blockCardSize);
+            formData.append("userId", userId);
+            formData.append("blockData[title]", block.blockData.title);
+            formData.append("blockData[url]", block.blockData.url);
+            formData.append(
+              "linkDisplayPicture",
+              block.blockData.linkDisplayPicture
+            );
 
-    const res = await updateDodoPage(filteredData);
-    if(res?.success) {
-      console.log("Published");
-      dispatch(setUnsavedChanges(false));
-      toast.success("Published successfully");
+            formData.append(
+              "blockData[badge][text]",
+              block.blockData.badge.text
+            );
+            formData.append(
+              "blockData[badge][backgroundColor]",
+              block.blockData.badge.backgroundColor
+            );
+            formData.append(
+              "blockData[badge][color]",
+              block.blockData.badge.color
+            );
+
+            const createLink = await createBlockWithMedia(formData);
+            console.log("createLink", createLink);
+            break;
+
+          case "PRODUCT":
+            const formDataProduct = new FormData();
+            formDataProduct.append(
+              "productImage",
+              block.blockData.productImage
+            );
+            formDataProduct.append("blockData[title]", block.blockData.title);
+            formDataProduct.append("blockData[link]", block.blockData.link);
+            formDataProduct.append("dodoPageId", dodoPageId);
+            formDataProduct.append("blockType", "PRODUCT");
+            formDataProduct.append("blockCardSize", block.blockCardSize);
+            formDataProduct.append("userId", userId);
+
+            const createProduct = await createBlockWithMedia(formDataProduct);
+            console.log("createProduct", createProduct);
+            break;
+
+          default:
+            const createNewBlock = await createBlock(block);
+            console.log("createNewBlock", createNewBlock);
+            break;
+        }
+      });
     }
-  }
-  
+
+    if (blockState.isReordered) {
+      console.log("isReordered");
+      await reorderBlocks({
+        dodoPageId: dodoPageId,
+        blocks: blockState.blocks.map((block) => ({
+          blockId: block.id as string,
+          newIndex: block.blockPositionalIndex as number,
+        })),
+      });
+    }
+
+    if (blockState.blocksToBeDeleted) {
+      console.log("blocksToBeDeleted");
+      const blocksToBeDeleted = blockState.blocks.filter(
+        (block) => block.toRemove
+      );
+
+      blocksToBeDeleted.forEach(async (block) => {
+        await deleteBlock({ blockId: block.id as string, userId: userId });
+      });
+    }
+
+    dispatch(resetDodoPage());
+    dispatch(resetUnPublishedBlocks());
+    window.location.href = `/dodo/${url}`;
+  };
+
   return (
     <div>
       {isOpened && <BlockModal />}
@@ -132,7 +212,10 @@ const FooterBar = ({mode, url, userId, dodoPageId}: {mode: string, url: string, 
           <Plus size={32} />
         </div>
 
-        <div onClick={handlePublish} className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary">
+        <div
+          onClick={handlePublish}
+          className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary"
+        >
           Publish
         </div>
       </div>

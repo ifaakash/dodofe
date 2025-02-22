@@ -41,7 +41,9 @@ import { Block } from "types";
 import { addBlocksToStore } from "store/slice/blocksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { reorderBlocks } from "api";
+// import { reorderBlocks } from "api";
+import { reorderBlocks } from "store/slice/blocksSlice";
+import { dodoStoreInitialisation } from "store/slice/dodoPageSlice";
 
 const DodoPageDashboard = () => {
   const searchParams = useSearchParams();
@@ -52,6 +54,7 @@ const DodoPageDashboard = () => {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [activeId, setActiveId] = useState(null);
   const dispatch = useDispatch();
+
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -68,27 +71,39 @@ const DodoPageDashboard = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const dodoPageFromStore = useSelector((state: RootState) => state.dodoPage);
   const existingBlocks = useSelector((state: RootState) => state.blocks.blocks);
 
-  // useEffect(() => {
-  //   if (existingBlocks.length === 0) {
-  //     getDodoPageByURL(dodopageUrl).then((res) => {
-  //       setDodoPageDetails(res?.dodoPage);
-  //       setBlocks(res?.dodoPage?.blocks || []);
-  //       dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
-  //     });
-  //   } else {
-  //     setBlocks(existingBlocks);
-  //   }
-  // }, [dodopageUrl, existingBlocks.length, dispatch]);
-
   useEffect(() => {
-    getDodoPageByURL(dodopageUrl).then((res) => {
-      setDodoPageDetails(res?.dodoPage);
-      setBlocks(res?.dodoPage?.blocks || []);
-      dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
-    });
-  }, []);
+    if (!dodoPageFromStore.dodoPageName || existingBlocks.length === 0) {
+      getDodoPageByURL(dodopageUrl).then((res) => {
+        console.log("Dodo Page Fetched");
+        setDodoPageDetails(res?.dodoPage);
+        setBlocks(res?.dodoPage?.blocks || []);
+        dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
+        dispatch(
+          dodoStoreInitialisation({
+            dodoPageId: res?.dodoPage?.id,
+            dodoPageImage: res?.dodoPage?.profilePicture,
+            dodoPageName: res?.dodoPage?.name,
+            dodoPageThought: res?.dodoPage?.thoughts,
+            socialLinks: res?.dodoPage?.socialLinks,
+            audioBio: res?.dodoPage?.audioBio,
+          })
+        );
+      });
+    } else {
+      setDodoPageDetails({
+        id: dodoPageFromStore.dodoPageId,
+        profilePicture: dodoPageFromStore.dodoPageImage,
+        name: dodoPageFromStore.dodoPageName,
+        thoughts: dodoPageFromStore.dodoPageThought,
+        socialLinks: dodoPageFromStore.socialLinks,
+        audioBio: dodoPageFromStore.audioBio,
+      });
+      setBlocks(existingBlocks);
+    }
+  }, [dodopageUrl, dispatch, dodoPageFromStore, existingBlocks]);
 
   const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
 
@@ -114,7 +129,7 @@ const DodoPageDashboard = () => {
       const formattedBlocks = {
         dodoPageId: dodoPageDetails.id,
         blocks: updatedBlocks
-          .filter(block => block.id !== undefined)
+          .filter((block) => block.id !== undefined)
           .map((block, index) => ({
             blockId: block.id as string,
             newIndex: index,
@@ -122,37 +137,39 @@ const DodoPageDashboard = () => {
       };
 
       try {
-        const res = await reorderBlocks(formattedBlocks);
-        if (res.success) {
-          setBlocks(updatedBlocks);
-        }
+        dispatch(reorderBlocks(formattedBlocks));
       } catch (error) {
         console.error("Error reordering blocks:", error);
       }
     }
   };
 
+  console.log("blocks", blocks);
+
   const renderBlock = (block: Block, index: number) => {
+    // if block.toRemove is true, then don't render the block
+    if (block.toRemove) {
+      return null;
+    }
+
+    // if (block.toArchive) {
+    //   return null;
+    // }
+
+    // if(!block.isActive){
+    //   return null
+    // }
+
     let content;
     switch (block.blockType) {
       case "LINK":
         content =
           mode === "edit" ? (
             <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-              <LinkBlock
-                mode={mode}
-                blockData={block.blockData}
-                id={block.id}
-                blockCardSize={block.blockCardSize}
-              />
+              <LinkBlock mode={mode} block={block} />
             </Link>
           ) : (
-            <LinkBlock
-              mode={mode}
-              blockData={block.blockData}
-              id={block.id}
-              blockCardSize={block.blockCardSize}
-            />
+            <LinkBlock mode={mode} block={block} />
           );
         break;
       case "POLL":
@@ -166,7 +183,11 @@ const DodoPageDashboard = () => {
               />
             </Link>
           ) : (
-            <PollBlock mode={mode} blockData={block.blockData} id={block.id as string} />
+            <PollBlock
+              mode={mode}
+              blockData={block.blockData}
+              id={block.id as string}
+            />
           );
         break;
       case "HEADING":
@@ -206,67 +227,17 @@ const DodoPageDashboard = () => {
           );
         break;
       case "PRODUCT":
-        const nextBlock = blocks[index + 1];
-        if (nextBlock?.blockType === "PRODUCT") {
-          content = (
-            <div className="grid grid-cols-2 gap-[10px] w-full">
-              {mode === "edit" ? (
-                <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-                  <ProductBlock
-                    productData={block.blockData}
-                    mode={mode}
-                    id={block.blockData.id}
-                  />
-                </Link>
-              ) : (
-                <div>
-                  <ProductBlock
-                    productData={block.blockData}
-                    mode={mode}
-                    id={block.blockData.id}
-                  />
-                </div>
-              )}
-              {mode === "edit" ? (
-                <Link href={`/dodo/${url}/editBlock/${nextBlock.id}`}>
-                  <ProductBlock
-                    productData={nextBlock.blockData}
-                    id={nextBlock.blockData.id}
-                    mode={mode}
-                  />
-                </Link>
-              ) : (
-                <div>
-                  <ProductBlock
-                    productData={nextBlock.blockData}
-                    mode={mode}
-                    id={nextBlock.blockData.id}
-                  />
-                </div>
-              )}
-            </div>
-          );
-        } else {
-          content = (
-            <div className="w-full">
-              {mode === "edit" ? (
-                <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-                  <ProductBlock
-                    productData={block.blockData}
-                    mode={mode}
-                    id={block.blockData.id}
-                  />
-                </Link>
-              ) : (
-                <ProductBlock
-                  productData={block.blockData}
-                  mode={mode}
-                  id={block.blockData.id}
-                />
-              )}
-            </div>
-          );
-        }
+        content = (
+          <div className="w-full">
+            {mode === "edit" ? (
+              <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                <ProductBlock block={block} mode={mode} />
+              </Link>
+            ) : (
+              <ProductBlock block={block} mode={mode} />
+            )}
+          </div>
+        );
         break;
       default:
         return null;
@@ -304,7 +275,9 @@ const DodoPageDashboard = () => {
               onDragStart={handleDragStart}
             >
               <SortableContext
-                items={blocks.map((block) => block.id).filter((id): id is string => id !== undefined)}
+                items={blocks
+                  .map((block) => block.id)
+                  .filter((id): id is string => id !== undefined)}
                 strategy={verticalListSortingStrategy}
               >
                 {blocks.map((block, index) => renderBlock(block, index))}

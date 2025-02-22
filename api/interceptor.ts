@@ -6,20 +6,17 @@ import { loadState } from 'utils/localStorage';
 
 import Router from 'next/router';
 
-<<<<<<< HEAD
-export const BASE_URL = 'http://13.202.63.227/api/v1';
-=======
+// export const BASE_URL = 'http://13.202.63.227/api/v1';
 // export const BASE_URL = 'http://localhost:3002/api/v1/';
 export const BASE_URL = 'http://192.168.1.131:3002/api/v1/';
 
->>>>>>> f8ae5db (Blocks + DodoPage Done)
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
 // http://localhost:3000
 
 const Request = axios.create({
     baseURL: BASE_URL,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }, // TODO: FIX THIS
 });
 
 const serializeError = (error: AxiosError): any => {

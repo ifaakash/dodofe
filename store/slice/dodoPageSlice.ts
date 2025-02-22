@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface DodoPageState {
-  dodoPageImage: string | null;
+  dodoPageId: string | null;
+  dodoPageImage: File | null | string;
   dodoPageName: string | null;
   dodoPageThought: string | null;
   socialLinks: { key: string; value: string; }[] | null;
-  audioBio: string | null;
-  unsavedChanges: boolean;
+  audioBio: File | null | string;
+  unsavedChanges?: boolean;
 }
 const initialState: DodoPageState = {
+  dodoPageId: null,
   dodoPageImage: null,
   dodoPageName: null,
   dodoPageThought: null,
@@ -21,11 +23,25 @@ const dodoPageSlice = createSlice({
   name: "dodoPage",
   initialState,
   reducers: {
-    updateDodoPageProfilePicture: (state, action: PayloadAction<string | null>) => {
+    dodoStoreInitialisation: (state, action: PayloadAction<DodoPageState>) => {
+      state.dodoPageId = action.payload.dodoPageId || null;
+      state.dodoPageImage = action.payload.dodoPageImage || null;
+      state.dodoPageName = action.payload.dodoPageName || null;
+      state.dodoPageThought = action.payload.dodoPageThought || null;
+      state.socialLinks = action.payload.socialLinks || null;
+      state.audioBio = action.payload.audioBio || null;
+    },
+    updateDodoPageProfilePicture: (state, action: PayloadAction<File | null | string>) => {
       state.dodoPageImage = action.payload;
       state.unsavedChanges = true;
     },
+    updateDodoPageAudioBio: (state, action: PayloadAction<File | null | string>) => {
+      console.log('action.payload', action.payload);
+      state.audioBio = action.payload;
+      state.unsavedChanges = true;
+    },
     setDodoPageName: (state, action: PayloadAction<string>) => {
+      console.log('Page Name', action.payload);
       state.dodoPageName = action.payload;
       state.unsavedChanges = true;
     },
@@ -37,8 +53,13 @@ const dodoPageSlice = createSlice({
       state.socialLinks = action.payload;
       state.unsavedChanges = true;
     },
-    setUnsavedChanges: (state, action: PayloadAction<boolean>) => {
-      state.unsavedChanges = action.payload;
+    resetDodoPage: (state) => {
+      state.dodoPageImage = null;
+      state.dodoPageName = null;
+      state.dodoPageThought = null;
+      state.socialLinks = null;
+      state.audioBio = null;
+      state.unsavedChanges = false;
     },
   },
 });
@@ -47,6 +68,8 @@ export const {
   setDodoPageName,
   setDodoPageThought,
   setSocialLinks,
-  setUnsavedChanges,
+  updateDodoPageAudioBio,
+  dodoStoreInitialisation,
+  resetDodoPage,
 } = dodoPageSlice.actions;
 export default dodoPageSlice.reducer;
