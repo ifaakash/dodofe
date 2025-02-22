@@ -75,76 +75,74 @@ const DodoPageDashboard = () => {
   const existingBlocks = useSelector((state: RootState) => state.blocks.blocks);
 
   useEffect(() => {
-    if (!dodoPageFromStore.dodoPageName || existingBlocks.length === 0) {
-      getDodoPageByURL(dodopageUrl).then((res) => {
-        console.log("Dodo Page Fetched");
-        setDodoPageDetails(res?.dodoPage);
-        setBlocks(res?.dodoPage?.blocks || []);
-        dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
-        dispatch(
-          dodoStoreInitialisation({
-            dodoPageId: res?.dodoPage?.id,
-            dodoPageImage: res?.dodoPage?.profilePicture,
-            dodoPageName: res?.dodoPage?.name,
-            dodoPageThought: res?.dodoPage?.thoughts,
-            socialLinks: res?.dodoPage?.socialLinks,
-            audioBio: res?.dodoPage?.audioBio,
-          })
-        );
-      });
-    } else {
-      setDodoPageDetails({
-        id: dodoPageFromStore.dodoPageId,
-        profilePicture: dodoPageFromStore.dodoPageImage,
-        name: dodoPageFromStore.dodoPageName,
-        thoughts: dodoPageFromStore.dodoPageThought,
-        socialLinks: dodoPageFromStore.socialLinks,
-        audioBio: dodoPageFromStore.audioBio,
-      });
-      setBlocks(existingBlocks);
-    }
+      if (!dodoPageFromStore.dodoPageName || existingBlocks.length === 0) {
+          getDodoPageByURL(dodopageUrl).then((res) => {
+              setDodoPageDetails(res?.dodoPage);
+              setBlocks(res?.dodoPage?.blocks || []);
+              dispatch(addBlocksToStore(res?.dodoPage?.blocks || []));
+              dispatch(
+                  dodoStoreInitialisation({
+                      dodoPageId: res?.dodoPage?.id,
+                      dodoPageImage: res?.dodoPage?.profilePicture,
+                      dodoPageName: res?.dodoPage?.name,
+                      dodoPageThought: res?.dodoPage?.thoughts,
+                      socialLinks: res?.dodoPage?.socialLinks,
+                      audioBio: res?.dodoPage?.audioBio,
+                  })
+              );
+          });
+      } else {
+          setDodoPageDetails({
+              id: dodoPageFromStore.dodoPageId,
+              profilePicture: dodoPageFromStore.dodoPageImage,
+              name: dodoPageFromStore.dodoPageName,
+              thoughts: dodoPageFromStore.dodoPageThought,
+              socialLinks: dodoPageFromStore.socialLinks,
+              audioBio: dodoPageFromStore.audioBio,
+          });
+          setBlocks(existingBlocks);
+      }
   }, [dodopageUrl, dispatch, dodoPageFromStore, existingBlocks]);
 
   const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
 
   const handleDragStart = (event: any) => {
-    setActiveId(event.active.id);
+      setActiveId(event.active.id);
   };
 
   const handleDragEnd = async (event: any) => {
-    setActiveId(null);
-    const { active, over } = event;
+      setActiveId(null);
+      const { active, over } = event;
 
-    if (active.id !== over.id) {
-      const oldIndex = blocks.findIndex((item) => item.id === active.id);
-      const newIndex = blocks.findIndex((item) => item.id === over.id);
+      if (active.id !== over.id) {
+          const oldIndex = blocks.findIndex((item) => item.id === active.id);
+          const newIndex = blocks.findIndex((item) => item.id === over.id);
 
-      const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
-        (block, index) => ({
-          ...block,
-          blockPositionalIndex: index,
-        })
-      );
+          const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
+              (block, index) => ({
+                  ...block,
+                  blockPositionalIndex: index,
+              })
+          );
 
-      const formattedBlocks = {
-        dodoPageId: dodoPageDetails.id,
-        blocks: updatedBlocks
-          .filter((block) => block.id !== undefined)
-          .map((block, index) => ({
-            blockId: block.id as string,
-            newIndex: index,
-          })),
-      };
+          const formattedBlocks = {
+              dodoPageId: dodoPageDetails.id,
+              blocks: updatedBlocks
+                  .filter((block) => block.id !== undefined)
+                  .map((block, index) => ({
+                      blockId: block.id as string,
+                      newIndex: index,
+                  })),
+          };
 
-      try {
-        dispatch(reorderBlocks(formattedBlocks));
-      } catch (error) {
-        console.error("Error reordering blocks:", error);
+          try {
+              dispatch(reorderBlocks(formattedBlocks));
+          } catch (error) {
+              console.error("Error reordering blocks:", error);
+          }
       }
-    }
   };
 
-  console.log("blocks", blocks);
 
   const renderBlock = (block: Block, index: number) => {
     // if block.toRemove is true, then don't render the block

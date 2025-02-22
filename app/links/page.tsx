@@ -171,30 +171,28 @@ function Links() {
   };
 
   useEffect(() => {
-    console.log("chec user", userId);
-    getUserDetails(userId).then((res) => {
-      console.log("res", res);
-      setUserDetails(res);
+      getUserDetails(userId).then((res) => {
+          setUserDetails(res);
 
-      fetchAudioBio(res);
+          fetchAudioBio(res);
 
-      setSocialLinks(res?.socialLinks || {});
-      setDodoPageName(res?.dodoPageName || res?.name);
+          setSocialLinks(res?.socialLinks || {});
+          setDodoPageName(res?.dodoPageName || res?.name);
 
-      getLinkList(userId)
-        .then((res) => {
-          setLinkList(res);
-        })
-        .catch(() => {
-          console.log("error fetching links");
-        });
-    });
+          getLinkList(userId)
+              .then((res) => {
+                  setLinkList(res);
+              })
+              .catch(() => {
+                  console.log("error fetching links");
+              });
+      });
 
-    return () => {
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-      }
-    };
+      return () => {
+          if (audioUrl) {
+              URL.revokeObjectURL(audioUrl);
+          }
+      };
   }, []);
 
   const fetchAudioBio = (userData: any) => {
