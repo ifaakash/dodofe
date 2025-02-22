@@ -36,23 +36,24 @@ export enum Size {
 }
 
 export const ROUTE_CONSTANTS = {
-    SLASH: "/",
-    HOME: "/home",
-    LINKS: "/links",
-    ADD_STUFF: "/add-stuff",
-    BASIC_DETAILS: "/basic-details",
-    THEME_SELECT: "/theme-select",
-    ERROR: "/404",
-    LOGIN: "/login",
-    PREVIEW: "/preview",
-    INVOICE: "/invoice",
-    CREATE: "/create",
-    SENDER: "/sender",
-    RECEIVER: "/receiver",
-    DETAILS: "/details",
-    PAYMENT_DETAILS: "/payment/details",
-    FINAL_DETAILS: "/final-details",
-    USER_CATEGORY: "/user-category",
+  SLASH: "/",
+  HOME: "/home",
+  LINKS: "/links",
+  ADD_STUFF: "/add-stuff",
+  BASIC_DETAILS: "/basic-details",
+  THEME_SELECT: "/theme-select",
+  ERROR: "/404",
+  LOGIN: "/login",
+  PREVIEW: "/preview",
+  INVOICE: "/invoice",
+  CREATE: "/create",
+  SENDER: "/sender",
+  RECEIVER: "/receiver",
+  DETAILS: "/details",
+  PAYMENT_DETAILS: "/payment/details",
+  FINAL_DETAILS: "/final-details",
+  USER_CATEGORY: "/user-category",
+  COINS: '/coins'
 };
 
 export const BLOCKS = {
