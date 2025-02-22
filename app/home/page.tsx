@@ -39,6 +39,7 @@ export default function Home() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+    const dodoPageDetail = userDetails?.dodoPages?.[0];
 
     useEffect(() => {
         setIsMounted(true);
@@ -71,7 +72,7 @@ export default function Home() {
         if (isEmpty(userDetails?.socialLinks)) {
             router.push(
                 ROUTE_CONSTANTS.ADD_STUFF +
-                    `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
+                `?pageType=${BLOCKS.SOCIAL}&userId=${userId}`
             );
             return;
         }
@@ -148,32 +149,62 @@ export default function Home() {
         );
     };
 
+    const handleCoinsNavigation = () => {
+        router.push(ROUTE_CONSTANTS.COINS);
+    }
+
     return (
         <Screen>
-            <div className="mt-16 text-center">
+            <div className="mt-4 text-center">
                 <div style={{ backgroundImage: `url(${crossBg.src})` }}>
-                    <div className="flex justify-between mb-6 mx-4">
-                        <Image
-                            height={50}
-                            width={260}
-                            src={welcomeToDodo}
-                            alt="welcome"
-                            className="ml-16"
-                        />
+                    <div className="flex">
+                        <div className="flex justify-between mb-6 mx-4">
+                            {!userId &&
+                                <Image
+                                    height={50}
+                                    width={260}
+                                    src={welcomeToDodo}
+                                    alt="welcome"
+                                    className="ml-16"
+                                />}
 
-                        {userId && (
-                            <Image
-                                height={24}
-                                width={24}
-                                src={sideBarIcon}
-                                alt="side bar"
-                                onClick={toggleSidebar}
-                                data-sidebar-toggle
-                                className="cursor-pointer"
-                            />
-                        )}
+                            {userId && (
+                                <div style={{ transform: 'rotate(180deg)' }}>
+                                    <Image
+                                        height={24}
+                                        width={24}
+                                        src={sideBarIcon}
+                                        alt="side bar"
+                                        onClick={toggleSidebar}
+                                        data-sidebar-toggle
+                                        className="cursor-pointer"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex row justify-between w-full">
+                            {userId && (
+                                <p>Hi, <span className="font-bold">{dodoPageDetail?.name?.split(' ')[0]}</span></p>
+                            )}
+
+                            <div
+                                className="flex rounded-xl bg-white mr-2 items-center justify-between px-2"
+                                style={{ height: 30, width: 80 }}
+                                onClick={handleCoinsNavigation}
+                            >
+                                <Image
+                                    className="flex-shrink-0"
+                                    height={18}
+                                    width={22}
+                                    src={dodoCoinIcon}
+                                    alt="dodo coin"
+                                />
+                                <span className="flex-1 text-center font-bold">{dodoPageDetail?.dodoCoins || 0}</span>
+                            </div>
+
+                        </div>
                     </div>
-
                     {isEmpty(userId) ? (
                         <div className="mx-4">
                             <CtaSection onButtonClick={gotoLinksPage} />
