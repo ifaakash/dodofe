@@ -1,9 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/dodo/[dodopageUrl]/page": "app/dodo/[dodopageUrl]/page.js",
-  "/dodo/[dodopageUrl]/editBlock/[blockId]/page": "app/dodo/[dodopageUrl]/editBlock/[blockId]/page.js",
-  "/dodo/[dodopageUrl]/archives/page": "app/dodo/[dodopageUrl]/archives/page.js",
-  "/dodo/[dodopageUrl]/addBlock/page": "app/dodo/[dodopageUrl]/addBlock/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
-}
