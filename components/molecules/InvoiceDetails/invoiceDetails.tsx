@@ -27,7 +27,7 @@ const InvoiceDetails = () => {
   useEffect(() => {
     const calculateTotals = () => {
       // Calculate items total
-      const itemsTotal = state.items.reduce((sum, item) => {
+      const itemsTotal = state.items.reduce((sum: any, item: any) => {
         return sum + item.price * item.quantity;
       }, 0);
 
@@ -119,7 +119,7 @@ const InvoiceDetails = () => {
       {state.items.length > 0 && (
         <div className="flex flex-col gap-3 bg-white p-4 rounded-[10px]">
           <div className="gap-1">
-            {state.items.map((item, index) => (
+            {state.items.map((item: any, index: number) => (
               <div key={index} className="flex flex-col">
                 <div className="flex justify-between text-sm py-2">
                   <div className="flex flex-col gap-[6px]">
