@@ -74,7 +74,7 @@ const DodoPageDashboard = () => {
     );
     const dodoPageFromStore = useSelector((state: RootState & { dodoPage: any }) => state.dodoPage);
     const existingBlocks = useSelector(
-        (state: RootState) => state.blocks.blocks
+        (state: any) => state.blocks.blocks
     );
 
     useEffect(() => {

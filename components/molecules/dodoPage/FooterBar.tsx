@@ -102,9 +102,9 @@ const FooterBar = ({
     socialLinks,
     unsavedChanges,
     audioBio,
-  } = useSelector((state: RootState) => state.dodoPage);
+  } = useSelector((state: any) => state.dodoPage);
   const dispatch = useDispatch();
-  const blockState = useSelector((state: RootState) => state.blocks);
+  const blockState = useSelector((state: any) => state.blocks);
 
   const handlePublish = async () => {
     if (blockState.newBlocksAdded) {
@@ -204,9 +204,8 @@ const FooterBar = ({
         </div>
 
         <div
-          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
-            isOpened ? "rotate-45" : "rotate-0"
-          }`}
+          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${isOpened ? "rotate-45" : "rotate-0"
+            }`}
           onClick={() => setIsOpened(!isOpened)}
         >
           <Plus size={32} />

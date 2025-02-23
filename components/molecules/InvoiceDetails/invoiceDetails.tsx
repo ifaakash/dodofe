@@ -22,7 +22,7 @@ const InvoiceDetails = () => {
   const [price, setPrice] = useState("");
   const [subTotal, setSubTotal] = useState(0);
 
-  const state = useSelector((state: RootState) => state.invoice);
+  const state = useSelector((state: any) => state.invoice);
 
   useEffect(() => {
     const calculateTotals = () => {
@@ -64,7 +64,7 @@ const InvoiceDetails = () => {
       alert("Please fill out all fields before adding an item.");
     }
   };
-  
+
   const handleRemoveItem = (index: number) => {
     dispatch(removeItem(index));
   }
@@ -106,7 +106,7 @@ const InvoiceDetails = () => {
           onClick={handleAddItem}
         >
           <div className="text-sm font-semibold cursor-pointer">
-          Add Item
+            Add Item
           </div>
           <Plus
             size={16}
@@ -129,7 +129,7 @@ const InvoiceDetails = () => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 items-end">
-                    <X size={20} className="text-red-600" onClick={()=>handleRemoveItem(index)}/>
+                    <X size={20} className="text-red-600" onClick={() => handleRemoveItem(index)} />
                     <div className="text-sm font-medium">₹{item.quantity * item.price}</div>
                   </div>
                 </div>

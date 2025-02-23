@@ -28,7 +28,7 @@ import { STORAGE_CONSTANTS } from "@utils/constants";
 const CreateInvoice = () => {
   const [currentStage, setCurrentStage] = useState("senderDetails");
   const router = useRouter();
-  const state = useSelector((state: RootState) => state);
+  const state = useSelector((state: any) => state);
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 

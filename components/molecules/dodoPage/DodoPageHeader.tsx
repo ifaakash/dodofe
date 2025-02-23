@@ -13,10 +13,10 @@ import { resetUnPublishedBlocks } from "store/slice/blocksSlice";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
     const { unsavedChanges } = useSelector(
-        (state: RootState) => state.dodoPage
+        (state: any) => state.dodoPage
     );
     const { unPublishedBlocks } = useSelector(
-        (state: RootState) => state.blocks
+        (state: any) => state.blocks
     );
     const dispatch = useDispatch();
 

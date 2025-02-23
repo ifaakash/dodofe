@@ -28,12 +28,12 @@ const ReceiverForm = ({ receiverDetails }: ReceiverFormProps) => {
   }, [receiveID, dispatch]);
 
 
-    useEffect(() => {
-      setShowInputFields(receiverDetails.length === 0);
-    }, [receiverDetails]);
+  useEffect(() => {
+    setShowInputFields(receiverDetails.length === 0);
+  }, [receiverDetails]);
 
   const currentRecipientDetails = useSelector(
-    (state: RootState) => state.invoice.currentRecipientDetails
+    (state: any) => state.invoice.currentRecipientDetails
   );
 
   return (
@@ -131,7 +131,7 @@ const ReceiverForm = ({ receiverDetails }: ReceiverFormProps) => {
         </div>
       ) : (
         <div className="flex flex-col gap-[10px]">
-           <div className="flex justify-end">
+          <div className="flex justify-end">
             <div
               className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full"
               onClick={() => setShowInputFields(true)}

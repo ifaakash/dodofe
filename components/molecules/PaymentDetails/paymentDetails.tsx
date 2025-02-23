@@ -14,12 +14,12 @@ interface PaymentDetailsProps {
   bankDetails: BankDetails[];
 }
 
-const PaymentDetails = ({ bankDetails } : PaymentDetailsProps) => {
+const PaymentDetails = ({ bankDetails }: PaymentDetailsProps) => {
   const dispatch = useDispatch();
   const [showInputFields, setShowInputFields] = useState(bankDetails.length === 0);
   const [bankDetailsID, setBankDetailsID] = useState("");
 
-  const { currentBankDetails } = useSelector((state: RootState) => state.invoice);
+  const { currentBankDetails } = useSelector((state: any) => state.invoice);
 
   useEffect(() => {
     if (bankDetailsID) {
@@ -59,7 +59,7 @@ const PaymentDetails = ({ bankDetails } : PaymentDetailsProps) => {
               <Input
                 placeholder="IFSC code"
                 className="my-0"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   handleInputChange("ifscCode", e.target.value)
                 }
                 value={currentBankDetails.ifscCode || ""}
@@ -80,7 +80,7 @@ const PaymentDetails = ({ bankDetails } : PaymentDetailsProps) => {
               <Input
                 placeholder="Enter UPI here"
                 className="my-0"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   handleInputChange("upiId", e.target.value)
                 }
                 value={currentBankDetails.upiId || ""}
@@ -90,7 +90,7 @@ const PaymentDetails = ({ bankDetails } : PaymentDetailsProps) => {
         </div>
       ) : (
         <div className="flex flex-col gap-[10px]">
-           <div className="flex justify-end">
+          <div className="flex justify-end">
             <div
               className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full"
               onClick={() => setShowInputFields(true)}
