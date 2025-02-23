@@ -72,7 +72,7 @@ const DodoPageDashboard = () => {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
-    const dodoPageFromStore = useSelector((state: RootState) => state.dodoPage);
+    const dodoPageFromStore = useSelector((state: RootState & { dodoPage: any }) => state.dodoPage);
     const existingBlocks = useSelector(
         (state: RootState) => state.blocks.blocks
     );
