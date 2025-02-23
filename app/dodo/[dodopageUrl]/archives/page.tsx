@@ -36,8 +36,8 @@ const ArchivedBlocks = () => {
       case "PRODUCTS":
         content = (
           <div className="flex gap-[10px]">
-            <ProductBlock productData={block.blockData} mode="edit" />
-            <ProductBlock productData={block.blockData} mode="edit" />
+            <ProductBlock block={block} mode="edit" />
+            <ProductBlock block={block} mode="edit" />
           </div>
         );
         break;

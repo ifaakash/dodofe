@@ -15,18 +15,18 @@ import { getDodoPageByURL } from "api";
 import { useState, useEffect } from "react";
 
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  DragOverlay,
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    MouseSensor,
+    TouchSensor,
+    DragOverlay,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useSensors, useSensor } from "@dnd-kit/core";
 import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
@@ -109,7 +109,7 @@ const DodoPageDashboard = () => {
                 });
         } else {
             // Only update if the values have changed
-            setDodoPageDetails((prevDetails) => {
+            setDodoPageDetails((prevDetails: any) => {
                 const newDetails = {
                     id: dodoPageFromStore.dodoPageId,
                     profilePicture: dodoPageFromStore.dodoPageImage,

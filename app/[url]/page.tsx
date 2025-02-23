@@ -54,10 +54,8 @@ const DodoPage = () => {
         content = (
           <Link href={`${block.blockData.url}`}>
             <LinkBlock
-            
               mode={"public"}
-              blockData={block.blockData}
-              blockCardSize={block.blockData.blockCardSize}
+              block={block}
             />
           </Link>
         );
@@ -76,11 +74,11 @@ const DodoPage = () => {
           content = (
             <div className="grid grid-cols-2 gap-[10px] w-full">
               <Link href={`${block.blockData.link}`}>
-                <ProductBlock productData={block.blockData} mode={mode} />
+                <ProductBlock block={block} mode={mode} />
               </Link>
 
               <Link href={`${nextBlock.blockData.link}`}>
-                <ProductBlock productData={nextBlock.blockData} mode={mode} />
+                <ProductBlock block={block} mode={mode} />
               </Link>
             </div>
           );

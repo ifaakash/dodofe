@@ -38,7 +38,7 @@ const socialLinksData = [
   { title: "Email", icon: EmailId, placeholder: "Paste your Email ID", value: "email" },
 ];
 
-type SocialLinkKeys = 'website' | 'instagram' | 'facebook' | 'youtube' | 'telegram' | 
+type SocialLinkKeys = 'website' | 'instagram' | 'facebook' | 'youtube' | 'telegram' |
   'snapchat' | 'twitter' | 'github' | 'discord' | 'behance' | 'dribble' | 'email';
 
 const AddSocial = ({
@@ -66,8 +66,8 @@ const AddSocial = ({
     dribble: "",
     email: "",
   });
-    const router = useRouter();
-    const dispatch = useDispatch();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setNewSocialLinks({
@@ -101,7 +101,7 @@ const AddSocial = ({
     // }); 
 
     dispatch(setSocialLinks(
-      socialLinksData.reduce((acc, { value }) => {
+      (socialLinksData as any).reduce((acc: any, { value }: any) => {
         acc[value as SocialLinkKeys] = newSocialLinks[value as SocialLinkKeys];
         return acc;
       }, {} as Record<SocialLinkKeys, string>)

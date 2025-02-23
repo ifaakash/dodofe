@@ -17,7 +17,7 @@ import AddPoll from "@components/molecules/dodoPage/addBlocks/AddPoll";
 import AddLink from "@components/molecules/dodoPage/addBlocks/AddLink";
 
 
-const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
+const AddBlock = () => {
   const { dodopageUrl } = useParams();
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -44,7 +44,7 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
   const renderBlock = () => {
     switch (type) {
       case "heading":
-        return <AddHeading dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl} mode={'add'}/>;
+        return <AddHeading dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl} mode={'add'} />;
 
       case "link":
         return <AddLink dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string} mode={'add'} />;
@@ -53,13 +53,13 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
         return <AddSeparator mode={'add'} dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl} />;
 
       case "poll":
-        return <AddPoll mode={'add'} dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string}/>;
+        return <AddPoll mode={'add'} dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string} />;
 
       case "product":
         return <AddProduct mode={'add'} dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string} />;
-      
+
       case "social":
-        return <AddSocial dodoPageId={dodoPageDetails.id} dodopageUrl={dodopageUrl as string} socialLinks={dodoPageDetails.socialLinks} userId={userId}/>;
+        return <AddSocial dodoPageId={dodoPageDetails.id} dodopageUrl={dodopageUrl as string} socialLinks={dodoPageDetails.socialLinks} userId={userId} />;
     }
   };
 
@@ -93,7 +93,7 @@ const AddBlock = ({mode}: {mode: 'edit' | 'add'}) => {
     router.back();
     console.log('router')
   }
-  
+
   return (
     <div className="py-4 flex flex-col gap-4">
       <div className="flex justify-start px-5">
