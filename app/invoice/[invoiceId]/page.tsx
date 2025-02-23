@@ -68,7 +68,7 @@ const PreviewInvoice = () => {
             {clientDetails && (
               <div className="flex flex-col gap-[10px] w-full">
                 <h2 className="font-semibold">Invoice for</h2>
-                <div className="p-4 rounded-[10px] bg-white flex flex-col gap-[10px]">
+                <div className="p-4 rounded-[10px] bg-white flex flex-col gap-[10px] md:h-[180px]">
                   <Image
                     width={40}
                     src={DodoIconCircle}
@@ -92,7 +92,7 @@ const PreviewInvoice = () => {
             {recipientDetails && (
               <div className="lg:flex flex-col gap-[10px] hidden w-full">
                 <h2 className="font-semibold">Invoice by</h2>
-                <div className="bg-white p-4 rounded-[10px] flex flex-col gap-[10px]">
+                <div className="bg-white p-4 rounded-[10px] flex flex-col gap-[10px] md:h-[180px]">
                   <Image
                     src={Rajveer}
                     alt="Rajveer"
@@ -234,12 +234,14 @@ const PreviewInvoice = () => {
             </div>
           )}
 
-          <div className="p-4 bg-white rounded-[10px] flex flex-col gap-[10px]">
-            <div className="text-xs font-semibold text-[#5E6C84]">Note</div>
-            <div className="text-xs font-medium text-[#5E6C84]">
-              {invoice.note}
+          {invoice.note && (
+            <div className="p-4 bg-white rounded-[10px] flex flex-col gap-[10px]">
+              <div className="text-xs font-semibold text-[#5E6C84]">Note</div>
+              <div className="text-xs font-medium text-[#5E6C84]">
+                {invoice.note}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Footer */}
           <div className="flex justify-center lg:my-20 mt-20 mb-5 items-center gap-1">

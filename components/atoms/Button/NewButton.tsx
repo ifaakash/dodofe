@@ -7,9 +7,10 @@ interface NewButtonProps {
   size: 'small' | 'large';
   children: React.ReactNode;
   onClick?: () => void;
+  className?: string;
 }
 
-const NewButton = ({ variant, size, children, onClick }: NewButtonProps) => {
+const NewButton = ({ variant, size, children, onClick, className }: NewButtonProps) => {
   const getButtonSizeClass = () => {
     switch (size) {
       case "small":
@@ -48,7 +49,7 @@ const NewButton = ({ variant, size, children, onClick }: NewButtonProps) => {
   };
 
   return (
-    <div className="relative w-full" onClick={onClick}>
+    <div className={`relative w-full ${className}`} onClick={onClick}>
       {variant === "primary" && size === "large" && (
         <div className="absolute inset-0 bg-black z-10 w-full h-full bottom-11 top-1 left-1 rounded-xl"></div>
       )}

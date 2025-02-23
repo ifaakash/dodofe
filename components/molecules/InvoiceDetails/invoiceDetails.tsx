@@ -22,12 +22,12 @@ const InvoiceDetails = () => {
   const [price, setPrice] = useState("");
   const [subTotal, setSubTotal] = useState(0);
 
-  const state = useSelector((state: RootState) => state.invoice);
+  const state = useSelector((state: any) => state.invoice);
 
   useEffect(() => {
     const calculateTotals = () => {
       // Calculate items total
-      const itemsTotal = state.items.reduce((sum, item) => {
+      const itemsTotal = state.items.reduce((sum: any, item: any) => {
         return sum + item.price * item.quantity;
       }, 0);
 
@@ -64,7 +64,7 @@ const InvoiceDetails = () => {
       alert("Please fill out all fields before adding an item.");
     }
   };
-  
+
   const handleRemoveItem = (index: number) => {
     dispatch(removeItem(index));
   }
@@ -106,7 +106,7 @@ const InvoiceDetails = () => {
           onClick={handleAddItem}
         >
           <div className="text-sm font-semibold cursor-pointer">
-          Add Item
+            Add Item
           </div>
           <Plus
             size={16}
@@ -119,7 +119,7 @@ const InvoiceDetails = () => {
       {state.items.length > 0 && (
         <div className="flex flex-col gap-3 bg-white p-4 rounded-[10px]">
           <div className="gap-1">
-            {state.items.map((item, index) => (
+            {state.items.map((item: any, index: number) => (
               <div key={index} className="flex flex-col">
                 <div className="flex justify-between text-sm py-2">
                   <div className="flex flex-col gap-[6px]">
@@ -129,7 +129,7 @@ const InvoiceDetails = () => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 items-end">
-                    <X size={20} className="text-red-600" onClick={()=>handleRemoveItem(index)}/>
+                    <X size={20} className="text-red-600" onClick={() => handleRemoveItem(index)} />
                     <div className="text-sm font-medium">₹{item.quantity * item.price}</div>
                   </div>
                 </div>

@@ -7,13 +7,16 @@ import { loadState } from 'utils/localStorage';
 import Router from 'next/router';
 
 export const BASE_URL = 'http://13.202.63.227/api/v1';
+// export const BASE_URL = 'http://localhost:3002/api/v1/';
+
+
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
 // http://localhost:3000
 
 const Request = axios.create({
     baseURL: BASE_URL,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }, // TODO: FIX THIS
 });
 
 const serializeError = (error: AxiosError): any => {
@@ -96,3 +99,9 @@ export const Post = <T>(path: string, payload: unknown, headers?: any, cancelTok
 
 export const Put = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
     Request.put<IAPIResponse<T>>(path, payload, { cancelToken }).then(extractor).catch(onErrorInterceptor);
+
+export const Patch = <T>(path: string, payload: unknown, headers?: any, cancelToken?: CancelToken): Promise<T> =>
+    Request.patch<IAPIResponse<T>>(path, payload, { cancelToken, headers }).then(extractor).catch(onErrorInterceptor);
+
+export const Delete = <T>(path: string, payload: unknown, cancelToken?: CancelToken): Promise<T> =>
+    Request.delete<IAPIResponse<T>>(path, { data: payload, cancelToken }).then(extractor).catch(onErrorInterceptor);

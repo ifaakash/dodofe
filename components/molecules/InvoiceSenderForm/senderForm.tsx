@@ -33,7 +33,7 @@ const SenderForm = ({ clientDetails }: SenderFormProps) => {
   }, [clientDetails]);
 
   const currentClientDetails = useSelector(
-    (state: RootState) => state.invoice.currentClientDetails || {}
+    (state: any) => state.invoice.currentClientDetails || {}
   );
 
   return (

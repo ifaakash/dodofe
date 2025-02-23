@@ -22,5 +22,16 @@ export default {
     getInvoceById: '/invoice/getInvoice',
     getAllInvoices: '/invoice/getAllInvoices',
     getInvoiceStats : '/invoice/getInvoiceStats',
-    addSubHeading : '/invoice/addSubHeading'
+    addSubHeading : '/invoice/addSubHeading',
+    createBlock : 'blocks/create',
+    getDodoPageByURL : 'dodo-pages/get-by-url',
+    getBlocksByDodoPageURL : 'blocks/get-by-dodo-page-id',
+    reorderBlocks: '/blocks/reorder',
+    updateDodoPage: 'dodo-pages/update',
+    archiveBlock: 'blocks/archive',
+    getArchivedBlocks: 'blocks/get-archived-blocks',
+    getBlockById: 'blocks/getById',
+    votePoll: 'blocks/poll-vote',
+    deleteBlock: 'blocks/delete',
+    updateBlock: 'blocks/update',
 }

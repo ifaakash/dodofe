@@ -4,7 +4,7 @@ import Image from "next/image";
 import CalendarSVG from "public/icons/calendar.svg";
 import React, { useEffect, useState } from "react";
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; 
+import 'react-calendar/dist/Calendar.css';
 import { useDispatch } from "react-redux";
 import { addDueDate, addDate } from "store/slice/invoiceSlice";
 import { useSelector } from "react-redux";
@@ -17,7 +17,7 @@ const InvoiceDueDate = () => {
   const [dueDate, setDueDate] = useState<Value>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
 
-  const state = useSelector((state: RootState) => state.invoice);
+  const state = useSelector((state: any) => state.invoice);
 
   const handleDateChange = (value: Value, event: React.MouseEvent<HTMLButtonElement>) => {
     if (value instanceof Date) {
@@ -43,7 +43,7 @@ const InvoiceDueDate = () => {
         {showCalendar && (
           <div className="absolute z-10 bg-white shadow-lg rounded-lg p-2">
             <Calendar
-            //@ts-ignore : Calender band nhi hoga idk why correct way se, ig library problem
+              //@ts-ignore : Calender band nhi hoga idk why correct way se, ig library problem
               onChange={handleDateChange}
               value={state.dueDate ? new Date(state.dueDate) : new Date()}
               minDate={new Date()}
@@ -52,7 +52,7 @@ const InvoiceDueDate = () => {
           </div>
         )}
       </div>
-     
+
       <div
         className="p-[14px] rounded-lg bg-white flex justify-between items-center cursor-pointer"
         onClick={() => setShowCalendar((prev) => !prev)}
