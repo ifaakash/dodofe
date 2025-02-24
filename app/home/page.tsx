@@ -133,7 +133,6 @@ export default function Home() {
         if (isEmpty(dodoPageDetail)) {
             return <CtaSection title="" />
         }
-
         return (
             <div>
                 {userDetails.dodoPages.map((page: any) => (
@@ -162,14 +161,13 @@ export default function Home() {
             <div className="mt-4 text-center">
                 <div style={{ backgroundImage: `url(${crossBg.src})` }}>
                     <div className="flex">
-                        <div className="flex justify-between mb-6 mx-4">
+                        <div className="flex mb-6 w-full absolute-center">
                             {!userId && (
                                 <Image
                                     height={50}
-                                    width={260}
+                                    width={220}
                                     src={welcomeToDodo}
                                     alt="welcome"
-                                    className="ml-16"
                                 />
                             )}
 
@@ -188,33 +186,33 @@ export default function Home() {
                             )}
                         </div>
 
-                        <div className="flex row justify-between w-full">
-                            {userId && (
+                        {userId && (
+                            <div className="flex row justify-between w-full">
                                 <p>
                                     Hi,{" "}
                                     <span className="font-bold">
                                         {dodoPageDetail?.name?.split(" ")[0]}
                                     </span>
                                 </p>
-                            )}
 
-                            <div
-                                className="flex rounded-xl bg-white mr-2 items-center justify-between px-2"
-                                style={{ height: 30, width: 80 }}
-                                onClick={handleCoinsNavigation}
-                            >
-                                <Image
-                                    className="flex-shrink-0"
-                                    height={18}
-                                    width={22}
-                                    src={dodoCoinIcon}
-                                    alt="dodo coin"
-                                />
-                                <span className="flex-1 text-center font-bold">
-                                    {userDetails?.dodoCoins ?? 0}
-                                </span>
+                                <div
+                                    className="flex rounded-xl bg-white mr-2 items-center justify-between px-2"
+                                    style={{ height: 30, width: 80 }}
+                                    onClick={handleCoinsNavigation}
+                                >
+                                    <Image
+                                        className="flex-shrink-0"
+                                        height={18}
+                                        width={22}
+                                        src={dodoCoinIcon}
+                                        alt="dodo coin"
+                                    />
+                                    <span className="flex-1 text-center font-bold">
+                                        {userDetails?.dodoCoins ?? 0}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                     {isEmpty(userId) ? (
                         <div className="mx-4">
