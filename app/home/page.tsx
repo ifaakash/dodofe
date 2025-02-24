@@ -137,6 +137,7 @@ export default function Home() {
             <div>
                 {userDetails.dodoPages.map((page: any) => (
                     <CtaSection
+                        key={page.name}
                         title={dodoPageDetail?.name || "Dodo user"}
                         description={dodoPageDetail?.url}
                         buttonBgColor="var(--pink)"
@@ -161,7 +162,7 @@ export default function Home() {
             <div className="mt-4 text-center">
                 <div style={{ backgroundImage: `url(${crossBg.src})` }}>
                     <div className="flex">
-                        <div className="flex mb-6 w-full absolute-center">
+                        <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
                             {!userId && (
                                 <Image
                                     height={50}
@@ -172,7 +173,7 @@ export default function Home() {
                             )}
 
                             {userId && (
-                                <div style={{ transform: "rotate(180deg)" }}>
+                                <div className="ml-4" style={{ transform: "rotate(180deg)" }}>
                                     <Image
                                         height={24}
                                         width={24}
@@ -187,7 +188,7 @@ export default function Home() {
                         </div>
 
                         {userId && (
-                            <div className="flex row justify-between w-full">
+                            <div className="flex row justify-between w-full ml-2">
                                 <p>
                                     Hi,{" "}
                                     <span className="font-bold">
@@ -196,7 +197,7 @@ export default function Home() {
                                 </p>
 
                                 <div
-                                    className="flex rounded-xl bg-white mr-2 items-center justify-between px-2"
+                                    className="flex rounded-xl bg-white mr-4 items-center justify-between px-2"
                                     style={{ height: 30, width: 80 }}
                                     onClick={handleCoinsNavigation}
                                 >
@@ -311,6 +312,6 @@ export default function Home() {
                 </div>
             </div>
             {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
-        </Screen>
+        </Screen >
     );
 }

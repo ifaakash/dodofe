@@ -2,6 +2,7 @@
 import cx from "classnames";
 import { Button, FlexBox } from "@components/atoms";
 import React, { useRef } from "react";
+import { X } from "lucide-react";
 
 import { InputProps } from "./types";
 
@@ -36,15 +37,21 @@ const UserInput: React.FC<InputProps> = ({
   rightButtonAction,
 }) => {
   const defaultRef: any = useRef(null);
+
+  const handleClear = () => {
+    if (onChange) {
+      onChange({ target: { value: "", name } } as any);
+    }
+  };
+
   return (
     <div
       className={cx(
-        // disabled && 'clr-disabled',
         "my-4 w-full"
       )}
       data-unit-test-label={`input-${unitTestLabel}`}
     >
-      <div className={cx("flex border-bottom", styles.inputContainer)}>
+      <div className={cx("flex border-bottom relative", styles.inputContainer)}>
         <input
           onBlur={onBlur}
           onKeyDown={onKeyDown}
@@ -56,23 +63,28 @@ const UserInput: React.FC<InputProps> = ({
           value={value}
           readOnly={readOnly}
           className={cx(
-            "font-medium border-none py-2 w-full",
+            "font-medium border-none py-2 w-full pr-8",
             styles.input__element,
             {
               [styles.input__element_valid]: isValid && isValid !== null,
               [styles.input__element_invalid]:
                 isValid === false || showError === true,
             },
-            // value && !disabled && "theme-1-border",
             className
           )}
           onChange={onChange}
-          // placeholder={!hasLabel ? placeholder : ""}
           pattern={pattern || ""}
           maxLength={maxLength}
           disabled={disabled}
           max={max || 500}
         />
+        {value && !disabled && (
+          <X
+            size={20}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-800"
+            onClick={handleClear}
+          />
+        )}
         {rightButton && (
           <Button
             disabled={rightButtonDisabled}
@@ -101,6 +113,7 @@ const UserInput: React.FC<InputProps> = ({
           </p>
         )}
       </div>
+
       {showError && (
         <FlexBox
           alignCenter
