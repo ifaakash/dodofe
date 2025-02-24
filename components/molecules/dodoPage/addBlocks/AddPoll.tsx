@@ -115,27 +115,28 @@ const AddPoll = ({
           <div className="flex flex-col gap-1">
             {mode === "edit"
               ? blockData?.options.map((option: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Input
-                      disabled={true}
-                      name={`option-${index}`}
-                      value={option}
-                    />
-                  </div>
-                ))
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    disabled={true}
+                    name={`option-${index}`}
+                    value={option}
+                    onChange={() => console.log('change')}
+                  />
+                </div>
+              ))
               : poll.options.map((option: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Input
-                      name={`option-${index}`}
-                      value={option}
-                      placeholder={`Option`}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleOptionChange(index, e.target.value)
-                      }
-                      maxLength={100}
-                    />
-                  </div>
-                ))}
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    name={`option-${index}`}
+                    value={option}
+                    placeholder={`Option`}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleOptionChange(index, e.target.value)
+                    }
+                    maxLength={100}
+                  />
+                </div>
+              ))}
           </div>
         </div>
 

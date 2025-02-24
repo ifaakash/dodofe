@@ -94,7 +94,7 @@ const AddHeading = ({
       <div className="bottom-0 fixed mb-4 px-4 w-full">
         <NewButton
           size="large"
-          variant={heading ? "primary" : "disabled"}
+          variant={heading ? "primary" : "secondary"}
           onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >

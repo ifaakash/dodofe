@@ -40,7 +40,7 @@ const ReceiverForm = ({
     setShowInputFields(receiverDetails.length === 0);
   }, [receiverDetails]);
 
-  const currentRecipientDetails = useSelector(
+  const currentRecipientDetails: any = useSelector(
     (state: RootState) => state.invoice.currentRecipientDetails || {}
   );
 

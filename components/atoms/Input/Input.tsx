@@ -6,7 +6,7 @@ import { AlertCircle } from "lucide-react";
 
 import styles from "./styles.module.css";
 
-interface EnhancedInputProps extends InputProps {
+interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 

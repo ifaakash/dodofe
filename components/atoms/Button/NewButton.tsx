@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronRight } from "lucide-react";
 
 interface NewButtonProps {
-  variant: "primary" | "secondary";
+  variant: "primary" | "secondary" | "disabled";
   size: "small" | "large";
   children: React.ReactNode;
   onClick?: () => void;
