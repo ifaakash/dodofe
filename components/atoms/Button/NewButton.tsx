@@ -1,16 +1,23 @@
 import React from "react";
-import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 
 interface NewButtonProps {
-  variant: 'primary' | 'secondary' | 'disabled';
-  size: 'small' | 'large';
+  variant: "primary" | "secondary";
+  size: "small" | "large";
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
-const NewButton = ({ variant, size, children, onClick, className }: NewButtonProps) => {
+const NewButton = ({
+  variant,
+  size,
+  children,
+  onClick,
+  className = "",
+  disabled = false,
+}: NewButtonProps) => {
   const getButtonSizeClass = () => {
     switch (size) {
       case "small":
@@ -23,41 +30,37 @@ const NewButton = ({ variant, size, children, onClick, className }: NewButtonPro
   };
 
   const getButtonVariantClass = () => {
+    if (disabled) {
+      return "bg-[#E2E4E9] text-[#979EAD] cursor-not-allowed";
+    }
+
     switch (variant) {
       case "primary":
         return "relative z-20 bg-brandPrimary text-white active:top-1 active:left-1";
       case "secondary":
-        return "border-[1px] border-brandPrimary  ";
-      case "disabled":
-        return "bg-[#E2E4E9] text-[#979EAD] cursor-not-allowed";
+        return "border-[1px] border-brandPrimary";
       default:
         return "";
     }
   };
 
-  const getChecvronColor = () => {
-    switch (variant) {
-      case "primary":
-        return "text-white";
-      case "secondary":
-        return "text-brandPrimary";
-      case "disabled":
-        return "text-[#979EAD]";
-      default:
-        return "";
-    }
+  const getChevronColor = () => {
+    if (disabled) return "text-[#979EAD]";
+    return variant === "primary" ? "text-white" : "text-brandPrimary";
   };
 
   return (
-    <div className={`relative w-full ${className}`} onClick={onClick}>
-      {variant === "primary" && size === "large" && (
+    <div className={`relative w-full ${className}`} onClick={disabled ? undefined : onClick}>
+      {variant === "primary" && size === "large" && !disabled && (
         <div className="absolute inset-0 bg-black z-10 w-full h-full bottom-11 top-1 left-1 rounded-xl"></div>
       )}
       <button
+        disabled={disabled}
         className={`${getButtonSizeClass()} ${getButtonVariantClass()} flex justify-center gap-1 items-center`}
+        aria-disabled={disabled}
       >
         <div>{children}</div>
-        <div className={`px-1 py-0.5 ${getChecvronColor()} `}>
+        <div className={`px-1 py-0.5 ${getChevronColor()}`}>
           <ChevronRight size={20} />
         </div>
       </button>

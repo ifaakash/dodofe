@@ -26,7 +26,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
         const res = await getAllInvoices({ userId: userDetails?.id });
         if (res && res.data) {
           // Sort invoices by createdAt in descending order and take the latest 2
-          const sortedInvoices = res.data.sort((a: InvoiceProps, b: InvoiceProps) => 
+          const sortedInvoices = res.data.sort((a: InvoiceProps, b: InvoiceProps) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           ).slice(0, 2);
           setInvoices(sortedInvoices);
@@ -43,7 +43,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="bg-[#D8D6DC] h-48 w-full flex flex-col gap-6">
+      <div className="bg-[#D8D6DC] h-48 w-full flex flex-col gap-6 h-full">
         <div>
           <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">
             <div className="flex gap-[10px] items-center">

@@ -80,14 +80,17 @@ export const getSidebarUI = ({
             text: "Logout",
             action: handleLogout,
             delay: 100,
+            bottom: true
         },
     ];
 
     // Only render the sidebar content when it's open
     if (!isSidebarOpen) return null;
 
+    const logoutItem = menuItems[menuItems.length - 1];
+
     return (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-50 flex justify-start">
             {/* Semi-transparent overlay with blur */}
             <div
                 className="absolute inset-0"
@@ -98,9 +101,16 @@ export const getSidebarUI = ({
                     WebkitBackdropFilter: "blur(8px)", // For Safari support
                 }}
             />
-            {/* Sidebar */}
-            <div className="relative w-64 h-full bg-white">
-                <div className="flex flex-col h-full">
+            {/* Sidebar with animation, border radius, and margin */}
+            <div
+                className="sidebar relative w-64 h-[calc(100%-40px)] bg-white m-5 shadow-lg"
+                style={{
+                    borderTopRightRadius: "20px",
+                    borderBottomRightRadius: "20px",
+                    margin: "8px",
+                }}
+            >
+                <div className="flex flex-col h-full" style={{ width: '200px' }}>
                     <div className="flex justify-between items-center p-4">
                         <h2
                             className="text-2xl"
@@ -116,20 +126,32 @@ export const getSidebarUI = ({
                             ×
                         </button>
                     </div>
-                    <div className="flex-1 pt-8">
-                        {menuItems.map((item, index) => (
+                    <div className="flex-1 pt-8 overflow-y-auto">
+                        {menuItems.slice(0, -1).map((item, index) => (
                             <div
                                 key={index}
                                 className="py-4 px-4 cursor-pointer text-xl"
                                 onClick={item.action}
                                 style={{
                                     fontFamily: "Clash Display",
-                                    animation: `slideIn 0.3s ease-out forwards ${item.delay}ms`,
                                 }}
                             >
                                 {item.text}
                             </div>
                         ))}
+                    </div>
+
+                    {/* Logout Button at the Bottom */}
+                    <div className="mt-auto">
+                        <div
+                            className="py-4 px-4 cursor-pointer text-xl"
+                            onClick={logoutItem.action}
+                            style={{
+                                fontFamily: "Clash Display",
+                            }}
+                        >
+                            {logoutItem.text}
+                        </div>
                     </div>
                 </div>
             </div>

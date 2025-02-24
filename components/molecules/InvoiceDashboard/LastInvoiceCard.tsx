@@ -4,6 +4,7 @@ import EditPen from "public/icons/EditPen.svg";
 import { ChevronsRight } from "lucide-react";
 import Link from "next/link";
 import { InvoiceProps } from "types";
+import MarkAsPaidButton from "./MarkAsPaidButton";
 
 interface LastInvoiceCardProps {
   invoice: InvoiceProps;
@@ -89,13 +90,7 @@ const LastInvoiceCard = ({ invoice }: LastInvoiceCardProps) => {
           <Image src={EditPen} width={16} height={16} alt="edit" />
         </Link>
 
-        {/* Mark as Paid Button */}
-        <div className="flex items-center bg-[#EAE9EC] w-full rounded-full gap-[10px] cursor-pointer">
-          <div className="bg-brandPrimary p-[6px] rounded-full min-h-10 min-w-10 flex justify-center items-center">
-            <ChevronsRight size={24} className="text-white" />
-          </div>
-          <div className="text-[#414D55] text-xs font-medium">Mark as Paid</div>
-        </div>
+        <MarkAsPaidButton />
       </div>
     </div>
   );

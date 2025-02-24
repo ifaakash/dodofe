@@ -32,7 +32,6 @@ const CreateInvoice = () => {
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
-
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -63,17 +62,17 @@ const CreateInvoice = () => {
 
     switch (currentStage) {
       case "senderDetails":
-        return <SenderForm clientDetails={userDetails.clientDetails} />;
+        return <SenderForm clientDetails={userDetails.clientDetails} setCurrentStage={setCurrentStage} />;
       case "receiverDetails":
-        return <ReceiverForm receiverDetails={userDetails.recipientDetails} />;
+        return <ReceiverForm receiverDetails={userDetails.recipientDetails} setCurrentStage={setCurrentStage} />;
       case "invoiceDetails":
-        return <InvoiceDetails />;
+        return <InvoiceDetails setCurrentStage={setCurrentStage} />;
       case "paymentDetails":
-        return <PaymentDetails bankDetails={userDetails.bankDetails} />;
+        return <PaymentDetails bankDetails={userDetails.bankDetails} setCurrentStage={setCurrentStage} />;
       case "dueDate":
-        return <InvoiceDueDate />;
+        return <InvoiceDueDate handleInvoiceSubmit={handleInvoiceSubmit} />;
       default:
-        return <SenderForm clientDetails={userDetails.clientDetails} />;
+        return <SenderForm clientDetails={userDetails.clientDetails} setCurrentStage={setCurrentStage} />;
     }
   };
 
@@ -293,11 +292,13 @@ const CreateInvoice = () => {
       <div className="h-[calc(100vh-150px)] overflow-scroll">
         {renderStage()}
       </div>
+      {/* 
       {currentStage === "dueDate" ? (
         <div className="bottom-0 px-5 py-4 w-full fixed">
           <NewButton
             size="large"
             variant="primary"
+            disabled={disableNextButton}
             onClick={handleInvoiceSubmit}
           >
             Review and Share
@@ -308,12 +309,13 @@ const CreateInvoice = () => {
           <NewButton
             size="large"
             variant="primary"
+            disabled={disableNextButton}
             onClick={() => setCurrentStage(getNextLink())}
           >
             Next
           </NewButton>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

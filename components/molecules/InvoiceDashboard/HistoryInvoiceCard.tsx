@@ -17,9 +17,8 @@ const StatusBadge = ({ isDue, status, isExpanded }: StatusBadgeProps) => {
 
   return (
     <div
-      className={` ${getBgColor()} w-fit ${
-        isExpanded ? "rounded-tl-lg  rounded-br-lg" : "rounded-l-lg"
-      } flex justify-center items-center max-w-[21px]`}
+      className={` ${getBgColor()} w-fit ${isExpanded ? "rounded-tl-lg  rounded-br-lg" : "rounded-l-lg"
+        } flex justify-center items-center max-w-[21px]`}
     >
       <div className="text-[10px] text-white h-fit -rotate-90">
         {isDue ? "Due" : status === "paid" ? "Paid" : "Unpaid"}
