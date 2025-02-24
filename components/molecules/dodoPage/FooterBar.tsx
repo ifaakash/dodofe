@@ -19,7 +19,6 @@ import {
   deleteBlock,
   reorderBlocks,
   updateDodoPage,
-  updateDodoPageMedia,
 } from "api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
@@ -105,94 +104,142 @@ const FooterBar = ({
   } = useSelector((state: any) => state.dodoPage);
   const dispatch = useDispatch();
   const blockState = useSelector((state: any) => state.blocks);
+  const dodoPageState = useSelector((state: any) => state.dodoPage);
 
   const handlePublish = async () => {
-    if (blockState.newBlocksAdded) {
-      console.log("newBlocksAdded");
-      const newBlocks = blockState.blocks.filter((block) => block.isNew);
+    try {
+      if (blockState.newBlocksAdded) {
+        console.log("newBlocksAdded");
+        const newBlocks = blockState.blocks.filter((block) => block.isNew);
 
-      newBlocks.forEach(async (block) => {
-        switch (block.blockType) {
-          case "LINK":
-            const formData = new FormData();
-            formData.append("dodoPageId", dodoPageId);
-            formData.append("blockType", "LINK");
-            formData.append("blockCardSize", block.blockCardSize);
-            formData.append("userId", userId);
-            formData.append("blockData[title]", block.blockData.title);
-            formData.append("blockData[url]", block.blockData.url);
-            formData.append(
-              "linkDisplayPicture",
-              block.blockData.linkDisplayPicture
-            );
+        for (const block of newBlocks) {
+          try {
+            switch (block.blockType) {
+              case "LINK":
+                const formData = new FormData();
+                formData.append("dodoPageId", dodoPageId);
+                formData.append("blockType", "LINK");
+                formData.append("blockCardSize", block.blockCardSize);
+                formData.append("userId", userId);
+                formData.append("blockData[title]", block.blockData.title);
+                formData.append("blockData[url]", block.blockData.url);
+                formData.append(
+                  "linkDisplayPicture",
+                  block.blockData.linkDisplayPicture
+                );
 
-            formData.append(
-              "blockData[badge][text]",
-              block.blockData.badge.text
-            );
-            formData.append(
-              "blockData[badge][backgroundColor]",
-              block.blockData.badge.backgroundColor
-            );
-            formData.append(
-              "blockData[badge][color]",
-              block.blockData.badge.color
-            );
+                formData.append(
+                  "blockData[badge][text]",
+                  block.blockData.badge.text
+                );
+                formData.append(
+                  "blockData[badge][backgroundColor]",
+                  block.blockData.badge.backgroundColor
+                );
+                formData.append(
+                  "blockData[badge][color]",
+                  block.blockData.badge.color
+                );
 
-            const createLink = await createBlockWithMedia(formData);
-            console.log("createLink", createLink);
-            break;
+                const createLink = await createBlockWithMedia(formData);
+                console.log("createLink", createLink);
+                break;
 
-          case "PRODUCT":
-            const formDataProduct = new FormData();
-            formDataProduct.append(
-              "productImage",
-              block.blockData.productImage
-            );
-            formDataProduct.append("blockData[title]", block.blockData.title);
-            formDataProduct.append("blockData[link]", block.blockData.link);
-            formDataProduct.append("dodoPageId", dodoPageId);
-            formDataProduct.append("blockType", "PRODUCT");
-            formDataProduct.append("blockCardSize", block.blockCardSize);
-            formDataProduct.append("userId", userId);
+              case "PRODUCT":
+                const formDataProduct = new FormData();
+                formDataProduct.append(
+                  "productImage",
+                  block.blockData.productImage
+                );
+                formDataProduct.append(
+                  "blockData[title]",
+                  block.blockData.title
+                );
+                formDataProduct.append("blockData[link]", block.blockData.link);
+                formDataProduct.append("dodoPageId", dodoPageId);
+                formDataProduct.append("blockType", "PRODUCT");
+                formDataProduct.append("blockCardSize", block.blockCardSize);
+                formDataProduct.append("userId", userId);
 
-            const createProduct = await createBlockWithMedia(formDataProduct);
-            console.log("createProduct", createProduct);
-            break;
+                const createProduct = await createBlockWithMedia(
+                  formDataProduct
+                );
+                console.log("createProduct", createProduct);
+                break;
 
-          default:
-            const createNewBlock = await createBlock(block);
-            console.log("createNewBlock", createNewBlock);
-            break;
+              default:
+                const createNewBlock = await createBlock(block);
+                console.log("createNewBlock", createNewBlock);
+                break;
+            }
+          } catch (error) {
+            console.error("Error creating block:", error);
+            return false; // Return false if any block creation fails
+          }
         }
-      });
+      }
+
+      if (blockState.isReordered) {
+        console.log("isReordered");
+        await reorderBlocks({
+          dodoPageId: dodoPageId,
+          blocks: blockState.blocks.map((block) => ({
+            blockId: block.id as string,
+            newIndex: block.blockPositionalIndex as number,
+          })),
+        });
+      }
+
+      if (blockState.blocksToBeDeleted) {
+        console.log("blocksToBeDeleted");
+        const blocksToBeDeleted = blockState.blocks.filter(
+          (block) => block.toRemove
+        );
+
+        for (const block of blocksToBeDeleted) {
+          try {
+            await deleteBlock({ blockId: block.id as string, userId: userId });
+          } catch (error) {
+            console.error("Error deleting block:", error);
+            return false; // Return false if any block deletion fails
+          }
+        }
+      }
+
+      if (dodoPageState.unsavedChanges) {
+        const formData = new FormData();
+        formData.append("id", dodoPageId);
+        formData.append("userId", userId);
+        formData.append("name", dodoPageName);
+        formData.append("thoughts", dodoPageThought);
+
+        if (dodoPageState.isSocialLinksChanged) {
+          console.log("Social Links");
+          formData.append("socialLinks", JSON.stringify(socialLinks));
+        }
+
+        if (dodoPageState.isImageChanged) {
+          console.log("Img");
+          formData.append("profilePicture", dodoPageImage);
+        }
+
+        if (dodoPageState.isAudioBioChanged) {
+          console.log("Audio");
+          formData.append("audioBio", audioBio);
+        }
+
+        const DodoPageRes = await updateDodoPage(formData);
+        console.log("updateDodoPage", DodoPageRes);
+      }
+
+      // dispatch(resetDodoPage());
+      // dispatch(resetUnPublishedBlocks());
+      // window.location.href = `/dodo/${url}`;
+      return true;
+    } catch (error) {
+      console.error("Error in handlePublish:", error);
+      return false;
     }
-
-    if (blockState.isReordered) {
-      console.log("isReordered");
-      await reorderBlocks({
-        dodoPageId: dodoPageId,
-        blocks: blockState.blocks.map((block) => ({
-          blockId: block.id as string,
-          newIndex: block.blockPositionalIndex as number,
-        })),
-      });
-    }
-
-    if (blockState.blocksToBeDeleted) {
-      console.log("blocksToBeDeleted");
-      const blocksToBeDeleted = blockState.blocks.filter(
-        (block) => block.toRemove
-      );
-
-      blocksToBeDeleted.forEach(async (block) => {
-        await deleteBlock({ blockId: block.id as string, userId: userId });
-      });
-    }
-
-    dispatch(resetDodoPage());
-    dispatch(resetUnPublishedBlocks());
-    window.location.href = `/dodo/${url}`;
   };
 
   return (
@@ -204,8 +251,9 @@ const FooterBar = ({
         </div>
 
         <div
-          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${isOpened ? "rotate-45" : "rotate-0"
-            }`}
+          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
+            isOpened ? "rotate-45" : "rotate-0"
+          }`}
           onClick={() => setIsOpened(!isOpened)}
         >
           <Plus size={32} />

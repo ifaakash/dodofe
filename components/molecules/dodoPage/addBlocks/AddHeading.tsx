@@ -11,6 +11,7 @@ import { addBlock } from "store/slice/blocksSlice";
 import { updateBlock } from "api";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import { TriangleAlert } from "lucide-react";
 const AddHeading = ({
   dodoPageId,
   userId,
@@ -27,20 +28,22 @@ const AddHeading = ({
   const [heading, setHeading] = useState(blockData?.title || "");
   const router = useRouter();
   const dispatch = useDispatch();
+  const [headingError, setHeadingError] = useState("");
+
+  const validateForm = (): boolean => {
+    let isValid = true;
+    setHeadingError("");
+    if (!heading) {
+      setHeadingError("Heading is Required");
+      isValid = false;
+    }
+    return isValid;
+  };
 
   const handleSubmit = async () => {
-    // const res = await createBlock({
-    //   dodoPageId: dodoPageId,
-    //   blockType: "HEADING",
-    //   blockCardSize: "SMALL",
-    //   blockData: {
-    //     title: heading,
-    //   },
-    //   userId: userId,
-    // });
-    // if (res.success) {
-    //   router.push("/dodo/" + dodopageUrl);
-    // }
+    if (!validateForm()) {
+      return;
+    }
 
     dispatch(
       addBlock({
@@ -74,27 +77,35 @@ const AddHeading = ({
 
   return (
     <div className="flex items-center flex-col">
-      {mode === "edit" ? (
-        <Input
-          placeholder="Heading"
-          value={heading}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setHeading(e.target.value)
-          }
-        />
-      ) : (
-        <Input
-          placeholder="Heading"
-          value={heading}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setHeading(e.target.value)
-          }
-        />
-      )}
+      <div className="w-full">
+        {mode === "edit" ? (
+          <Input
+            placeholder="Heading"
+            value={heading}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setHeading(e.target.value)
+            }
+          />
+        ) : (
+          <Input
+            placeholder="Heading"
+            value={heading}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setHeading(e.target.value)
+            }
+          />
+        )}
+        {headingError && (
+          <div className="text-red-500 flex items-center gap-2 pt-2">
+            <TriangleAlert strokeWidth={2} size={16} />
+            <span className="text-sm"> {headingError}</span>
+          </div>
+        )}
+      </div>
       <div className="bottom-0 fixed mb-4 px-4 w-full">
         <NewButton
           size="large"
-          variant={heading ? "primary" : "disabled"}
+          variant={"primary"}
           onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >

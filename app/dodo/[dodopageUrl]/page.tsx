@@ -130,7 +130,7 @@ const DodoPageDashboard = () => {
                     : existingBlocks
             );
         }
-    }, [dodopageUrl]); // Remove other dependencies that cause unnecessary rerenders
+    }, [dodopageUrl, existingBlocks]); // Remove other dependencies that cause unnecessary rerenders
 
     const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
 
@@ -172,18 +172,9 @@ const DodoPageDashboard = () => {
     };
 
     const renderBlock = (block: Block, index: number) => {
-        // if block.toRemove is true, then don't render the block
         if (block.toRemove) {
             return null;
         }
-
-        // if (block.toArchive) {
-        //   return null;
-        // }
-
-        // if(!block.isActive){
-        //   return null
-        // }
 
         let content;
         switch (block.blockType) {
@@ -269,6 +260,8 @@ const DodoPageDashboard = () => {
         }
         return content;
     };
+
+    console.log('blocks', blocks)
 
     return (
         <div

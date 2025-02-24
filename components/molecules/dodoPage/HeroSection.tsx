@@ -20,6 +20,8 @@ import {
   setDodoPageThought,
   setSocialLinks,
   updateDodoPageAudioBio,
+  setIsImageChanged,
+  setIsAudioBioChanged,
 } from "store/slice/dodoPageSlice";
 
 const HeroSection = ({
@@ -99,6 +101,7 @@ const HeroSection = ({
     setImagePreview(previewUrl);
 
     dispatch(updateDodoPageProfilePicture(file));
+    dispatch(setIsImageChanged(true));
   };
 
   const startRecording = async () => {
@@ -181,6 +184,7 @@ const HeroSection = ({
     console.log("audioFile", audioFile);
     dispatch(updateDodoPageAudioBio(audioFile));
     setAddAudioBioPopup(false);
+    dispatch(setIsAudioBioChanged(true));
   };
 
   return (
@@ -196,6 +200,7 @@ const HeroSection = ({
           onChange={handleImageUpload}
           className="hidden"
           ref={ImageInputRef}
+          disabled={mode === "public" || mode === "preview"}
         />
         <div onClick={() => mode === "edit" && ImageInputRef.current?.click()}>
           {imagePreview || state.dodoPageImage ? (
@@ -241,6 +246,7 @@ const HeroSection = ({
               onKeyDown={handleKeyDown}
               className="bg-transparent text-xl min-w-36 w-fit outline-none text-black font-semibold text-center"
               autoFocus
+              disabled={mode === "public" || mode === "preview"}
             />
           ) : (
             <div
@@ -297,6 +303,7 @@ const HeroSection = ({
                     {!thaughtEditMode ? (
                       <textarea
                         value={thaught}
+                        disabled={mode === "public" || mode === "preview"}
                         onChange={(e) => {
                           if (e.target.value.length <= 25) {
                             setThaught(e.target.value);

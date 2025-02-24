@@ -86,7 +86,6 @@ const blocksSlice = createSlice({
             state.blocks = action.payload;
         },
         addBlock: (state, action: PayloadAction<Block>) => {
-            console.log("Adding block", action.payload);
             state.blocks.push(action.payload);
             state.unPublishedBlocks = true;
             state.newBlocksAdded = true;

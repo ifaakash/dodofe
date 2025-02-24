@@ -6,12 +6,12 @@ import Switcher from "@components/atoms/Switcher/Switcher";
 import AddImageIcon from "public/icons/addImage.svg";
 import Image from "next/image";
 import EditPen from "public/icons/EditPen.svg";
-import { createBlockWithMedia, updateBlockWithFormData } from "api";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { addBlock } from "store/slice/blocksSlice";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { TriangleAlert } from "lucide-react";
+
 const badges = [
   {
     text: "Sunflower",
@@ -73,36 +73,46 @@ const AddLink = ({
     }
   };
 
+  const [titleError, setTitleError] = useState<string>("");
+  const [linkError, setLinkError] = useState<string>("");
+  const [badgeError, setBadgeError] = useState<string>("");
+
+  const validateForm = (): boolean => {
+    let isValid = true;
+
+    // Reset all errors first
+    setTitleError("");
+    setLinkError("");
+    setBadgeError("");
+
+    if (!title.trim()) {
+      setTitleError("Title is Required");
+      isValid = false;
+    }
+
+    if (!link.trim()) {
+      setLinkError("Link is Required");
+      isValid = false;
+    }
+
+    if (badgeText.trim() && !selectedBadgeCategory) {
+      setBadgeError("Badge Category is Required when Badge Text is provided");
+      isValid = false;
+    }
+
+    if (selectedBadgeCategory && !badgeText) {
+      setBadgeError("Badge Text is Required");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
     try {
-      // const formData = new FormData();
-
-      // // Add all required fields to formData
-      // formData.append("blockType", "LINK");
-      // formData.append("blockData[title]", title);
-      // formData.append("blockData[url]", dodopageUrl);
-      // formData.append("dodoPageId", dodoPageId);
-      // formData.append("userId", userId);
-
-      // if (badgeText) {
-      //   formData.append("blockData[badge][text]", badgeText);
-
-      //   const selectedBadge = badges.find(
-      //     (badge) => badge.text === selectedBadgeCategory
-      //   );
-      //   formData.append(
-      //     "blockData[badge][backgroundColor]",
-      //     selectedBadge?.backgroundColor || ""
-      //   );
-      //   formData.append("blockData[badge][color]", selectedBadge?.color || "");
-      // }
-
-      // if (uploadedImage) {
-      //   formData.append("linkDisplayPicture", uploadedImage);
-      // }
-
-
-
       dispatch(
         addBlock({
           id: uuidv4(),
@@ -124,63 +134,16 @@ const AddLink = ({
           isNew: true,
         })
       );
-      router.back()
-      // const res = await createBlockWithMedia(formData);
-      // if (res?.success) {
-      //   toast.success("Link added successfully");
-      //   // router.push(`/dodo/${dodopageUrl}`);
-      // }
+      router.back();
     } catch (error) {
       console.error("Error uploading:", error);
     }
   };
+
   const handleUpdate = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("blockType", "LINK");
-      formData.append("blockData[title]", title);
-      formData.append("blockData[url]", link);
-
-      if (badgeText) {
-        formData.append("blockData[badge][text]", badgeText);
-
-        const selectedBadge = badges.find(
-          (badge) => badge.text === selectedBadgeCategory
-        );
-        formData.append(
-          "blockData[badge][backgroundColor]",
-          selectedBadge?.backgroundColor || ""
-        );
-        formData.append("blockData[badge][color]", selectedBadge?.color || "");
-      }
-
-      if (uploadedImage) {
-        formData.append("linkDisplayPicture", uploadedImage);
-      }
-
-      if (badgeText) {
-        formData.append("blockData[badge][text]", badgeText);
-      }
-
-      if (uploadedImage) {
-        formData.append("linkDisplayPicture", uploadedImage);
-      }
-
-      const res = await updateBlockWithFormData(formData, {
-        dodoPageId,
-        userId,
-        dodopageUrl,
-        blockId: blockData?.blockId,
-      });
-
-      console.log({
-        res,
-      });
-    } catch (error) {
-      console.error("Error updating:", error);
-    }
+    console.log("handleUpdate");
   };
-
+  
   return (
     <div className="py-5 flex flex-col items-center">
       <div className="flex flex-col gap-8 w-full">
@@ -257,6 +220,12 @@ const AddLink = ({
               )}
             </div>
           </div>
+          {titleError && (
+            <div className="text-red-500 flex items-center gap-2">
+              <TriangleAlert strokeWidth={2} size={16} />
+              <span className="text-sm"> {titleError}</span>
+            </div>
+          )}
 
           <Input
             placeholder="Paste your link here....."
@@ -265,6 +234,12 @@ const AddLink = ({
               setLink(e.target.value)
             }
           />
+          {linkError && (
+            <div className="text-red-500 flex items-center gap-2">
+              <TriangleAlert strokeWidth={2} size={16} />
+              <span className="text-sm"> {linkError}</span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -276,6 +251,7 @@ const AddLink = ({
               setBadgeText(e.target.value)
             }
           />
+
           <div className="flex justify-between">
             {badges.map((badge) => (
               <div
@@ -303,6 +279,12 @@ const AddLink = ({
               </div>
             ))}
           </div>
+          {badgeError && (
+            <div className="text-red-500 flex items-center gap-2">
+              <TriangleAlert strokeWidth={2} size={16} />
+              <span className="text-sm"> {badgeError}</span>
+            </div>
+          )}
         </div>
       </div>
 

@@ -38,9 +38,6 @@ const AddBlock = () => {
     });
   }, []);
 
-  console.log('dodoPageDetails', dodoPageDetails)
-
-
   const renderBlock = () => {
     switch (type) {
       case "heading":

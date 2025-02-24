@@ -21,7 +21,7 @@ import Dribble from "public/icons/dribble.svg";
 import EmailId from "public/icons/email.svg";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setSocialLinks } from "store/slice/dodoPageSlice";
+import { setIsSocialLinksChanged, setSocialLinks } from "store/slice/dodoPageSlice";
 
 const socialLinksData = [
   { title: "Website", icon: Web, placeholder: "Paste your personal website", value: "website" },
@@ -106,6 +106,7 @@ const AddSocial = ({
         return acc;
       }, {} as Record<SocialLinkKeys, string>)
     ));
+    dispatch(setIsSocialLinksChanged(true));
     router.push(`/dodo/${dodopageUrl}`);
     // if (res?.success) {
     //   console.log('Saved')

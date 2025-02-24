@@ -8,6 +8,9 @@ interface DodoPageState {
   socialLinks: { key: string; value: string; }[] | null;
   audioBio: File | null | string;
   unsavedChanges?: boolean;
+  isImageChanged?: boolean;
+  isAudioBioChanged?: boolean;
+  isSocialLinksChanged?: boolean;
 }
 const initialState: DodoPageState = {
   dodoPageId: null,
@@ -17,6 +20,9 @@ const initialState: DodoPageState = {
   socialLinks: null,
   audioBio: null,
   unsavedChanges: false,
+  isImageChanged: false,
+  isAudioBioChanged: false,
+  isSocialLinksChanged: false,
 };
 
 const dodoPageSlice = createSlice({
@@ -60,6 +66,17 @@ const dodoPageSlice = createSlice({
       state.socialLinks = null;
       state.audioBio = null;
       state.unsavedChanges = false;
+      state.isImageChanged = false;
+      state.isAudioBioChanged = false;
+    },
+    setIsImageChanged: (state, action: PayloadAction<boolean>) => {
+      state.isImageChanged = action.payload;
+    },
+    setIsAudioBioChanged: (state, action: PayloadAction<boolean>) => {
+      state.isAudioBioChanged = action.payload;
+    },
+    setIsSocialLinksChanged: (state, action: PayloadAction<boolean>) => {
+      state.isSocialLinksChanged = action.payload;
     },
   },
 });
@@ -71,5 +88,8 @@ export const {
   updateDodoPageAudioBio,
   dodoStoreInitialisation,
   resetDodoPage,
+  setIsImageChanged,
+  setIsAudioBioChanged,
+  setIsSocialLinksChanged,
 } = dodoPageSlice.actions;
 export default dodoPageSlice.reducer;

@@ -8,10 +8,7 @@ interface ProductBlockProps {
   mode: string;
 }
 
-const ProductBlock: React.FC<ProductBlockProps> = ({
-  block,
-  mode,
-}) => {
+const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
   const {
     attributes,
     listeners,
@@ -30,15 +27,17 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
 
   const displayImage = () => {
     if (block.isNew) {
-      const blogURL = URL.createObjectURL(block.blockData.productImage);
-      return blogURL;
+      if (block?.blockData?.productImage?.name) {
+        const url = URL.createObjectURL(block.blockData.productImage);
+        return url;
+      }
+      return null;
     } else {
       return block.blockData.productImage;
     }
   };
 
-
-  console.log('block,', block)
+  console.log("Product Block", block);
 
   return (
     <div
@@ -48,20 +47,26 @@ const ProductBlock: React.FC<ProductBlockProps> = ({
       className={`p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200`}
     >
       <div className="flex flex-col items-center space-y-3">
-        <div className="relative w-full h-[130px]">
-          <Image
-            src={displayImage()}
-            alt={block.blockData?.title}
-            fill
-            className="rounded-lg object-cover"
-          />
-        </div>
-        <div
-          className="font-semibold flex items-center w-full gap-2"
-          
-        >
+        {block.blockData.productImage && (
+          <div className="relative w-full h-[130px]">
+            <Image
+              src={displayImage()}
+              fill
+              alt={block.blockData?.title}
+              className="rounded-lg object-cover"
+            />
+          </div>
+        )}
+
+        <div className="font-semibold flex items-center w-full gap-2">
           {mode === "edit" && (
-            <Image src={DragIcon} {...listeners} alt="Drag handle" width={20} height={20} />
+            <Image
+              src={DragIcon}
+              {...listeners}
+              alt="Drag handle"
+              width={20}
+              height={20}
+            />
           )}
           <span className="text-gray-800 font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">
             {block.blockData?.title}
