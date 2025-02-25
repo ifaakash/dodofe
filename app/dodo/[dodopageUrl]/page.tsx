@@ -261,7 +261,7 @@ const DodoPageDashboard = () => {
         return content;
     };
 
-    console.log('blocks', blocks)
+    
 
     return (
         <div
@@ -282,7 +282,7 @@ const DodoPageDashboard = () => {
                 />
 
                 <div className="flex flex-col gap-4 mb-24">
-                    {mode !== "preview" && <ArchiveTab />}
+                    {/* {mode !== "preview" && <ArchiveTab />} */}
 
                     <div
                         className="mx-5 flex flex-col gap-3"

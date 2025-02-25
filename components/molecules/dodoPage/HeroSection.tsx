@@ -13,6 +13,7 @@ import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
 import Speaker from "public/icons/Speaker.svg";
 import { useDispatch, useSelector } from "react-redux";
+import PlayIcon from "public/icons/playIcon.svg";
 import Waves from "public/assets/Waves.gif";
 import {
   updateDodoPageProfilePicture,
@@ -58,6 +59,9 @@ const HeroSection = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isProfileAudioPlaying, setIsProfileAudioPlaying] = useState(false);
+  const profileAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
@@ -155,18 +159,25 @@ const HeroSection = ({
       return;
     }
 
+    // Create a new audio element each time to ensure the source is fresh
+    const audioUrl = URL.createObjectURL(audioBlob);
     if (!audioRef.current) {
-      audioRef.current = new Audio(URL.createObjectURL(audioBlob));
+      audioRef.current = new Audio(audioUrl);
       audioRef.current.onended = () => {
         setIsPlaying(false);
       };
+    } else {
+      // Update the source if the audio element already exists
+      audioRef.current.src = audioUrl;
     }
 
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
       setIsPlaying(true);
     }
   };
@@ -185,6 +196,43 @@ const HeroSection = ({
     dispatch(updateDodoPageAudioBio(audioFile));
     setAddAudioBioPopup(false);
     dispatch(setIsAudioBioChanged(true));
+  };
+
+  const playProfileAudio = () => {
+    if (!dodoPageDetails.audioBio) {
+      console.log("No audio bio available");
+      return;
+    }
+    if (!profileAudioRef.current) {
+      profileAudioRef.current = new Audio(dodoPageDetails.audioBio);
+      profileAudioRef.current.onended = () => {
+        setIsProfileAudioPlaying(false);
+      };
+    }
+
+    if (isProfileAudioPlaying) {
+      profileAudioRef.current.pause();
+      setIsProfileAudioPlaying(false);
+    } else {
+      profileAudioRef.current.play();
+      setIsProfileAudioPlaying(true);
+    }
+  };
+
+  const handleAudioUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.type.startsWith('audio/')) {
+      const audioFile = new File([file], file.name, {
+        type: file.type,
+      });
+      dispatch(updateDodoPageAudioBio(audioFile));
+      dispatch(setIsAudioBioChanged(true));
+      setAddAudioBioPopup(false);
+    } else {
+      alert('Please upload an audio file');
+    }
   };
 
   return (
@@ -218,8 +266,23 @@ const HeroSection = ({
               <Image src={EmptyImage} alt="Rajveer" width={42} height={42} />
             </div>
           )}
+         {
+          mode !== "edit" && (
+            <div 
+              className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
+              onClick={playProfileAudio}
+            >
+              <Image 
+                src={isProfileAudioPlaying ? Speaker : PlayIcon} 
+                alt={isProfileAudioPlaying ? "Stop" : "Play"} 
+                width={16} 
+                height={16} 
+              />
+            </div>
+          )
+         }
         </div>
-        <div className="absolute -top-10 -right-12">
+        <div className="absolute -top-10 -right-10">
           <Image
             height={70}
             width={70}
@@ -232,7 +295,7 @@ const HeroSection = ({
       </div>
 
       <div
-        className={`flex flex-col ${
+        className={`flex flex-col ${(state.audioBio && dodoPageDetails.audioBio && mode !== "edit") && "pt-5"} ${
           mode === "preview" ? "gap-5" : "gap-3"
         } items-center`}
       >
@@ -371,11 +434,20 @@ const HeroSection = ({
                     Record your voice
                   </div>
                   <div className="text-[#3D4966] text-xs leading-none">
-                    {" "}
-                    Say anything for 20 sec{" "}
+                    Say anything for 20 sec
                   </div>
                 </div>
-                <div className="flex items-center flex-col gap-0.5 p-2 border-[1px] border-dashed border-[#979EAD] rounded-lg">
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioUpload}
+                  className="hidden"
+                  ref={audioInputRef}
+                />
+                <div 
+                  className="flex items-center flex-col gap-0.5 p-2 border-[1px] border-dashed border-[#979EAD] rounded-lg cursor-pointer"
+                  onClick={() => audioInputRef.current?.click()}
+                >
                   <Image src={Upload2} width={16} height={16} alt="Upload" />
                   <span className="text-brandPrimary text-[8px]">upload</span>
                 </div>
