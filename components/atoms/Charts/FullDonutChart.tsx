@@ -20,6 +20,15 @@ const FullDonutChart = ({
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
+  if (total === 0) {
+    return (
+      <svg viewBox="-1 -1 2 2" style={{ transform: "rotate(-90deg)" }}>
+        <circle cx="0" cy="0" r="1" fill="#E5E7EB" />
+        <circle cx="0" cy="0" r="0.5" fill="white" />
+      </svg>
+    );
+  }
+
   let cumulativePercentage = 0;
 
   const getCoordinates = (percent: number) => {

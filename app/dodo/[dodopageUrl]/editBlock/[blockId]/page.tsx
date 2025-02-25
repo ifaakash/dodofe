@@ -19,7 +19,7 @@ import AddSeparator from "@components/molecules/dodoPage/addBlocks/AddSeparator"
 import AddPoll from "@components/molecules/dodoPage/addBlocks/AddPoll";
 import AddProduct from "@components/molecules/dodoPage/addBlocks/AddProduct";
 import AddLink from "@components/molecules/dodoPage/addBlocks/AddLink";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeBlock, archiveBlock } from "store/slice/blocksSlice";
 
 const EditBlock = () => {
@@ -35,16 +35,6 @@ const EditBlock = () => {
   const dispatch = useDispatch();
 
   const confirmArchive = async () => {
-    // const res = await archiveBlock({
-    //   blockId: blockId,
-    //   userId: userId,
-    // });
-
-    // if (res?.success) {
-    //   toast.success("Block Archived");
-    //   router.push(`/dodo/${dodopageUrl}`);
-    // }
-
     dispatch(archiveBlock({ blockId: blockId as string }));
     router.back();
   };
@@ -54,16 +44,6 @@ const EditBlock = () => {
   };
 
   const confirmDelete = async () => {
-    // const res = await deleteBlock({
-    //   blockId: blockId,
-    //   userId: userId,
-    // });
-
-    // if (res?.success) {
-    //   toast.success("Block Deleted");
-    //   router.push(`/dodo/${dodopageUrl}`);
-    // }
-    console.log('blockId', blockId)
     dispatch(removeBlock(blockId as string));
     router.back();
   }
@@ -72,12 +52,12 @@ const EditBlock = () => {
     setShowDeleteConfirm(true);
   };
 
+  const state = useSelector((state: any) => state.blocks);
+
   useEffect(() => {
     const getBlockDetails = async () => {
-      const res = await getBlockById(blockId);
-      if (res.success) {
-        setBlockDetails(res?.data);
-      }
+      const block = state.blocks.find((block: any) => block.id === blockId);
+      setBlockDetails(block);
     };
 
     getBlockDetails();
@@ -90,7 +70,7 @@ const EditBlock = () => {
           <AddHeading
             dodoPageId={blockDetails.dodoPageId}
             userId={userId}
-            blockData={blockDetails.blockData}
+            block={blockDetails}
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
@@ -100,7 +80,7 @@ const EditBlock = () => {
           <AddSeparator
             dodoPageId={blockDetails.dodoPageId}
             userId={userId}
-            blockData={blockDetails.blockData}
+            block={blockDetails}
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
@@ -110,7 +90,7 @@ const EditBlock = () => {
           <AddPoll
             dodoPageId={blockDetails.dodoPageId}
             userId={userId}
-            blockData={blockDetails.blockData}
+            block={blockDetails}
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
@@ -120,7 +100,7 @@ const EditBlock = () => {
           <AddLink
             dodoPageId={blockDetails.dodoPageId}
             userId={userId}
-            blockData={blockDetails.blockData}
+            block={blockDetails}
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />
@@ -130,7 +110,7 @@ const EditBlock = () => {
           <AddProduct
             dodoPageId={blockDetails.dodoPageId}
             userId={userId}
-            blockData={blockDetails.blockData}
+            block={blockDetails}
             dodopageUrl={dodopageUrl as string}
             mode={"edit"}
           />

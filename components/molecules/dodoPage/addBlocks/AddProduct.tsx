@@ -51,18 +51,13 @@ const AddProduct = ({
   dodoPageId,
   userId,
   dodopageUrl,
-  blockData,
+  block,
 }: {
   dodoPageId: string;
   userId: string;
   dodopageUrl: string;
   mode: "add" | "edit";
-  blockData?: {
-    title: string;
-    link: string;
-    productImage: string;
-    blockId: string;
-  };
+  block?: any;
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -73,9 +68,9 @@ const AddProduct = ({
     imgUrl: string;
     file?: File;
   }>({
-    name: mode === "edit" ? blockData?.title || "" : "",
-    link: mode === "edit" ? blockData?.link || "" : "",
-    imgUrl: mode === "edit" ? blockData?.productImage || "" : "",
+    name: mode === "edit" ? block?.blockData?.title || "" : "",
+    link: mode === "edit" ? block?.blockData?.link || "" : "",
+    imgUrl: mode === "edit" ? block?.blockData?.productImage || "" : "",
   });
 
   const [errors, setErrors] = useState({

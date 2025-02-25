@@ -37,8 +37,6 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
     }
   };
 
-  console.log("Product Block", block);
-
   return (
     <div
       ref={setNodeRef}

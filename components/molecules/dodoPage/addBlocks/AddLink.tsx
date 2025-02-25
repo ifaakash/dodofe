@@ -40,30 +40,30 @@ const AddLink = ({
   userId,
   dodopageUrl,
   mode,
-  blockData,
+  block,
 }: {
   dodoPageId: string;
   userId: string;
   dodopageUrl: string;
   mode: "add" | "edit";
-  blockData?: any;
+  block?: any;
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
     badges.find(
-      (badge) => badge.backgroundColor === blockData?.badge?.backgroundColor
+      (badge) => badge.backgroundColor === block?.blockData?.badge?.backgroundColor
     )?.text || ""
   );
   const [displayType, setDisplayType] = useState<string>(
-    blockData?.blockCardSize || "SMALL"
+    block?.blockData?.blockCardSize || "SMALL"
   );
   const [titleEditing, setTitleEditing] = useState<boolean>(false);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-  const [link, setLink] = useState<string>(blockData?.url || "");
-  const [title, setTitle] = useState<string>(blockData?.title || "");
+  const [link, setLink] = useState<string>(block?.blockData?.url || "");
+  const [title, setTitle] = useState<string>(block?.blockData?.title || "");
   const [badgeText, setBadgeText] = useState<string>(
-    blockData?.badge?.text || ""
+    block?.blockData?.badge?.text || ""
   );
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import NewButton from "@components/atoms/Button/NewButton";
-import { createBlock, updateBlock } from "api";
+import { createBlock } from "api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { addBlock } from "store/slice/blocksSlice";
+import { addBlock, updateBlock } from "store/slice/blocksSlice";
 import { v4 as uuidv4 } from "uuid";
 
 const AddSeparator = ({
@@ -14,15 +14,15 @@ const AddSeparator = ({
   userId,
   dodopageUrl,
   mode,
-  blockData,
+  block,
 }: {
   dodoPageId: string;
   userId: string;
   dodopageUrl: string | string[];
   mode: "edit" | "add";
-  blockData?: any;
+  block?: any;
 }) => {
-  const [selected, setSelected] = useState(blockData?.separatorType || "");
+  const [selected, setSelected] = useState(block?.blockData?.separatorType || "");
   const router = useRouter();
   const dispatch = useDispatch();
   const [separatorError, setSeparatorError] = useState("");
@@ -40,7 +40,6 @@ const AddSeparator = ({
     if (!validateForm()) {
       return;
     }
-    
 
     dispatch(
       addBlock({
@@ -59,19 +58,34 @@ const AddSeparator = ({
   };
 
   const handleUpdateBlock = async () => {
-    const res = await updateBlock({
-      dodoPageId: dodoPageId,
-      blockId: blockData.blockId,
-      blockData: {
-        separatorType: selected,
-      },
-    });
+    // const res = await updateBlock({
+    //   dodoPageId: dodoPageId,
+    //   blockId: block.id,
+    //   blockData: {
+    //     separatorType: selected,
+    //   },
+    // });
 
-    if (res.success) {
-      toast.success("Block updated successfully");
-      router.push(`/dodo/${dodopageUrl}`);
-    }
+    // if (res.success) {
+    //   toast.success("Block updated successfully");
+    //   router.push(`/dodo/${dodopageUrl}`);
+    // }
+
+    dispatch(
+      updateBlock({
+        id: block.id,
+        blockType: "SEPARATOR",
+        blockCardSize: "SMALL",
+        blockData: {
+          separatorType: selected,
+        },
+        isUpdated: true,
+      })
+    );
+    router.back();
   };
+
+  console.log("Separator block", block);
 
   return (
     <div className="flex items-center flex-col">
