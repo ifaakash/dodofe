@@ -295,7 +295,7 @@ const HeroSection = ({
       </div>
 
       <div
-        className={`flex flex-col ${(state.audioBio && dodoPageDetails.audioBio && mode !== "edit") && "pt-5"} ${
+        className={`flex flex-col ${(state.audioBio && dodoPageDetails?.audioBio && mode !== "edit") && "pt-5"} ${
           mode === "preview" ? "gap-5" : "gap-3"
         } items-center`}
       >

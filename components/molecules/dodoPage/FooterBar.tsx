@@ -124,23 +124,27 @@ const FooterBar = ({
                 formData.append("userId", userId);
                 formData.append("blockData[title]", block.blockData.title);
                 formData.append("blockData[url]", block.blockData.url);
-                formData.append(
-                  "linkDisplayPicture",
-                  block.blockData.linkDisplayPicture
-                );
-
-                formData.append(
-                  "blockData[badge][text]",
-                  block.blockData.badge.text
-                );
-                formData.append(
-                  "blockData[badge][backgroundColor]",
-                  block.blockData.badge.backgroundColor
-                );
-                formData.append(
-                  "blockData[badge][color]",
-                  block.blockData.badge.color
-                );
+                if (block.blockData.linkDisplayPicture) {
+                  console.log('Link Image', block.blockData.linkDisplayPicture)
+                  formData.append(
+                    "linkDisplayPicture",
+                    block.blockData.linkDisplayPicture
+                  );
+                }
+                if (block.blockData.badge?.text) {
+                  formData.append(
+                    "blockData[badge][text]",
+                    block.blockData.badge.text
+                  );
+                  formData.append(
+                    "blockData[badge][backgroundColor]",
+                    block.blockData.badge.backgroundColor
+                  );
+                  formData.append(
+                    "blockData[badge][color]",
+                    block.blockData.badge.color
+                  );
+                }
 
                 const createLink = await createBlockWithMedia(formData);
                 console.log("createLink", createLink);
@@ -182,13 +186,17 @@ const FooterBar = ({
 
       if (blockState.isReordered) {
         console.log("isReordered");
-        await reorderBlocks({
-          dodoPageId: dodoPageId,
-          blocks: blockState.blocks.map((block) => ({
-            blockId: block.id as string,
-            newIndex: block.blockPositionalIndex as number,
-          })),
-        });
+        try {
+          await reorderBlocks({
+            dodoPageId: dodoPageId,
+            blocks: blockState.blocks.map((block) => ({
+              blockId: block.id as string,
+              newIndex: block.blockPositionalIndex as number,
+            })),
+          });
+        } catch (error) {
+          console.error("Error reordering blocks:", error);
+        }
       }
 
       if (blockState.blocksToBeDeleted) {
@@ -208,6 +216,7 @@ const FooterBar = ({
       }
 
       if (dodoPageState.unsavedChanges) {
+        console.log("Updating Dodo Page", dodoPageState);
         const formData = new FormData();
         formData.append("id", dodoPageId);
         formData.append("userId", userId);
@@ -215,9 +224,14 @@ const FooterBar = ({
         formData.append("thoughts", dodoPageThought);
 
         if (dodoPageState.isSocialLinksChanged) {
-          console.log("Social Links");
-          formData.append("socialLinks", JSON.stringify(socialLinks));
+          console.log("Social Links", dodoPageState.socialLinks);
+          Object.entries(dodoPageState.socialLinks).forEach(([platform, url]) => {
+            formData.append(`socialLinks[${platform}]`, url as string);
+          });
+
         }
+
+        console.log("Form Data", formData.get("socialLinks"));
 
         if (dodoPageState.isImageChanged) {
           console.log("Img");
@@ -271,6 +285,7 @@ const FooterBar = ({
                 const productRes = await updateBlockWithMedia(formDataProduct);
                 console.log("productRes", productRes);
                 break;
+
               case "LINK":
                 const formDataLink = new FormData();
                 formDataLink.append("blockId", block.id);
@@ -280,15 +295,37 @@ const FooterBar = ({
 
                 formDataLink.append("blockData[title]", block.blockData.title);
                 formDataLink.append("blockData[url]", block.blockData.url);
-                formDataLink.append("linkDisplayPicture", block.blockData.linkDisplayPicture);
-                formDataLink.append("blockData[badge][text]", block.blockData.badge.text);
-                formDataLink.append("blockData[badge][backgroundColor]", block.blockData.badge.backgroundColor);
-                formDataLink.append("blockData[badge][color]", block.blockData.badge.color);
+                formDataLink.append(
+                  "linkDisplayPicture",
+                  block.blockData.linkDisplayPicture
+                );
+                formDataLink.append(
+                  "blockData[badge][text]",
+                  block.blockData.badge.text
+                );
+                formDataLink.append(
+                  "blockData[badge][backgroundColor]",
+                  block.blockData.badge.backgroundColor
+                );
+                formDataLink.append(
+                  "blockData[badge][color]",
+                  block.blockData.badge.color
+                );
 
                 const linkRes = await updateBlockWithMedia(formDataLink);
                 console.log("linkRes", linkRes);
                 break;
-
+              case "SEPARATOR":
+                const separatorRes = await updateBlock({
+                  blockId: block.id,
+                  userId: userId,
+                  dodopageUrl: url,
+                  blockData: {
+                    separatorType: block.blockData.separatorType,
+                  },
+                });
+                console.log("separatorRes", separatorRes);
+                break;
               default:
                 break;
             }
@@ -301,6 +338,8 @@ const FooterBar = ({
 
       // dispatch(resetDodoPage());
       // dispatch(resetUnPublishedBlocks());
+      toast.success("Dodo Page published successfully");
+
       // window.location.href = `/dodo/${url}`;
       return true;
     } catch (error) {
@@ -309,7 +348,6 @@ const FooterBar = ({
     }
   };
 
-  console.log('userId', userId)
   return (
     <div>
       {isOpened && <BlockModal />}
@@ -327,12 +365,12 @@ const FooterBar = ({
           <Plus size={32} />
         </div>
 
-        <div
+        <button
           onClick={handlePublish}
           className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary"
         >
           Publish
-        </div>
+        </button>
       </div>
     </div>
   );

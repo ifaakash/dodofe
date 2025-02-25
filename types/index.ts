@@ -160,4 +160,5 @@ export interface Block {
   toRemove? :boolean
   toArchive? :boolean
   isActive?: boolean
+  isNew?: boolean
 }

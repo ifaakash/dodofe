@@ -12,8 +12,7 @@ import { TriangleAlert } from "lucide-react";
 interface ProductData {
   name: string;
   link: string;
-  imgUrl: string;
-  file?: File;
+  imgUrl: string | File;
 }
 
 interface AddProductProps {
@@ -32,13 +31,13 @@ interface AddProductProps {
   };
 }
 
-interface FormErrors {
-  title: string;
-  link: string;
-  image: string;
-}
-
-const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProductProps) => {
+const AddProduct = ({
+  mode,
+  dodoPageId,
+  userId,
+  dodopageUrl,
+  block,
+}: AddProductProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -47,69 +46,56 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
     link: block?.blockData?.link || "",
     imgUrl: block?.blockData?.productImage || "",
   });
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
 
-  const [errors, setErrors] = useState<FormErrors>({
-    title: "",
-    link: "",
-    image: "",
-  });
+  // Separate error states for better clarity
+  const [titleError, setTitleError] = useState<string>("");
+  const [linkError, setLinkError] = useState<string>("");
+  const [imageError, setImageError] = useState<string>("");
 
   const handleImageUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setProduct({
-        ...product,
-        imgUrl: reader.result as string,
-        file: file,
-      });
-    };
+    setUploadedImage(file);
   };
 
-  const validateForm = (productData: ProductData): boolean => {
-    const newErrors = {
-      title: "",
-      link: "",
-      image: "",
-    };
-
+  const validateForm = (): boolean => {
     let isValid = true;
 
-    if (!productData.name.trim()) {
-      newErrors.title = "Product name is required";
+    // Reset all errors first
+    setTitleError("");
+    setLinkError("");
+    setImageError("");
+
+    if (!product.name.trim()) {
+      setTitleError("Product name is required");
       isValid = false;
     }
 
-    if (!productData.link.trim()) {
-      newErrors.link = "Product link is required";
+    if (!product.link.trim()) {
+      setLinkError("Product link is required");
       isValid = false;
     } else if (
-      !productData.link.startsWith("http://") &&
-      !productData.link.startsWith("https://")
+      !product.link.startsWith("http://") &&
+      !product.link.startsWith("https://")
     ) {
-      newErrors.link = "Please enter a valid URL starting with http:// or https://";
+      setLinkError("Please enter a valid URL starting with http:// or https://");
       isValid = false;
     }
 
-    if (mode === "add" && !productData.file) {
-      newErrors.image = "Product image is required";
+    if (mode === "add" && !uploadedImage) {
+      setImageError("Product image is required");
       isValid = false;
     }
 
-    setErrors(newErrors);
     return isValid;
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
     try {
-      if (!validateForm(product)) {
-        return;
-      }
-
       const formData = new FormData();
-      if (product.file) {
-        formData.append("productImage", product.file);
-      }
+      formData.append("productImage", uploadedImage as File);
       formData.append("blockData[title]", product.name);
       formData.append("blockData[link]", product.link);
       formData.append("blockType", "PRODUCT");
@@ -126,9 +112,9 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
           blockData: {
             title: product.name,
             link: product.link,
-            productImage: product.file,
+            productImage: uploadedImage,
           },
-          hasMedia: !!product.file,
+          hasMedia: !!uploadedImage,
           isNew: true,
         })
       );
@@ -137,8 +123,6 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
       console.error("Error uploading products:", error);
     }
   };
-  console.log("Prod Block", block);
-
   const handleUpdate = async () => {
     const updatedBlock = {
       id: block?.id,
@@ -147,13 +131,29 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
       blockData: {
         title: product.name,
         link: product.link,
-        productImage: product.file || block?.blockData?.productImage,
+        productImage: uploadedImage || block?.blockData?.productImage,
       },
       isUpdated: true,
     };
+    console.log("updatedBlock", updatedBlock);
     dispatch(updateBlock(updatedBlock as any));
     router.back();
   };
+
+  const displayImage = () => {
+    if (uploadedImage) {
+      return URL.createObjectURL(uploadedImage);
+    }
+    if (block?.blockData?.productImage) {
+      if (typeof block?.blockData?.productImage === "string") {
+        return block?.blockData?.productImage;
+      }
+      return URL.createObjectURL(block?.blockData?.productImage);
+    }
+    return null;
+  };
+
+  console.log("displayImage", displayImage());
 
   return (
     <div className="flex flex-col gap-4 items-center">
@@ -166,10 +166,10 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
               setProduct({ ...product, name: e.target.value })
             }
           />
-          {errors.title && (
+          {titleError && (
             <div className="text-red-500 text-sm flex items-center gap-1">
               <TriangleAlert size={14} />
-              {errors.title}
+              {titleError}
             </div>
           )}
           <Input
@@ -179,23 +179,22 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
               setProduct({ ...product, link: e.target.value })
             }
           />
-          {errors.link && (
+          {linkError && (
             <div className="text-red-500 text-sm flex items-center gap-1">
               <TriangleAlert size={14} />
-              {errors.link}
+              {linkError}
             </div>
           )}
         </div>
         <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
           <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
-            {product.imgUrl && (
+            {displayImage() ? (
               <img
-                src={product.imgUrl}
-                alt={product.name}
+                src={displayImage() as string}
+                alt={"Product Image"}
                 className="w-full h-full object-cover rounded-2xl"
               />
-            )}
-            {!product.imgUrl && (
+            ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <Image src={EmptyImage} alt={product.name} />
               </div>
@@ -212,10 +211,10 @@ const AddProduct = ({ mode, dodoPageId, userId, dodopageUrl, block }: AddProduct
           </div>
           <p className="text-sm font-medium">{product.name}</p>
         </div>
-        {errors.image && (
+        {imageError && (
           <div className="text-red-500 text-sm flex items-center gap-1">
             <TriangleAlert size={14} />
-            {errors.image}
+            {imageError}
           </div>
         )}
       </div>

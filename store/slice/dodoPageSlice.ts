@@ -56,6 +56,7 @@ const dodoPageSlice = createSlice({
       state.unsavedChanges = true;
     },
     setSocialLinks: (state, action: PayloadAction<[] | null>) => {
+      console.log("Social Links", action.payload);
       state.socialLinks = action.payload;
       state.unsavedChanges = true;
     },

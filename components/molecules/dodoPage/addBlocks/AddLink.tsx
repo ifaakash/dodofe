@@ -53,7 +53,7 @@ const AddLink = ({
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
     badges.find(
       (badge) => badge.text === block?.blockData?.badge?.backgroundColor
-    )?.text || ""
+    )?.text || null
   );
   const [displayType, setDisplayType] = useState<string>(
     block?.blockData?.blockCardSize || "SMALL"
@@ -63,7 +63,7 @@ const AddLink = ({
   const [link, setLink] = useState<string>(block?.blockData?.url || "");
   const [title, setTitle] = useState<string>(block?.blockData?.title || "");
   const [badgeText, setBadgeText] = useState<string>(
-    block?.blockData?.badge?.text || ""
+    block?.blockData?.badge?.text || null
   );
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,17 +85,17 @@ const AddLink = ({
     setLinkError("");
     setBadgeError("");
 
-    if (!title.trim()) {
+    if (!title?.trim()) {
       setTitleError("Title is Required");
       isValid = false;
     }
 
-    if (!link.trim()) {
+    if (!link?.trim()) {
       setLinkError("Link is Required");
       isValid = false;
     }
 
-    if (badgeText.trim() && !selectedBadgeCategory) {
+    if (badgeText?.trim() && !selectedBadgeCategory) {
       setBadgeError("Badge Category is Required when Badge Text is provided");
       isValid = false;
     }
@@ -122,15 +122,17 @@ const AddLink = ({
             title,
             url: link,
             linkDisplayPicture: uploadedImage as File,
-            badge: {
-              text: badgeText,
-              backgroundColor: selectedBadgeCategory,
-              color:
-                badges.find((badge) => badge.text === selectedBadgeCategory)
-                  ?.color || "",
-            },
+            badge: badgeText
+              ? {
+                  text: badgeText,
+                  backgroundColor: selectedBadgeCategory,
+                  color:
+                    badges.find((badge) => badge.text === selectedBadgeCategory)
+                      ?.color || null,
+                }
+              : null,
           },
-          hasMedia: uploadedImage ? true : false,
+          hasMedia: !!(uploadedImage || block?.blockData?.linkDisplayPicture),
           isNew: true,
         })
       );
@@ -141,6 +143,9 @@ const AddLink = ({
   };
 
   const handleUpdate = async () => {
+    if (!validateForm()) {
+      return;
+    }
     const updatedBlock = {
       id: block?.id,
       blockType: "LINK",
@@ -148,7 +153,8 @@ const AddLink = ({
       blockData: {
         title,
         url: link,
-        linkDisplayPicture: uploadedImage || block?.blockData?.linkDisplayPicture || null,
+        linkDisplayPicture:
+          uploadedImage || block?.blockData?.linkDisplayPicture || null,
         badge: {
           text: badgeText,
           backgroundColor: selectedBadgeCategory,
@@ -169,15 +175,13 @@ const AddLink = ({
       return URL.createObjectURL(uploadedImage);
     }
     if (block?.blockData?.linkDisplayPicture) {
-      if(typeof block?.blockData?.linkDisplayPicture === "string"){
+      if (typeof block?.blockData?.linkDisplayPicture === "string") {
         return block?.blockData?.linkDisplayPicture;
       }
       return URL.createObjectURL(block?.blockData?.linkDisplayPicture);
     }
     return null;
-  }
-
-  console.log("displayImage", displayImage());
+  };
 
   return (
     <div className="py-5 flex flex-col items-center">
@@ -189,8 +193,10 @@ const AddLink = ({
             } gap-3 p-2 rounded-lg bg-white transition-all duration-300 ease-in-out`}
           >
             <div
-              className={`bg-[#979EAD] rounded-[10px] ${
-                displayType === "SMALL" ? "" : "w-full h-32"
+              className={`bg-[#979EAD] ${
+                displayType === "SMALL"
+                  ? "w-10 h-10 rounded-md"
+                  : "w-full h-32 rounded-[10px]"
               } flex items-center justify-center relative cursor-pointer`}
             >
               <input

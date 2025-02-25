@@ -23,16 +23,14 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
   };
 
   const displayImage = () => {
-    if(block.blockData.linkDisplayPicture){
-      if(typeof block.blockData.linkDisplayPicture === "string"){
+    if(block.blockData?.linkDisplayPicture){
+      if(typeof block.blockData?.linkDisplayPicture === "string"){
         return block.blockData.linkDisplayPicture;
       }
       return URL.createObjectURL(block.blockData.linkDisplayPicture);
     }
     return null;
   };
-
-  console.log("LinkBlock", block);
 
   return (
     <div
@@ -52,7 +50,7 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
               {...listeners}
             />
           )}
-          {block.blockData.linkDisplayPicture && (
+          {displayImage() && (
             <img
               src={displayImage()}
               alt="Link"
@@ -78,7 +76,7 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {block.blockData.linkDisplayPicture && (
+          {block.blockData?.linkDisplayPicture && (
             <img
               src={displayImage()}
               alt="Link"
