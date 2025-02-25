@@ -23,16 +23,16 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
   };
 
   const displayImage = () => {
-    if (block.isNew) {
-      if (block?.blockData?.linkDisplayPicture?.name) {
-        const url = URL.createObjectURL(block.blockData.linkDisplayPicture);
-        return url;
+    if(block.blockData.linkDisplayPicture){
+      if(typeof block.blockData.linkDisplayPicture === "string"){
+        return block.blockData.linkDisplayPicture;
       }
-      return null;
-    } else {
-      return block.blockData.linkDisplayPicture;
+      return URL.createObjectURL(block.blockData.linkDisplayPicture);
     }
+    return null;
   };
+
+  console.log("LinkBlock", block);
 
   return (
     <div

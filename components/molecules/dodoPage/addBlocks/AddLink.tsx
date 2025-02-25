@@ -7,7 +7,7 @@ import AddImageIcon from "public/icons/addImage.svg";
 import Image from "next/image";
 import EditPen from "public/icons/EditPen.svg";
 import { useRouter } from "next/navigation";
-import { addBlock } from "store/slice/blocksSlice";
+import { addBlock, updateBlock } from "store/slice/blocksSlice";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
@@ -52,7 +52,7 @@ const AddLink = ({
   const dispatch = useDispatch();
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
     badges.find(
-      (badge) => badge.backgroundColor === block?.blockData?.badge?.backgroundColor
+      (badge) => badge.text === block?.blockData?.badge?.backgroundColor
     )?.text || ""
   );
   const [displayType, setDisplayType] = useState<string>(
@@ -141,9 +141,44 @@ const AddLink = ({
   };
 
   const handleUpdate = async () => {
-    console.log("handleUpdate");
+    const updatedBlock = {
+      id: block?.id,
+      blockType: "LINK",
+      blockCardSize: displayType as "SMALL" | "MEDIUM" | "LARGE",
+      blockData: {
+        title,
+        url: link,
+        linkDisplayPicture: uploadedImage || block?.blockData?.linkDisplayPicture || null,
+        badge: {
+          text: badgeText,
+          backgroundColor: selectedBadgeCategory,
+          color:
+            badges.find((badge) => badge.text === selectedBadgeCategory)
+              ?.color || "",
+        },
+      },
+      hasMedia: !!(uploadedImage || block?.blockData?.linkDisplayPicture),
+      isUpdated: true,
+    };
+    dispatch(updateBlock(updatedBlock as any));
+    router.back();
   };
-  
+
+  const displayImage = () => {
+    if (uploadedImage) {
+      return URL.createObjectURL(uploadedImage);
+    }
+    if (block?.blockData?.linkDisplayPicture) {
+      if(typeof block?.blockData?.linkDisplayPicture === "string"){
+        return block?.blockData?.linkDisplayPicture;
+      }
+      return URL.createObjectURL(block?.blockData?.linkDisplayPicture);
+    }
+    return null;
+  }
+
+  console.log("displayImage", displayImage());
+
   return (
     <div className="py-5 flex flex-col items-center">
       <div className="flex flex-col gap-8 w-full">
@@ -154,9 +189,7 @@ const AddLink = ({
             } gap-3 p-2 rounded-lg bg-white transition-all duration-300 ease-in-out`}
           >
             <div
-              className={`bg-[#979EAD] ${
-                uploadedImage ? "" : "p-[15px]"
-              } rounded-[10px] ${
+              className={`bg-[#979EAD] rounded-[10px] ${
                 displayType === "SMALL" ? "" : "w-full h-32"
               } flex items-center justify-center relative cursor-pointer`}
             >
@@ -166,9 +199,9 @@ const AddLink = ({
                 onChange={handleImageUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
-              {uploadedImage ? (
+              {displayImage() ? (
                 <img
-                  src={URL.createObjectURL(uploadedImage)}
+                  src={displayImage()}
                   alt="uploaded preview"
                   className={`${
                     displayType === "SMALL"

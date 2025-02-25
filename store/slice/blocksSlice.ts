@@ -68,7 +68,7 @@ interface BlocksState {
   isReordered: boolean;
   newBlocksAdded: boolean;
   blocksToBeDeleted: boolean;
-  isUpdated: boolean;
+  blocksToBeUpdated: boolean;
 }
 
 const initialState: BlocksState = {
@@ -76,8 +76,8 @@ const initialState: BlocksState = {
   unPublishedBlocks: false,
   isReordered: false,
   newBlocksAdded: false,
-  isUpdated: false,
   blocksToBeDeleted: false,
+  blocksToBeUpdated: false
 };
 
 // Create the slice
@@ -116,20 +116,34 @@ const blocksSlice = createSlice({
           console.log("Heading block", block);
           block.blockData.title = action.payload.blockData.title;
           block.isUpdated = true;
+          state.blocksToBeUpdated = true;
           break;
         case "LINK":
           block.blockData.title = action.payload.blockData.title;
           block.blockData.link = action.payload.blockData.link;
+          block.blockCardSize = action.payload.blockCardSize;
+          block.blockData.linkDisplayPicture = action.payload.blockData.linkDisplayPicture;
+          block.blockData.badge = action.payload.blockData.badge;
           block.isUpdated = true;
+          state.blocksToBeUpdated = true;
           break;
         case "SEPARATOR":
           block.blockData.separatorType =
             action.payload.blockData.separatorType;
           block.isUpdated = true;
+          state.blocksToBeUpdated = true;
           break;
         case "POLL":
           block.blockData.question = action.payload.blockData.question;
           block.isUpdated = true;
+          state.blocksToBeUpdated = true;
+          break;
+        case "PRODUCT":
+          block.blockData.title = action.payload.blockData.title;
+          block.blockData.link = action.payload.blockData.link;
+          block.blockData.productImage = action.payload.blockData.productImage;
+          block.isUpdated = true;
+          state.blocksToBeUpdated = true;
           break;
       }
     },

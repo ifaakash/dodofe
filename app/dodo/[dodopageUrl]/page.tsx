@@ -330,7 +330,6 @@ const DodoPageDashboard = () => {
                     <FooterBar
                         mode={mode}
                         url={url}
-                        userId={userId}
                         dodoPageId={dodoPageDetails?.id}
                     />
                 </div>

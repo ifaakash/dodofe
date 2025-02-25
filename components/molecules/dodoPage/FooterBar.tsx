@@ -9,7 +9,6 @@ import Product from "public/icons/Product.svg";
 import Heading from "public/icons/Heading.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { resetUnPublishedBlocks } from "store/slice/blocksSlice";
@@ -18,6 +17,8 @@ import {
   createBlockWithMedia,
   deleteBlock,
   reorderBlocks,
+  updateBlock,
+  updateBlockWithMedia,
   updateDodoPage,
 } from "api/services";
 import { loadState } from "@utils/localStorage";
@@ -25,6 +26,7 @@ import { STORAGE_CONSTANTS } from "@utils/constants";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
+import { useParams } from "next/navigation";
 
 const BlockModal = () => {
   const { dodopageUrl } = useParams();
@@ -85,15 +87,14 @@ const BlockModal = () => {
 const FooterBar = ({
   mode,
   url,
-  userId,
   dodoPageId,
 }: {
   mode: string;
   url: string;
-  userId: string;
   dodoPageId: string;
 }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const {
     dodoPageName,
     dodoPageThought,
@@ -107,9 +108,9 @@ const FooterBar = ({
   const dodoPageState = useSelector((state: any) => state.dodoPage);
 
   const handlePublish = async () => {
+    console.log("Handle Publish");
     try {
       if (blockState.newBlocksAdded) {
-        console.log("newBlocksAdded");
         const newBlocks = blockState.blocks.filter((block) => block.isNew);
 
         for (const block of newBlocks) {
@@ -232,6 +233,72 @@ const FooterBar = ({
         console.log("updateDodoPage", DodoPageRes);
       }
 
+      if (blockState.blocksToBeUpdated) {
+        console.log("Blocks to be updated");
+        const updatedBlocks = blockState.blocks.filter(
+          (block) => block.isUpdated
+        );
+
+        updatedBlocks.forEach(async (block) => {
+          try {
+            switch (block.blockType) {
+              case "HEADING":
+                const headingRes = await updateBlock({
+                  blockId: block.id,
+                  userId: userId,
+                  dodopageUrl: url,
+                  blockData: {
+                    title: block.blockData.title,
+                  },
+                });
+                console.log("headingRes", headingRes);
+                break;
+              case "PRODUCT":
+                const formDataProduct = new FormData();
+                formDataProduct.append(
+                  "productImage",
+                  block.blockData.productImage
+                );
+                formDataProduct.append(
+                  "blockData[title]",
+                  block.blockData.title
+                );
+                formDataProduct.append("blockData[link]", block.blockData.link);
+                formDataProduct.append("blockId", block.id);
+                formDataProduct.append("userId", userId);
+                formDataProduct.append("dodopageUrl", url);
+                formDataProduct.append("blockCardSize", block.blockCardSize);
+                const productRes = await updateBlockWithMedia(formDataProduct);
+                console.log("productRes", productRes);
+                break;
+              case "LINK":
+                const formDataLink = new FormData();
+                formDataLink.append("blockId", block.id);
+                formDataLink.append("userId", userId);
+                formDataLink.append("dodopageUrl", url);
+                formDataLink.append("blockCardSize", block.blockCardSize);
+
+                formDataLink.append("blockData[title]", block.blockData.title);
+                formDataLink.append("blockData[url]", block.blockData.url);
+                formDataLink.append("linkDisplayPicture", block.blockData.linkDisplayPicture);
+                formDataLink.append("blockData[badge][text]", block.blockData.badge.text);
+                formDataLink.append("blockData[badge][backgroundColor]", block.blockData.badge.backgroundColor);
+                formDataLink.append("blockData[badge][color]", block.blockData.badge.color);
+
+                const linkRes = await updateBlockWithMedia(formDataLink);
+                console.log("linkRes", linkRes);
+                break;
+
+              default:
+                break;
+            }
+          } catch (error) {
+            console.error("Error updating block:", error);
+            return false; // Return false if any block update fails
+          }
+        });
+      }
+
       // dispatch(resetDodoPage());
       // dispatch(resetUnPublishedBlocks());
       // window.location.href = `/dodo/${url}`;
@@ -242,6 +309,7 @@ const FooterBar = ({
     }
   };
 
+  console.log('userId', userId)
   return (
     <div>
       {isOpened && <BlockModal />}

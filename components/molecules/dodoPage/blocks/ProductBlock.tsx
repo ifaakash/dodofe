@@ -25,8 +25,9 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
     transition,
   };
 
+  console.log("Block", block);
   const displayImage = () => {
-    if (block.isNew) {
+    if (block.isNew || block.isUpdated) {
       if (block?.blockData?.productImage?.name) {
         const url = URL.createObjectURL(block.blockData.productImage);
         return url;
