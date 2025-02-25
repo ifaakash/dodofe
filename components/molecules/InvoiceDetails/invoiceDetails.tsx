@@ -13,18 +13,29 @@ import {
 } from "store/slice/invoiceSlice";
 import { RootState } from 'store/store';
 import { InvoiceItem } from "types";
+import cx from 'classnames';
+import { isEmpty } from "@utils/index";
+import NewButton from "@components/atoms/Button/NewButton";
 
-const InvoiceDetails = () => {
+const InvoiceDetails = ({ setCurrentStage }) => {
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [subTotal, setSubTotal] = useState(0);
+  const [disableNextButton, setDisableNextButton] = useState(true);
 
   const state = useSelector((state: any) => state.invoice);
 
   useEffect(() => {
+    console.log(state.items)
+    if (state.items.length > 0) {
+      setDisableNextButton(false);
+    } else {
+      setDisableNextButton(true);
+    }
+
     const calculateTotals = () => {
       // Calculate items total
       const itemsTotal = state.items.reduce((sum: any, item: any) => {
@@ -230,6 +241,21 @@ const InvoiceDetails = () => {
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => dispatch(addNote(e.target.value))}
           value={state.note}
         />
+      </div>
+
+      <div className={cx(
+        "bottom-0 py-4 fixed justify-center",
+      )}
+        style={{ width: '90%' }}
+      >
+        <NewButton
+          size="large"
+          variant="primary"
+          disabled={disableNextButton}
+          onClick={() => setCurrentStage('paymentDetails')}
+        >
+          Next
+        </NewButton>
       </div>
     </div>
   );

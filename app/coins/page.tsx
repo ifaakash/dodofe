@@ -150,6 +150,7 @@ export default function Coins() {
         );
     };
 
+
     return (
         <Screen>
             <div className="text-center">
@@ -174,7 +175,7 @@ export default function Coins() {
                     </div>
 
                     <div
-                        style={{ position: 'relative', top: '-40px' }}
+                        style={{ position: 'relative', top: '-40px', minHeight: 'calc(100vh - 260px)' }}
                         className={cx(
                             "w-full px-4 rounded-t-2xl bg-white",
                             styles.lowerDiv
@@ -222,24 +223,28 @@ export default function Coins() {
                             )}
 
                             {activeTab === 'coin-history' && (
-                                <div className="space-y-4">
-                                    {coinHistory.map((transaction, index) => (
-                                        <Card key={index} className="p-4 flex justify-between items-center bg-white rounded-xl shadow">
-                                            <div className="flex flex-col items-start">
-                                                <p className="text-xl mb-1">{transaction.description}</p>
-                                                <p className="text-gray-500 text-sm">{transaction.metadata?.date}</p>
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-2xl font-bold">{transaction.amount}</span>
-                                                <div className="flex items-center gap-1">
-                                                    <span className="text-sm">{transaction.transactionType}</span>
-                                                    {transaction.transactionType === 'EARNED' && <Image width={24} height={24} src={coinCredit} alt="coin credit" />}
-                                                    {transaction.transactionType === 'SPENT' && <Image width={24} height={24} src={coinDebit} alt="coin debit" />}
+
+                                isEmpty(coinHistory) ?
+                                    <div className="mt-12">No coin history</div> :
+
+                                    <div className="space-y-4">
+                                        {coinHistory.map((transaction, index) => (
+                                            <Card key={index} className="p-4 flex justify-between items-center bg-white rounded-xl shadow">
+                                                <div className="flex flex-col items-start">
+                                                    <p className="text-xl mb-1">{transaction.description}</p>
+                                                    <p className="text-gray-500 text-sm">{transaction.metadata?.date}</p>
                                                 </div>
-                                            </div>
-                                        </Card>
-                                    ))}
-                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-2xl font-bold">{transaction.amount}</span>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="text-sm">{transaction.transactionType}</span>
+                                                        {transaction.transactionType === 'EARNED' && <Image width={24} height={24} src={coinCredit} alt="coin credit" />}
+                                                        {transaction.transactionType === 'SPENT' && <Image width={24} height={24} src={coinDebit} alt="coin debit" />}
+                                                    </div>
+                                                </div>
+                                            </Card>
+                                        ))}
+                                    </div>
                             )}
                         </div>
                     </div>

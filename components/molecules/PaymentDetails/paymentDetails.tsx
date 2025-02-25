@@ -8,18 +8,22 @@ import {
 } from "store/slice/invoiceSlice";
 import { Plus } from "lucide-react";
 import { BankDetails } from "types";
-import { RootState } from 'store/store';
+import { RootState } from "store/store";
+import NewButton from "@components/atoms/Button/NewButton";
+import cx from "classnames";
 
 interface PaymentDetailsProps {
   bankDetails: BankDetails[];
+  setCurrentStage: (currentStage: string) => void;
 }
 
-const PaymentDetails = ({ bankDetails }: PaymentDetailsProps) => {
+const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) => {
   const dispatch = useDispatch();
   const [showInputFields, setShowInputFields] = useState(bankDetails.length === 0);
   const [bankDetailsID, setBankDetailsID] = useState("");
+  const [disableNextButton, setDisableNextButton] = useState(true);
 
-  const { currentBankDetails } = useSelector((state: any) => state.invoice);
+  const { currentBankDetails } = useSelector((state: RootState) => state.invoice);
 
   useEffect(() => {
     if (bankDetailsID) {
@@ -35,6 +39,25 @@ const PaymentDetails = ({ bankDetails }: PaymentDetailsProps) => {
     setBankDetailsID(id);
   };
 
+  const validatePaymentDetails = () => {
+    const { bankName, accountNumber, ifscCode, accountName, upiId } = currentBankDetails;
+
+    const isBankDetailsValid =
+      bankName?.trim() &&
+      accountNumber?.trim() &&
+      ifscCode?.trim() &&
+      accountName?.trim();
+
+    const isUPIValid = upiId?.trim();
+
+    // Enable the button if either all bank details or the UPI ID is filled
+    setDisableNextButton(!(isBankDetailsValid || isUPIValid));
+  };
+
+  useEffect(() => {
+    validatePaymentDetails();
+  }, [currentBankDetails]);
+
   return (
     <div className="py-4 px-5">
       {showInputFields ? (
@@ -45,7 +68,9 @@ const PaymentDetails = ({ bankDetails }: PaymentDetailsProps) => {
               <Input
                 placeholder="Bank Name"
                 className="my-0"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("bankName", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange("bankName", e.target.value)
+                }
                 value={currentBankDetails.bankName || ""}
               />
               <Input
@@ -92,13 +117,13 @@ const PaymentDetails = ({ bankDetails }: PaymentDetailsProps) => {
         <div className="flex flex-col gap-[10px]">
           <div className="flex justify-end">
             <div
-              className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full"
+              className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full cursor-pointer"
               onClick={() => setShowInputFields(true)}
             >
               <div className="text-sm font-semibold">Add New Bank Details</div>
               <Plus
                 size={16}
-                className="text-white bg-brandPrimary rounded-full p-0.5 cursor-pointer"
+                className="text-white bg-brandPrimary rounded-full p-0.5"
               />
             </div>
           </div>
@@ -112,6 +137,22 @@ const PaymentDetails = ({ bankDetails }: PaymentDetailsProps) => {
           ))}
         </div>
       )}
+
+      <div
+        className={cx(
+          "bottom-0 py-4 fixed justify-center"
+        )}
+        style={{ width: '90%' }}
+      >
+        <NewButton
+          size="large"
+          variant="primary"
+          disabled={disableNextButton}
+          onClick={() => setCurrentStage("dueDate")}
+        >
+          Next
+        </NewButton>
+      </div>
     </div>
   );
 };

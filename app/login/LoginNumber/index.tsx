@@ -223,11 +223,11 @@ export const LoginNumber = ({ setLoginState }: any) => {
                 variant="default"
                 primaryActionText={isLoading ? "Sending OTP..." : "Continue"}
                 primaryAction={gotoOtpScreen}
-                disablePrimaryButton={
-                    isLoading ||
-                    mobileNumber.length !== 10 ||
-                    !recaptchaVerified
-                }
+            // disablePrimaryButton={
+            //     isLoading ||
+            //     mobileNumber.length !== 10 ||
+            //     !recaptchaVerified
+            // }
             />
         </div>
     );

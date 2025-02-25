@@ -166,18 +166,18 @@ const AddPoll = ({
                   </div>
                 ))
               : poll.options.map((option: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Input
-                      name={`option-${index}`}
-                      value={option}
-                      placeholder={`Option`}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleOptionChange(index, e.target.value)
-                      }
-                      maxLength={100}
-                    />
-                  </div>
-                ))}
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    name={`option-${index}`}
+                    value={option}
+                    placeholder={`Option`}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleOptionChange(index, e.target.value)
+                    }
+                    maxLength={100}
+                  />
+                </div>
+              ))}
           </div>
           {errors.options && (
             <div className="text-red-500 text-sm">{errors.options}</div>

@@ -9,13 +9,15 @@ import { useDispatch } from "react-redux";
 import { addDueDate, addDate } from "store/slice/invoiceSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
+import NewButton from "@components/atoms/Button/NewButton";
 
 type Value = Date | null;
 
-const InvoiceDueDate = () => {
+const InvoiceDueDate = ({ handleInvoiceSubmit }: any) => {
   const dispatch = useDispatch();
   const [dueDate, setDueDate] = useState<Value>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
+  const [disableNextButton, setDisableNextButton] = useState(false);
 
   const state = useSelector((state: any) => state.invoice);
 
@@ -65,7 +67,18 @@ const InvoiceDueDate = () => {
           <Image src={CalendarSVG} alt="calendar" width={20} />
         </div>
       </div>
-    </div>
+
+      <div className="bottom-0 py-4 fixed" style={{ width: '90%' }}>
+        <NewButton
+          size="large"
+          variant="primary"
+          disabled={disableNextButton}
+          onClick={handleInvoiceSubmit}
+        >
+          Review and Share
+        </NewButton>
+      </div>
+    </div >
   );
 };
 

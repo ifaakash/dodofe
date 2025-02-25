@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import cx from "classnames";
 import { FooterProps } from "./types";
 import Button from "../Button";
@@ -105,7 +105,7 @@ const Footer: React.FC<FooterProps> = ({
         return null;
     }
   };
-
+  // this is the footer component
   return (
     <div
       data-unit-test-label={`footer-${unitTestLabel}`}
@@ -119,7 +119,9 @@ const Footer: React.FC<FooterProps> = ({
         )}
         style={{ width: "calc(100% - 35px)" }}
       >
+
         {topContent}
+
         {getButtons()}
         {children}
       </div>

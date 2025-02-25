@@ -12,7 +12,7 @@ import { registerUser } from "api";
 import { saveState } from "@utils/localStorage";
 
 export default function LoginPage() {
-    const [loginState, setLoginState] = useState(0);
+    const [loginState, setLoginState] = useState(1);
     const router = useRouter();
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
     return (
         <Screen>
-            {loginState === 0 && <Splash setLoginState={setLoginState} />}
+            {/* {loginState === 0 && <Splash setLoginState={setLoginState} />} */}
             {loginState === 1 && <LoginNumber setLoginState={setLoginState} />}
             {loginState === 2 && <LoginOtp setLoginState={setLoginState} />}
         </Screen>
