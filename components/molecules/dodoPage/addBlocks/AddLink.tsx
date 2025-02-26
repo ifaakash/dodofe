@@ -112,14 +112,17 @@ const AddLink = ({
   };
 
   const isValidUrl = (url: string): boolean => {
-    const pattern = new RegExp('^(https?:\\/\\/)?' +
-      '((([a-z0-9\\-]+\\.)+[a-z]{2,})|' +
-      'localhost|' +
-      '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|' +
-      '\\[?[a-f0-9]*:[a-f0-9:%.~+\\-]*\\]?)' +
-      '(\\:\\d+)?(\\/[-a-z0-9+&@#\\/%?=~_|!:,.;]*)*' +
-      '(\\?[;&a-z0-9+%#=~_|!:,.;]*)?' +
-      '(\\#[-a-z0-9+&@#/%=~_|!:,.;]*)?$','i');
+    const pattern = new RegExp(
+      "^(https?:\\/\\/)?" +
+        "((([a-z0-9\\-]+\\.)+[a-z]{2,})|" +
+        "localhost|" +
+        "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|" +
+        "\\[?[a-f0-9]*:[a-f0-9:%.~+\\-]*\\]?)" +
+        "(\\:\\d+)?(\\/[-a-z0-9+&@#\\/%?=~_|!:,.;]*)*" +
+        "(\\?[;&a-z0-9+%#=~_|!:,.;]*)?" +
+        "(\\#[-a-z0-9+&@#/%=~_|!:,.;]*)?$",
+      "i"
+    );
     return !!pattern.test(url);
   };
 
@@ -343,9 +346,7 @@ const AddLink = ({
       </div>
 
       <div className="bottom-0 fixed mb-4 px-4 w-full flex flex-col gap-4 items-center">
-        {/* {(mode === "add" || mode === "edit") && ( */}
         <Switcher displayType={displayType} setDisplayType={setDisplayType} />
-        {/* )} */}
         {mode === "add" ? (
           <NewButton
             size="large"

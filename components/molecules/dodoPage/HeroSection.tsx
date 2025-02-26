@@ -62,6 +62,10 @@ const HeroSection = ({
   const [isProfileAudioPlaying, setIsProfileAudioPlaying] = useState(false);
   const profileAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
+  
+  // Create refs for popup content to handle click outside
+  const thoughtsPopupRef = useRef<HTMLDivElement>(null);
+  const audioBioPopupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
@@ -71,6 +75,42 @@ const HeroSection = ({
   useEffect(() => {
     setCharacterCount(thaught?.length);
   }, [thaught]);
+
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Handle thoughts popup click outside
+      if (
+        showThoughtsPopup &&
+        thoughtsPopupRef.current &&
+        !thoughtsPopupRef.current.contains(event.target as Node)
+      ) {
+        // Don't close when clicking the thoughts icon
+        const thinkingIcon = document.getElementById('thoughts-icon');
+        if (!thinkingIcon?.contains(event.target as Node)) {
+          setShowThoughtsPopup(false);
+        }
+      }
+
+      // Handle audio bio popup click outside
+      if (
+        addAudioBioPopup &&
+        audioBioPopupRef.current &&
+        !audioBioPopupRef.current.contains(event.target as Node)
+      ) {
+        // Don't close when clicking the audio bio button
+        const audioBioButton = document.getElementById('audio-bio-button');
+        if (!audioBioButton?.contains(event.target as Node)) {
+          setAddAudioBioPopup(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showThoughtsPopup, addAudioBioPopup]);
 
   const handleNameSave = () => {
     dispatch(setDodoPageName(pageName || ""));
@@ -235,6 +275,11 @@ const HeroSection = ({
     }
   };
 
+  // Function to prevent event bubbling for popup content
+  const handlePopupContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <div
       className={`flex flex-col items-center ${
@@ -290,6 +335,7 @@ const HeroSection = ({
             alt="thoughts icon"
             className="cursor-pointer"
             onClick={() => setShowThoughtsPopup(true)}
+            id="thoughts-icon"
           />
         </div>
       </div>
@@ -328,6 +374,7 @@ const HeroSection = ({
           <div
             className="flex gap-0.5 items-center border-[1px] border-[#979EAD] rounded-full py-[6px] px-3 cursor-pointer"
             onClick={() => setAddAudioBioPopup(true)}
+            id="audio-bio-button"
           >
             <div className="text-xs font-medium text-[#414D55]">
               Add Audio Bio
@@ -353,7 +400,11 @@ const HeroSection = ({
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
             </div>
-            <div className="bg-white rounded-[10px] p-4 animate-slide-up">
+            <div 
+              className="bg-white rounded-[10px] p-4 animate-slide-up"
+              ref={thoughtsPopupRef}
+              onClick={handlePopupContentClick}
+            >
               <div className="flex flex-col gap-5">
                 <div className="flex items-center flex-col gap-3 p-[6px]">
                   <div className="flex justify-between items-center w-full">
@@ -427,7 +478,11 @@ const HeroSection = ({
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
             </div>
-            <div className="bg-white rounded-[10px] p-4 animate-slide-up flex flex-col gap-8">
+            <div 
+              className="bg-white rounded-[10px] p-4 animate-slide-up flex flex-col gap-8"
+              ref={audioBioPopupRef}
+              onClick={handlePopupContentClick}
+            >
               <div className="flex justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="text-xl font-semibold leading-none">
