@@ -84,9 +84,9 @@ const CtaSection = ({
             </div>
           )}
         </div>
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-bold mb-1 leading-none">{title}</h1>
-          <p className="text-lg font-thin leading-none">{description}</p>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold mb-1">{title}</h1>
+          <p className="text-lg font-thin leading-[24px]">{description}</p>
         </div>
       </div>
       <div className={styles.secondThirdContainer}>
@@ -103,10 +103,11 @@ const CtaSection = ({
             color: buttonTextColor,
             minHeight: "38px",
             maxHeight: "40px",
+            padding: "0px 20px",
           }}
           onClick={onButtonClick}
         >
-          <span className="text-xs font-normal">{buttonLabel}</span>
+          <span className="text-xs font-normal whitespace-nowrap">{buttonLabel}</span>
 
           {buttonLabel !== "Coming soon..." && (
             <Image
