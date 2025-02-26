@@ -352,9 +352,9 @@ const FooterBar = ({
     <div>
       {isOpened && <BlockModal />}
       <div className="flex gap-2">
-        <div className="bg-white py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary">
+        <button className="bg-white shadow-md border-[1px] py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary">
           Analytics
-        </div>
+        </button>
 
         <div
           className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
@@ -367,7 +367,7 @@ const FooterBar = ({
 
         <button
           onClick={handlePublish}
-          className="bg-white py-[14px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary"
+          className="bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary"
         >
           Publish
         </button>

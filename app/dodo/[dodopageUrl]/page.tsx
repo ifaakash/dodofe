@@ -82,7 +82,7 @@ const DodoPageDashboard = () => {
 
   useEffect(() => {
     const shouldFetchData =
-      (dodoPageFromStore.dodoPageName === null) || existingBlocks.length === 0;
+      dodoPageFromStore.dodoPageName === null || existingBlocks.length === 0;
 
     if (shouldFetchData && !isLoading) {
       setIsLoading(true);
@@ -121,7 +121,7 @@ const DodoPageDashboard = () => {
           socialLinks: dodoPageFromStore.socialLinks,
           audioBio: dodoPageFromStore.audioBio,
         };
-        
+
         return JSON.stringify(prevDetails) === JSON.stringify(newDetails)
           ? prevDetails
           : newDetails;
@@ -312,18 +312,12 @@ const DodoPageDashboard = () => {
                 {blocks.map((block, index) => renderBlock(block, index))}
               </SortableContext>
               <DragOverlay>
-                {activeId ? (
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
-                    <p>Dragging item...</p>
-                  </div>
-                ) : null}
+                {activeId
+                  ? renderBlock(
+                      blocks.find((block) => block.id === activeId),
+                      0
+                    )
+                  : null}
               </DragOverlay>
             </DndContext>
           </div>
