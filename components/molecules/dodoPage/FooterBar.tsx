@@ -336,11 +336,11 @@ const FooterBar = ({
         });
       }
 
-      // dispatch(resetDodoPage());
-      // dispatch(resetUnPublishedBlocks());
+      dispatch(resetDodoPage());
+      dispatch(resetUnPublishedBlocks());
       toast.success("Dodo Page published successfully");
 
-      // window.location.href = `/dodo/${url}`;
+      window.location.href = `/dodo/${url}`;
       return true;
     } catch (error) {
       console.error("Error in handlePublish:", error);

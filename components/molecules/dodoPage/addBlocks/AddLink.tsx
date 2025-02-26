@@ -93,6 +93,9 @@ const AddLink = ({
     if (!link?.trim()) {
       setLinkError("Link is Required");
       isValid = false;
+    } else if (!isValidUrl(link)) {
+      setLinkError("Link is not valid");
+      isValid = false;
     }
 
     if (badgeText?.trim() && !selectedBadgeCategory) {
@@ -106,6 +109,18 @@ const AddLink = ({
     }
 
     return isValid;
+  };
+
+  const isValidUrl = (url: string): boolean => {
+    const pattern = new RegExp('^(https?:\\/\\/)?' +
+      '((([a-z0-9\\-]+\\.)+[a-z]{2,})|' +
+      'localhost|' +
+      '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|' +
+      '\\[?[a-f0-9]*:[a-f0-9:%.~+\\-]*\\]?)' +
+      '(\\:\\d+)?(\\/[-a-z0-9+&@#\\/%?=~_|!:,.;]*)*' +
+      '(\\?[;&a-z0-9+%#=~_|!:,.;]*)?' +
+      '(\\#[-a-z0-9+&@#/%=~_|!:,.;]*)?$','i');
+    return !!pattern.test(url);
   };
 
   const handleSubmit = async () => {

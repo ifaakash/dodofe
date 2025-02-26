@@ -128,30 +128,33 @@ export default function Home() {
         }
     };
 
-    const getUserCard = () => {
-        const dodoPageDetail = userDetails?.dodoPages?.[0];
-        if (isEmpty(dodoPageDetail)) {
-            return <CtaSection title="" />
-        }
-        return (
-            <div>
-                {userDetails.dodoPages.map((page: any) => (
-                    <CtaSection
-                        key={page.name}
-                        title={dodoPageDetail?.name || "Dodo user"}
-                        description={dodoPageDetail?.url}
-                        buttonBgColor="var(--pink)"
-                        onClick={() => gotoLinksPage(page.url)}
-                        onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
-                        img={copy}
-                        imgSize={32}
-                        onButtonClick={shareContent}
-                        buttonLabel=""
-                    />
-                ))}
-            </div>
-        );
-    };
+  const getUserCard = () => {
+      const dodoPageDetail = userDetails?.dodoPages?.[0];
+
+      if (isEmpty(dodoPageDetail)) {
+          return <></>;
+      }
+
+      return (
+          <div>
+              {userDetails.dodoPages.map((page: any) => (
+                  <CtaSection
+                      title={dodoPageDetail?.name || "Dodo user"}
+                      description={dodoPageDetail?.url}
+                      buttonBgColor="var(--pink)"
+                      profileImageURL={dodoPageDetail?.profilePicture}
+                      onClick={() => gotoLinksPage(page.url)}
+                      onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
+                      img={copy}
+                      imgSize={32}
+                      onButtonClick={shareContent}
+                      buttonLabel=""
+                      showProfileImage={true}
+                  />
+              ))}
+          </div>
+      );
+  };
 
     const handleCoinsNavigation = () => {
         router.push(ROUTE_CONSTANTS.COINS);
