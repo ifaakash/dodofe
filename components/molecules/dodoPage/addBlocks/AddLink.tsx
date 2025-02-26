@@ -77,6 +77,19 @@ const AddLink = ({
   const [linkError, setLinkError] = useState<string>("");
   const [badgeError, setBadgeError] = useState<string>("");
 
+  const handleBadgeTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value;
+    setBadgeText(text);
+
+    if (text && !selectedBadgeCategory) {
+      // Automatically assign the first badge color if none is selected
+      setSelectedBadgeCategory(badges[0].text);
+    } else if (!text) {
+      // Clear the selected badge if the badge text is deleted
+      setSelectedBadgeCategory(null);
+    }
+  };
+
   const validateForm = (): boolean => {
     let isValid = true;
 
@@ -304,9 +317,7 @@ const AddLink = ({
           <Input
             placeholder="Add Badge Text"
             value={badgeText}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setBadgeText(e.target.value)
-            }
+            onChange={handleBadgeTextChange}
           />
 
           <div className="flex justify-between">
