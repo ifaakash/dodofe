@@ -43,7 +43,7 @@ const PreviewInvoice = () => {
 
   return (
     <div className="bg-[#EAE9EC]">
-      <div className="bg-[#D8D6DC] md:h-64 h-[300px] w-full lg:px-[280px] px-0">
+      <div className="bg-[#D8D6DC] md:h-64 w-full lg:px-[280px] px-0">
         <div className="py-8 flex justify-center">
           <div className="flex flex-col gap-1">
             <h1 className="uppercase font-bold text-[22px] text-center">

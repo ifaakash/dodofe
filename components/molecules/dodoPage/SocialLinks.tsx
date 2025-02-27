@@ -63,6 +63,8 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode }
 
   const visibleIcons = showAll ? availableLinks : availableLinks.slice(0, 4);
   const remainingCount = availableLinks.length - 4;
+  
+  console.log("Social Links", socialLinks);
 
   return (
     <div className="flex items-center justify-center">

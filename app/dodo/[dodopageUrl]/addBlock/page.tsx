@@ -38,9 +38,6 @@ const AddBlock = () => {
     });
   }, []);
 
-  console.log('dodoPageDetails', dodoPageDetails)
-
-
   const renderBlock = () => {
     switch (type) {
       case "heading":
@@ -59,7 +56,7 @@ const AddBlock = () => {
         return <AddProduct mode={'add'} dodoPageId={dodoPageDetails.id} userId={userId} dodopageUrl={dodopageUrl as string} />;
 
       case "social":
-        return <AddSocial dodoPageId={dodoPageDetails.id} dodopageUrl={dodopageUrl as string} socialLinks={dodoPageDetails.socialLinks} userId={userId} />;
+        return <AddSocial dodoPageId={dodoPageDetails.id} dodopageUrl={dodopageUrl as string} userId={userId} />;
     }
   };
 

@@ -103,7 +103,7 @@ const ReviewInvoice = () => {
   const { clientDetails, recipientDetails, bankDetails } = invoice;
 
   return (
-    <div className="bg-[#D8D6DC] h-64 w-full">
+    <div className="bg-[#D8D6DC] w-full">
       <div className="py-8 flex justify-center">
         <div className="flex flex-col gap-1">
           <div className="uppercase font-bold text-[22px] text-center">

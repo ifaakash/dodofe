@@ -128,30 +128,33 @@ export default function Home() {
         }
     };
 
-    const getUserCard = () => {
-        const dodoPageDetail = userDetails?.dodoPages?.[0];
-        if (isEmpty(dodoPageDetail)) {
-            return <CtaSection title="" />
-        }
-        return (
-            <div>
-                {userDetails.dodoPages.map((page: any) => (
-                    <CtaSection
-                        key={page.name}
-                        title={dodoPageDetail?.name || "Dodo user"}
-                        description={dodoPageDetail?.url}
-                        buttonBgColor="var(--pink)"
-                        onClick={() => gotoLinksPage(page.url)}
-                        onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
-                        img={copy}
-                        imgSize={32}
-                        onButtonClick={shareContent}
-                        buttonLabel=""
-                    />
-                ))}
-            </div>
-        );
-    };
+  const getUserCard = () => {
+      const dodoPageDetail = userDetails?.dodoPages?.[0];
+
+      if (isEmpty(dodoPageDetail)) {
+          return <></>;
+      }
+
+      return (
+          <div>
+              {userDetails.dodoPages.map((page: any) => (
+                  <CtaSection
+                      title={dodoPageDetail?.name || "Dodo user"}
+                      description={dodoPageDetail?.url}
+                      buttonBgColor="var(--pink)"
+                      profileImageURL={dodoPageDetail?.profilePicture}
+                      onClick={() => gotoLinksPage(page.url)}
+                      onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
+                      img={copy}
+                      imgSize={32}
+                      onButtonClick={shareContent}
+                      buttonLabel=""
+                      showProfileImage={true}
+                  />
+              ))}
+          </div>
+      );
+  };
 
     const handleCoinsNavigation = () => {
         router.push(ROUTE_CONSTANTS.COINS);
@@ -159,8 +162,8 @@ export default function Home() {
 
     return (
         <Screen>
-            <div className="mt-4 text-center">
-                <div style={{ backgroundImage: `url(${crossBg.src})` }}>
+            <div className="text-center">
+                <div style={{ backgroundImage: `url(${crossBg.src})` }} className="pt-4">
                     <div className="flex">
                         <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
                             {!userId && (
@@ -225,7 +228,7 @@ export default function Home() {
 
                             <div
                                 className={cx(
-                                    "rounded-2xl flex p-3 clr-white my-4 pl-4 shimmer-bg justify-between",
+                                    "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
                                     styles.shimmerBg
                                 )}
                                 onClick={() => gotoLinksPage(dodoPageDetail?.url)}
@@ -239,12 +242,12 @@ export default function Home() {
                                         src={dodoCoinIcon}
                                         alt="dodo coin"
                                     />
-                                    1000 dodo coins
+                                    500 dodo coins
                                 </div>
 
                                 <Image
-                                    width={20}
-                                    height={20}
+                                    width={24}
+                                    height={24}
                                     src={gotoIcon}
                                     alt="creators"
                                 />
@@ -256,7 +259,7 @@ export default function Home() {
 
                     <div
                         className={cx(
-                            "w-full px-4 rounded-t-2xl bg-white",
+                            "w-full px-4 rounded-t-[32px] bg-white",
                             styles.lowerDiv
                         )}
                     >
@@ -265,7 +268,7 @@ export default function Home() {
                             width={251}
                             src={otherFeatures}
                             alt="user profile"
-                            className="mx-auto my-6"
+                            className="mx-auto mb-6 mt-3"
                         />
 
                         <div className="absolute-center flex-col">

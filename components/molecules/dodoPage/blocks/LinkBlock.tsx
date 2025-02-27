@@ -3,6 +3,7 @@ import DragIcon from "public/icons/drag.svg";
 import Image from "next/image";
 import { useDraggable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
+import { BADGE_COLORS_MAP } from "utils/constants";
 
 const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
   const {
@@ -21,15 +22,14 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
     transition,
   };
 
-  console.log("Link Block", block);
-
   const displayImage = () => {
-    if (block.isNew) {
-      const blogURL = URL.createObjectURL(block?.blockData?.linkDisplayPicture);
-      return blogURL;
-    } else {
-      return block?.blockData?.linkDisplayPicture;
+    if(block.blockData?.linkDisplayPicture){
+      if(typeof block.blockData?.linkDisplayPicture === "string"){
+        return block.blockData.linkDisplayPicture;
+      }
+      return URL.createObjectURL(block.blockData.linkDisplayPicture);
     }
+    return null;
   };
 
   return (
@@ -50,20 +50,22 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
               {...listeners}
             />
           )}
-          <img
-            src={displayImage()}
-            alt="Link"
-            className="w-[50px] h-[50px] object-cover rounded-lg"
-          />
+          {displayImage() && (
+            <img
+              src={displayImage()}
+              alt="Link"
+              className="w-[50px] h-[50px] object-cover rounded-lg"
+            />
+          )}
           <div>
             <div className="text-sm font-medium text-[#3D4966]">
               {block.blockData?.title}
             </div>
             {block.blockData?.badge && (
               <div
-                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center"
+                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center w-fit"
                 style={{
-                  backgroundColor: block.blockData.badge.backgroundColor,
+                  backgroundColor: BADGE_COLORS_MAP[block.blockData.badge.backgroundColor],
                   color: block.blockData.badge.color,
                 }}
               >
@@ -74,11 +76,13 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          <img
-            src={displayImage()}
-            alt="Link"
-            className="w-full h-[130px] object-cover rounded-lg"
-          />
+          {block.blockData?.linkDisplayPicture && (
+            <img
+              src={displayImage()}
+              alt="Link"
+              className="w-full h-[130px] object-cover rounded-lg"
+            />
+          )}
 
           <div className="flex gap-2 justify-between">
             <div className="flex items-center gap-2">
@@ -96,9 +100,9 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
 
             {block.blockData?.badge && (
               <div
-                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center"
+                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center w-fit"
                 style={{
-                  backgroundColor: block.blockData.badge.backgroundColor,
+                  backgroundColor: BADGE_COLORS_MAP[block.blockData.badge.backgroundColor],
                   color: block.blockData.badge.color,
                 }}
               >

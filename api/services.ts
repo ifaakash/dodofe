@@ -88,11 +88,6 @@ export const getInvoiceStats = async (payload: any): Promise<any> =>
 export const addSubHeading = async (payload: any): Promise<any> =>
   Put<any>(API_CONSTANTS.addSubHeading, payload);
 
-// export const createBlockWithMedia = async (payload: any): Promise<any> =>
-//   Post<any>(API_CONSTANTS.createBlock, payload, {
-//     "Content-Type": "multipart/form-data",
-//   });
-
 export const createBlockWithMedia = async (payload: any): Promise<any> => {
   const res = await axios.post(
     `${BASE_URL}${API_CONSTANTS.createBlock}`,
@@ -101,23 +96,6 @@ export const createBlockWithMedia = async (payload: any): Promise<any> => {
       headers: { "Content-Type": "multipart/form-data" },
     }
   );
-};
-
-export const updateBlockWithFormData = async (
-  formData: FormData,
-  blockData: any
-): Promise<any> => {
-  Object.keys(blockData).forEach((key) => {
-    if (typeof blockData[key] === "object") {
-      formData.append(key, JSON.stringify(blockData[key]));
-    } else {
-      formData.append(key, blockData[key]);
-    }
-  });
-
-  return Patch<any>(API_CONSTANTS.updateBlock, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
 };
 
 export const createBlock = async (payload: any): Promise<any> =>
@@ -138,7 +116,7 @@ export const reorderBlocks = async (formattedBlocks: {
   return Post<any>(API_CONSTANTS.reorderBlocks, formattedBlocks);
 };
 
-export const updateDodoPageMedia = async (payload: any): Promise<any> => {
+export const updateDodoPage = async (payload: any): Promise<any> => {
   const res = await axios.patch(
     `${BASE_URL}${API_CONSTANTS.updateDodoPage}`,
     payload,
@@ -152,9 +130,9 @@ export const updateDodoPageMedia = async (payload: any): Promise<any> => {
   return res.data;
 };
 
-export const updateDodoPage = async (payload: any): Promise<any> => {
-  Patch<any>(API_CONSTANTS.updateDodoPage, payload);
-};
+// export const updateDodoPage = async (payload: any): Promise<any> => {
+//   Patch<any>(API_CONSTANTS.updateDodoPage, payload);
+// };
 
 export const archiveBlock = async (payload: any): Promise<any> =>
   Post<any>(API_CONSTANTS.archiveBlock, payload);
@@ -172,7 +150,14 @@ export const deleteBlock = async (payload: any): Promise<any> =>
   Delete<any>(API_CONSTANTS.deleteBlock, payload);
 
 export const updateBlock = async (payload: any): Promise<any> =>
-  Patch<any>(
-    API_CONSTANTS.updateBlock + API_CONSTANTS.slash + payload.blockId,
-    payload
+  Patch<any>(API_CONSTANTS.updateBlock, payload);
+
+export const updateBlockWithMedia = async (payload: any): Promise<any> => {
+  const res = await axios.patch(
+    `${BASE_URL}${API_CONSTANTS.updateBlock}`,
+    payload,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
   );
+};
