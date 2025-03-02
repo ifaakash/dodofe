@@ -57,7 +57,6 @@ export default function Home() {
         }
     }, [userId]);
 
-    console.log(userDetails);
 
     if (!isMounted) {
         return null;

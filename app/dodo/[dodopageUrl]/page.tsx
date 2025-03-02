@@ -48,305 +48,333 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const DodoPageDashboard = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const mode = searchParams.get("mode") || "edit";
-  const { dodopageUrl } = useParams();
-  const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
-  const [dodoPageDetails, setDodoPageDetails] = useState({} as any);
-  const [blocks, setBlocks] = useState<Block[]>([]);
-  const [activeId, setActiveId] = useState(null);
-  const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const mode = searchParams.get("mode") || "edit";
+    const { dodopageUrl } = useParams();
+    const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+    const [dodoPageDetails, setDodoPageDetails] = useState({} as any);
+    const [blocks, setBlocks] = useState<Block[]>([]);
+    const [activeId, setActiveId] = useState(null);
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 50,
-        tolerance: 5,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-  const dodoPageFromStore = useSelector(
-    (state: RootState & { dodoPage: any }) => state.dodoPage
-  );
-  const existingBlocks = useSelector((state: any) => state.blocks.blocks);
-
-  useEffect(() => {
-    const shouldFetchData =
-      dodoPageFromStore.dodoPageName === null || existingBlocks.length === 0;
-
-    if (shouldFetchData && !isLoading) {
-      setIsLoading(true);
-      getDodoPageByURL(dodopageUrl)
-        .then((res) => {
-          if (!res?.dodoPage) return; // Add error handling
-
-          // Batch the state updates
-          setDodoPageDetails(res.dodoPage);
-          setBlocks(res.dodoPage.blocks || []);
-
-          // Batch the dispatch actions
-          dispatch(addBlocksToStore(res.dodoPage.blocks || []));
-          dispatch(
-            dodoStoreInitialisation({
-              dodoPageId: res.dodoPage.id,
-              dodoPageImage: res.dodoPage.profilePicture,
-              dodoPageName: res.dodoPage.name,
-              dodoPageThought: res.dodoPage.thoughts,
-              socialLinks: res.dodoPage.socialLinks,
-              audioBio: res.dodoPage.audioBio,
-            })
-          );
+    const sensors = useSensors(
+        useSensor(MouseSensor, {
+            activationConstraint: {
+                distance: 10,
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 50,
+                tolerance: 5,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
         })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    } else {
-      // Only update if the values have changed
-      setDodoPageDetails((prevDetails: any) => {
-        const newDetails = {
-          id: dodoPageFromStore.dodoPageId,
-          profilePicture: dodoPageFromStore.dodoPageImage,
-          name: dodoPageFromStore.dodoPageName,
-          thoughts: dodoPageFromStore.dodoPageThought,
-          socialLinks: dodoPageFromStore.socialLinks,
-          audioBio: dodoPageFromStore.audioBio,
-        };
+    );
+    const dodoPageFromStore = useSelector(
+        (state: RootState & { dodoPage: any }) => state.dodoPage
+    );
+    const existingBlocks = useSelector((state: any) => state.blocks.blocks);
 
-        return JSON.stringify(prevDetails) === JSON.stringify(newDetails)
-          ? prevDetails
-          : newDetails;
-      });
+    useEffect(() => {
+        // Use a ref to track if we've already loaded data
+        const shouldFetchData =
+            (dodoPageFromStore.dodoPageName === null ||
+                existingBlocks.length === 0) &&
+            !isLoading;
 
-      setBlocks((prevBlocks) =>
-        JSON.stringify(prevBlocks) === JSON.stringify(existingBlocks)
-          ? prevBlocks
-          : existingBlocks
-      );
-    }
-  }, [dodopageUrl, existingBlocks]); // Remove other dependencies that cause unnecessary rerenders
+        if (shouldFetchData) {
+            setIsLoading(true);
+            getDodoPageByURL(dodopageUrl)
+                .then((res) => {
+                    if (!res?.dodoPage) return; // Add error handling
 
-  const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
+                    // Batch the state updates
+                    setDodoPageDetails(res.dodoPage);
+                    setBlocks(res.dodoPage.blocks || []);
 
-  const handleDragStart = (event: any) => {
-    setActiveId(event.active.id);
-  };
+                    // Batch the dispatch actions
+                    dispatch(addBlocksToStore(res.dodoPage.blocks || []));
+                    dispatch(
+                        dodoStoreInitialisation({
+                            dodoPageId: res.dodoPage.id,
+                            dodoPageImage: res.dodoPage.profilePicture,
+                            dodoPageName: res.dodoPage.name,
+                            dodoPageThought: res.dodoPage.thoughts,
+                            socialLinks: res.dodoPage.socialLinks,
+                            audioBio: res.dodoPage.audioBio,
+                        })
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching dodo page:", error);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        } else if (
+            !shouldFetchData &&
+            dodoPageFromStore.dodoPageName !== null
+        ) {
+            // Only update local state from store if we're not fetching and have data in store
+            setDodoPageDetails((prevDetails) => {
+                // Only update if needed
+                if (
+                    prevDetails.id !== dodoPageFromStore.dodoPageId ||
+                    prevDetails.name !== dodoPageFromStore.dodoPageName
+                ) {
+                    return {
+                        id: dodoPageFromStore.dodoPageId,
+                        profilePicture: dodoPageFromStore.dodoPageImage,
+                        name: dodoPageFromStore.dodoPageName,
+                        thoughts: dodoPageFromStore.dodoPageThought,
+                        socialLinks: dodoPageFromStore.socialLinks,
+                        audioBio: dodoPageFromStore.audioBio,
+                    };
+                }
+                return prevDetails;
+            });
 
-  const handleDragEnd = async (event: any) => {
-    setActiveId(null);
-    const { active, over } = event;
+            // Only update blocks if they've changed
+            if (blocks.length !== existingBlocks.length) {
+                setBlocks(existingBlocks);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dodopageUrl]);
 
-    if (active.id !== over.id) {
-      const oldIndex = blocks.findIndex((item) => item.id === active.id);
-      const newIndex = blocks.findIndex((item) => item.id === over.id);
+    const url = Array.isArray(dodopageUrl) ? dodopageUrl[0] : dodopageUrl;
 
-      const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
-        (block, index) => ({
-          ...block,
-          blockPositionalIndex: index,
-        })
-      );
-
-      const formattedBlocks = {
-        dodoPageId: dodoPageDetails.id,
-        blocks: updatedBlocks
-          .filter((block) => block.id !== undefined)
-          .map((block, index) => ({
-            blockId: block.id as string,
-            newIndex: index,
-          })),
-      };
-
-      try {
-        dispatch(reorderBlocks(formattedBlocks));
-      } catch (error) {
-        console.error("Error reordering blocks:", error);
-      }
-    }
-  };
-
-  const renderBlock = (block: Block, index: number) => {
-    if (block.toRemove) {
-      return null;
-    }
-
-    const handleNavigate = (block: Block) => {
-      if (block.isNew) {
-        toast.info("Please publish your Dodo Page to update this block");
-      } else {
-        router.push(`/dodo/${url}/editBlock/${block.id}`);
-      }
+    const handleDragStart = (event: any) => {
+        setActiveId(event.active.id);
     };
 
-    let content;
-    switch (block.blockType) {
-      case "LINK":
-        content =
-          mode === "edit" ? (
-            <div onClick={() => handleNavigate(block)}>
-              <LinkBlock mode={mode} block={block} />
+    const handleDragEnd = async (event: any) => {
+        setActiveId(null);
+        const { active, over } = event;
+
+        if (active.id !== over.id) {
+            const oldIndex = blocks.findIndex((item) => item.id === active.id);
+            const newIndex = blocks.findIndex((item) => item.id === over.id);
+
+            const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
+                (block, index) => ({
+                    ...block,
+                    blockPositionalIndex: index,
+                })
+            );
+
+            const formattedBlocks = {
+                dodoPageId: dodoPageDetails.id,
+                blocks: updatedBlocks
+                    .filter((block) => block.id !== undefined)
+                    .map((block, index) => ({
+                        blockId: block.id as string,
+                        newIndex: index,
+                    })),
+            };
+
+            try {
+                dispatch(reorderBlocks(formattedBlocks));
+            } catch (error) {
+                console.error("Error reordering blocks:", error);
+            }
+        }
+    };
+
+    const renderBlock = (block: Block, index: number) => {
+        if (block.toRemove) {
+            return null;
+        }
+
+        const handleNavigate = (block: Block) => {
+            if (block.isNew) {
+                toast.info(
+                    "Please publish your Dodo Page to update this block"
+                );
+            } else {
+                router.push(`/dodo/${url}/editBlock/${block.id}`);
+            }
+        };
+
+        let content;
+        switch (block.blockType) {
+            case "LINK":
+                content =
+                    mode === "edit" ? (
+                        <div onClick={() => handleNavigate(block)}>
+                            <LinkBlock mode={mode} block={block} />
+                        </div>
+                    ) : (
+                        <LinkBlock mode={mode} block={block} />
+                    );
+                break;
+            case "POLL":
+                content =
+                    mode === "edit" ? (
+                        <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                            <PollBlock
+                                mode={mode}
+                                blockData={block.blockData}
+                                id={block.id as string}
+                            />
+                        </Link>
+                    ) : (
+                        <PollBlock
+                            mode={mode}
+                            blockData={block.blockData}
+                            id={block.id as string}
+                        />
+                    );
+                break;
+            case "HEADING":
+                content =
+                    mode === "edit" ? (
+                        <div onClick={() => handleNavigate(block)}>
+                            <HeadingBlock
+                                title={block.blockData?.title}
+                                mode={mode}
+                                id={block.id as string}
+                            />
+                        </div>
+                    ) : (
+                        <HeadingBlock
+                            title={block.blockData?.title}
+                            mode={mode}
+                            id={block.id as string}
+                        />
+                    );
+                break;
+            case "SEPARATOR":
+                content =
+                    mode === "edit" ? (
+                        <div onClick={() => handleNavigate(block)}>
+                            <SeparatorBlock
+                                type={block.blockData?.separatorType}
+                                mode={mode}
+                                id={block.id as string}
+                            />
+                        </div>
+                    ) : (
+                        <SeparatorBlock
+                            type={block.blockData?.separatorType}
+                            mode={mode}
+                            id={block.id as string}
+                        />
+                    );
+                break;
+            case "PRODUCT":
+                content = (
+                    <div className="w-full">
+                        {mode === "edit" ? (
+                            <div onClick={() => handleNavigate(block)}>
+                                <ProductBlock block={block} mode={mode} />
+                            </div>
+                        ) : (
+                            <ProductBlock block={block} mode={mode} />
+                        )}
+                    </div>
+                );
+                break;
+            default:
+                return null;
+        }
+        return content;
+    };
+
+    // console.log("dodoPageDetails", dodoPageDetails);
+
+    return (
+        <div
+            className={`${styles.dodoBackground} ${styles.scrollableContainer}`}
+        >
+            <div className="flex flex-col gap-3">
+                <DodoPageHeader mode={mode} url={url} />
+                <HeroSection
+                    mode={mode}
+                    dodoPageId={dodoPageDetails?.id}
+                    userId={userId}
+                    dodoPageDetails={dodoPageDetails}
+                />
+                <SocialLinks
+                    socialLinks={dodoPageDetails?.socialLinks}
+                    url={url}
+                    mode={mode}
+                />
+
+                <div className="flex flex-col gap-4 mb-24">
+                    {/* {mode !== "preview" && <ArchiveTab />} */}
+
+                    <div
+                        className="mx-5 flex flex-col gap-3"
+                        style={{ touchAction: "auto" }}
+                    >
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                            onDragStart={handleDragStart}
+                        >
+                            <SortableContext
+                                items={blocks
+                                    .map((block) => block.id)
+                                    .filter(
+                                        (id): id is string => id !== undefined
+                                    )}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {blocks.map((block, index) =>
+                                    renderBlock(block, index)
+                                )}
+                            </SortableContext>
+                            <DragOverlay>
+                                {activeId
+                                    ? renderBlock(
+                                          blocks.find(
+                                              (block) => block.id === activeId
+                                          ),
+                                          0
+                                      )
+                                    : null}
+                            </DragOverlay>
+                        </DndContext>
+                    </div>
+                </div>
             </div>
-          ) : (
-            <LinkBlock mode={mode} block={block} />
-          );
-        break;
-      case "POLL":
-        content =
-          mode === "edit" ? (
-            <Link href={`/dodo/${url}/editBlock/${block.id}`}>
-              <PollBlock
-                mode={mode}
-                blockData={block.blockData}
-                id={block.id as string}
-              />
-            </Link>
-          ) : (
-            <PollBlock
-              mode={mode}
-              blockData={block.blockData}
-              id={block.id as string}
-            />
-          );
-        break;
-      case "HEADING":
-        content =
-          mode === "edit" ? (
-            <div onClick={() => handleNavigate(block)}>
-              <HeadingBlock
-                title={block.blockData?.title}
-                mode={mode}
-                id={block.id as string}
-              />
-            </div>
-          ) : (
-            <HeadingBlock
-              title={block.blockData?.title}
-              mode={mode}
-              id={block.id as string}
-            />
-          );
-        break;
-      case "SEPARATOR":
-        content =
-          mode === "edit" ? (
-            <div onClick={() => handleNavigate(block)}>
-              <SeparatorBlock
-                type={block.blockData?.separatorType}
-                mode={mode}
-                id={block.id as string}
-              />
-            </div>
-          ) : (
-            <SeparatorBlock
-              type={block.blockData?.separatorType}
-              mode={mode}
-              id={block.id as string}
-            />
-          );
-        break;
-      case "PRODUCT":
-        content = (
-          <div className="w-full">
-            {mode === "edit" ? (
-              <div onClick={() => handleNavigate(block)}>
-                <ProductBlock block={block} mode={mode} />
-              </div>
-            ) : (
-              <ProductBlock block={block} mode={mode} />
+            {mode === "edit" && (
+                <div className="bottom-0 fixed w-full p-4">
+                    <FooterBar
+                        mode={mode}
+                        url={url}
+                        dodoPageId={dodoPageDetails?.id}
+                    />
+                </div>
             )}
-          </div>
-        );
-        break;
-      default:
-        return null;
-    }
-    return content;
-  };
 
-  console.log("dodoPageDetails", dodoPageDetails);
-
-  return (
-    <div className={`${styles.dodoBackground} ${styles.scrollableContainer}`}>
-      <div className="flex flex-col gap-3">
-        <DodoPageHeader mode={mode} url={url} />
-        <HeroSection
-          mode={mode}
-          dodoPageId={dodoPageDetails?.id}
-          userId={userId}
-          dodoPageDetails={dodoPageDetails}
-        />
-        <SocialLinks
-          socialLinks={dodoPageDetails?.socialLinks}
-          url={url}
-          mode={mode}
-        />
-
-        <div className="flex flex-col gap-4 mb-24">
-          {/* {mode !== "preview" && <ArchiveTab />} */}
-
-          <div
-            className="mx-5 flex flex-col gap-3"
-            style={{ touchAction: "auto" }}
-          >
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-              onDragStart={handleDragStart}
-            >
-              <SortableContext
-                items={blocks
-                  .map((block) => block.id)
-                  .filter((id): id is string => id !== undefined)}
-                strategy={verticalListSortingStrategy}
-              >
-                {blocks.map((block, index) => renderBlock(block, index))}
-              </SortableContext>
-              <DragOverlay>
-                {activeId
-                  ? renderBlock(
-                      blocks.find((block) => block.id === activeId),
-                      0
-                    )
-                  : null}
-              </DragOverlay>
-            </DndContext>
-          </div>
+            {mode === "preview" && (
+                <div className="flex flex-col gap-3 px-5 items-center mb-20">
+                    <div className="flex items-center gap-2">
+                        <div className="text-[#3D4966] text-xs">
+                            powered by:
+                        </div>
+                        <Image src={DodoIcon} alt="dodo icon" height={20} />
+                    </div>
+                    <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
+                        <div className=" font-semibold text-xs">
+                            Create your DODOpage now
+                        </div>
+                        <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
+                            <ArrowUpRight className="w-4 h-4" />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-      </div>
-      {mode === "edit" && (
-        <div className="bottom-0 fixed w-full p-4">
-          <FooterBar mode={mode} url={url} dodoPageId={dodoPageDetails?.id} />
-        </div>
-      )}
-
-      {mode === "preview" && (
-        <div className="flex flex-col gap-3 px-5 items-center mb-20">
-          <div className="flex items-center gap-2">
-            <div className="text-[#3D4966] text-xs">powered by:</div>
-            <Image src={DodoIcon} alt="dodo icon" height={20} />
-          </div>
-          <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
-            <div className=" font-semibold text-xs">
-              Create your DODOpage now
-            </div>
-            <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
-              <ArrowUpRight className="w-4 h-4" />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default DodoPageDashboard;

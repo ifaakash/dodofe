@@ -39,70 +39,77 @@ interface SocialLinksProps {
   mode: string;
 }
 
-const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode }) => {  
-  const [showAll, setShowAll] = useState(false);
+const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode }) => {
+    const [showAll, setShowAll] = useState(false);
 
-  const socialIcons = [
-    { name: "website", icon: Web },
-    { name: "instagram", icon: Insta },
-    { name: "facebook", icon: Facebook },
-    { name: "youtube", icon: Youtube },
-    { name: "telegram", icon: Telegram },
-    { name: "snapchat", icon: Snapchat },
-    { name: "twitter", icon: Twitter },
-    { name: "github", icon: Github },
-    { name: "discord", icon: Discord },
-    { name: "behance", icon: Behance },
-    { name: "dribble", icon: Dribble },
-    { name: "email", icon: EmailId },
-  ];
+    const socialIcons = [
+        { name: "website", icon: Web },
+        { name: "instagram", icon: Insta },
+        { name: "facebook", icon: Facebook },
+        { name: "youtube", icon: Youtube },
+        { name: "telegram", icon: Telegram },
+        { name: "snapchat", icon: Snapchat },
+        { name: "twitter", icon: Twitter },
+        { name: "github", icon: Github },
+        { name: "discord", icon: Discord },
+        { name: "behance", icon: Behance },
+        { name: "dribble", icon: Dribble },
+        { name: "email", icon: EmailId },
+    ];
 
-  const availableLinks = socialIcons.filter(
-    ({ name }) => socialLinks && socialLinks[name as keyof typeof socialLinks]
-  );
+    const availableLinks = socialIcons.filter(
+        ({ name }) =>
+            socialLinks && socialLinks[name as keyof typeof socialLinks]
+    );
 
-  const visibleIcons = showAll ? availableLinks : availableLinks.slice(0, 4);
-  const remainingCount = availableLinks.length - 4;
-  
-  console.log("Social Links", socialLinks);
+    const visibleIcons = showAll ? availableLinks : availableLinks.slice(0, 4);
+    const remainingCount = availableLinks.length - 4;
 
-  return (
-    <div className="flex items-center justify-center">
-      <div className="flex gap-4">
-        <div className="flex gap-4">
-          {visibleIcons.map((item) => (
-            <a
-              key={item.name}
-              href={socialLinks[item.name as keyof typeof socialLinks]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cursor-pointer bg-white p-3 rounded-full flex items-center justify-center"
-            >
-              <Image src={item.icon} alt={item.name} className="w-5 h-5" />
-            </a>
-          ))}
-        </div>
+    return (
+        <div className="flex items-center justify-center">
+            <div className="flex gap-4">
+                <div className="flex gap-4">
+                    {visibleIcons.map((item) => (
+                        <a
+                            key={item.name}
+                            href={
+                                socialLinks[
+                                    item.name as keyof typeof socialLinks
+                                ]
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="cursor-pointer bg-white p-3 rounded-full flex items-center justify-center"
+                        >
+                            <Image
+                                src={item.icon}
+                                alt={item.name}
+                                className="w-5 h-5"
+                            />
+                        </a>
+                    ))}
+                </div>
 
-        {availableLinks.length > 4 && !showAll && (
-          mode === "edit" ? (
-            <Link
-              href={`/dodo/${url}/addBlock?type=social`}
-              className="bg-white rounded-full text-xs font-semibold p-3 cursor-pointer flex items-center justify-center w-11 h-11"
-            >
-              +{remainingCount}
-            </Link>
-          ) : (
-            <div
-              className="bg-white rounded-full text-xs font-semibold p-3 cursor-pointer flex items-center justify-center w-11 h-11"
-              onClick={() => setShowAll(true)}
-            >
-              +{remainingCount}
+                {availableLinks.length > 4 &&
+                    !showAll &&
+                    (mode === "edit" ? (
+                        <Link
+                            href={`/dodo/${url}/addBlock?type=social`}
+                            className="bg-white rounded-full text-xs font-semibold p-3 cursor-pointer flex items-center justify-center w-11 h-11"
+                        >
+                            +{remainingCount}
+                        </Link>
+                    ) : (
+                        <div
+                            className="bg-white rounded-full text-xs font-semibold p-3 cursor-pointer flex items-center justify-center w-11 h-11"
+                            onClick={() => setShowAll(true)}
+                        >
+                            +{remainingCount}
+                        </div>
+                    ))}
             </div>
-          )
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default SocialLinks;

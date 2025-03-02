@@ -130,16 +130,16 @@ export interface dodoPagesProps {
 }
 
 export interface userDetailsProps {
-  id: string;
-  otplessId: string;
-  name: string;
-  mobileNumber: string;
-  interestCategories: string[];
-  dodoPages: dodoPagesProps[];
-  bankDetails: BankDetails[]
-  invoices: string[];
-  clientDetails: ClientDetailsProps[]
-  recipientDetails: RecipientDetails[]
+    id: string;
+    firebaseUid: string;
+    name: string;
+    mobileNumber: string;
+    interestCategories: string[];
+    dodoPages: dodoPagesProps[];
+    bankDetails: BankDetails[];
+    invoices: string[];
+    clientDetails: ClientDetailsProps[];
+    recipientDetails: RecipientDetails[];
 }
 
 export interface InvoiceUserCardProps {
