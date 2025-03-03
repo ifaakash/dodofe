@@ -5,8 +5,9 @@
 
 .lowerDiv {
   position: relative;
-  border-top: 3px solid #3D4966;
+  border-top: 3px solid #979EAD;
   overflow: hidden;
+
 }
 
 /* Shimmer animation using an animated background */

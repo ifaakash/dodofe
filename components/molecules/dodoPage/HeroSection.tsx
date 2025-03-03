@@ -13,6 +13,7 @@ import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
 import Speaker from "public/icons/Speaker.svg";
 import { useDispatch, useSelector } from "react-redux";
+import PlayIcon from "public/icons/playIcon.svg";
 import Waves from "public/assets/Waves.gif";
 import {
   updateDodoPageProfilePicture,
@@ -20,6 +21,8 @@ import {
   setDodoPageThought,
   setSocialLinks,
   updateDodoPageAudioBio,
+  setIsImageChanged,
+  setIsAudioBioChanged,
 } from "store/slice/dodoPageSlice";
 
 const HeroSection = ({
@@ -56,6 +59,13 @@ const HeroSection = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isProfileAudioPlaying, setIsProfileAudioPlaying] = useState(false);
+  const profileAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
+  
+  // Create refs for popup content to handle click outside
+  const thoughtsPopupRef = useRef<HTMLDivElement>(null);
+  const audioBioPopupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setThaught(dodoPageDetails?.thoughts);
@@ -65,6 +75,42 @@ const HeroSection = ({
   useEffect(() => {
     setCharacterCount(thaught?.length);
   }, [thaught]);
+
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Handle thoughts popup click outside
+      if (
+        showThoughtsPopup &&
+        thoughtsPopupRef.current &&
+        !thoughtsPopupRef.current.contains(event.target as Node)
+      ) {
+        // Don't close when clicking the thoughts icon
+        const thinkingIcon = document.getElementById('thoughts-icon');
+        if (!thinkingIcon?.contains(event.target as Node)) {
+          setShowThoughtsPopup(false);
+        }
+      }
+
+      // Handle audio bio popup click outside
+      if (
+        addAudioBioPopup &&
+        audioBioPopupRef.current &&
+        !audioBioPopupRef.current.contains(event.target as Node)
+      ) {
+        // Don't close when clicking the audio bio button
+        const audioBioButton = document.getElementById('audio-bio-button');
+        if (!audioBioButton?.contains(event.target as Node)) {
+          setAddAudioBioPopup(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showThoughtsPopup, addAudioBioPopup]);
 
   const handleNameSave = () => {
     dispatch(setDodoPageName(pageName || ""));
@@ -99,6 +145,7 @@ const HeroSection = ({
     setImagePreview(previewUrl);
 
     dispatch(updateDodoPageProfilePicture(file));
+    dispatch(setIsImageChanged(true));
   };
 
   const startRecording = async () => {
@@ -152,18 +199,25 @@ const HeroSection = ({
       return;
     }
 
+    // Create a new audio element each time to ensure the source is fresh
+    const audioUrl = URL.createObjectURL(audioBlob);
     if (!audioRef.current) {
-      audioRef.current = new Audio(URL.createObjectURL(audioBlob));
+      audioRef.current = new Audio(audioUrl);
       audioRef.current.onended = () => {
         setIsPlaying(false);
       };
+    } else {
+      // Update the source if the audio element already exists
+      audioRef.current.src = audioUrl;
     }
 
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
       setIsPlaying(true);
     }
   };
@@ -181,6 +235,49 @@ const HeroSection = ({
     console.log("audioFile", audioFile);
     dispatch(updateDodoPageAudioBio(audioFile));
     setAddAudioBioPopup(false);
+    dispatch(setIsAudioBioChanged(true));
+  };
+
+  const playProfileAudio = () => {
+    if (!dodoPageDetails.audioBio) {
+      console.log("No audio bio available");
+      return;
+    }
+    if (!profileAudioRef.current) {
+      profileAudioRef.current = new Audio(dodoPageDetails.audioBio);
+      profileAudioRef.current.onended = () => {
+        setIsProfileAudioPlaying(false);
+      };
+    }
+
+    if (isProfileAudioPlaying) {
+      profileAudioRef.current.pause();
+      setIsProfileAudioPlaying(false);
+    } else {
+      profileAudioRef.current.play();
+      setIsProfileAudioPlaying(true);
+    }
+  };
+
+  const handleAudioUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.type.startsWith('audio/')) {
+      const audioFile = new File([file], file.name, {
+        type: file.type,
+      });
+      dispatch(updateDodoPageAudioBio(audioFile));
+      dispatch(setIsAudioBioChanged(true));
+      setAddAudioBioPopup(false);
+    } else {
+      alert('Please upload an audio file');
+    }
+  };
+
+  // Function to prevent event bubbling for popup content
+  const handlePopupContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   return (
@@ -196,6 +293,7 @@ const HeroSection = ({
           onChange={handleImageUpload}
           className="hidden"
           ref={ImageInputRef}
+          disabled={mode === "public" || mode === "preview"}
         />
         <div onClick={() => mode === "edit" && ImageInputRef.current?.click()}>
           {imagePreview || state.dodoPageImage ? (
@@ -213,8 +311,23 @@ const HeroSection = ({
               <Image src={EmptyImage} alt="Rajveer" width={42} height={42} />
             </div>
           )}
+         {
+          mode !== "edit" && (
+            <div 
+              className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
+              onClick={playProfileAudio}
+            >
+              <Image 
+                src={isProfileAudioPlaying ? Speaker : PlayIcon} 
+                alt={isProfileAudioPlaying ? "Stop" : "Play"} 
+                width={16} 
+                height={16} 
+              />
+            </div>
+          )
+         }
         </div>
-        <div className="absolute -top-10 -right-12">
+        <div className="absolute -top-10 -right-10">
           <Image
             height={70}
             width={70}
@@ -222,12 +335,13 @@ const HeroSection = ({
             alt="thoughts icon"
             className="cursor-pointer"
             onClick={() => setShowThoughtsPopup(true)}
+            id="thoughts-icon"
           />
         </div>
       </div>
 
       <div
-        className={`flex flex-col ${
+        className={`flex flex-col ${(state.audioBio && dodoPageDetails?.audioBio && mode !== "edit") && "pt-5"} ${
           mode === "preview" ? "gap-5" : "gap-3"
         } items-center`}
       >
@@ -241,6 +355,7 @@ const HeroSection = ({
               onKeyDown={handleKeyDown}
               className="bg-transparent text-xl min-w-36 w-fit outline-none text-black font-semibold text-center"
               autoFocus
+              disabled={mode === "public" || mode === "preview"}
             />
           ) : (
             <div
@@ -259,6 +374,7 @@ const HeroSection = ({
           <div
             className="flex gap-0.5 items-center border-[1px] border-[#979EAD] rounded-full py-[6px] px-3 cursor-pointer"
             onClick={() => setAddAudioBioPopup(true)}
+            id="audio-bio-button"
           >
             <div className="text-xs font-medium text-[#414D55]">
               Add Audio Bio
@@ -284,7 +400,11 @@ const HeroSection = ({
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
             </div>
-            <div className="bg-white rounded-[10px] p-4 animate-slide-up">
+            <div 
+              className="bg-white rounded-[10px] p-4 animate-slide-up"
+              ref={thoughtsPopupRef}
+              onClick={handlePopupContentClick}
+            >
               <div className="flex flex-col gap-5">
                 <div className="flex items-center flex-col gap-3 p-[6px]">
                   <div className="flex justify-between items-center w-full">
@@ -297,6 +417,7 @@ const HeroSection = ({
                     {!thaughtEditMode ? (
                       <textarea
                         value={thaught}
+                        disabled={mode === "public" || mode === "preview"}
                         onChange={(e) => {
                           if (e.target.value.length <= 25) {
                             setThaught(e.target.value);
@@ -357,18 +478,31 @@ const HeroSection = ({
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
             </div>
-            <div className="bg-white rounded-[10px] p-4 animate-slide-up flex flex-col gap-8">
+            <div 
+              className="bg-white rounded-[10px] p-4 animate-slide-up flex flex-col gap-8"
+              ref={audioBioPopupRef}
+              onClick={handlePopupContentClick}
+            >
               <div className="flex justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="text-xl font-semibold leading-none">
                     Record your voice
                   </div>
                   <div className="text-[#3D4966] text-xs leading-none">
-                    {" "}
-                    Say anything for 20 sec{" "}
+                    Say anything for 20 sec
                   </div>
                 </div>
-                <div className="flex items-center flex-col gap-0.5 p-2 border-[1px] border-dashed border-[#979EAD] rounded-lg">
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioUpload}
+                  className="hidden"
+                  ref={audioInputRef}
+                />
+                <div 
+                  className="flex items-center flex-col gap-0.5 p-2 border-[1px] border-dashed border-[#979EAD] rounded-lg cursor-pointer"
+                  onClick={() => audioInputRef.current?.click()}
+                >
                   <Image src={Upload2} width={16} height={16} alt="Upload" />
                   <span className="text-brandPrimary text-[8px]">upload</span>
                 </div>

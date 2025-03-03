@@ -14,13 +14,13 @@ const AddPoll = ({
   userId,
   dodopageUrl,
   mode,
-  blockData,
+  block,
 }: {
   dodoPageId: string;
   userId: string;
   dodopageUrl: string;
   mode: "edit" | "add";
-  blockData?: any;
+  block?: any;
 }) => {
   const [poll, setPoll] = useState({
     question: "",
@@ -29,6 +29,11 @@ const AddPoll = ({
   });
   const router = useRouter();
   const dispatch = useDispatch();
+  const [errors, setErrors] = useState({
+    question: '',
+    options: '',
+    duplicate: ''
+  });
 
   const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...poll.options];
@@ -40,7 +45,41 @@ const AddPoll = ({
     setPoll({ ...poll, allowMultipleOptions: !poll.allowMultipleOptions });
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      question: '',
+      options: '',
+      duplicate: ''
+    };
+
+    // Question validation
+    if (!poll.question.trim()) {
+      newErrors.question = 'Question is required';
+      isValid = false;
+    }
+
+    // Options validation
+    const filledOptions = poll.options.filter(opt => opt.trim());
+    if (filledOptions.length < 4) {
+      newErrors.options = 'All 4 options are required';
+      isValid = false;
+    }
+
+    // Duplicate options validation
+    const uniqueOptions = new Set(filledOptions);
+    if (uniqueOptions.size !== filledOptions.length) {
+      newErrors.duplicate = 'Options must be unique';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) return;
+
     // const res = await createBlock({
     //   dodoPageId: dodoPageId,
     //   blockType: "POLL",
@@ -75,12 +114,12 @@ const AddPoll = ({
   };
 
   const handleUpdate = async () => {
-    console.log("Update");
+    router.back();
   };
 
   return (
     <div className="mt-5 flex flex-col gap-6 items-center">
-      {mode === "edit" && <PollResponses pollData={blockData} />}
+      {mode === "edit" && <PollResponses pollData={block?.blockData} />}
 
       {mode === "edit" && (
         <div className="w-full">
@@ -101,29 +140,31 @@ const AddPoll = ({
           <div className="text-[#414D55] font-semibold">Question</div>
           <Input
             name="question"
-            value={mode === "edit" ? blockData?.question : poll.question}
+            value={mode === "edit" ? block?.blockData?.question : poll.question}
             placeholder="Enter your question here"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPoll({ ...poll, question: e.target.value })
             }
             maxLength={200}
           />
+          {errors.question && (
+            <div className="text-red-500 text-sm">{errors.question}</div>
+          )}
         </div>
 
         <div className="flex flex-col gap-2 w-full">
           <div className="text-[#414D55] font-semibold">Options</div>
           <div className="flex flex-col gap-1">
             {mode === "edit"
-              ? blockData?.options.map((option: string, index: number) => (
-                <div key={index} className="flex items-center gap-2">
-                  <Input
-                    disabled={true}
-                    name={`option-${index}`}
-                    value={option}
-                    onChange={() => console.log('change')}
-                  />
-                </div>
-              ))
+              ? block?.blockData?.options.map((option: string, index: number) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      disabled={true}
+                      name={`option-${index}`}
+                      value={option}
+                    />
+                  </div>
+                ))
               : poll.options.map((option: string, index: number) => (
                 <div key={index} className="flex items-center gap-2">
                   <Input
@@ -138,6 +179,12 @@ const AddPoll = ({
                 </div>
               ))}
           </div>
+          {errors.options && (
+            <div className="text-red-500 text-sm">{errors.options}</div>
+          )}
+          {errors.duplicate && (
+            <div className="text-red-500 text-sm">{errors.duplicate}</div>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 items-center w-full pb-20">
@@ -146,7 +193,7 @@ const AddPoll = ({
             <input
               checked={
                 mode === "edit"
-                  ? blockData?.isMultipleOptionsAllowed
+                  ? block?.blockData?.isMultipleOptionsAllowed
                   : poll.allowMultipleOptions
               }
               onChange={handleToggleMultiple}

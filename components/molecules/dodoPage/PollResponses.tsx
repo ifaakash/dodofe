@@ -8,6 +8,8 @@ const PollResponses = ({ pollData }: { pollData: any }) => {
     0
   );
 
+  console.log("pollData", pollData);
+
   const getOptionVotes = (option: string): number => {
     return pollData?.optionCounts?.[option] || 0;
   };
@@ -36,10 +38,10 @@ const PollResponses = ({ pollData }: { pollData: any }) => {
       <div className="flex gap-6">
         <div className="w-32">
           <FullDonutChart
-            OptionA={getOptionPercentage(pollData?.options[0]) || 0}
-            OptionB={getOptionPercentage(pollData?.options[1]) || 0}
-            OptionC={getOptionPercentage(pollData?.options[2]) || 0}
-            OptionD={getOptionPercentage(pollData?.options[3]) || 0}
+            OptionA={getOptionPercentage(pollData?.options[0]) ? getOptionPercentage(pollData?.options[0]) : 0}
+            OptionB={getOptionPercentage(pollData?.options[1]) ? getOptionPercentage(pollData?.options[1]) : 0}
+            OptionC={getOptionPercentage(pollData?.options[2]) ? getOptionPercentage(pollData?.options[2]) : 0}
+            OptionD={getOptionPercentage(pollData?.options[3]) ? getOptionPercentage(pollData?.options[3]) : 0}
           />
         </div>
         <div className="flex flex-col w-full text-xs gap-1">

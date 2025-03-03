@@ -57,7 +57,6 @@ export default function Home() {
         }
     }, [userId]);
 
-    console.log(userDetails);
 
     if (!isMounted) {
         return null;
@@ -130,23 +129,26 @@ export default function Home() {
 
     const getUserCard = () => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
+
         if (isEmpty(dodoPageDetail)) {
-            return <CtaSection title="" />
+            return <></>;
         }
+
         return (
             <div>
                 {userDetails.dodoPages.map((page: any) => (
                     <CtaSection
-                        key={page.name}
                         title={dodoPageDetail?.name || "Dodo user"}
                         description={dodoPageDetail?.url}
                         buttonBgColor="var(--pink)"
+                        profileImageURL={dodoPageDetail?.profilePicture}
                         onClick={() => gotoLinksPage(page.url)}
                         onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
                         img={copy}
                         imgSize={32}
                         onButtonClick={shareContent}
                         buttonLabel=""
+                        showProfileImage={true}
                     />
                 ))}
             </div>
@@ -196,16 +198,29 @@ export default function Home() {
                             </p>
 
                             <div
-                                className="flex rounded-xl bg-white mr-4 items-center justify-between px-2"
-                                style={{ height: 30, width: 80 }}
-                                onClick={handleCoinsNavigation}
+                                className={cx(
+                                    "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
+                                    styles.shimmerBg
+                                )}
+                                onClick={() => gotoLinksPage(dodoPageDetail?.url)}
                             >
+                                <div className="flex text-sm">
+                                    Login to get free
+                                    <Image
+                                        className="mx-1"
+                                        height={18}
+                                        width={22}
+                                        src={dodoCoinIcon}
+                                        alt="dodo coin"
+                                    />
+                                    500 dodo coins
+                                </div>
+
                                 <Image
-                                    className="flex-shrink-0"
-                                    height={18}
-                                    width={22}
-                                    src={dodoCoinIcon}
-                                    alt="dodo coin"
+                                    width={24}
+                                    height={24}
+                                    src={gotoIcon}
+                                    alt="creators"
                                 />
                                 <span className="flex-1 text-center font-bold">
                                     {userDetails?.dodoCoins ?? 0}
@@ -213,9 +228,48 @@ export default function Home() {
                             </div>
                         </div>
                     )}
-                </div>
-                {isEmpty(userId) ? (
-                    <div className="mx-4">
+
+                    <div
+                        className={cx(
+                            "w-full px-4 rounded-t-[32px] bg-white",
+                            styles.lowerDiv
+                        )}
+                    >
+                        <Image
+                            height={53}
+                            width={251}
+                            src={otherFeatures}
+                            alt="user profile"
+                            className="mx-auto mb-6 mt-3"
+                        />
+
+                        <div className="absolute-center flex-col">
+                            <CtaSection
+                                onClick={handleInvoiceNavigation}
+                                bgColor="var(--yellow)"
+                                img={invoiceIcon}
+                                title="Invoice"
+                                description="Create stunning digital invoices in a few seconds"
+                            />
+
+                            <div className="flex flex-row justify-between w-full gap-x-4">
+                                <Image
+                                    height={320}
+                                    width={172}
+                                    src={engagementCalc}
+                                    alt="engagement calc"
+                                    className="ml-2 my-6"
+                                />
+                                <Image
+                                    height={320}
+                                    width={172}
+                                    src={priceCalc}
+                                    alt="price calc"
+                                    className="mr-2 my-6"
+                                />
+                            </div>
+                        </div>
+
                         <CtaSection
                             onButtonClick={() =>
                                 gotoLinksPage(dodoPageDetail?.url)
@@ -249,67 +303,67 @@ export default function Home() {
                             />
                         </div>
                     </div>
-                ) : (
+                    ) : (
                     <div className="m-4">{getUserCard()}</div>
                 )}
 
-                <div
-                    className={cx(
-                        "w-full px-4 rounded-t-2xl bg-white",
-                        styles.lowerDiv
-                    )}
-                >
-                    <Image
-                        height={53}
-                        width={251}
-                        src={otherFeatures}
-                        alt="user profile"
-                        className="mx-auto my-6"
-                    />
-
-                    <div className="absolute-center flex-col">
-                        <CtaSection
-                            onClick={handleInvoiceNavigation}
-                            bgColor="var(--yellow)"
-                            img={invoiceIcon}
-                            title="Invoice"
-                            description="Create stunning digital invoices in a few seconds"
+                    <div
+                        className={cx(
+                            "w-full px-4 rounded-t-2xl bg-white",
+                            styles.lowerDiv
+                        )}
+                    >
+                        <Image
+                            height={53}
+                            width={251}
+                            src={otherFeatures}
+                            alt="user profile"
+                            className="mx-auto my-6"
                         />
 
-                        <div className="flex flex-row justify-between w-full gap-x-4">
-                            <Image
-                                height={320}
-                                width={172}
-                                src={engagementCalc}
-                                alt="engagement calc"
-                                className="ml-2 my-6"
+                        <div className="absolute-center flex-col">
+                            <CtaSection
+                                onClick={handleInvoiceNavigation}
+                                bgColor="var(--yellow)"
+                                img={invoiceIcon}
+                                title="Invoice"
+                                description="Create stunning digital invoices in a few seconds"
                             />
-                            <Image
-                                height={320}
-                                width={172}
-                                src={priceCalc}
-                                alt="price calc"
-                                className="mr-2 my-6"
-                            />
+
+                            <div className="flex flex-row justify-between w-full gap-x-4">
+                                <Image
+                                    height={320}
+                                    width={172}
+                                    src={engagementCalc}
+                                    alt="engagement calc"
+                                    className="ml-2 my-6"
+                                />
+                                <Image
+                                    height={320}
+                                    width={172}
+                                    src={priceCalc}
+                                    alt="price calc"
+                                    className="mr-2 my-6"
+                                />
+                            </div>
                         </div>
+
+                        <CtaSection
+                            bgColor="var(--warm-green)"
+                            img={mediakitIcon}
+                            title="MediaKit"
+                            description="Your digital resume"
+                            buttonLabel="Coming soon..."
+                        />
+
+                        <span className="absolute-center text-sm mt-4">
+                            more coming soon.
+                        </span>
                     </div>
 
-                    <CtaSection
-                        bgColor="var(--warm-green)"
-                        img={mediakitIcon}
-                        title="MediaKit"
-                        description="Your digital resume"
-                        buttonLabel="Coming soon..."
-                    />
-
-                    <span className="absolute-center text-sm mt-4">
-                        more coming soon.
-                    </span>
+                    <HomeFooter />
                 </div>
-
-                <HomeFooter />
-            </div>
-            {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
+                {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
         </Screen >
     );
 }

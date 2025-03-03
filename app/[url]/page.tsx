@@ -29,6 +29,8 @@ const DodoPage = () => {
     });
   }, []);
 
+  console.log('Blocks', dodoPageDetails?.blocks)
+
   const renderBlock = (
     block: {
       id: string;
@@ -52,7 +54,7 @@ const DodoPage = () => {
         break;
       case "LINK":
         content = (
-          <Link href={`${block.blockData.url}`}>
+          <Link href={`${block.blockData?.url}`} target="_blank">
             <LinkBlock
               mode={"public"}
               block={block}
@@ -114,12 +116,12 @@ const DodoPage = () => {
           <div className="text-[#3D4966] text-xs">powered by:</div>
           <Image src={DodoIcon} alt="dodo icon" height={20} />
         </div>
-        <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
+        <Link href={`https://app.dodoclub.in/`} target="_blank" className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
           <div className=" font-semibold text-xs">Create your DODOpage now</div>
           <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
             <ArrowUpRight className="w-4 h-4" />
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );

@@ -86,8 +86,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
             console.log("Registering user with backend...");
             const response = await registerUser({
                 mobileNumber,
-                otplessId: userCredential.uid,
-                token: await userCredential.getIdToken(),
+                firebaseUid: userCredential.uid,
             });
             console.log("Response from backend:", response);
 
