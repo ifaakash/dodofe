@@ -71,10 +71,10 @@ const Screen: React.FC<ScreenProps> = ({
     }
 
     return (
-        <div className={cx(className)}>
+        <div className={cx('overflow-hidden', className)}>
             {getMetaTagsData()}
-            <div className={cx(childrenClassName)}>{children}</div>
-        </div>
+            < div className={cx(childrenClassName)} > {children}</div >
+        </div >
     );
 };
 
