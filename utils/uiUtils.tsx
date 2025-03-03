@@ -194,16 +194,23 @@ export const getBadgeUI = (badgeText: string, badgeColor: string) => {
     )
 }
 
-export function Card({ title, description, icon, bgColor, textColor }) {
+export function Card({ title, description, icon, bgColor, bgColorGo }) {
     return (
-        <div className={`rounded-2xl p-6 w-44 h-80 shadow-md flex flex-col justify-between ${bgColor}`}>
+        <div className={`rounded-2xl p-3 h-80 shadow-md flex flex-col justify-between`} style={{ backgroundColor: bgColor, minWidth: '162px' }}>
             <div>
-                <h2 className={`text-lg font-bold ${textColor}`}>{title}</h2>
-                <p className="text-sm text-gray-700 mt-2">{description}</p>
+                <h1 className="text-lg font-bold mb-1 ${textColor}">{title}</h1>
+
+                <p className="text-xs leading-[16px]">{description}</p>
+
             </div>
-            <div className="flex justify-between items-center">
-                <span className="text-4xl">{icon}</span>
-                <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center text-white">
+            <div className="flex justify-between items-end">
+                <Image
+                    height={70}
+                    width={70}
+                    src={icon}
+                    alt="calc"
+                />
+                <div className="bg-white flex items-center p-2 justify-center -rotate-45" style={{ borderRadius: '50%', transform: 'rotate(-45deg)', width: '30px', height: '30px', backgroundColor: bgColorGo }}>
                     →
                 </div>
             </div>

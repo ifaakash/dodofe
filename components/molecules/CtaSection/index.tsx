@@ -16,9 +16,9 @@ const CtaSection = ({
   title = "DodoPage",
   description = "Create dynamic links in your bio that stands out",
   buttonLabel = "Create now",
-  onClick = () => {},
-  onButtonClick = () => {},
-  onImageClick = () => {},
+  onClick = () => { },
+  onButtonClick = () => { },
+  onImageClick = () => { },
   img = profileIcon,
   imgSize = -1,
   floatingPosition = "bottom-right", // 'top-right' or 'bottom-right'
@@ -85,7 +85,7 @@ const CtaSection = ({
           )}
         </div>
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold mb-1">{title}</h1>
+          <h1 className="text-xl font-bold mb-1">{title}</h1>
           <p className="text-lg font-thin leading-[24px]">{description}</p>
         </div>
       </div>

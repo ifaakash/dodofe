@@ -9,8 +9,8 @@ import userProfileImg from "public/assets/userProfile.png";
 import crossBg from "public/icons/crossBg.svg";
 import noUserDp from "public/assets/noUserDp.png";
 // import footerImg from "public/assets/footerImg.png";
-import engagementCalc from "public/assets/engagementCalc.png";
-import priceCalc from "public/assets/priceCalc.png";
+import engagementCalc from "public/assets/engagementCalc.svg";
+import priceCalc from "public/assets/priceCalc.svg";
 import copy from "public/icons/copy.svg";
 import sideBarIcon from "public/icons/sideBarIcon.svg";
 import dodoCoinIcon from "public/icons/dodoCoin.svg";
@@ -216,45 +216,46 @@ export default function Home() {
                         </div>
                     )}
                 </div>
-            </div >
-            {isEmpty(userId) ? (
-                <div className="mx-4">
-                    <CtaSection
-                        onButtonClick={() =>
-                            gotoLinksPage(dodoPageDetail?.url)
-                        }
-                    />
 
-                    <div
-                        className={cx(
-                            "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
-                            styles.shimmerBg
-                        )}
-                        onClick={() => gotoLinksPage(dodoPageDetail?.url)}
-                    >
-                        <div className="flex text-sm">
-                            Login to get free
-                            <Image
-                                className="mx-1"
-                                height={18}
-                                width={22}
-                                src={dodoCoinIcon}
-                                alt="dodo coin"
-                            />
-                            500 dodo coins
-                        </div>
-
-                        <Image
-                            width={24}
-                            height={24}
-                            src={gotoIcon}
-                            alt="creators"
+                {isEmpty(userId) ? (
+                    <div className="mx-4">
+                        <CtaSection
+                            onButtonClick={() =>
+                                gotoLinksPage(dodoPageDetail?.url)
+                            }
                         />
+
+                        <div
+                            className={cx(
+                                "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
+                                styles.shimmerBg
+                            )}
+                            onClick={() => gotoLinksPage(dodoPageDetail?.url)}
+                        >
+                            <div className="flex text-sm">
+                                Login to get free
+                                <Image
+                                    className="mx-1"
+                                    height={18}
+                                    width={22}
+                                    src={dodoCoinIcon}
+                                    alt="dodo coin"
+                                />
+                                500 dodo coins
+                            </div>
+
+                            <Image
+                                width={24}
+                                height={24}
+                                src={gotoIcon}
+                                alt="creators"
+                            />
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div className="m-4">{getUserCard()}</div>
-            )}
+                ) : (
+                    <div className="m-4">{getUserCard()}</div>
+                )}
+            </div >
 
             <div
                 className={cx(
@@ -279,39 +280,22 @@ export default function Home() {
                         description="Create stunning digital invoices in a few seconds"
                     />
 
-                    <div className="flex flex-row justify-between w-full gap-x-4">
-                        <Image
-                            height={320}
-                            width={172}
-                            src={engagementCalc}
-                            alt="engagement calc"
-                            className="ml-2 my-6"
-                        />
-                        <Image
-                            height={320}
-                            width={172}
-                            src={priceCalc}
-                            alt="price calc"
-                            className="mr-2 my-6"
-                        />
-                    </div>
-                    {/* 
-                    <div className="flex flex-row justify-between w-full gap-x-4">
+                    <div className="flex flex-row justify-between w-full gap-x-4 my-6">
                         <Card
                             title="Engagement Calculator"
-                            description="calculate your instagram engagement"
-                            icon="💜" // Placeholder emoji, replace with an actual icon
-                            bgColor="bg-purple-200"
-                            textColor="text-purple-900"
+                            description="Calculate your instagram engagement"
+                            icon={engagementCalc}
+                            bgColor="var(--neon-purple)"
+                            bgColorGo="var(--neon-blue)"
                         />
                         <Card
                             title="Price Estimator"
-                            description="calculate your instagram price"
-                            icon="📊" // Placeholder emoji, replace with an actual icon
-                            bgColor="bg-yellow-200"
-                            textColor="text-yellow-900"
+                            description="Calculate your instagram price"
+                            icon={priceCalc}
+                            bgColor="var(--neon-rose)"
+                            bgColorGo="var(--neon-yellow)"
                         />
-                    </div> */}
+                    </div>
                 </div>
 
                 <CtaSection
