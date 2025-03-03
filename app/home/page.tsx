@@ -158,118 +158,67 @@ export default function Home() {
     const handleCoinsNavigation = () => {
         router.push(ROUTE_CONSTANTS.COINS);
     };
-
     return (
         <Screen>
-            <div className="mt-12 text-center" style={{ backgroundImage: `url(${crossBg.src})` }}>
-                <div className="flex">
-                    <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
-                        {!userId && (
-                            <Image
-                                height={50}
-                                width={220}
-                                src={welcomeToDodo}
-                                alt="welcome"
-                            />
-                        )}
+            <div>
+                <div className="mt-12 text-center" style={{ backgroundImage: `url(${crossBg.src})` }}>
+                    <div className="flex">
+                        <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
+                            {!userId && (
+                                <Image
+                                    height={50}
+                                    width={220}
+                                    src={welcomeToDodo}
+                                    alt="welcome"
+                                />
+                            )}
+
+                            {userId && (
+                                <div className="ml-4" style={{ transform: "rotate(180deg)" }}>
+                                    <Image
+                                        height={24}
+                                        width={24}
+                                        src={sideBarIcon}
+                                        alt="side bar"
+                                        onClick={toggleSidebar}
+                                        data-sidebar-toggle
+                                        className="cursor-pointer"
+                                    />
+                                </div>
+                            )}
+                        </div>
 
                         {userId && (
-                            <div className="ml-4" style={{ transform: "rotate(180deg)" }}>
-                                <Image
-                                    height={24}
-                                    width={24}
-                                    src={sideBarIcon}
-                                    alt="side bar"
-                                    onClick={toggleSidebar}
-                                    data-sidebar-toggle
-                                    className="cursor-pointer"
-                                />
-                            </div>
-                        )}
-                    </div>
+                            <div className="flex row justify-between w-full ml-2">
+                                <p>
+                                    Hi,{" "}
+                                    <span className="font-bold">
+                                        {dodoPageDetail?.name?.split(" ")[0]}
+                                    </span>
+                                </p>
 
-                    {userId && (
-                        <div className="flex row justify-between w-full ml-2">
-                            <p>
-                                Hi,{" "}
-                                <span className="font-bold">
-                                    {dodoPageDetail?.name?.split(" ")[0]}
-                                </span>
-                            </p>
-
-                            <div
-                                className={cx(
-                                    "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
-                                    styles.shimmerBg
-                                )}
-                                onClick={() => gotoLinksPage(dodoPageDetail?.url)}
-                            >
-                                <div className="flex text-sm">
-                                    Login to get free
+                                <div
+                                    className="flex rounded-xl bg-white mr-4 items-center justify-between px-2"
+                                    style={{ height: 30, width: 80 }}
+                                    onClick={handleCoinsNavigation}
+                                >
                                     <Image
-                                        className="mx-1"
+                                        className="flex-shrink-0"
                                         height={18}
                                         width={22}
                                         src={dodoCoinIcon}
                                         alt="dodo coin"
                                     />
-                                    500 dodo coins
+                                    <span className="flex-1 text-center font-bold">
+                                        {userDetails?.dodoCoins ?? 0}
+                                    </span>
                                 </div>
-
-                                <Image
-                                    width={24}
-                                    height={24}
-                                    src={gotoIcon}
-                                    alt="creators"
-                                />
-                                <span className="flex-1 text-center font-bold">
-                                    {userDetails?.dodoCoins ?? 0}
-                                </span>
                             </div>
-                        </div>
-                    )}
-
-                    <div
-                        className={cx(
-                            "w-full px-4 rounded-t-[32px] bg-white",
-                            styles.lowerDiv
                         )}
-                    >
-                        <Image
-                            height={53}
-                            width={251}
-                            src={otherFeatures}
-                            alt="user profile"
-                            className="mx-auto mb-6 mt-3"
-                        />
-
-                        <div className="absolute-center flex-col">
-                            <CtaSection
-                                onClick={handleInvoiceNavigation}
-                                bgColor="var(--yellow)"
-                                img={invoiceIcon}
-                                title="Invoice"
-                                description="Create stunning digital invoices in a few seconds"
-                            />
-
-                            <div className="flex flex-row justify-between w-full gap-x-4">
-                                <Image
-                                    height={320}
-                                    width={172}
-                                    src={engagementCalc}
-                                    alt="engagement calc"
-                                    className="ml-2 my-6"
-                                />
-                                <Image
-                                    height={320}
-                                    width={172}
-                                    src={priceCalc}
-                                    alt="price calc"
-                                    className="mr-2 my-6"
-                                />
-                            </div>
-                        </div>
-
+                    </div>
+                </div>
+                {isEmpty(userId) ? (
+                    <div className="mx-4">
                         <CtaSection
                             onButtonClick={() =>
                                 gotoLinksPage(dodoPageDetail?.url)
@@ -278,7 +227,7 @@ export default function Home() {
 
                         <div
                             className={cx(
-                                "rounded-2xl flex p-3 clr-white my-4 pl-4 shimmer-bg justify-between",
+                                "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center",
                                 styles.shimmerBg
                             )}
                             onClick={() => gotoLinksPage(dodoPageDetail?.url)}
@@ -303,67 +252,66 @@ export default function Home() {
                             />
                         </div>
                     </div>
-                    ) : (
+                ) : (
                     <div className="m-4">{getUserCard()}</div>
                 )}
 
-                    <div
-                        className={cx(
-                            "w-full px-4 rounded-t-2xl bg-white",
-                            styles.lowerDiv
-                        )}
-                    >
-                        <Image
-                            height={53}
-                            width={251}
-                            src={otherFeatures}
-                            alt="user profile"
-                            className="mx-auto my-6"
-                        />
+                <div
+                    className={cx(
+                        "w-full px-4 rounded-t-2xl bg-white",
+                        styles.lowerDiv
+                    )}
+                >
+                    <Image
+                        height={53}
+                        width={251}
+                        src={otherFeatures}
+                        alt="user profile"
+                        className="mx-auto my-6"
+                    />
 
-                        <div className="absolute-center flex-col">
-                            <CtaSection
-                                onClick={handleInvoiceNavigation}
-                                bgColor="var(--yellow)"
-                                img={invoiceIcon}
-                                title="Invoice"
-                                description="Create stunning digital invoices in a few seconds"
-                            />
-
-                            <div className="flex flex-row justify-between w-full gap-x-4">
-                                <Image
-                                    height={320}
-                                    width={172}
-                                    src={engagementCalc}
-                                    alt="engagement calc"
-                                    className="ml-2 my-6"
-                                />
-                                <Image
-                                    height={320}
-                                    width={172}
-                                    src={priceCalc}
-                                    alt="price calc"
-                                    className="mr-2 my-6"
-                                />
-                            </div>
-                        </div>
-
+                    <div className="absolute-center flex-col">
                         <CtaSection
-                            bgColor="var(--warm-green)"
-                            img={mediakitIcon}
-                            title="MediaKit"
-                            description="Your digital resume"
-                            buttonLabel="Coming soon..."
+                            onClick={handleInvoiceNavigation}
+                            bgColor="var(--yellow)"
+                            img={invoiceIcon}
+                            title="Invoice"
+                            description="Create stunning digital invoices in a few seconds"
                         />
 
-                        <span className="absolute-center text-sm mt-4">
-                            more coming soon.
-                        </span>
+                        <div className="flex flex-row justify-between w-full gap-x-4">
+                            <Image
+                                height={320}
+                                width={172}
+                                src={engagementCalc}
+                                alt="engagement calc"
+                                className="ml-2 my-6"
+                            />
+                            <Image
+                                height={320}
+                                width={172}
+                                src={priceCalc}
+                                alt="price calc"
+                                className="mr-2 my-6"
+                            />
+                        </div>
                     </div>
 
-                    <HomeFooter />
+                    <CtaSection
+                        bgColor="var(--warm-green)"
+                        img={mediakitIcon}
+                        title="MediaKit"
+                        description="Your digital resume"
+                        buttonLabel="Coming soon..."
+                    />
+
+                    <span className="absolute-center text-sm mt-4">
+                        more coming soon.
+                    </span>
                 </div>
-                {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
-        </Screen >
+            </div>
+            <HomeFooter />
+            {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
+        </Screen>
     );
 }
