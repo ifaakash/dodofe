@@ -193,3 +193,20 @@ export const getBadgeUI = (badgeText: string, badgeColor: string) => {
         </div>
     )
 }
+
+export function Card({ title, description, icon, bgColor, textColor }) {
+    return (
+        <div className={`rounded-2xl p-6 w-44 h-80 shadow-md flex flex-col justify-between ${bgColor}`}>
+            <div>
+                <h2 className={`text-lg font-bold ${textColor}`}>{title}</h2>
+                <p className="text-sm text-gray-700 mt-2">{description}</p>
+            </div>
+            <div className="flex justify-between items-center">
+                <span className="text-4xl">{icon}</span>
+                <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center text-white">
+                    →
+                </div>
+            </div>
+        </div>
+    );
+}
