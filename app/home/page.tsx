@@ -161,7 +161,7 @@ export default function Home() {
 
     return (
         <Screen>
-            <div className="mt-12 text-center" style={{ backgroundImage: `url(${crossBg.src})` }}>
+            <div className="pt-12 text-center" style={{ backgroundImage: `url(${crossBg.src})` }}>
                 <div className="flex">
                     <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
                         {!userId && (
@@ -253,7 +253,7 @@ export default function Home() {
                         </div>
                     </div>
                 ) : (
-                    <div className="m-4">{getUserCard()}</div>
+                    <div className="mx-4 py-4">{getUserCard()}</div>
                 )}
             </div >
 
