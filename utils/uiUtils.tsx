@@ -198,9 +198,9 @@ export function Card({ title, description, icon, bgColor, bgColorGo }) {
     return (
         <div className={`rounded-2xl p-3 h-80 shadow-md flex flex-col justify-between`} style={{ backgroundColor: bgColor, minWidth: '162px' }}>
             <div>
-                <h1 className="text-lg font-bold mb-1 ${textColor}">{title}</h1>
+                <h1 className="text-lg font-bold mb-1 leading-[16px] mb-4">{title}</h1>
 
-                <p className="text-xs leading-[16px]">{description}</p>
+                <p className="text-xs leading-[16px] mb-4">{description}</p>
 
             </div>
             <div className="flex justify-between items-end">
