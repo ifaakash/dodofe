@@ -201,7 +201,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
                         <input
                             value={mobileNumber}
                             onChange={handleMobileNumber}
-                            type="text"
+                            type="number"
                             className="w-full outline-none bg-transparent placeholder:text-[#3D4966] placeholder:font-normal placeholder:text-xl leading-normal font-semibold text-[#000] text-2xl"
                             placeholder="Enter your mobile number"
                         />
