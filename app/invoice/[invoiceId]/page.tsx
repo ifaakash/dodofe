@@ -8,7 +8,9 @@ import { useParams } from "next/navigation";
 import { getInvoiceById } from "api";
 import { InvoiceProps } from "../../../types";
 import { formatCurrency } from "@utils/helperFunctions";
+import dynamic from "next/dynamic";
 
+const CircleLoader = dynamic(() => import("@components/atoms/Loaders/CircleLoader"), { ssr: false });
 const PreviewInvoice = () => {
   const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState<InvoiceProps | null>(null);
@@ -28,9 +30,7 @@ const PreviewInvoice = () => {
 
   if (!invoice) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
-      </div>
+      <CircleLoader />
     );
   }
 

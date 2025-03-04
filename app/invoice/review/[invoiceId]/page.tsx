@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { addSubHeading, getInvoiceById } from "api";
 import { InvoiceProps } from "../../../../types";
+import { toast } from "react-toastify";
 
 
 const ReviewInvoice = () => {
@@ -52,9 +53,9 @@ const ReviewInvoice = () => {
 
   const shareInvoice = async () => {
     if (isLoading) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       // Save changes if edited
       if (isEdited) {
@@ -66,7 +67,7 @@ const ReviewInvoice = () => {
         if (!res.success) {
           throw new Error("Failed to save changes");
         }
-        
+
         setOriginalSubHeading(subHeading);
         setIsEdited(false);
       }
@@ -74,13 +75,13 @@ const ReviewInvoice = () => {
       // Share functionality
       const url = `${window.location.origin}/invoice/${invoiceId}`;
       await navigator.clipboard.writeText(url);
-      
+
       // Show success message
-      alert("Invoice link copied to clipboard!");
-      
+      toast.success("Invoice link copied to clipboard!");
+
     } catch (err) {
       const error = err as Error;
-      alert(error.message || "Failed to process your request. Please try again.");
+      toast.error(error.message || "Failed to process your request. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +94,8 @@ const ReviewInvoice = () => {
     subTotal,
     note,
     totalAmount,
+    gst,
+    tds
   } = invoice;
 
   // Add type guard check
@@ -103,18 +106,20 @@ const ReviewInvoice = () => {
   const { clientDetails, recipientDetails, bankDetails } = invoice;
 
   return (
-    <div className="bg-[#D8D6DC] w-full">
+    <div className="h-full w-full">
+      <div className="h-64 bg-[#D8D6DC] absolute top-0 left-0 right-0 -z-10"></div>
+
       <div className="py-8 flex justify-center">
         <div className="flex flex-col gap-1">
           <div className="uppercase font-bold text-[22px] text-center">
             Invoice
           </div>
           <div className="flex gap-1 justify-center items-center py-0">
-            <input 
-              value={subHeading} 
+            <input
+              value={subHeading}
               onChange={handleSubHeadingChange}
-              type="text" 
-              className="text-xs font-semibold focus:outline-none text-center bg-transparent leading-none w-fit" 
+              type="text"
+              className="text-xs font-semibold focus:outline-none text-center bg-transparent leading-none w-fit"
               placeholder="Add sub-heading"
             />
             <Image src={EditPen} alt="EditPen" />
@@ -123,11 +128,11 @@ const ReviewInvoice = () => {
             <span className="text-xs font-semibold">Invoice number:</span>
             <span className="text-sm font-semibold">{invoiceNumber.toString().padStart(3, "0")}</span>
           </div>
-          
+
         </div>
       </div>
-      <div className="px-5 flex flex-col gap-5">
-        <div className="flex flex-col gap-[10px]">
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-[10px] px-5">
           <div className="flex justify-between items-center">
             <div className="font-semibold">Invoice for</div>
             {isEditable && (
@@ -199,6 +204,20 @@ const ReviewInvoice = () => {
                     </div>
                     <span className="text-sm font-medium">{discount}%</span>
                   </div>
+
+                  <div className="flex justify-between">
+                    <div className="text-sm text-[#5E6C84] font-medium">
+                      GST
+                    </div>
+                    <span className="text-sm font-medium">{gst}%</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <div className="text-sm text-[#5E6C84] font-medium">
+                      TDS
+                    </div>
+                    <span className="text-sm font-medium">{tds}%</span>
+                  </div>
                 </div>
               </div>
               <div className="py-[14px] px-4 rounded-b-[10px] bg-[#D8D6DC] flex justify-between">
@@ -220,8 +239,8 @@ const ReviewInvoice = () => {
 
             <div className="bg-white p-4 rounded-[10px] flex flex-col gap-[10px]">
               <Image
-                src={Rajveer}
-                alt="Rajveer"
+                src={DodoIconCircle}
+                alt="Dodo Icon Circle"
                 width={40}
                 className="rounded-full"
               />
@@ -280,20 +299,24 @@ const ReviewInvoice = () => {
               </div>
             </div>
           </div>
-          <div className="p-4 bg-white rounded-[10px] flex flex-col gap-[10px]">
+        {
+          note && (
+            <div className="p-4 bg-white rounded-[10px] flex flex-col gap-[10px]">
             <div className="text-xs font-semibold text-[#5E6C84]">Note</div>
             <div className="text-xs font-medium text-[#5E6C84]">{note}</div>
           </div>
+          )
+        }
         </div>
 
-        <div className="flex justify-center mt-20 gap-1 items-center">
+        <div className="flex justify-center mt-20 gap-1 items-center px-5">
           <div className="text-xs font-medium text-[#5E6C84]">
             generated with ❤️ by
           </div>
           <Image src={DodoIconName} alt="DodoIconName" />
         </div>
 
-        <div className="mt-6 py-4 px-5 bg-white flex gap-[10px]">
+        <div className="mt-6 py-4 px-5 bg-white flex gap-[10px] fixed bottom-0 w-full border-t border-[#D8D6DC]">
           <button className="rounded-xl border-brandPrimary flex items-center gap-1 border-[1px] py-[10px] px-5 text-brandPrimary font-semibold text-sm">
             <div className="flex w-full">
               <div>Pdf</div>

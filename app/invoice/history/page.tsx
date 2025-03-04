@@ -15,7 +15,9 @@ const InvoiceHistory = () => {
   const [timeFrame, setTimeFrame] = useState("all");
   const [invoices, setInvoices] = useState<InvoiceProps[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceProps[]>([]);
+  const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+
   
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -33,16 +35,34 @@ const InvoiceHistory = () => {
     fetchInvoices();
   }, []);
 
-  // TODO : Filter invoices based on timeFrame
   useEffect(() => {
     if (timeFrame === "all") {
       setFilteredInvoices(invoices);
+    } else if (timeFrame === "due") {
+      const currentDate = new Date();
+      setFilteredInvoices(
+        invoices.filter((invoice) => {
+          const dueDate = new Date(invoice.dueDate);
+          return (
+            invoice.status.toLowerCase() === "unpaid" && 
+            dueDate <= currentDate
+          );
+        })
+      );
     } else {
       setFilteredInvoices(
         invoices.filter((invoice) => invoice.status.toLowerCase() === timeFrame)
       );
     }
   }, [timeFrame, invoices]);
+
+  const handleCardExpand = (invoiceId: string) => {
+    if (expandedInvoiceId === invoiceId) {
+      setExpandedInvoiceId(null);
+    } else {
+      setExpandedInvoiceId(invoiceId);
+    }
+  }
 
   return (
     <div className="flex flex-col px-5 gap-4">
@@ -60,7 +80,7 @@ const InvoiceHistory = () => {
 
       <div className="flex flex-col gap-3">
         <div className="flex border border-gray-300 rounded-lg">
-          {["All", "Unpaid", "Paid", "Overdue"].map((label, index) => (
+          {["All", "Unpaid", "Paid", "Due"].map((label, index) => (
             <div
               key={label}
               onClick={() => setTimeFrame(label.toLowerCase())}
@@ -89,7 +109,11 @@ const InvoiceHistory = () => {
           {filteredInvoices.length > 0 ? (
             filteredInvoices.map((invoice, index) => (
               <div key={index}>
-                <InvoiceHistoryCard invoice={invoice} />
+                <InvoiceHistoryCard 
+                  invoice={invoice} 
+                  isExpanded={expandedInvoiceId === invoice.id} 
+                  handleCardExpand={handleCardExpand}
+                />
               </div>
             ))
           ) : (

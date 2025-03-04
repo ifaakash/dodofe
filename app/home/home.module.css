@@ -84,3 +84,13 @@
     transform: translateX(-50%); /* Moves by half its width */
   }
 }
+
+.fadeout {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.fadein {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}

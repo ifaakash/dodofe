@@ -95,7 +95,7 @@ const InvoiceOnboardingScreen = () => {
           <div className="font-semibold">50</div>
           <div className="font-normal">per invoice</div>
         </div>
-        <NewButton variant="primary" size="large" onClick={() => { handleNavigation() }}>
+        <NewButton variant="primary" size="large" onClick={() => { handleNavigation() }} className="w-full">
           Create invoice
         </NewButton>
       </div>

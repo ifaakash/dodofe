@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, ChevronsRight } from "lucide-react";
 import Image from "next/image";
 import EditPen from "public/icons/EditPen.svg";
 import { formatCurrency, formatDate } from "@utils/helperFunctions";
 import { InvoiceHistoryCard, StatusBadgeProps } from "types";
 import { InvoiceProps } from "types";
+import MarkAsPaidButton from "./MarkAsPaidButton";
+import Link from "next/link";
 
 const StatusBadge = ({ isDue, status, isExpanded }: StatusBadgeProps) => {
   const getBgColor = () => {
@@ -17,8 +19,9 @@ const StatusBadge = ({ isDue, status, isExpanded }: StatusBadgeProps) => {
 
   return (
     <div
-      className={` ${getBgColor()} w-fit ${isExpanded ? "rounded-tl-lg  rounded-br-lg" : "rounded-l-lg"
-        } flex justify-center items-center max-w-[21px]`}
+      className={` ${getBgColor()} w-fit ${
+        isExpanded ? "rounded-tl-lg  rounded-br-lg" : "rounded-l-lg"
+      } flex justify-center items-center max-w-[21px] transition-all duration-300`}
     >
       <div className="text-[10px] text-white h-fit -rotate-90">
         {isDue ? "Due" : status === "paid" ? "Paid" : "Unpaid"}
@@ -47,8 +50,30 @@ const HistoryInvoiceCard = ({
   invoice,
   onEdit,
   onMarkAsPaid,
+  isExpanded,
+  handleCardExpand,
 }: InvoiceHistoryCard) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState<number>(0);
+  
+  // Measure the expanded content height
+  useEffect(() => {
+    if (contentRef.current) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          setContentHeight(entry.contentRect.height);
+        }
+      });
+      
+      resizeObserver.observe(contentRef.current);
+      
+      return () => {
+        if (contentRef.current) {
+          resizeObserver.unobserve(contentRef.current);
+        }
+      };
+    }
+  }, [isExpanded]);
 
   const isDue = useMemo(() => {
     return new Date(invoice.dueDate) < new Date();
@@ -56,14 +81,14 @@ const HistoryInvoiceCard = ({
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
-      setIsExpanded(!isExpanded);
+      handleCardExpand(invoice.id);
     }
   };
 
   return (
     <div
-      className="bg-white flex flex-col rounded-xl hover:shadow-md transition-shadow"
-      onClick={() => setIsExpanded(!isExpanded)}
+      className="bg-white flex flex-col rounded-xl hover:shadow-md transition-all duration-300"
+      onClick={() => handleCardExpand(invoice.id)}
       onKeyDown={handleKeyPress}
       role="button"
       tabIndex={0}
@@ -85,20 +110,28 @@ const HistoryInvoiceCard = ({
                   .padStart(3, "0")}`}
             </div>
             <div className="text-[#414D55] font-semibold">
-              {'clientDetails' in invoice ? invoice.clientDetails.name : 'Client Name'}
+              {"clientDetails" in invoice
+                ? invoice.clientDetails.name
+                : "Client Name"}
             </div>
           </div>
 
           <ChevronDown
             size={16}
-            className={`transition-transform ${isExpanded ? "rotate-180" : ""}`}
+            className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
             aria-hidden="true"
           />
         </div>
       </div>
 
-      {isExpanded && (
-        <div className="p-3 flex flex-col gap-3">
+      <div 
+        className="overflow-hidden transition-all duration-300 ease-in-out" 
+        style={{ 
+          maxHeight: isExpanded ? `${contentHeight + 100}px` : '0px',
+          opacity: isExpanded ? 1 : 0
+        }}
+      >
+        <div ref={contentRef} className="p-3 flex flex-col gap-3">
           <div className="flex flex-col gap-0.5">
             <div className="text-xs">Amount</div>
             <div className="text-[#414D55] font-semibold">
@@ -125,30 +158,19 @@ const HistoryInvoiceCard = ({
           <hr className="border-dashed border-[#C1C7D0] my-2" />
 
           <div className="flex gap-2">
-            <button
-              onClick={onEdit}
-              className="border border-[#CEF2DC] py-2 px-[10px] rounded-full flex items-center gap-[6px] w-[100px] justify-center hover:bg-[#CEF2DC] transition-colors"
-              aria-label="Edit invoice"
+            {/* Edit Button */}
+            <Link
+              href={`/invoice/review/${invoice.id}`}
+              className="border-[1px] border-[#CEF2DC] py-2 px-[10px] rounded-full flex items-center gap-[6px] w-[100px] justify-center cursor-pointer"
             >
-              <span className="text-xs font-bold">Edit</span>
-              <Image src={EditPen} width={16} height={16} alt="" />
-            </button>
+              <div className="text-xs font-bold">Edit</div>
+              <Image src={EditPen} width={16} height={16} alt="edit" />
+            </Link>
 
-            <button
-              onClick={onMarkAsPaid}
-              className="flex items-center bg-[#EAE9EC] w-full rounded-full gap-[10px] hover:bg-[#dedde0] transition-colors"
-              aria-label="Mark invoice as paid"
-            >
-              <div className="bg-brandPrimary p-[6px] rounded-full min-h-10 min-w-10 flex justify-center items-center">
-                <ChevronsRight size={24} className="text-white" />
-              </div>
-              <span className="text-[#414D55] text-xs font-medium">
-                Mark as Paid
-              </span>
-            </button>
+            <MarkAsPaidButton invoice={invoice} />
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

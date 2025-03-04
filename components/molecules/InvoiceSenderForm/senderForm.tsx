@@ -41,17 +41,29 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
     (state: RootState) => state.invoice.currentClientDetails || {}
   );
 
+  const selectedClientID = useSelector(
+    (state: RootState) => state.invoice.clientDetailsID
+  );
+
+  console.log('selectedClientID', selectedClientID)
+
   useEffect(() => {
-    const requiredFields = {
-      name: currentClientDetails.name,
-      email: currentClientDetails.email
-    };
+    // Only validate form when showing input fields
+    if (showInputFields) {
+      const requiredFields = {
+        name: currentClientDetails.name,
+        email: currentClientDetails.email
+      };
 
-    const hasEmptyRequired = Object.values(requiredFields).some(val => !val);
-    const hasErrors = Object.values(errors).some(error => error !== "");
+      const hasEmptyRequired = Object.values(requiredFields).some(val => !val);
+      const hasErrors = Object.values(errors).some(error => error !== "");
 
-    setDisableNextButton(hasErrors || hasEmptyRequired);
-  }, [currentClientDetails, errors]);
+      setDisableNextButton(hasErrors || hasEmptyRequired);
+    } else {
+      // When showing client cards, only disable if no client is selected
+      setDisableNextButton(!selectedClientID);
+    }
+  }, [currentClientDetails, errors, selectedClientID, showInputFields]);
 
   useEffect(() => {
     validateFormOnLoad();
@@ -140,7 +152,7 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
   return (
     <div className="py-4 px-5 overflow-scroll h-[calc(100vh-150px)]">
       {showInputFields ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 pb-5">
           <div className="flex flex-col gap-3">
             <div className="text-[#5E6C84] text-xs font-semibold">BASIC</div>
             <Input
@@ -207,11 +219,11 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
               onChange={(e) => handleChange("pan", e.target.value)}
               error={errors.pan}
             />
-            <Input
+            {/* <Input
               placeholder="Upload image/logo"
               type="file"
               accept="image/*"
-            />
+            /> */}
           </div>
         </div>
       ) : (
@@ -240,15 +252,19 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
       )}
 
       <div className={cx(
-        "bottom-0 py-4 fixed justify-center",
+        "bottom-0 py-4 fixed justify-center w-[90%]",
       )}
-        style={isEmpty(clientDetails) ? { width: '80%' } : { width: '90%' }
-        }
+        // style={isEmpty(clientDetails) ? { width: '80%' } : { width: '90%' }
+        // }
       >
         <NewButton
           size="large"
-          variant="primary"
-          disabled={disableNextButton}
+          variant={
+            showInputFields 
+              ? (disableNextButton ? "disabled" : "primary") 
+              : (selectedClientID ? "primary" : "disabled")
+          }
+          className="w-full"
           onClick={() => setCurrentStage('receiverDetails')}
         >
           Next

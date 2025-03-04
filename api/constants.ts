@@ -34,4 +34,5 @@ export default {
     votePoll: 'blocks/poll-vote',
     deleteBlock: 'blocks/delete',
     updateBlock: 'blocks/update',
+    toggleInvoicePaymentStatus: 'invoice/toggle-payment-status'
 }
