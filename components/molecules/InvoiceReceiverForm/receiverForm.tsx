@@ -44,6 +44,24 @@ const ReceiverForm = ({
     (state: RootState) => state.invoice.currentRecipientDetails || {}
   );
 
+  const selectedReceiverID = useSelector(
+    (state: RootState) => state.invoice.recipientDetailsID
+  );
+
+  console.log('selectedReceiverID', selectedReceiverID)
+
+  useEffect(() => {
+    // Only validate form when showing input fields
+    if (showInputFields) {
+      const hasErrors = Object.values(errors).some((error) => error !== "");
+      const hasEmptyRequired = requiredFields.some((field) => !currentRecipientDetails[field]);
+      setDisableNextButton(hasErrors || hasEmptyRequired);
+    } else {
+      // When showing receiver cards, only disable if no receiver is selected
+      setDisableNextButton(!selectedReceiverID);
+    }
+  }, [currentRecipientDetails, errors, selectedReceiverID, showInputFields]);
+
   const requiredFields = [
     "name",
     "email",
@@ -77,12 +95,6 @@ const ReceiverForm = ({
         break;
       default:
         break;
-    }
-
-    if (error) {
-      setDisableNextButton(true);
-    } else {
-      setDisableNextButton(false);
     }
 
     setErrors((prevErrors) => ({
@@ -137,7 +149,7 @@ const ReceiverForm = ({
   return (
     <div className="py-4 px-5 overflow-scroll h-[calc(100vh-150px)]">
       {showInputFields ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 pb-5">
           <div className="flex flex-col gap-3">
             <div className="text-[#5E6C84] text-xs font-semibold">BASIC</div>
             <Input
@@ -204,11 +216,11 @@ const ReceiverForm = ({
               onChange={(e) => handleChange("pan", e.target.value)}
               error={errors.pan}
             />
-            <Input
+            {/* <Input
               placeholder="Upload image/logo"
               type="file"
               accept="image/*"
-            />
+            /> */}
           </div>
         </div>
       ) : (
@@ -237,15 +249,19 @@ const ReceiverForm = ({
       )}
 
       <div className={cx(
-        "bottom-0 py-4 fixed justify-center"
+        "bottom-0 py-4 fixed justify-center w-[90%]"
       )}
-        style={isEmpty(receiverDetails) ? { width: '80%' } : { width: '90%' }
-        }
+        // style={isEmpty(receiverDetails) ? { width: '80%' } : { width: '90%' }
+        // }
       >
         <NewButton
           size="large"
-          variant="primary"
-          disabled={disableNextButton}
+          variant={
+            showInputFields 
+              ? (disableNextButton ? "disabled" : "primary") 
+              : (selectedReceiverID ? "primary" : "disabled")
+          }
+          className="w-full"
           onClick={() => setCurrentStage('invoiceDetails')}
         >
           Next

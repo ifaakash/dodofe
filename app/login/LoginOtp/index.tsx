@@ -8,7 +8,10 @@ import { loadState, saveState } from "@utils/localStorage";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import { useRouter } from "next/navigation";
 import { registerUser } from "api";
+import OTPscreenBg from "public/assets/OTPscreen.png";
+import NewButton from "@components/atoms/Button/NewButton";
 import { toast } from "react-toastify";
+import { RotateCcw } from "lucide-react";
 
 const otpLength = 6;
 
@@ -119,57 +122,82 @@ export const LoginOtp = ({ setLoginState }: any) => {
         }
     };
 
+    const handleResend = () => {
+        console.log("Resending OTP...");
+    };
+
+    const handleNavigateToLoginNumber = () => {
+        setLoginState(1);
+    };
+
+
     return (
-        <div className="mx-4 mt-16">
-            <span className="text-3xl clr-heading-text font-black">
-                Enter OTP
-            </span>
-            <br />
-            <span className="text-xl clr-heading-text mb-4">
-                for verification
-            </span>
-
-            <span className="text-sm clr-green my-2 flex flex-row">
-                Sent to {loadState(STORAGE_CONSTANTS.MOBILE) || ""}
-                <Image
-                    height={16}
-                    width={16}
-                    src={editIcon}
-                    alt="edit"
-                    className="ml-2 cursor-pointer"
-                    onClick={() => setLoginState(1)}
-                />
-            </span>
-
-            <div
-                className={cx(
-                    "card mt-4 px-4 flex items-center flex-row w-full",
-                    styles.cardDimensions
-                )}
-            >
-                {otp.map((digit, index) => (
-                    <UserInput
-                        key={index}
-                        type="text"
-                        className={styles.otpInputContainer}
-                        onChange={(e) => handleOnChange(e, index)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        value={digit}
-                        inputRef={(el: any) => (inputRefs.current[index] = el)}
-                        maxLength={1}
-                        disabled={isLoading}
-                    />
-                ))}
-            </div>
-
-            <Footer
-                variant="default"
-                primaryActionText={isLoading ? "Verifying..." : "Verify OTP"}
-                primaryAction={() => verifyOTP()}
-                disablePrimaryButton={
-                    isLoading || otp.join("").length !== otpLength
-                }
+        <div>
+            <Image
+                src={OTPscreenBg}
+                alt="Phone Number Input Background"
+                className="object-cover w-full h-[50vh]"
             />
+
+            <div className="absolute bottom-0 h-[60vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
+                <div className="flex flex-col gap-4">
+                    <div>
+                        <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
+                            Enter OTP
+                        </div>
+                        <div className="text-[#979EAD] text-[20px] leading-normal">
+                            for verification
+                        </div>
+                    </div>
+                    <div className="flex gap-2 justify-between">
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <input
+                                key={index}
+                                type="number"
+                                className="bg-[#EAE9EC] p-2 w-12 rounded-xl text-center text-lg focus:outline-none"
+                                maxLength={1}
+                                onChange={(e) => handleOnChange(e, index)}
+                                onKeyDown={(e) => handleKeyDown(e, index)}
+                                value={otp[index]}
+                                ref={(el: any) => (inputRefs.current[index] = el)}
+                                disabled={isLoading}
+                                placeholder="•"
+                                autoFocus={index === 0}
+                                style={{
+                                    border: "1px solid #D0D0D0",
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="flex justify-between">
+                        <div
+                            onClick={handleNavigateToLoginNumber}
+                            className="flex items-center gap-1 text-xs"
+                        >
+                            <span>sent to {loadState(STORAGE_CONSTANTS.MOBILE)}</span>
+                            <Image src={editIcon} alt="edit" />
+                        </div>
+                        <div
+                            className="flex items-center gap-1 text-xs"
+                            onClick={handleResend}
+                        >
+                            <span className="text-brandPrimary font-semibold">Resend</span>
+                            <RotateCcw size={12} />
+                        </div>
+                    </div>
+                </div>
+
+                <NewButton
+                    variant={"primary"}
+                    size="large"
+                    onClick={() => { }}
+                    className="w-full"
+                >
+                    Continue
+                </NewButton>
+            </div>
         </div>
+
     );
 };

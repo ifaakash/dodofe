@@ -232,7 +232,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
       </div>
 
       {/* Note Section */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 pb-5">
         <div className="text-[#5E6C84] text-xs font-semibold">NOTE</div>
         <textarea
           placeholder="Add a note(optional)"
@@ -250,8 +250,8 @@ const InvoiceDetails = ({ setCurrentStage }) => {
       >
         <NewButton
           size="large"
-          variant="primary"
-          disabled={disableNextButton}
+          variant={disableNextButton ? "disabled" : "primary"}
+          className="w-full"
           onClick={() => setCurrentStage('paymentDetails')}
         >
           Next

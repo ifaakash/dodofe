@@ -114,6 +114,8 @@ export interface InvoiceHistoryCard {
   onEdit?: any;
   onMarkAsPaid?: any;
   timeFrame?: any;
+  handleCardExpand?: any;
+  isExpanded?: boolean; 
 }
 
 export interface StatusBadgeProps {

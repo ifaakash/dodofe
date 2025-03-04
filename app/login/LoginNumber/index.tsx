@@ -11,6 +11,9 @@ import {
 } from "firebase/auth";
 import { auth } from "config/firebase";
 import { toast } from "react-toastify";
+import PhoneNumberInputBg from "public/assets/phoneNumberScreen.png";
+import Image from "next/image";
+import NewButton from "@components/atoms/Button/NewButton";
 
 export const LoginNumber = ({ setLoginState }: any) => {
     const [mobileNumber, setMobileNumber] = useState("");
@@ -176,59 +179,53 @@ export const LoginNumber = ({ setLoginState }: any) => {
     };
 
     return (
-        <div className="mx-4 mt-16">
-            <span className="text-xl clr-heading-text mb-2">Welcome!</span>
-            <br />
-            <span className="text-4xl font-black clr-heading-text">
-                Sign in with
-            </span>
-            <br />
-            <span className="text-xl clr-heading-text mb-2">
-                to start your amazing journey
-            </span>
-            <div className="flex flex-col gap-4 mt-8">
-                <div className="text-sm text-gray-600">
-                    Enter your phone number
-                </div>
-                <div
-                    className={cx(
-                        "card px-4 flex items-center flex-col w-full",
-                        styles.cardDimensions
-                    )}
-                >
-                    <div className="w-full relative">
-                        <UserInput
-                            name="mobileNumber"
-                            className="w-full text-xl"
-                            value={mobileNumber}
-                            placeholder="Enter your mobile number"
-                            onChange={handleMobileNumber}
-                            errorMsg={"Please enter a valid number"}
-                            type="tel"
-                            maxLength={10}
-                        />
-                        <div className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-300 pointer-events-none">
-                            {!mobileNumber && "0123456789"}
+        <div>
+            <Image
+                src={PhoneNumberInputBg}
+                alt="Phone Number Input Background"
+                className="object-cover w-full h-[50vh]"
+            />
+
+            <div className="absolute bottom-0 h-[60vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
+                <div className="flex flex-col gap-6">
+                    <div>
+                        <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
+                            Enter Phone Number
+                        </div>
+                        <div className="text-[#979EAD] text-[20px] leading-normal">
+                            to start your amazing journey{" "}
                         </div>
                     </div>
+
+                    <div className="bg-[#EAE9EC] rounded-2xl py-6 px-4 pb-4 flex flex-col gap-2">
+                        <input
+                            value={mobileNumber}
+                            onChange={handleMobileNumber}
+                            type="text"
+                            className="w-full outline-none bg-transparent placeholder:text-[#3D4966] placeholder:font-normal placeholder:text-xl leading-normal font-semibold text-[#000] text-2xl"
+                            placeholder="Enter your mobile number"
+                        />
+                        <div className="bg-[#D0D0D0] w-full h-[1px]"></div>
+                    </div>
                 </div>
+
                 {showRecaptcha && (
                     <div
                         ref={recaptchaContainerRef}
                         className="flex justify-center mt-4"
                     />
                 )}
+
+                <NewButton
+                    variant={mobileNumber.length === 10 ? "primary" : "disabled"}
+                    size="large"
+                    onClick={gotoOtpScreen}
+                    className="w-full"
+                >
+                    Continue
+                </NewButton>
             </div>
-            <Footer
-                variant="default"
-                primaryActionText={isLoading ? "Sending OTP..." : "Continue"}
-                primaryAction={gotoOtpScreen}
-            // disablePrimaryButton={
-            //     isLoading ||
-            //     mobileNumber.length !== 10 ||
-            //     !recaptchaVerified
-            // }
-            />
         </div>
+
     );
 };

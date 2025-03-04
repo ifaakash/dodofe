@@ -90,7 +90,7 @@ const LastInvoiceCard = ({ invoice }: LastInvoiceCardProps) => {
           <Image src={EditPen} width={16} height={16} alt="edit" />
         </Link>
 
-        <MarkAsPaidButton />
+        <MarkAsPaidButton invoice={invoice} />
       </div>
     </div>
   );

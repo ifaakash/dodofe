@@ -24,6 +24,7 @@ const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) =
   const [disableNextButton, setDisableNextButton] = useState(true);
 
   const { currentBankDetails } = useSelector((state: RootState) => state.invoice);
+  const selectedBankID = useSelector((state: RootState) => state.invoice.bankDetailsID);
 
   useEffect(() => {
     if (bankDetailsID) {
@@ -40,6 +41,13 @@ const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) =
   };
 
   const validatePaymentDetails = () => {
+    // Enable "Next" button if a bank is selected from existing ones
+    if (!showInputFields && selectedBankID) {
+      setDisableNextButton(false);
+      return;
+    }
+
+    // For new bank details input validation
     const { bankName, accountNumber, ifscCode, accountName, upiId } = currentBankDetails;
 
     const isBankDetailsValid =
@@ -56,7 +64,7 @@ const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) =
 
   useEffect(() => {
     validatePaymentDetails();
-  }, [currentBankDetails]);
+  }, [currentBankDetails, selectedBankID, showInputFields]);
 
   return (
     <div className="py-4 px-5">
@@ -118,7 +126,10 @@ const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) =
           <div className="flex justify-end">
             <div
               className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full cursor-pointer"
-              onClick={() => setShowInputFields(true)}
+              onClick={() => {
+                setShowInputFields(true);
+                setBankDetailsID(""); // Clear selected bank when switching to input mode
+              }}
             >
               <div className="text-sm font-semibold">Add New Bank Details</div>
               <Plus
@@ -131,7 +142,7 @@ const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) =
             <BankDetailsCard
               key={bankDetail._id}
               bankDetail={bankDetail}
-              bankDetailsID={bankDetailsID}
+              bankDetailsID={selectedBankID}
               onSelect={handleSelectBank}
             />
           ))}
@@ -140,14 +151,13 @@ const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) =
 
       <div
         className={cx(
-          "bottom-0 py-4 fixed justify-center"
+          "bottom-0 py-4 fixed justify-center w-[90%]"
         )}
-        style={{ width: '90%' }}
       >
         <NewButton
           size="large"
-          variant="primary"
-          disabled={disableNextButton}
+          variant={disableNextButton ? "disabled" : "primary"}
+          className="w-full"
           onClick={() => setCurrentStage("dueDate")}
         >
           Next
