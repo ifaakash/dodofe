@@ -10,7 +10,8 @@ import InvoiceDetails from "@components/molecules/InvoiceDetails/invoiceDetails"
 import InvoiceDueDate from "@components/molecules/InvoiceDueDate/InvoiceDueDate";
 
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { showLoader, hideLoader } from "store/slice/loaderSlice";
 import { getUserDetails } from "api";
 import { RootState } from 'store/store';
 
@@ -23,17 +24,22 @@ import {
 } from "api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
+import { Header } from "@components/molecules/Header";
+import ErrorPage from "@components/molecules/ErrorPage";
 
 
 const CreateInvoice = () => {
   const [currentStage, setCurrentStage] = useState("senderDetails");
   const router = useRouter();
-  const state = useSelector((state: any) => state);
+  const dispatch = useDispatch();
+  const state = useSelector((state: RootState) => state);
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
   useEffect(() => {
     const fetchUserDetails = async () => {
+      dispatch(showLoader(true));
       try {
         const res = await getUserDetails(userId);
         if (res) {
@@ -41,10 +47,13 @@ const CreateInvoice = () => {
         }
       } catch (error) {
         console.error("Error fetching user details:", error);
+        setError("Failed to load user details.");
+      } finally {
+        dispatch(hideLoader(false));
       }
     };
     fetchUserDetails();
-  }, []);
+  }, [userId, dispatch]);
 
   const stages = [
     "senderDetails",
@@ -98,6 +107,7 @@ const CreateInvoice = () => {
   };
 
   const handleInvoiceSubmit = async () => {
+    dispatch(showLoader(true));
     try {
       const invoice = state.invoice;
 
@@ -142,10 +152,14 @@ const CreateInvoice = () => {
       });
     } catch (error) {
       console.error("An error occurred while handling the invoice submission:", error);
+      setError("Failed to submit invoice.");
+    } finally {
+      dispatch(hideLoader(false));
     }
   };
 
   const createBankDetails = async () => {
+    dispatch(showLoader(true));
     try {
       const invoice = state.invoice;
       const newBankDetails = await addBankDetails({
@@ -161,10 +175,13 @@ const CreateInvoice = () => {
     } catch (error) {
       console.error("Error creating bank details:", error);
       return null;
+    } finally {
+      dispatch(hideLoader(false));
     }
   };
 
   const createClientDetails = async () => {
+    dispatch(showLoader(true));
     try {
       const invoice = state.invoice;
       const newClient = await createClient({
@@ -183,10 +200,13 @@ const CreateInvoice = () => {
     } catch (error) {
       console.error("Error creating client details:", error);
       return null;
+    } finally {
+      dispatch(hideLoader(false));
     }
   };
 
   const createRecipientDetails = async () => {
+    dispatch(showLoader(true));
     try {
       const invoice = state.invoice;
       const newRecipient = await createRecipient({
@@ -205,6 +225,8 @@ const CreateInvoice = () => {
     } catch (error) {
       console.error("Error creating recipient details:", error);
       return null;
+    } finally {
+      dispatch(hideLoader(false));
     }
   };
 
@@ -217,7 +239,7 @@ const CreateInvoice = () => {
     clientDetailId: string;
     recipientDetailId: string;
   }) => {
-    console.log("Submitting the invoice...");
+    dispatch(showLoader(true));
     try {
       const invoice = state.invoice;
 
@@ -242,6 +264,8 @@ const CreateInvoice = () => {
       }
     } catch (error) {
       console.error("Error submitting the invoice:", error);
+    } finally {
+      dispatch(hideLoader(false));
     }
   };
 
@@ -267,16 +291,15 @@ const CreateInvoice = () => {
     }
   };
 
+  if (error) {
+    return <ErrorPage message={error} />;
+  }
+
   return (
     <div className="relative">
-      <div className="py-[10px] px-5 flex flex-col gap-3">
-        <div className="flex gap-1 items-center">
-          <div onClick={handleBackNavigation} className="p-2 cursor-pointer">
-            <Image src={Arrow} width={20} alt="back" />
-          </div>
-          <div className="overflow-auto font-semibold">{getHeaderText()}</div>
-        </div>
-        <div className="flex justify-between items-center gap-1">
+      <div className="py-[10px] flex flex-col gap-3">
+        <Header onBackClick={handleBackNavigation} title={getHeaderText()} />
+        <div className="flex px-5 justify-between items-center gap-1">
           <div className="w-full bg-[#D8D7DB] rounded-full h-3">
             <div
               className="bg-brandPrimary h-3 rounded-full transition-all"
@@ -292,30 +315,6 @@ const CreateInvoice = () => {
       <div className="h-[calc(100vh-150px)] overflow-scroll">
         {renderStage()}
       </div>
-      {/* 
-      {currentStage === "dueDate" ? (
-        <div className="bottom-0 px-5 py-4 w-full fixed">
-          <NewButton
-            size="large"
-            variant="primary"
-            disabled={disableNextButton}
-            onClick={handleInvoiceSubmit}
-          >
-            Review and Share
-          </NewButton>
-        </div>
-      ) : (
-        <div className="bottom-0 px-5 py-4 w-full fixed">
-          <NewButton
-            size="large"
-            variant="primary"
-            disabled={disableNextButton}
-            onClick={() => setCurrentStage(getNextLink())}
-          >
-            Next
-          </NewButton>
-        </div>
-      )} */}
     </div>
   );
 };
