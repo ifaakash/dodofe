@@ -53,21 +53,24 @@ export default function Home() {
     useEffect(() => {
         setIsMounted(true);
 
-        const handleScroll = () => {
-            const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        if (window) {
+            const handleScroll = () => {
+                const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
 
-            console.log(scrollProgress);
-            // Adjust the blur dynamically (max blur of 10px)
-            let blurValue = Math.min((scrollProgress + 10) / 10, 10);
+                console.log(scrollProgress);
+                // Adjust the blur dynamically (max blur of 10px)
+                let blurValue = Math.min((scrollProgress + 10) / 10, 10);
 
-            if (scrollProgress === 0) {
-                blurValue = 0;
-            }
+                if (scrollProgress === 0) {
+                    blurValue = 0;
+                }
 
-            setBlurAmount(blurValue);
-        };
+                setBlurAmount(blurValue);
 
-        window.addEventListener("scroll", handleScroll);
+            };
+
+            window.addEventListener("scroll", handleScroll);
+        }
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 

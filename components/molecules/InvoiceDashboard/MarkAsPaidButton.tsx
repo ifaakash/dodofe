@@ -59,8 +59,11 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
   const handleMouseDown = (e) => {
     startX.current = e.clientX;
     setIsDragging(true);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+
+    if (document) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }
   };
 
   const handleTouchMove = (e) => {
@@ -95,8 +98,11 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
   const handleMouseUp = () => {
     setIsDragging(false);
     handleSwipeComplete();
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
+
+    if (document) {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    }
   };
 
   const handleMarkAsPaid = async () => {
@@ -129,23 +135,20 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
     <div className="relative w-full max-w-xs">
       <div
         ref={buttonRef}
-        className={`relative h-12 rounded-full flex items-center overflow-hidden ${
-          isPaid ? "border-2 border-brandPrimary bg-[#ECFAF2]" : "bg-[#EAE9EC]"
-        }`}
+        className={`relative h-12 rounded-full flex items-center overflow-hidden ${isPaid ? "border-2 border-brandPrimary bg-[#ECFAF2]" : "bg-[#EAE9EC]"
+          }`}
       >
         {/* Track with label */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className={`text-gray-500 text-sm font-medium transition-opacity duration-300 ${
-              isPaid ? "opacity-0" : "opacity-100 ml-10 "
-            }`}
+            className={`text-gray-500 text-sm font-medium transition-opacity duration-300 ${isPaid ? "opacity-0" : "opacity-100 ml-10 "
+              }`}
           >
             Mark as Paid
           </span>
           <span
-            className={`text-green-500 text-sm font-medium transition-opacity duration-300 ${
-              isPaid ? "opacity-100  mr-10" : "opacity-0"
-            }`}
+            className={`text-green-500 text-sm font-medium transition-opacity duration-300 ${isPaid ? "opacity-100  mr-10" : "opacity-0"
+              }`}
           >
             Marked as Paid
           </span>
@@ -154,9 +157,8 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
         {/* Swipeable knob */}
         <div
           ref={knobRef}
-          className={`absolute p-2 rounded-full bg-brandPrimary h-11 w-11 flex items-center justify-center cursor-grab active:cursor-grabbing transition-colors ${
-            isPaid ? "bg-green-500  -left-1" : ""
-          }`}
+          className={`absolute p-2 rounded-full bg-brandPrimary h-11 w-11 flex items-center justify-center cursor-grab active:cursor-grabbing transition-colors ${isPaid ? "bg-green-500  -left-1" : ""
+            }`}
           style={{
             transform: `translateX(${position}px)`,
             transition: isDragging ? "none" : "transform 0.3s ease-out",

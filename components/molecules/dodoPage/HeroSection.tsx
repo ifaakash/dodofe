@@ -62,7 +62,7 @@ const HeroSection = ({
   const [isProfileAudioPlaying, setIsProfileAudioPlaying] = useState(false);
   const profileAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Create refs for popup content to handle click outside
   const thoughtsPopupRef = useRef<HTMLDivElement>(null);
   const audioBioPopupRef = useRef<HTMLDivElement>(null);
@@ -84,6 +84,7 @@ const HeroSection = ({
         showThoughtsPopup &&
         thoughtsPopupRef.current &&
         !thoughtsPopupRef.current.contains(event.target as Node)
+        && document
       ) {
         // Don't close when clicking the thoughts icon
         const thinkingIcon = document.getElementById('thoughts-icon');
@@ -97,6 +98,7 @@ const HeroSection = ({
         addAudioBioPopup &&
         audioBioPopupRef.current &&
         !audioBioPopupRef.current.contains(event.target as Node)
+        && document
       ) {
         // Don't close when clicking the audio bio button
         const audioBioButton = document.getElementById('audio-bio-button');
@@ -106,7 +108,10 @@ const HeroSection = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    if (document) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -282,9 +287,8 @@ const HeroSection = ({
 
   return (
     <div
-      className={`flex flex-col items-center ${
-        mode === "preview" ? "gap-[10px]" : "gap-3"
-      } px-5 mt-8`}
+      className={`flex flex-col items-center ${mode === "preview" ? "gap-[10px]" : "gap-3"
+        } px-5 mt-8`}
     >
       <div className="relative flex justify-center items-center w-fit">
         <input
@@ -311,21 +315,21 @@ const HeroSection = ({
               <Image src={EmptyImage} alt="Rajveer" width={42} height={42} />
             </div>
           )}
-         {
-          mode !== "edit" && (
-            <div 
-              className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
-              onClick={playProfileAudio}
-            >
-              <Image 
-                src={isProfileAudioPlaying ? Speaker : PlayIcon} 
-                alt={isProfileAudioPlaying ? "Stop" : "Play"} 
-                width={16} 
-                height={16} 
-              />
-            </div>
-          )
-         }
+          {
+            mode !== "edit" && (
+              <div
+                className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
+                onClick={playProfileAudio}
+              >
+                <Image
+                  src={isProfileAudioPlaying ? Speaker : PlayIcon}
+                  alt={isProfileAudioPlaying ? "Stop" : "Play"}
+                  width={16}
+                  height={16}
+                />
+              </div>
+            )
+          }
         </div>
         <div className="absolute -top-10 -right-10">
           <Image
@@ -341,9 +345,8 @@ const HeroSection = ({
       </div>
 
       <div
-        className={`flex flex-col ${(state.audioBio && dodoPageDetails?.audioBio && mode !== "edit") && "pt-5"} ${
-          mode === "preview" ? "gap-5" : "gap-3"
-        } items-center`}
+        className={`flex flex-col ${(state.audioBio && dodoPageDetails?.audioBio && mode !== "edit") && "pt-5"} ${mode === "preview" ? "gap-5" : "gap-3"
+          } items-center`}
       >
         <div>
           {editPageName ? (
@@ -400,7 +403,7 @@ const HeroSection = ({
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
             </div>
-            <div 
+            <div
               className="bg-white rounded-[10px] p-4 animate-slide-up"
               ref={thoughtsPopupRef}
               onClick={handlePopupContentClick}
@@ -478,7 +481,7 @@ const HeroSection = ({
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
             </div>
-            <div 
+            <div
               className="bg-white rounded-[10px] p-4 animate-slide-up flex flex-col gap-8"
               ref={audioBioPopupRef}
               onClick={handlePopupContentClick}
@@ -499,7 +502,7 @@ const HeroSection = ({
                   className="hidden"
                   ref={audioInputRef}
                 />
-                <div 
+                <div
                   className="flex items-center flex-col gap-0.5 p-2 border-[1px] border-dashed border-[#979EAD] rounded-lg cursor-pointer"
                   onClick={() => audioInputRef.current?.click()}
                 >

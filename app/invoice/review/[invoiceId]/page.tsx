@@ -72,12 +72,14 @@ const ReviewInvoice = () => {
         setIsEdited(false);
       }
 
-      // Share functionality
-      const url = `${window.location.origin}/invoice/${invoiceId}`;
-      await navigator.clipboard.writeText(url);
+      if (window) {
+        // Share functionality
+        const url = `${window.location.origin}/invoice/${invoiceId}`;
+        await navigator.clipboard.writeText(url);
 
-      // Show success message
-      toast.success("Invoice link copied to clipboard!");
+        // Show success message
+        toast.success("Invoice link copied to clipboard!");
+      }
 
     } catch (err) {
       const error = err as Error;
@@ -299,14 +301,14 @@ const ReviewInvoice = () => {
               </div>
             </div>
           </div>
-        {
-          note && (
-            <div className="p-4 bg-white rounded-[10px] flex flex-col gap-[10px]">
-            <div className="text-xs font-semibold text-[#5E6C84]">Note</div>
-            <div className="text-xs font-medium text-[#5E6C84]">{note}</div>
-          </div>
-          )
-        }
+          {
+            note && (
+              <div className="p-4 bg-white rounded-[10px] flex flex-col gap-[10px]">
+                <div className="text-xs font-semibold text-[#5E6C84]">Note</div>
+                <div className="text-xs font-medium text-[#5E6C84]">{note}</div>
+              </div>
+            )
+          }
         </div>
 
         <div className="flex justify-center mt-20 gap-1 items-center px-5">

@@ -62,11 +62,13 @@ export default function DodoUrlMini({
 }: any) {
 
   useEffect(() => {
-    let root = document.documentElement;
+    if (document) {
+      let root = document.documentElement;
 
-    borderColor && root.style.setProperty("--border-color", borderColor);
-    textColor && root.style.setProperty("--text-color", textColor);
-    cardBg && root.style.setProperty("--card-bg", cardBg);
+      borderColor && root.style.setProperty("--border-color", borderColor);
+      textColor && root.style.setProperty("--text-color", textColor);
+      cardBg && root.style.setProperty("--card-bg", cardBg);
+    }
   }, [mainBgTheme, textColor, borderColor, cardBg]);
 
   return (
