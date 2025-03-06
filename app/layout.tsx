@@ -2,7 +2,7 @@
 import "./styles/globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import mixpanel from "mixpanel-browser";
 import { trackEvent } from "@utils/index";
 import { ReduxProvider } from "store/StoreProvider";
@@ -13,6 +13,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <html lang="en">
       <head>
