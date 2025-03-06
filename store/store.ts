@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import invoiceReducer from "./slice/invoiceSlice";
 import dodoPageReducer from "./slice/dodoPageSlice";
 import blocksReducer from "./slice/blocksSlice";
+import loaderReducer from "./slice/loaderSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
@@ -10,6 +11,7 @@ const rootReducer = combineReducers({
   invoice: invoiceReducer,
   dodoPage: dodoPageReducer,
   blocks: blocksReducer,
+  loader: loaderReducer,
 });
 
 const persistConfig = {

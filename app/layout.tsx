@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import mixpanel from "mixpanel-browser";
 import { trackEvent } from "@utils/index";
 import { ReduxProvider } from "store/StoreProvider";
+import CircleLoader from "components/atoms/Loaders/CircleLoader";
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
       </head>
       <body>
         <ReduxProvider>
+          <CircleLoader />
           {children}
           <ToastContainer
             position="top-right"

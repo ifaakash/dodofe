@@ -69,7 +69,8 @@ export const BLOCKS = {
 export const STORAGE_CONSTANTS = {
   TOKEN_SESSION_KEY: 'token',
   MOBILE: 'mobile',
-  userId: 'userId'
+  userId: 'userId',
+  hasSeenSplash: 'hasSeenSplash'
 }
 
 export const ROUTE_TYPE = {

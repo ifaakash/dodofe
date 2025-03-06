@@ -74,17 +74,27 @@ export default function Home() {
 
     // Splash screen animation
     useEffect(() => {
-        const splashTimer = setTimeout(() => {
-            setIsFadingOut(true);
-            setTimeout(() => {
-                setShowSplashScreen(false);
-                setTimeout(() => {
-                    setMainContentVisible(true);
-                }, 30);
-            }, 300);
-        }, 2000);
+        const hasSeenSplash = sessionStorage.getItem(STORAGE_CONSTANTS.hasSeenSplash);
 
-        return () => clearTimeout(splashTimer);
+        if (!hasSeenSplash) {
+            const splashTimer = setTimeout(() => {
+                setIsFadingOut(true);
+                setTimeout(() => {
+                    setShowSplashScreen(false);
+                    setTimeout(() => {
+                        setMainContentVisible(true);
+                    }, 30);
+                }, 300);
+            }, 2000);
+
+            // Set the flag in session storage
+            sessionStorage.setItem(STORAGE_CONSTANTS.hasSeenSplash, "true");
+
+            return () => clearTimeout(splashTimer);
+        } else {
+            setShowSplashScreen(false);
+            setMainContentVisible(true);
+        }
     }, []);
 
 

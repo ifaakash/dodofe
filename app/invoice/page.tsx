@@ -6,26 +6,36 @@ import { getUserDetails } from "api";
 import { userDetailsProps } from "types";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
-
-
-
+import { useDispatch } from "react-redux";
+import { showLoader, hideLoader } from "store/slice/loaderSlice";
 
 const Invoice = () => {
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || '';
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getUserDetails(userId).then((res) => {
-      setUserDetails(res?.user);
-    })
-  }, [])
+    const fetchUserDetails = async () => {
+      dispatch(showLoader()); // Show the loader
+      try {
+        const res = await getUserDetails(userId);
+        setUserDetails(res?.user);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      } finally {
+        dispatch(hideLoader()); // Hide the loader
+      }
+    };
+
+    fetchUserDetails();
+  }, [userId, dispatch]);
 
   return (
     <div>
       {!userDetails || userDetails.invoices.length < 1 ? (
-        <InvoiceOnboardingScreen/>
+        <InvoiceOnboardingScreen />
       ) : (
-        <InvoiceDashboard userDetails={userDetails}/>
+        <InvoiceDashboard userDetails={userDetails} />
       )}
     </div>
   );
