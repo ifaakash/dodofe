@@ -35,10 +35,6 @@ export const routeArray = {
         type: ROUTE_TYPE.PRIVATE,
         restricted: false,
     },
-    [ROUTE_CONSTANTS.ERROR]: {
-        type: ROUTE_TYPE.PUBLIC,
-        restricted: false,
-    },
     [ROUTE_CONSTANTS.LOGIN]: {
         type: ROUTE_TYPE.PUBLIC,
         restricted: true,
