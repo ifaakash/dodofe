@@ -53,8 +53,10 @@ export default function Home() {
     useEffect(() => {
         setIsMounted(true);
 
+        let handleScroll: any;
+
         if (window) {
-            const handleScroll = () => {
+            handleScroll = () => {
                 const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
 
                 console.log(scrollProgress);
