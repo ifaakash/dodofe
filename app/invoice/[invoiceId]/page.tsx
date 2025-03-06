@@ -9,29 +9,41 @@ import { getInvoiceById } from "api";
 import { InvoiceProps } from "../../../types";
 import { formatCurrency } from "@utils/helperFunctions";
 import dynamic from "next/dynamic";
+import { useDispatch } from "react-redux";
+import { showLoader, hideLoader } from "store/slice/loaderSlice"; // Adjust the import path as needed
+import ErrorPage from "@components/molecules/ErrorPage"; // Import the error page
+import router from "next/router";
+import { Header } from "@components/molecules/Header";
 
-const CircleLoader = dynamic(() => import("@components/atoms/Loaders/CircleLoader"), { ssr: false });
 const PreviewInvoice = () => {
   const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState<InvoiceProps | null>(null);
+  const [error, setError] = useState<string | null>(null); // Add error state
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
+      dispatch(showLoader(true)); // Show the loader with overlay
       try {
         const response = await getInvoiceById(invoiceId);
         setInvoice(response.invoice);
       } catch (error) {
         console.error("Failed to fetch invoice:", error);
+        setError("Failed to load invoice data."); // Set error message
+      } finally {
+        dispatch(hideLoader()); // Hide the loader
       }
     };
 
     if (invoiceId) fetchInvoiceData();
-  }, [invoiceId]);
+  }, [invoiceId, dispatch]);
+
+  if (error) {
+    return <ErrorPage message={error} />; // Render error page if there's an error
+  }
 
   if (!invoice) {
-    return (
-      <CircleLoader />
-    );
+    return;
   }
 
   // Handling both cases (full details vs. only IDs)
@@ -41,10 +53,13 @@ const PreviewInvoice = () => {
     "recipientDetails" in invoice ? invoice.recipientDetails : null;
   const bankDetails = "bankDetails" in invoice ? invoice.bankDetails : null;
 
+
+
   return (
-    <div className="bg-[#EAE9EC]">
+    <div className="bg-[#D8D6DC]">
+      <Header />
       <div className="bg-[#D8D6DC] md:h-64 w-full lg:px-[280px] px-0">
-        <div className="py-8 flex justify-center">
+        <div className="py-6 flex justify-center">
           <div className="flex flex-col gap-1">
             <h1 className="uppercase font-bold text-[22px] text-center">
               Invoice

@@ -3,6 +3,7 @@ import { SEPARATOR } from "./constants";
 import cx from "classnames";
 import { ROUTE_CONSTANTS } from "@utils/constants";
 import Router from "next/navigation";
+import LeftArrow from "public/icons/leftArrow.svg";
 
 import lineSeperator from "public/icons/line.svg";
 import solidLineSeperator from "public/icons/solidLine.svg";

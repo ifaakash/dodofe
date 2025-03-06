@@ -136,7 +136,6 @@ export default function Coins() {
                     alt="back arrow"
                     className="ml-4"
                     onClick={() => {
-                        console.log('back')
                         router.back()
                     }}
                 />

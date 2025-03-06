@@ -16,14 +16,15 @@ const Invoice = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      dispatch(showLoader()); // Show the loader
+      dispatch(showLoader());
+
       try {
         const res = await getUserDetails(userId);
         setUserDetails(res?.user);
       } catch (error) {
         console.error("Error fetching user details:", error);
       } finally {
-        dispatch(hideLoader()); // Hide the loader
+        dispatch(hideLoader());
       }
     };
 

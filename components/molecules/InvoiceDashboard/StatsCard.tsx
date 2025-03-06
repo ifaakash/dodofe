@@ -69,18 +69,17 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
     fetchStatsData();
   }, [timePeriod, userDetails]);
 
-  
+
   return (
-    <div className="pt-5 px-5 flex flex-col gap-2">
+    <div className="px-5 flex flex-col gap-2">
       <div className="bg-white rounded-xl p-4 flex flex-col gap-4">
         <div className="w-full flex border-2 rounded-lg">
           {timePeriods.map((time, index) => (
             <button
               key={index}
               onClick={() => setTimePeriod(time.value)}
-              className={`p-2 w-full ${
-                timePeriod === time.value ? "bg-[#EAE9EC] font-semibold" : ""
-              }`}
+              className={`p-2 w-full ${timePeriod === time.value ? "bg-[#EAE9EC] font-semibold" : ""
+                }`}
             >
               {time.title}
             </button>
@@ -89,9 +88,9 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
 
         <div className="flex flex-col gap-3">
           <div className="flex justify-center relative">
-            <HalfDonutChart 
-              paidAmount={userInvoicesData?.paidAmount ?? 0} 
-              pendingAmount={userInvoicesData?.pendingAmount ?? 0} 
+            <HalfDonutChart
+              paidAmount={userInvoicesData?.paidAmount ?? 0}
+              pendingAmount={userInvoicesData?.pendingAmount ?? 0}
             />
             <div className="flex flex-col gap-0.5 absolute bottom-0 items-center">
               <div className="text-[#5E6C84] text-xs font-medium">Get paid</div>

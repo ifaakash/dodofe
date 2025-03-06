@@ -18,9 +18,9 @@ const loaderSlice = createSlice({
             state.isVisible = true;
             state.showOverlay = action.payload;
         },
-        hideLoader: (state) => {
+        hideLoader: (state, action: PayloadAction<boolean>) => {
             state.isVisible = false;
-            state.showOverlay = false;
+            state.showOverlay = action.payload;
         },
     },
 });

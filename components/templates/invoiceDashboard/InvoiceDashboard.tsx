@@ -10,6 +10,7 @@ import RunningGirl from "public/assets/RunningGirl.svg";
 import StatsCard from "@components/molecules/InvoiceDashboard/StatsCard";
 import { getAllInvoices } from "api";
 import { userDetailsProps, InvoiceProps } from "types";
+import { Header } from "@components/molecules/Header";
 
 interface DashboardProps {
   userDetails: userDetailsProps;
@@ -44,8 +45,9 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
   return (
     <div className="flex flex-col">
       <div className="bg-[#D8D6DC] h-48 w-full flex flex-col gap-6 h-full">
-        <div className="pt-12">
-          <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">
+        <Header title="Invoice Dashboard" />
+
+        {/* <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">
             <div className="flex gap-[10px] items-center">
               <Link href={"/"} className="p-2">
                 <Image src={LeftArrow} width={20} alt="left arrow" />
@@ -56,9 +58,9 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
               <Image src={HelpIcon} width={20} alt="help icon" />
               <div>Help</div>
             </div>
-          </div>
-          <StatsCard userDetails={userDetails} />
-        </div>
+          </div> */}
+
+        <StatsCard userDetails={userDetails} />
 
         <div className="px-5 flex flex-col gap-3">
           <div className="flex justify-between items-center">
