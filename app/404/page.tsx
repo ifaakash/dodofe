@@ -8,3 +8,7 @@ export default function ErrorComponent() {
     </div>
   );
 }
+
+export async function getServerSideProps() {
+  return { props: {} };
+}
