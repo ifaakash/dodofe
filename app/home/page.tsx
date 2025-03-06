@@ -74,27 +74,27 @@ export default function Home() {
 
     // Splash screen animation
     useEffect(() => {
-        // const hasSeenSplash = sessionStorage.getItem(STORAGE_CONSTANTS.hasSeenSplash);
+        const hasSeenSplash = sessionStorage.getItem(STORAGE_CONSTANTS.hasSeenSplash);
 
-        // if (!hasSeenSplash) {
-        //     const splashTimer = setTimeout(() => {
-        //         setIsFadingOut(true);
-        //         setTimeout(() => {
-        //             setShowSplashScreen(false);
-        //             setTimeout(() => {
-        //                 setMainContentVisible(true);
-        //             }, 30);
-        //         }, 300);
-        //     }, 2000);
+        if (!hasSeenSplash) {
+            const splashTimer = setTimeout(() => {
+                setIsFadingOut(true);
+                setTimeout(() => {
+                    setShowSplashScreen(false);
+                    setTimeout(() => {
+                        setMainContentVisible(true);
+                    }, 30);
+                }, 300);
+            }, 2000);
 
-        //     // Set the flag in session storage
-        //     sessionStorage.setItem(STORAGE_CONSTANTS.hasSeenSplash, "true");
+            // Set the flag in session storage
+            sessionStorage.setItem(STORAGE_CONSTANTS.hasSeenSplash, "true");
 
-        //     return () => clearTimeout(splashTimer);
-        // } else {
-        //     setShowSplashScreen(false);
-        //     setMainContentVisible(true);
-        // }
+            return () => clearTimeout(splashTimer);
+        } else {
+            setShowSplashScreen(false);
+            setMainContentVisible(true);
+        }
     }, []);
 
 
@@ -216,7 +216,7 @@ export default function Home() {
         <Screen>
             {showSplashScreen ? (
                 <div className={cx(isFadingOut && styles.fadeout)}>
-                    {/* <SplashScreen /> */}
+                    <SplashScreen />
                 </div>
             ) : (
                 <div className={cx("pt-12 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}

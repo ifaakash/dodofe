@@ -5,7 +5,6 @@ const nextConfig = {
     },
     reactStrictMode: true,
     output: "standalone", // Supports dynamic pages
-    experimental: { appDir: true },
 };
 
 module.exports = nextConfig;
