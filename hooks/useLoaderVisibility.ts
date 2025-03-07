@@ -1,4 +1,6 @@
-import { useSelector } from 'react-redux';
+"use client";
+
+import { useSelector } from "react-redux";
 
 const useLoaderVisibility = () => {
     return useSelector((state: any) => state.loader);
