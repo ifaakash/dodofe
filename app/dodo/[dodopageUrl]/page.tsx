@@ -15,18 +15,18 @@ import { getDodoPageByURL } from "api";
 import { useState, useEffect } from "react";
 
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  DragOverlay,
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    MouseSensor,
+    TouchSensor,
+    DragOverlay,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useSensors, useSensor } from "@dnd-kit/core";
 import PollBlock from "@components/molecules/dodoPage/blocks/PollBlock";
@@ -206,17 +206,17 @@ const DodoPageDashboard = () => {
             case "LINK":
                 content =
                     mode === "edit" ? (
-                        <div onClick={() => handleNavigate(block)}>
+                        <div key={block.id} onClick={() => handleNavigate(block)}>
                             <LinkBlock mode={mode} block={block} />
                         </div>
                     ) : (
-                        <LinkBlock mode={mode} block={block} />
+                        <LinkBlock key={block.id} mode={mode} block={block} />
                     );
                 break;
             case "POLL":
                 content =
                     mode === "edit" ? (
-                        <Link href={`/dodo/${url}/editBlock/${block.id}`}>
+                        <Link key={block.id} href={`/dodo/${url}/editBlock/${block.id}`}>
                             <PollBlock
                                 mode={mode}
                                 blockData={block.blockData}
@@ -225,6 +225,7 @@ const DodoPageDashboard = () => {
                         </Link>
                     ) : (
                         <PollBlock
+                            key={block.id}
                             mode={mode}
                             blockData={block.blockData}
                             id={block.id as string}
@@ -234,7 +235,7 @@ const DodoPageDashboard = () => {
             case "HEADING":
                 content =
                     mode === "edit" ? (
-                        <div onClick={() => handleNavigate(block)}>
+                        <div key={block.id} onClick={() => handleNavigate(block)}>
                             <HeadingBlock
                                 title={block.blockData?.title}
                                 mode={mode}
@@ -243,6 +244,7 @@ const DodoPageDashboard = () => {
                         </div>
                     ) : (
                         <HeadingBlock
+                            key={block.id}
                             title={block.blockData?.title}
                             mode={mode}
                             id={block.id as string}
@@ -252,7 +254,7 @@ const DodoPageDashboard = () => {
             case "SEPARATOR":
                 content =
                     mode === "edit" ? (
-                        <div onClick={() => handleNavigate(block)}>
+                        <div key={block.id} onClick={() => handleNavigate(block)}>
                             <SeparatorBlock
                                 type={block.blockData?.separatorType}
                                 mode={mode}
@@ -261,6 +263,7 @@ const DodoPageDashboard = () => {
                         </div>
                     ) : (
                         <SeparatorBlock
+                            key={block.id}
                             type={block.blockData?.separatorType}
                             mode={mode}
                             id={block.id as string}
@@ -269,7 +272,7 @@ const DodoPageDashboard = () => {
                 break;
             case "PRODUCT":
                 content = (
-                    <div className="w-full">
+                    <div key={block.id} className="w-full">
                         {mode === "edit" ? (
                             <div onClick={() => handleNavigate(block)}>
                                 <ProductBlock block={block} mode={mode} />
@@ -334,11 +337,11 @@ const DodoPageDashboard = () => {
                             <DragOverlay>
                                 {activeId
                                     ? renderBlock(
-                                          blocks.find(
-                                              (block) => block.id === activeId
-                                          ),
-                                          0
-                                      )
+                                        blocks.find(
+                                            (block) => block.id === activeId
+                                        ),
+                                        0
+                                    )
                                     : null}
                             </DragOverlay>
                         </DndContext>
