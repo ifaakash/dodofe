@@ -39,6 +39,10 @@ export const routeArray = {
         type: ROUTE_TYPE.PUBLIC,
         restricted: true,
     },
+    ["landing/dodo"]: {
+        type: ROUTE_TYPE.PUBLIC,
+        restricted: false,
+    },
     [ROUTE_CONSTANTS.INVOICE + ROUTE_CONSTANTS.SLASH + ROUTE_CONSTANTS.SENDER]: {
         type: ROUTE_TYPE.PRIVATE,
         restricted: true,
