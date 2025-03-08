@@ -26,7 +26,7 @@ import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
 import { isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
-import { getSidebarUI } from "@utils/uiUtils";
+import Sidebar from "@components/molecules/Sidebar";
 import CtaSection from "@components/molecules/CtaSection";
 import Card from './Card';
 import CardContent from './CardContent';
@@ -249,7 +249,6 @@ export default function Coins() {
                     </div>
                 </div>
             </div>
-            {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
-        </Screen>
+            {isMounted && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}        </Screen>
     );
 }

@@ -28,10 +28,11 @@ import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
 import { isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
-import { Card, getSidebarUI } from "@utils/uiUtils";
+import { Card } from "@utils/uiUtils";
 import CtaSection from "@components/molecules/CtaSection";
 import HomeFooter from "./homeFooter";
 import Link from "next/link";
+import Sidebar from "@components/molecules/Sidebar";
 
 import dynamic from "next/dynamic";
 
@@ -59,8 +60,6 @@ export default function Home() {
             handleScroll = () => {
                 const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
 
-                console.log(scrollProgress);
-                // Adjust the blur dynamically (max blur of 10px)
                 let blurValue = Math.min((scrollProgress + 10) / 10, 10);
 
                 if (scrollProgress === 0) {
@@ -226,10 +225,19 @@ export default function Home() {
             ) : (
                 <div className={cx("pt-12 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
                     style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed' }}>
-                    <div className="fixed w-full" style={{
-                        filter: `blur(${blurAmount}px)`,
-                        transition: 'filter 0.15s ease-out',
-                    }}>
+                    <div className="fixed w-full"
+                        style={{
+                            filter: `blur(${blurAmount}px)`,
+                            transition: 'filter 0.15s ease-out',
+                        }}
+                        onClick={(e) => {
+                            if (blurAmount > 0) {
+                                e.stopPropagation(); // Prevent inside clicks
+                                setBlurAmount(0);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        }}
+                    >
                         <div className="flex">
                             <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
                                 {!userId && (
@@ -379,7 +387,7 @@ export default function Home() {
 
                     </div>
                     <HomeFooter />
-                    {isMounted && getSidebarUI({ isSidebarOpen, toggleSidebar })}
+                    {isMounted && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
                 </div>
             )}
         </Screen>

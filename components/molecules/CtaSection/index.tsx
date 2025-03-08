@@ -105,7 +105,10 @@ const CtaSection = ({
             maxHeight: "40px",
             padding: "0px 20px",
           }}
-          onClick={onButtonClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            onButtonClick();
+          }}
         >
           <span className="text-xs font-normal whitespace-nowrap">{buttonLabel}</span>
 
