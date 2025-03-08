@@ -36,9 +36,6 @@ import Sidebar from "@components/molecules/Sidebar";
 
 import dynamic from "next/dynamic";
 
-const SplashScreen = dynamic(() => import("@components/atoms/Loaders/SplashScreen"), { ssr: false });
-
-
 export default function Home() {
     const router = useRouter();
     const [userDetails, setUserDetails] = useState({} as any);
@@ -48,7 +45,6 @@ export default function Home() {
     const dodoPageDetail = userDetails?.dodoPages?.[0];
     const [isFadingOut, setIsFadingOut] = useState(false);
     const [mainContentVisible, setMainContentVisible] = useState(false);
-    const [showSplashScreen, setShowSplashScreen] = useState(true);
     const [blurAmount, setBlurAmount] = useState(0);
 
     useEffect(() => {
@@ -74,33 +70,6 @@ export default function Home() {
         }
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-
-    // Splash screen animation
-    useEffect(() => {
-        const hasSeenSplash = sessionStorage.getItem(STORAGE_CONSTANTS.hasSeenSplash);
-
-        if (!hasSeenSplash) {
-            const splashTimer = setTimeout(() => {
-                setIsFadingOut(true);
-                setTimeout(() => {
-                    setShowSplashScreen(false);
-                    setTimeout(() => {
-                        setMainContentVisible(true);
-                    }, 30);
-                }, 300);
-            }, 2000);
-
-            // Set the flag in session storage
-            sessionStorage.setItem(STORAGE_CONSTANTS.hasSeenSplash, "true");
-
-            return () => clearTimeout(splashTimer);
-        } else {
-            setShowSplashScreen(false);
-            setMainContentVisible(true);
-        }
-    }, []);
-
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -218,178 +187,176 @@ export default function Home() {
 
     return (
         <Screen>
-            {showSplashScreen ? (
-                <div className={cx(isFadingOut && styles.fadeout)}>
-                    <SplashScreen />
-                </div>
-            ) : (
-                <div className={cx("pt-12 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
-                    style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed' }}>
-                    <div className="fixed w-full"
-                        style={{
-                            filter: `blur(${blurAmount}px)`,
-                            transition: 'filter 0.15s ease-out',
-                        }}
-                        onClick={(e) => {
-                            if (blurAmount > 0) {
-                                e.stopPropagation(); // Prevent inside clicks
-                                setBlurAmount(0);
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }
-                        }}
-                    >
-                        <div className="flex">
-                            <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
-                                {!userId && (
-                                    <Image
-                                        height={50}
-                                        width={220}
-                                        src={welcomeToDodo}
-                                        alt="welcome"
-                                    />
-                                )}
 
-                                {userId && (
-                                    <div className="ml-4" style={{ transform: "rotate(180deg)" }}>
-                                        <Image
-                                            height={24}
-                                            width={24}
-                                            src={sideBarIcon}
-                                            alt="side bar"
-                                            onClick={toggleSidebar}
-                                            data-sidebar-toggle
-                                            className="cursor-pointer"
-                                        />
-                                    </div>
-                                )}
-                            </div>
+            <div className={cx("pt-12 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
+                style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed' }}>
+                <div className="fixed w-full"
+                    style={{
+                        filter: `blur(${blurAmount}px)`,
+                        transition: 'filter 0.15s ease-out',
+                    }}
+                    onClick={(e) => {
+                        if (blurAmount > 0) {
+                            e.stopPropagation(); // Prevent inside clicks
+                            setBlurAmount(0);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }}
+                >
+                    <div className="flex">
+                        <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
+                            {!userId && (
+                                <Image
+                                    height={50}
+                                    width={220}
+                                    src={welcomeToDodo}
+                                    alt="welcome"
+                                />
+                            )}
 
                             {userId && (
-                                <div className="flex row justify-between w-full ml-2">
-                                    <p>
-                                        Hi,{" "}
-                                        <span className="font-bold">
-                                            {dodoPageDetail?.name?.split(" ")[0]}
-                                        </span>
-                                    </p>
-
-                                    <div
-                                        className="flex rounded-xl bg-white mr-4 items-center justify-between px-2"
-                                        style={{ height: 30, width: 80 }}
-                                        onClick={handleCoinsNavigation}
-                                    >
-                                        <Image
-                                            className="flex-shrink-0"
-                                            height={18}
-                                            width={22}
-                                            src={dodoCoinIcon}
-                                            alt="dodo coin"
-                                        />
-                                        <span className="flex-1 text-center font-bold">
-                                            {userDetails?.dodoCoins ?? 0}
-                                        </span>
-                                    </div>
+                                <div className="ml-4" style={{ transform: "rotate(180deg)" }}>
+                                    <Image
+                                        height={24}
+                                        width={24}
+                                        src={sideBarIcon}
+                                        alt="side bar"
+                                        onClick={toggleSidebar}
+                                        data-sidebar-toggle
+                                        className="cursor-pointer"
+                                    />
                                 </div>
                             )}
                         </div>
 
-                        {isEmpty(userId) ? (
-                            <div className="mx-4">
-                                <CtaSection
-                                    onButtonClick={() =>
-                                        gotoLinksPage(dodoPageDetail?.url)
-                                    }
-                                />
+                        {userId && (
+                            <div className="flex row justify-between w-full ml-2">
+                                <p>
+                                    Hi,{" "}
+                                    <span className="font-bold">
+                                        {dodoPageDetail?.name?.split(" ")[0]}
+                                    </span>
+                                </p>
 
                                 <div
-                                    className={cx(
-                                        "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
-                                        styles.shimmerBg
-                                    )}
-                                    onClick={() => gotoLinksPage(dodoPageDetail?.url)}
+                                    className="flex rounded-xl bg-white mr-4 items-center justify-between px-2"
+                                    style={{ height: 30, width: 80 }}
+                                    onClick={handleCoinsNavigation}
                                 >
-                                    <div className="flex text-sm">
-                                        Login to get free
-                                        <Image
-                                            className="mx-1"
-                                            height={18}
-                                            width={22}
-                                            src={dodoCoinIcon}
-                                            alt="dodo coin"
-                                        />
-                                        500 dodo coins
-                                    </div>
-
                                     <Image
-                                        width={24}
-                                        height={24}
-                                        src={gotoIcon}
-                                        alt="creators"
+                                        className="flex-shrink-0"
+                                        height={18}
+                                        width={22}
+                                        src={dodoCoinIcon}
+                                        alt="dodo coin"
                                     />
+                                    <span className="flex-1 text-center font-bold">
+                                        {userDetails?.dodoCoins ?? 0}
+                                    </span>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="mx-4 py-4">{getUserCard()}</div>
                         )}
                     </div>
-                    <div
-                        className={cx(
-                            "w-full px-4 rounded-t-[32px] bg-white",
-                            styles.lowerDiv
-                        )}
-                    >
-                        <Image
-                            height={53}
-                            width={251}
-                            src={otherFeatures}
-                            alt="user profile"
-                            className="mx-auto mb-6 mt-3"
-                        />
 
-                        <div className="absolute-center flex-col">
+                    {isEmpty(userId) ? (
+                        <div className="mx-4">
                             <CtaSection
-                                onClick={handleInvoiceNavigation}
-                                bgColor="var(--yellow)"
-                                img={invoiceIcon}
-                                title="Invoice"
-                                description="Create stunning digital invoices in a few seconds"
+                                onButtonClick={() =>
+                                    gotoLinksPage(dodoPageDetail?.url)
+                                }
                             />
 
-                            <div className="flex flex-row justify-between w-full gap-x-4 my-6">
-                                <Card
-                                    title="Engagement Calculator"
-                                    description="Calculate your instagram engagement"
-                                    icon={engagementCalc}
-                                    bgColor="var(--neon-purple)"
-                                    bgColorGo="var(--neon-blue)"
-                                />
-                                <Card
-                                    title="Price Estimator"
-                                    description="Calculate your instagram price"
-                                    icon={priceCalc}
-                                    bgColor="var(--neon-rose)"
-                                    bgColorGo="var(--neon-yellow)"
+                            <div
+                                className={cx(
+                                    "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
+                                    styles.shimmerBg
+                                )}
+                                onClick={() => gotoLinksPage(dodoPageDetail?.url)}
+                            >
+                                <div className="flex text-sm">
+                                    Login to get free
+                                    <Image
+                                        className="mx-1"
+                                        height={18}
+                                        width={22}
+                                        src={dodoCoinIcon}
+                                        alt="dodo coin"
+                                    />
+                                    500 dodo coins
+                                </div>
+
+                                <Image
+                                    width={24}
+                                    height={24}
+                                    src={gotoIcon}
+                                    alt="creators"
                                 />
                             </div>
                         </div>
+                    ) : (
+                        <div className="mx-4 py-4">{getUserCard()}</div>
+                    )}
+                </div>
+                <div
+                    className={cx(
+                        "w-full px-4 rounded-t-[32px] bg-white",
+                        styles.lowerDiv
+                    )}
+                >
+                    <Image
+                        height={53}
+                        width={251}
+                        src={otherFeatures}
+                        alt="user profile"
+                        className="mx-auto mb-6 mt-3"
+                    />
 
+                    <div className="absolute-center flex-col">
                         <CtaSection
-                            bgColor="var(--warm-green)"
-                            img={mediakitIcon}
-                            title="MediaKit"
-                            description="A digital resume for you"
-                            buttonLabel="Coming soon..."
+                            onClick={handleInvoiceNavigation}
+                            bgColor="var(--yellow)"
+                            img={invoiceIcon}
+                            title="Invoice"
+                            description="Create stunning digital invoices in a few seconds"
                         />
 
-                        <span className="absolute-center text-sm mt-4">
-                            more coming soon.
-                        </span>
-
+                        <div className="flex flex-row justify-between w-full gap-x-4 my-6">
+                            <Card
+                                title="Engagement Calculator"
+                                description="Calculate your instagram engagement"
+                                icon={engagementCalc}
+                                bgColor="var(--neon-purple)"
+                                bgColorGo="var(--neon-blue)"
+                                className="flex-1 max-w-[calc(50%-0.5rem)]"
+                            />
+                            <Card
+                                title="Price Estimator"
+                                description="Calculate your instagram price"
+                                icon={priceCalc}
+                                bgColor="var(--neon-rose)"
+                                bgColorGo="var(--neon-yellow)"
+                                className="flex-1 max-w-[calc(50%-0.5rem)]"
+                            />
+                        </div>
                     </div>
-                    <HomeFooter />
-                    {isMounted && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
+
+                    <CtaSection
+                        bgColor="var(--warm-green)"
+                        img={mediakitIcon}
+                        title="MediaKit"
+                        description="A digital resume for you"
+                        buttonLabel="Coming soon..."
+                    />
+
+                    <span className="absolute-center text-sm mt-4">
+                        more coming soon.
+                    </span>
+
                 </div>
-            )}
+                <HomeFooter />
+                {isMounted && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
+            </div>
+
         </Screen>
     );
 }

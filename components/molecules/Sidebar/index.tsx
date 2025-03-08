@@ -1,6 +1,15 @@
 "use client"
 import { ROUTE_CONSTANTS } from 'utils/constants';
 import React from 'react';
+import Image from 'next/image';
+
+// Import icons
+import DodoPageIcon from 'public/assets/file.svg';
+import digiInvoiceIcon from 'public/assets/file-text-edit.svg';
+import feedbackIcon from 'public/assets/note-list-check.svg';
+import starIcon from 'public/icons/star.svg';
+import contactUsIcon from 'public/icons/EnvelopeSimple.svg';
+import HelpIcon from 'public/icons/whatsapp.svg';
 
 const Sidebar = ({
     isSidebarOpen,
@@ -17,7 +26,8 @@ const Sidebar = ({
 
     const menuItems = [
         {
-            text: "Home",
+            text: "DodoPage",
+            icon: DodoPageIcon,
             action: () => {
                 window.location.href = ROUTE_CONSTANTS.HOME;
                 toggleSidebar();
@@ -25,7 +35,8 @@ const Sidebar = ({
             delay: 0,
         },
         {
-            text: "Profile",
+            text: "Digi-Invoice",
+            icon: digiInvoiceIcon,
             action: () => {
                 window.location.href = ROUTE_CONSTANTS.LINKS;
                 toggleSidebar();
@@ -33,9 +44,45 @@ const Sidebar = ({
             delay: 50,
         },
         {
+            text: "Your Feedback",
+            icon: feedbackIcon,
+            action: () => {
+                console.log("Navigate to Settings");
+                toggleSidebar();
+            },
+            delay: 100,
+        },
+        {
+            text: "Motivate us",
+            icon: starIcon,
+            action: () => {
+                console.log("Navigate to Notifications");
+                toggleSidebar();
+            },
+            delay: 150,
+        },
+        {
+            text: "Constact us",
+            icon: contactUsIcon,
+            action: () => {
+                console.log("Navigate to Help");
+                toggleSidebar();
+            },
+            delay: 200,
+        },
+        {
+            text: "Help",
+            icon: HelpIcon,
+            action: () => {
+                console.log("Navigate to Help");
+                toggleSidebar();
+            },
+            delay: 200,
+        },
+        {
             text: "Logout",
             action: handleLogout,
-            delay: 100,
+            delay: 250,
             bottom: true
         },
     ];
@@ -72,7 +119,7 @@ const Sidebar = ({
                             className="text-2xl"
                             style={{ fontFamily: "Clash Display" }}
                         >
-                            Menu
+
                         </h2>
                         <button
                             onClick={toggleSidebar}
@@ -82,17 +129,22 @@ const Sidebar = ({
                             ×
                         </button>
                     </div>
-                    <div className="flex-1 pt-8 overflow-y-auto">
+                    <div className="flex-1 pt-2 overflow-y-auto">
                         {menuItems.slice(0, -1).map((item, index) => (
                             <div
                                 key={index}
-                                className="py-4 px-4 cursor-pointer text-xl"
+                                className="py-4 px-4 cursor-pointer text-xl flex items-center"
                                 onClick={item.action}
                                 style={{
                                     fontFamily: "Clash Display",
                                 }}
                             >
-                                {item.text}
+                                {item.icon && (
+                                    <span className="mr-2">
+                                        <Image src={item.icon} alt={item.text} width={24} height={24} />
+                                    </span>
+                                )}
+                                <span className="text-base">{item.text}</span>
                             </div>
                         ))}
                     </div>
@@ -100,12 +152,16 @@ const Sidebar = ({
                     {/* Logout Button at the Bottom */}
                     <div className="mt-auto">
                         <div
-                            className="py-4 px-4 cursor-pointer text-xl"
+                            className="py-4 px-4 cursor-pointer text-xl flex items-center"
                             onClick={logoutItem.action}
                             style={{
                                 fontFamily: "Clash Display",
                             }}
                         >
+                            {/* <span className="mr-2">
+                                <Image src={logoutItem.icon} alt={logoutItem.text} width={24} height={24} />
+                            </span> */}
+                            <span className="mr-2">👋</span>
                             {logoutItem.text}
                         </div>
                     </div>

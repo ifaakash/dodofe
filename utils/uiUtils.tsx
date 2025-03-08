@@ -83,9 +83,9 @@ export const getBadgeUI = (badgeText: string, badgeColor: string) => {
     )
 }
 
-export function Card({ title, description, icon, bgColor, bgColorGo }) {
+export function Card({ title, description, icon, bgColor, bgColorGo, className }) {
     return (
-        <div className={`rounded-2xl p-3 h-80 shadow-md flex flex-col justify-between`} style={{ backgroundColor: bgColor, minWidth: '162px', maxWidth: '162px' }}>
+        <div className={`rounded-2xl p-3 h-80 shadow-md flex flex-col justify-between ${className}`} style={{ backgroundColor: bgColor }}>
             <div>
                 <h1 className="text-lg text-left font-bold mb-1 leading-[16px] mb-4">{title}</h1>
 
