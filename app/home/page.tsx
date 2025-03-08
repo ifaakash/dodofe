@@ -300,7 +300,8 @@ export default function Home() {
                 <div
                     className={cx(
                         "w-full px-4 rounded-t-[32px] bg-white",
-                        styles.lowerDiv
+                        styles.lowerDiv,
+                        !userId && 'mt-24'
                     )}
                 >
                     <Image
