@@ -48,10 +48,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// export async function getServerSideProps() {
-
-//   const mixpanelId = process.env.MIXPANEL_ID;
-
-//   return { props: { mixpanelId } }
-// }

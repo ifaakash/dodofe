@@ -164,6 +164,7 @@ export default function Home() {
             <div>
                 {userDetails.dodoPages.map((page: any) => (
                     <CtaSection
+                        key={page.id}
                         title={dodoPageDetail?.name || "Dodo user"}
                         description={dodoPageDetail?.url}
                         buttonBgColor="var(--pink)"

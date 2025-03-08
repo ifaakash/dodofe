@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import DragIcon from "public/icons/drag.svg";
 import { useSortable } from "@dnd-kit/sortable";
+import DodoIcon from "public/icons/dodoIconName.svg";
 
 interface ProductBlockProps {
   block: any;
@@ -24,7 +25,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
       : undefined,
     transition,
   };
-  
+
   const displayImage = () => {
     if (block.isNew || block.isUpdated) {
       if (block?.blockData?.productImage?.name) {
@@ -47,12 +48,16 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
       <div className="flex flex-col items-center space-y-3">
         {block.blockData.productImage && (
           <div className="relative w-full h-[130px]">
-            <Image
-              src={displayImage()}
-              fill
-              alt={block.blockData?.title}
-              className="rounded-lg object-cover"
-            />
+            {displayImage() ? (
+              <Image
+                src={displayImage() || DodoIcon}
+                fill
+                alt={block.blockData?.title || "Product image"}
+                className="rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-full h-[130px] bg-gray-200 rounded-lg"></div>
+            )}
           </div>
         )}
 
