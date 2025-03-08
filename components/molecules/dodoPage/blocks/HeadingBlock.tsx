@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import DragIcon from "public/icons/drag.svg";
 import Image from "next/image";
@@ -33,9 +34,8 @@ const HeadingBlock = ({ title, mode = "public", id }: HeadingBlockProps) => {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className={`p-2 ${
-        mode === "edit" ? "bg-white rounded-xl flex items-center gap-2" : ""
-      }`}
+      className={`p-2 ${mode === "edit" ? "bg-white rounded-xl flex items-center gap-2" : ""
+        }`}
     >
       {mode === "edit" && (
         <div {...listeners} className="cursor-grab active:cursor-grabbing">

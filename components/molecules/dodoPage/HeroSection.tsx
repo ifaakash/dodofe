@@ -41,8 +41,8 @@ const HeroSection = ({
 
   const [editPageName, setEditPageName] = useState(false);
   const [showThoughtsPopup, setShowThoughtsPopup] = useState(false);
-  const [thaughtEditMode, setThaughtEditMode] = useState(false);
-  const [thaught, setThaught] = useState("");
+  const [thoughtEditMode, setThoughtEditMode] = useState(false);
+  const [thought, setThought] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
   const [pageName, setPageName] = useState<string | null>(state.dodoPageName);
   const [addAudioBioPopup, setAddAudioBioPopup] = useState(false);
@@ -68,13 +68,13 @@ const HeroSection = ({
   const audioBioPopupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setThaught(dodoPageDetails?.thoughts);
+    setThought(dodoPageDetails?.thoughts);
     setPageName(dodoPageDetails?.name);
   }, [dodoPageDetails]);
 
   useEffect(() => {
-    setCharacterCount(thaught?.length);
-  }, [thaught]);
+    setCharacterCount(thought?.length);
+  }, [thought]);
 
   // Add click outside handler
   useEffect(() => {
@@ -129,7 +129,7 @@ const HeroSection = ({
   };
 
   const handleSubmitThought = async () => {
-    dispatch(setDodoPageThought(thaught));
+    dispatch(setDodoPageThought(thought));
     setShowThoughtsPopup(false);
   };
 
@@ -413,32 +413,32 @@ const HeroSection = ({
                   <div className="flex justify-between items-center w-full">
                     <Image src={Quote} alt="Quote" />
                     {mode === "edit" && (
-                      <div> {characterCount}/25 Characters </div>
+                      <div> {characterCount}/60 Characters </div>
                     )}
                   </div>
-                  <div>
-                    {!thaughtEditMode ? (
+                  <div className="w-80">
+                    {!thoughtEditMode ? (
                       <textarea
-                        value={thaught}
+                        value={thought ? thought : ''}
                         disabled={mode === "public" || mode === "preview"}
                         onChange={(e) => {
-                          if (e.target.value.length <= 25) {
-                            setThaught(e.target.value);
+                          if (e.target.value.length <= 60) {
+                            setThought(e.target.value);
                             e.target.style.height = "auto";
                             e.target.style.height =
                               e.target.scrollHeight + "px";
                           }
                         }}
-                        className="w-full outline-none resize-none overflow-hidden font-semibold"
+                        className="w-80 outline-none resize-none overflow-hidden font-semibold"
                         style={{ height: "auto" }}
                       />
                     ) : (
                       <div
                         className="font-semibold text-black text-center cursor-pointer"
-                        onClick={() => setThaughtEditMode(true)}
+                        onClick={() => setThoughtEditMode(true)}
                         style={{ whiteSpace: "pre-wrap" }}
                       >
-                        {thaught === "" ? thaught : "Start typing..."}
+                        {thought === "" ? thought : "Start typing..."}
                       </div>
                     )}
                   </div>

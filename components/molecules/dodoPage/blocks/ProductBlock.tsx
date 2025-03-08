@@ -1,8 +1,10 @@
+"use client"
 import React from "react";
 import Image from "next/image";
 import DragIcon from "public/icons/drag.svg";
 import { useSortable } from "@dnd-kit/sortable";
 import DodoIcon from "public/icons/dodoIconName.svg";
+import { isEmpty } from "@utils/index";
 
 interface ProductBlockProps {
   block: any;
@@ -30,10 +32,20 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
     if (block.isNew || block.isUpdated) {
       if (block?.blockData?.productImage?.name) {
         const url = URL.createObjectURL(block.blockData.productImage);
+        console.log({ url }, 1)
         return url;
       }
+
+      if (!block.blockData.productImage) {
+        return null;
+      }
+
       return block.blockData.productImage;
     } else {
+      if (!block.blockData.productImage) {
+        return null;
+      }
+
       return block.blockData.productImage;
     }
   };
@@ -48,7 +60,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
       <div className="flex flex-col items-center space-y-3">
         {block.blockData.productImage && (
           <div className="relative w-full h-[130px]">
-            {displayImage() ? (
+            {!isEmpty(displayImage()) ? (
               <Image
                 src={displayImage() || DodoIcon}
                 fill

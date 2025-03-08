@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import DragIcon from "public/icons/drag.svg";
 import Image from "next/image";
@@ -23,8 +24,8 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
   };
 
   const displayImage = () => {
-    if(block.blockData?.linkDisplayPicture){
-      if(typeof block.blockData?.linkDisplayPicture === "string"){
+    if (block.blockData?.linkDisplayPicture) {
+      if (typeof block.blockData?.linkDisplayPicture === "string") {
         return block.blockData.linkDisplayPicture;
       }
       return URL.createObjectURL(block.blockData.linkDisplayPicture);
@@ -36,7 +37,7 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
     <div
       className="p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
       ref={setNodeRef}
-      style={style}
+      style={{ ...style, height: '66px' }}
       {...attributes}
     >
       {block.blockCardSize === "SMALL" ? (
@@ -58,15 +59,17 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
             />
           )}
           <div>
-            <div className="text-sm font-medium text-[#3D4966]">
+            <div className="text-base font-semibold text-[#3D4966] mb-1">
               {block.blockData?.title}
             </div>
             {block.blockData?.badge && (
               <div
-                className="px-2 py-1 rounded-lg text-xs font-medium flex items-center w-fit"
+                className="px-3 py-1 text-xs font-medium flex items-center w-fit"
                 style={{
                   backgroundColor: BADGE_COLORS_MAP[block.blockData.badge.backgroundColor],
                   color: block.blockData.badge.color,
+                  height: '18px',
+                  borderRadius: '40px'
                 }}
               >
                 {block.blockData.badge.text}

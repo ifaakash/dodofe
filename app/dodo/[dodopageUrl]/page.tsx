@@ -5,7 +5,6 @@ import SocialLinks from "@components/molecules/dodoPage/SocialLinks";
 import React from "react";
 import styles from "./mainPage.module.css";
 import { useParams, useSearchParams } from "next/navigation";
-import ArchiveTab from "@components/molecules/dodoPage/ArchiveTab";
 import FooterBar from "@components/molecules/dodoPage/FooterBar";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { loadState } from "@utils/localStorage";
@@ -196,6 +195,8 @@ const DodoPageDashboard = () => {
                 toast.info(
                     "Please publish your Dodo Page to update this block"
                 );
+
+                return null;
             } else {
                 router.push(`/dodo/${url}/editBlock/${block.id}`);
             }
@@ -380,4 +381,4 @@ const DodoPageDashboard = () => {
     );
 };
 
-export default DodoPageDashboard;
+export default React.memo(DodoPageDashboard);

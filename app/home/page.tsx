@@ -311,6 +311,7 @@ export default function Home() {
                         src={otherFeatures}
                         alt="user profile"
                         className="mx-auto mb-6 mt-3"
+                        priority
                     />
 
                     <div className="absolute-center flex-col">

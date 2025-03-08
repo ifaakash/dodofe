@@ -16,7 +16,7 @@ export const Header = ({
     const router = useRouter();
 
     return (
-        <div className="h-16 flex pt-6 flex-row items-center w-full bg z-50">
+        <div className="h-16 flex pt-6 fixed top-0 left-0 flex-row items-center w-full bg z-50">
             <Image
                 height={20}
                 width={20}
