@@ -19,7 +19,6 @@ import cx from 'classnames';
 interface ReceiverFormProps {
   receiverDetails: RecipientDetails[];
   setCurrentStage: (currentStage: string) => void;
-  showInputFields: boolean;
 }
 
 const ReceiverForm = ({

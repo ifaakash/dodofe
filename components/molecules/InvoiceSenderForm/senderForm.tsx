@@ -19,7 +19,6 @@ import { isEmpty } from "@utils/index";
 interface SenderFormProps {
   clientDetails: ClientDetailsProps[];
   setCurrentStage: (currentStage: string) => void;
-  showInputFields: boolean;
 }
 
 const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
