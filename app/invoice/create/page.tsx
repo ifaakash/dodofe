@@ -26,6 +26,7 @@ import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { Header } from "@components/molecules/Header";
 import ErrorPage from "@components/molecules/ErrorPage";
+import { setShowInputFields } from "store/slice/invoiceSlice";
 
 
 const CreateInvoice = () => {
@@ -36,6 +37,7 @@ const CreateInvoice = () => {
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
   const [error, setError] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+  const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -270,6 +272,12 @@ const CreateInvoice = () => {
   };
 
   const handleBackNavigation = () => {
+    if (showInputFields) {
+      dispatch(setShowInputFields(false));
+
+      return;
+    }
+
     switch (currentStage) {
       case "senderDetails":
         router.push("/invoice");
@@ -296,7 +304,7 @@ const CreateInvoice = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative pt-16">
       <div className="py-[10px] flex flex-col gap-3">
         <Header onBackClick={handleBackNavigation} title={getHeaderText()} />
         <div className="flex px-5 justify-between items-center gap-1">

@@ -17,7 +17,7 @@ export interface InvoiceItem {
 }
 
 export interface ClientDetailsProps {
-  _id?:string;
+  _id?: string;
   name: string;
   email: string;
   address: string;
@@ -30,7 +30,7 @@ export interface ClientDetailsProps {
 }
 
 export interface RecipientDetails {
-  _id?:string;
+  _id?: string;
   name: string;
   email: string;
   address: string;
@@ -92,6 +92,7 @@ export interface InvoiceWithDetails extends BaseInvoice {
   clientDetailsID: string | null;
   recipientDetailsID: string | null;
   bankDetailsID: string | null;
+  showInputFields: boolean;
 }
 
 export interface InvoiceWithIDs extends BaseInvoice {
@@ -102,7 +103,7 @@ export interface InvoiceWithIDs extends BaseInvoice {
 
 export type InvoiceProps = InvoiceWithDetails;
 
-export interface InvoiceHistory{
+export interface InvoiceHistory {
   invoice: any;
   onEdit: any;
   onMarkAsPaid: any;
@@ -115,7 +116,7 @@ export interface InvoiceHistoryCard {
   onMarkAsPaid?: any;
   timeFrame?: any;
   handleCardExpand?: any;
-  isExpanded?: boolean; 
+  isExpanded?: boolean;
 }
 
 export interface StatusBadgeProps {
@@ -132,16 +133,16 @@ export interface dodoPagesProps {
 }
 
 export interface userDetailsProps {
-    id: string;
-    firebaseUid: string;
-    name: string;
-    mobileNumber: string;
-    interestCategories: string[];
-    dodoPages: dodoPagesProps[];
-    bankDetails: BankDetails[];
-    invoices: string[];
-    clientDetails: ClientDetailsProps[];
-    recipientDetails: RecipientDetails[];
+  id: string;
+  firebaseUid: string;
+  name: string;
+  mobileNumber: string;
+  interestCategories: string[];
+  dodoPages: dodoPagesProps[];
+  bankDetails: BankDetails[];
+  invoices: string[];
+  clientDetails: ClientDetailsProps[];
+  recipientDetails: RecipientDetails[];
 }
 
 export interface InvoiceUserCardProps {
@@ -159,8 +160,8 @@ export interface Block {
   blockCardSize: string;
   userId?: string;
   dodoPageId?: string;
-  toRemove? :boolean
-  toArchive? :boolean
+  toRemove?: boolean
+  toArchive?: boolean
   isActive?: boolean
   isNew?: boolean
 }

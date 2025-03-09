@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addClientDetailsID,
   addCurrentClientDetails,
+  setShowInputFields
 } from "store/slice/invoiceSlice";
 import { Plus } from "lucide-react";
 import { ClientDetailsProps } from "types";
@@ -18,14 +19,15 @@ import { isEmpty } from "@utils/index";
 interface SenderFormProps {
   clientDetails: ClientDetailsProps[];
   setCurrentStage: (currentStage: string) => void;
+  showInputFields: boolean;
 }
 
 const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
   const dispatch = useDispatch();
-  const [showInputFields, setShowInputFields] = useState(true);
   const [clientID, setClientID] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [disableNextButton, setDisableNextButton] = useState(true);
+  const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
 
   useEffect(() => {
     if (clientID) {
@@ -34,7 +36,7 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
   }, [clientID, dispatch]);
 
   useEffect(() => {
-    setShowInputFields(clientDetails.length === 0);
+    dispatch(setShowInputFields(clientDetails.length === 0));
   }, [clientDetails]);
 
   const currentClientDetails: any = useSelector(
@@ -231,7 +233,7 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
           <div className="flex justify-end">
             <button
               className="flex gap-2 items-center border border-brandPrimary py-2 px-4 w-fit rounded-full"
-              onClick={() => setShowInputFields(true)}
+              onClick={() => dispatch(setShowInputFields(true))}
             >
               <span className="text-sm font-semibold">Add New Sender</span>
               <Plus
@@ -254,14 +256,14 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
       <div className={cx(
         "bottom-0 py-4 fixed justify-center w-[90%]",
       )}
-        // style={isEmpty(clientDetails) ? { width: '80%' } : { width: '90%' }
-        // }
+      // style={isEmpty(clientDetails) ? { width: '80%' } : { width: '90%' }
+      // }
       >
         <NewButton
           size="large"
           variant={
-            showInputFields 
-              ? (disableNextButton ? "disabled" : "primary") 
+            showInputFields
+              ? (disableNextButton ? "disabled" : "primary")
               : (selectedClientID ? "primary" : "disabled")
           }
           className="w-full"

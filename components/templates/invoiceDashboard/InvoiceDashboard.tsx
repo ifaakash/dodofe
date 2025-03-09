@@ -11,6 +11,8 @@ import StatsCard from "@components/molecules/InvoiceDashboard/StatsCard";
 import { getAllInvoices } from "api";
 import { userDetailsProps, InvoiceProps } from "types";
 import { Header } from "@components/molecules/Header";
+import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@utils/constants";
 
 interface DashboardProps {
   userDetails: userDetailsProps;
@@ -19,6 +21,7 @@ interface DashboardProps {
 const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
   const [invoices, setInvoices] = useState<InvoiceProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -42,10 +45,15 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
     fetchInvoices();
   }, [userDetails]);
 
+
+  const onBackClick = () => {
+    router.push(ROUTE_CONSTANTS.HOME);
+  };
+
   return (
     <div className="flex flex-col">
       <div className="bg-[#D8D6DC] pt-20 h-48 w-full flex flex-col gap-6 h-full">
-        <Header title="Invoice Dashboard" />
+        <Header onBackClick={onBackClick} title="Invoice Dashboard" />
 
         {/* <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">
             <div className="flex gap-[10px] items-center">

@@ -12,14 +12,14 @@ const CircleLoader = () => {
 
     return (
         showOverlay ?
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="fixed overflow-hidden inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                 <Lottie
                     animationData={LoaderAnimation}
                     loop={true}
                     className='w-40 h-40'
                 />
             </div> :
-            <div className="flex items-center justify-center h-screen">
+            <div className="flex items-center absolute top-0 left-0 justify-center h-screen">
                 <Lottie
                     animationData={LoaderAnimation}
                     loop={true}

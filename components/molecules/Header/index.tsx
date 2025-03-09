@@ -7,25 +7,29 @@ interface HeaderProps {
     title?: string;
     subtitle?: string;
     onBackClick?: () => void;
+    initialBackgroundColor?: string;
 }
 
 export const Header = ({
     title,
     subtitle,
     onBackClick,
+    initialBackgroundColor = "transparent",
 }: HeaderProps) => {
     const router = useRouter();
     const [isScrolling, setIsScrolling] = useState(true);
+    const [scrollY, setScrollY] = useState(0);
 
     useEffect(() => {
         let scrollTimeout: NodeJS.Timeout;
 
         const handleScroll = () => {
-            setIsScrolling(false); // Hide the header when scrolling
+            setScrollY(window.scrollY);
+            setIsScrolling(false);
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
-                setIsScrolling(true); // Show the header after scrolling stops
-            }, 500); // Adjust the delay as needed
+                setIsScrolling(true);
+            }, 500);
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -38,8 +42,11 @@ export const Header = ({
 
     return (
         <div
-            className={`h-16 flex pt-12 pb-6 fixed top-0 left-0 flex-row items-center w-full z-50 transition-transform duration-300 ${isScrolling ? "bg-white translate-y-0" : "-translate-y-full"
+            className={`h-16 flex pt-12 pb-6 fixed top-0 left-0 flex-row items-center w-full z-50 transition-transform duration-300 ${isScrolling ? "translate-y-0" : "-translate-y-full"
                 }`}
+            style={{
+                backgroundColor: scrollY === 0 ? initialBackgroundColor : "white",
+            }}
         >
             <Image
                 height={20}

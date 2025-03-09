@@ -140,18 +140,19 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
       >
         {/* Track with label */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span
+          {!isPaid ? <span
             className={`text-gray-500 text-sm font-medium transition-opacity duration-300 ${isPaid ? "opacity-0" : "opacity-100 ml-10 "
               }`}
           >
             Mark as Paid
-          </span>
-          <span
-            className={`text-green-500 text-sm font-medium transition-opacity duration-300 ${isPaid ? "opacity-100  mr-10" : "opacity-0"
-              }`}
-          >
-            Marked as Paid
-          </span>
+          </span> :
+            <span
+              className={`text-green-500 text-sm font-medium transition-opacity duration-300 ${isPaid ? "opacity-100  mr-10" : "opacity-0"
+                }`}
+            >
+              Marked as Paid
+            </span>
+          }
         </div>
 
         {/* Swipeable knob */}

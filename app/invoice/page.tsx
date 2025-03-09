@@ -8,15 +8,17 @@ import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { useDispatch } from "react-redux";
 import { showLoader, hideLoader } from "store/slice/loaderSlice";
+import useLoaderVisibility from "hooks/useLoaderVisibility";
 
 const Invoice = () => {
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || '';
+  const { isVisible } = useLoaderVisibility();
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      dispatch(showLoader());
+      dispatch(showLoader(true));
 
       try {
         const res = await getUserDetails(userId);
@@ -33,7 +35,7 @@ const Invoice = () => {
 
   return (
     <div>
-      {!userDetails || userDetails.invoices.length < 1 ? (
+      {(!userDetails || userDetails.invoices.length < 1) && !isVisible ? (
         <InvoiceOnboardingScreen />
       ) : (
         <InvoiceDashboard userDetails={userDetails} />

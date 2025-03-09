@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addCurrentRecipientDetails,
   addRecipientDetailsID,
+  setShowInputFields,
 } from "store/slice/invoiceSlice";
 import { Plus } from "lucide-react";
 import { RootState } from "store/store";
@@ -18,6 +19,7 @@ import cx from 'classnames';
 interface ReceiverFormProps {
   receiverDetails: RecipientDetails[];
   setCurrentStage: (currentStage: string) => void;
+  showInputFields: boolean;
 }
 
 const ReceiverForm = ({
@@ -25,10 +27,10 @@ const ReceiverForm = ({
   setCurrentStage,
 }: ReceiverFormProps) => {
   const dispatch = useDispatch();
-  const [showInputFields, setShowInputFields] = useState(true);
   const [receiveID, setReceiveID] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [disableNextButton, setDisableNextButton] = useState(true);
+  const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
 
   useEffect(() => {
     if (receiveID) {
@@ -37,7 +39,7 @@ const ReceiverForm = ({
   }, [receiveID, dispatch]);
 
   useEffect(() => {
-    setShowInputFields(receiverDetails.length === 0);
+    dispatch(setShowInputFields(receiverDetails.length === 0))
   }, [receiverDetails]);
 
   const currentRecipientDetails: any = useSelector(
@@ -228,7 +230,7 @@ const ReceiverForm = ({
           <div className="flex justify-end">
             <button
               className="flex gap-2 items-center border-[1px] border-brandPrimary py-2 px-4 w-fit rounded-full"
-              onClick={() => setShowInputFields(true)}
+              onClick={() => dispatch(setShowInputFields(true))}
             >
               <span className="text-sm font-semibold">Add New Receiver</span>
               <Plus
@@ -251,14 +253,14 @@ const ReceiverForm = ({
       <div className={cx(
         "bottom-0 py-4 fixed justify-center w-[90%]"
       )}
-        // style={isEmpty(receiverDetails) ? { width: '80%' } : { width: '90%' }
-        // }
+      // style={isEmpty(receiverDetails) ? { width: '80%' } : { width: '90%' }
+      // }
       >
         <NewButton
           size="large"
           variant={
-            showInputFields 
-              ? (disableNextButton ? "disabled" : "primary") 
+            showInputFields
+              ? (disableNextButton ? "disabled" : "primary")
               : (selectedReceiverID ? "primary" : "disabled")
           }
           className="w-full"

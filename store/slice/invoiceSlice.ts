@@ -78,7 +78,8 @@ const initialState: InvoiceWithDetails = {
     upiId: "",
   },
   createdAt: "",
-  id: ""
+  id: "",
+  showInputFields: true,
 };
 
 export const invoiceSlice = createSlice({
@@ -147,9 +148,15 @@ export const invoiceSlice = createSlice({
     addBankDetailsID: (state, action) => {
       state.bankDetailsID = action.payload;
     },
-    addDate : (state, action) => {
+    addDate: (state, action) => {
       state.date = action.payload;
-    }
+    },
+    toggleShowInputFields: (state) => {
+      state.showInputFields = !state.showInputFields;
+    },
+    setShowInputFields: (state, action: PayloadAction<boolean>) => {
+      state.showInputFields = action.payload;
+    },
   },
 });
 
@@ -168,7 +175,9 @@ export const {
   addClientDetailsID,
   addRecipientDetailsID,
   addBankDetailsID,
-  addDate
+  addDate,
+  toggleShowInputFields,
+  setShowInputFields,
 } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;
