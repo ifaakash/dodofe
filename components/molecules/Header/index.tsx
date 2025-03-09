@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import leftArrow from "public/icons/leftArrow.svg";
@@ -14,9 +15,32 @@ export const Header = ({
     onBackClick,
 }: HeaderProps) => {
     const router = useRouter();
+    const [isScrolling, setIsScrolling] = useState(true);
+
+    useEffect(() => {
+        let scrollTimeout: NodeJS.Timeout;
+
+        const handleScroll = () => {
+            setIsScrolling(false); // Hide the header when scrolling
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                setIsScrolling(true); // Show the header after scrolling stops
+            }, 500); // Adjust the delay as needed
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            clearTimeout(scrollTimeout);
+        };
+    }, []);
 
     return (
-        <div className="h-16 flex pt-6 fixed top-0 left-0 flex-row items-center w-full bg z-50">
+        <div
+            className={`h-16 flex pt-12 pb-6 fixed top-0 left-0 flex-row items-center w-full z-50 transition-transform duration-300 ${isScrolling ? "bg-white translate-y-0" : "-translate-y-full"
+                }`}
+        >
             <Image
                 height={20}
                 width={20}

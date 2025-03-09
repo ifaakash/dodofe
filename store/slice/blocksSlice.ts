@@ -89,7 +89,7 @@ const blocksSlice = createSlice({
       state.blocks = action.payload;
     },
     addBlock: (state, action: PayloadAction<Block>) => {
-      state.blocks.push(action.payload);
+      state.blocks.unshift(action.payload);
       state.unPublishedBlocks = true;
       state.newBlocksAdded = true;
     },

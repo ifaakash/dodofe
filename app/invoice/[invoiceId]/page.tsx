@@ -56,8 +56,8 @@ const PreviewInvoice = () => {
 
 
   return (
-    <div className="bg-[#D8D6DC]">
-      <Header />
+    <div className="bg-[#D8D6DC] pt-16">
+      <Header title={invoice.subHeading || "Invoice"} />
       <div className="bg-[#D8D6DC] md:h-64 w-full lg:px-[280px] px-0">
         <div className="py-6 flex justify-center">
           <div className="flex flex-col gap-1">

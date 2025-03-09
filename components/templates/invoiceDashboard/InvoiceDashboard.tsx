@@ -44,7 +44,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="bg-[#D8D6DC] h-48 w-full flex flex-col gap-6 h-full">
+      <div className="bg-[#D8D6DC] pt-20 h-48 w-full flex flex-col gap-6 h-full">
         <Header title="Invoice Dashboard" />
 
         {/* <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">

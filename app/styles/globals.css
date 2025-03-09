@@ -149,6 +149,10 @@ body::-webkit-scrollbar {
   background-color: var(--white);
 }
 
+.bg-theme-shade {
+  background-color: var(--bg-theme-2);
+}
+
 .clicking-animation {
   cursor: pointer;
   transition: all 0.1s ease;

@@ -127,13 +127,13 @@ const AddLink = ({
   const isValidUrl = (url: string): boolean => {
     const pattern = new RegExp(
       "^(https?:\\/\\/)?" +
-        "((([a-z0-9\\-]+\\.)+[a-z]{2,})|" +
-        "localhost|" +
-        "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|" +
-        "\\[?[a-f0-9]*:[a-f0-9:%.~+\\-]*\\]?)" +
-        "(\\:\\d+)?(\\/[-a-z0-9+&@#\\/%?=~_|!:,.;]*)*" +
-        "(\\?[;&a-z0-9+%#=~_|!:,.;]*)?" +
-        "(\\#[-a-z0-9+&@#/%=~_|!:,.;]*)?$",
+      "((([a-z0-9\\-]+\\.)+[a-z]{2,})|" +
+      "localhost|" +
+      "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|" +
+      "\\[?[a-f0-9]*:[a-f0-9:%.~+\\-]*\\]?)" +
+      "(\\:\\d+)?(\\/[-a-z0-9+&@#\\/%?=~_|!:,.;]*)*" +
+      "(\\?[;&a-z0-9+%#=~_|!:,.;]*)?" +
+      "(\\#[-a-z0-9+&@#/%=~_|!:,.;]*)?$",
       "i"
     );
     return !!pattern.test(url);
@@ -143,6 +143,7 @@ const AddLink = ({
     if (!validateForm()) {
       return;
     }
+
     try {
       dispatch(
         addBlock({
@@ -155,12 +156,12 @@ const AddLink = ({
             linkDisplayPicture: uploadedImage as File,
             badge: badgeText
               ? {
-                  text: badgeText,
-                  backgroundColor: selectedBadgeCategory,
-                  color:
-                    badges.find((badge) => badge.text === selectedBadgeCategory)
-                      ?.color || null,
-                }
+                text: badgeText,
+                backgroundColor: selectedBadgeCategory,
+                color:
+                  badges.find((badge) => badge.text === selectedBadgeCategory)
+                    ?.color || null,
+              }
               : null,
           },
           hasMedia: !!(uploadedImage || block?.blockData?.linkDisplayPicture),
@@ -219,16 +220,14 @@ const AddLink = ({
       <div className="flex flex-col gap-8 w-full">
         <div className="flex flex-col gap-3">
           <div
-            className={`flex ${
-              displayType === "SMALL" ? "flex-row items-center" : "flex-col"
-            } gap-3 p-2 rounded-lg bg-white transition-all duration-300 ease-in-out`}
+            className={`flex ${displayType === "SMALL" ? "flex-row items-center" : "flex-col"
+              } gap-3 p-2 rounded-lg bg-white transition-all duration-300 ease-in-out`}
           >
             <div
-              className={`bg-[#979EAD] ${
-                displayType === "SMALL"
+              className={`bg-[#979EAD] ${displayType === "SMALL"
                   ? "w-10 h-10 rounded-md"
                   : "w-full h-32 rounded-[10px]"
-              } flex items-center justify-center relative cursor-pointer`}
+                } flex items-center justify-center relative cursor-pointer`}
             >
               <input
                 type="file"
@@ -240,11 +239,10 @@ const AddLink = ({
                 <img
                   src={displayImage()}
                   alt="uploaded preview"
-                  className={`${
-                    displayType === "SMALL"
+                  className={`${displayType === "SMALL"
                       ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px] aspect-square"
                       : "w-full h-full object-cover rounded-[6px]"
-                  }`}
+                    }`}
                 />
               ) : (
                 <Image
@@ -338,9 +336,8 @@ const AddLink = ({
                   checked={selectedBadgeCategory === badge.text}
                 />
                 <span
-                  className={`text-xs ${
-                    selectedBadgeCategory === badge.text ? "font-medium" : ""
-                  }`}
+                  className={`text-xs ${selectedBadgeCategory === badge.text ? "font-medium" : ""
+                    }`}
                 >
                   {badge.text}
                 </span>
