@@ -32,9 +32,10 @@ import { Card } from "@utils/uiUtils";
 import CtaSection from "@components/molecules/CtaSection";
 import HomeFooter from "./homeFooter";
 import Link from "next/link";
-import Sidebar from "@components/molecules/Sidebar";
-
 import dynamic from "next/dynamic";
+
+// Dynamically import the Sidebar component with SSR disabled
+const Sidebar = dynamic(() => import("@components/molecules/Sidebar"), { ssr: false });
 
 export default function Home() {
     const router = useRouter();
@@ -52,7 +53,7 @@ export default function Home() {
 
         let handleScroll: any;
 
-        if (window) {
+        if (typeof window !== 'undefined') {
             handleScroll = () => {
                 const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
 
@@ -63,7 +64,6 @@ export default function Home() {
                 }
 
                 setBlurAmount(blurValue);
-
             };
 
             window.addEventListener("scroll", handleScroll);
@@ -200,7 +200,9 @@ export default function Home() {
                         if (blurAmount > 0) {
                             e.stopPropagation(); // Prevent inside clicks
                             setBlurAmount(0);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            if (window) {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
                         }
                     }}
                 >

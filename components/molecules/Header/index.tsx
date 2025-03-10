@@ -48,20 +48,23 @@ export const Header = ({
                 backgroundColor: scrollY === 0 ? initialBackgroundColor : "white",
             }}
         >
-            <Image
-                height={20}
-                width={20}
-                src={leftArrow}
-                alt="back arrow"
-                className="ml-4 cursor-pointer"
+            <div
+                className="flex flex-row items-center cursor-pointer py-2"
                 onClick={() => {
                     if (onBackClick) {
                         onBackClick();
                     } else {
                         router.back();
                     }
-                }}
-            />
+                }}>
+                <Image
+                    height={20}
+                    width={20}
+                    src={leftArrow}
+                    alt="back arrow"
+                    className="ml-4 cursor-pointer"
+                />
+            </div>
 
             <div className="flex flex-col ml-4">
                 <span className="text-lg font-bold">{title}</span>
