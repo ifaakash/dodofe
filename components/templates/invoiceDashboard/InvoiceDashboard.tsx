@@ -68,7 +68,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
             </div>
           </div> */}
 
-        <StatsCard userDetails={userDetails} />
+        {userDetails && <StatsCard userDetails={userDetails} />}
 
         <div className="px-5 flex flex-col gap-3">
           <div className="flex justify-between items-center">
