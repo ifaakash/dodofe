@@ -22,10 +22,10 @@ const CtaSection = ({
   img = profileIcon,
   imgSize = -1,
   floatingPosition = "bottom-right", // 'top-right' or 'bottom-right'
-  bgColor = "#fff",
+  bgColor = "#fdfbff",
   textColor = "#000",
   buttonBgColor = "#00c853",
-  buttonTextColor = "#fff",
+  buttonTextColor = "#fdfbff",
   showProfileImage = false,
   profileImageURL = "",
 }) => {
@@ -86,7 +86,7 @@ const CtaSection = ({
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-bold mb-1">{title}</h1>
-          <p className="text-lg font-thin leading-[24px]">{description}</p>
+          <p className="text-base font-light leading-[20px]">{description}</p>
         </div>
       </div>
       <div className={styles.secondThirdContainer}>

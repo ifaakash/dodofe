@@ -183,29 +183,29 @@ export const LoginNumber = ({ setLoginState }: any) => {
             <Image
                 src={PhoneNumberInputBg}
                 alt="Phone Number Input Background"
-                className="object-cover w-full h-[50vh]"
+                className="object-cover w-full h-[47vh]"
             />
 
             <div className="absolute bottom-0 h-[60vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
                 <div className="flex flex-col gap-6">
                     <div>
                         <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
-                            Enter Phone Number
+                            <span className={styles.shimmerBg}>Digits,</span> please!
                         </div>
                         <div className="text-[#979EAD] text-[20px] leading-normal">
-                            to start your amazing journey{" "}
+                            Let’s make this official 🫣
                         </div>
                     </div>
 
-                    <div className="bg-[#EAE9EC] rounded-2xl py-6 px-4 pb-4 flex flex-col gap-2">
+                    <div className="bg-[#EAE9EC] rounded-2xl py-6 px-4 flex flex-col gap-2">
                         <input
                             value={mobileNumber}
                             onChange={handleMobileNumber}
                             type="number"
                             className="w-full outline-none bg-transparent placeholder:text-[#3D4966] placeholder:font-normal placeholder:text-xl leading-normal font-semibold text-[#000] text-2xl"
-                            placeholder="Enter your mobile number"
+                            placeholder="Enter here"
                         />
-                        <div className="bg-[#D0D0D0] w-full h-[1px]"></div>
+                        {/* <div className="bg-[#D0D0D0] w-full h-[1px]"></div> */}
                     </div>
                 </div>
 

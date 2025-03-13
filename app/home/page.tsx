@@ -324,22 +324,22 @@ export default function Home() {
                             onClick={handleInvoiceNavigation}
                             bgColor="var(--yellow)"
                             img={invoiceIcon}
-                            title="Invoice"
+                            title="Your Invoices"
                             description="Create stunning digital invoices in a few seconds"
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
                             <Card
                                 title="Engagement Calculator"
-                                description="Calculate your instagram engagement"
+                                description=""
                                 icon={engagementCalc}
                                 bgColor="var(--neon-purple)"
                                 bgColorGo="var(--neon-blue)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
                             <Card
-                                title="Price Estimator"
-                                description="Calculate your instagram price"
+                                title="Ig Price Estimator"
+                                description=""
                                 icon={priceCalc}
                                 bgColor="var(--neon-rose)"
                                 bgColorGo="var(--neon-yellow)"
@@ -351,7 +351,7 @@ export default function Home() {
                     <CtaSection
                         bgColor="var(--warm-green)"
                         img={mediakitIcon}
-                        title="MediaKit"
+                        title="Your MediaKit"
                         description="A digital resume for you"
                         buttonLabel="Coming soon..."
                     />

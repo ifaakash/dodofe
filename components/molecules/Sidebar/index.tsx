@@ -29,7 +29,7 @@ const Sidebar = ({
             text: "DodoPage",
             icon: DodoPageIcon,
             action: () => {
-                window.location.href = ROUTE_CONSTANTS.HOME;
+                window.location.href = ROUTE_CONSTANTS.DODOPAGE;
                 toggleSidebar();
             },
             delay: 0,
@@ -106,7 +106,7 @@ const Sidebar = ({
             />
             {/* Sidebar with animation, border radius, and margin */}
             <div
-                className="sidebar relative w-70 h-[calc(100%-40px)] bg-white m-5 shadow-lg"
+                className="sidebar relative w-70 h-[calc(100%-20px)] bg-white m-5 shadow-lg"
                 style={{
                     borderTopRightRadius: "20px",
                     borderBottomRightRadius: "20px",
@@ -114,7 +114,7 @@ const Sidebar = ({
                 }}
             >
                 <div className="flex flex-col h-full" style={{ width: '230px' }}>
-                    <div className="flex justify-between items-center p-4">
+                    <div className="flex justify-between items-center p-4 pb-0">
                         <h2
                             className="text-2xl"
                             style={{ fontFamily: "Clash Display" }}
@@ -123,7 +123,7 @@ const Sidebar = ({
                         </h2>
                         <button
                             onClick={toggleSidebar}
-                            className="text-2xl px-2"
+                            className="text-4xl px-2"
                             style={{ fontFamily: "Clash Display" }}
                         >
                             ×
@@ -156,6 +156,7 @@ const Sidebar = ({
                             onClick={logoutItem.action}
                             style={{
                                 fontFamily: "Clash Display",
+                                color: "var(--red)"
                             }}
                         >
                             {/* <span className="mr-2">

@@ -97,8 +97,6 @@ export const LoginOtp = ({ setLoginState }: any) => {
             saveState(STORAGE_CONSTANTS.userId, response?.userId);
             saveState(STORAGE_CONSTANTS.MOBILE, mobileNumber);
 
-            toast.success("Login successful!");
-
             if (response?.isNewUser) {
                 router.push(ROUTE_CONSTANTS.USER_CATEGORY);
             } else {
@@ -136,17 +134,17 @@ export const LoginOtp = ({ setLoginState }: any) => {
             <Image
                 src={OTPscreenBg}
                 alt="Phone Number Input Background"
-                className="object-cover w-full h-[50vh]"
+                className="object-cover w-full h-[47vh]"
             />
 
             <div className="absolute bottom-0 h-[60vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
                 <div className="flex flex-col gap-4">
                     <div>
                         <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
-                            Enter OTP
+                            We sent you a code
                         </div>
                         <div className="text-[#979EAD] text-[20px] leading-normal">
-                            for verification
+                            drop it here! 🤫
                         </div>
                     </div>
                     <div className="flex gap-2 justify-between">
