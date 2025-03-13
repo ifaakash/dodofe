@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
 import PasteIcon from "public/icons/paste.svg";
 import { handlePasteFromClipboard } from "@utils/index";
+import Tooltip from "@components/atoms/Tooltip";
+import LinkBlock from "../blocks/LinkBlock";
 
 const badges = [
   {
@@ -70,11 +72,50 @@ const AddLink = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [previewBlock, setPreviewBlock] = useState<any>({
+    id: block?.id || uuidv4(),
+    blockType: "LINK",
+    blockCardSize: displayType as "SMALL" | "MEDIUM" | "LARGE",
+    blockData: {
+      title,
+      url: link,
+      linkDisplayPicture: uploadedImage || block?.blockData?.linkDisplayPicture || null,
+      badge: badgeText
+        ? {
+          text: badgeText,
+          backgroundColor: selectedBadgeCategory,
+          color: badges.find((badge) => badge.text === selectedBadgeCategory)?.color || "",
+        }
+        : null,
+    },
+    hasMedia: !!(uploadedImage || block?.blockData?.linkDisplayPicture),
+  });
+
   useEffect(() => {
     if (titleEditing && inputRef.current) {
       inputRef.current.focus();
     }
   }, [titleEditing]);
+
+  useEffect(() => {
+    setPreviewBlock((prev: any) => ({
+      ...prev,
+      blockCardSize: displayType,
+      blockData: {
+        ...prev.blockData,
+        title,
+        url: link,
+        linkDisplayPicture: uploadedImage || block?.blockData?.linkDisplayPicture || null,
+        badge: badgeText
+          ? {
+            text: badgeText,
+            backgroundColor: selectedBadgeCategory,
+            color: badges.find((badge) => badge.text === selectedBadgeCategory)?.color || "",
+          }
+          : null,
+      },
+    }));
+  }, [title, link, uploadedImage, badgeText, selectedBadgeCategory, displayType]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -236,7 +277,7 @@ const AddLink = ({
               } gap-3 p-2 rounded-lg bg-white transition-all duration-300 ease-in-out`}
           >
             <div
-              className={`bg-[#979EAD] ${displayType === "SMALL"
+              className={`bg-[#979EAD] transition-all duration-300 ease-in-out ${displayType === "SMALL"
                 ? "w-10 h-10 rounded-md"
                 : "w-full h-32 rounded-[10px]"
                 } flex items-center justify-center relative cursor-pointer`}
@@ -251,8 +292,8 @@ const AddLink = ({
                 <img
                   src={displayImage()}
                   alt="uploaded preview"
-                  className={`${displayType === "SMALL"
-                    ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px] aspect-square"
+                  className={`transition-all duration-300 ease-in-out ${displayType === "SMALL"
+                    ? "w-[50px] h-[50px] object-cover rounded-[6px]"
                     : "w-full h-full object-cover rounded-[6px]"
                     }`}
                 />
@@ -266,7 +307,7 @@ const AddLink = ({
                 />
               )}
             </div>
-            <div>
+            <div className="w-full">
               {mode === "add" ? (
                 <div onClick={() => setTitleEditing(true)}>
                   {titleEditing ? (
@@ -316,14 +357,8 @@ const AddLink = ({
                 setLink(e.target.value)
               }
               className="pr-10"
-            />
-            <Image
-              src={PasteIcon}
-              alt="paste"
-              width={20}
-              height={20}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
-              onClick={() => handlePasteFromClipboard(setLink)}
+              icon={PasteIcon}
+              onIconClick={() => handlePasteFromClipboard(setLink)}
             />
           </div>
           {linkError && (
@@ -349,7 +384,7 @@ const AddLink = ({
                   backgroundColor: badge.backgroundColor,
                   color: badge.color,
                 }}
-                className="flex items-center gap-2 py-[6px] px-2 rounded-full"
+                className="flex items-center gap-1 py-[6px] px-2 rounded-full"
                 onClick={() => setSelectedBadgeCategory(badge.text)}
               >
                 <input
@@ -374,6 +409,12 @@ const AddLink = ({
             </div>
           )}
         </div>
+
+        {/* Live Preview Section */}
+        <div className="mt-5 w-full">
+          <h3 className="text-lg font-semibold mb-2">Live Preview</h3>
+          <LinkBlock inPreview mode={mode} block={previewBlock} />
+        </div>
       </div>
 
       <div className="bottom-0 fixed mb-4 px-4 w-full flex flex-col gap-4 items-center">
@@ -385,7 +426,7 @@ const AddLink = ({
             className="w-full"
             onClick={handleSubmit}
           >
-            Add Link
+            Add Link to draft
           </NewButton>
         ) : (
           <NewButton
@@ -394,7 +435,7 @@ const AddLink = ({
             className="w-full"
             onClick={handleUpdate}
           >
-            Update Link
+            Update Link in draft
           </NewButton>
         )}
       </div>

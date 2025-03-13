@@ -157,14 +157,14 @@ const AddPoll = ({
           <div className="flex flex-col gap-1">
             {mode === "edit"
               ? block?.blockData?.options.map((option: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Input
-                      disabled={true}
-                      name={`option-${index}`}
-                      value={option}
-                    />
-                  </div>
-                ))
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    disabled={true}
+                    name={`option-${index}`}
+                    value={option}
+                  />
+                </div>
+              ))
               : poll.options.map((option: string, index: number) => (
                 <div key={index} className="flex items-center gap-2">
                   <Input
@@ -212,7 +212,7 @@ const AddPoll = ({
             onClick={mode === "edit" ? handleUpdate : handleSubmit}
             className="w-full"
           >
-            {mode === "edit" ? "Okay" : "Add"}
+            {mode === "edit" ? "Update" : "Add"} to draft
           </NewButton>
         </div>
       </div>

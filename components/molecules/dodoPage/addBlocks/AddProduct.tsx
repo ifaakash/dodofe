@@ -225,7 +225,7 @@ const AddProduct = ({
           onClick={mode === "add" ? handleSubmit : handleUpdate}
           className="w-full"
         >
-          {mode === "add" ? "Save" : "Update"}
+          {mode === "add" ? "Save" : "Update"} to draft
         </NewButton>
       </div>
     </div>

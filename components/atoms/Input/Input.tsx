@@ -5,10 +5,14 @@ import { InputProps } from "./types";
 import { AlertCircle } from "lucide-react";
 
 import styles from "./styles.module.css";
+import Image from "next/image";
 
 interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   ref?: React.RefObject<HTMLInputElement>;
+  showClearButton?: boolean;
+  icon?: any;
+  onIconClick?: () => void;
 }
 
 const Input: React.FC<EnhancedInputProps> = ({
@@ -18,12 +22,21 @@ const Input: React.FC<EnhancedInputProps> = ({
   onChange,
   type = "text",
   error,
-  ref
+  ref,
+  showClearButton = true,
+  icon,
+  onIconClick
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleIconClick = () => {
     setShowTooltip((prev) => !prev);
+  };
+
+  const handleClearClick = () => {
+    if (onChange) {
+      onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
+    }
   };
 
   return (
@@ -32,7 +45,7 @@ const Input: React.FC<EnhancedInputProps> = ({
         ref={ref}
         className={cx(
           className,
-          "bg-theme-2 px-4 py-1 h-12 text-sm rounded-lg w-full border",
+          "bg-theme-2 px-4 py-1 h-12 text-base rounded-lg w-full border",
           {
             "border-red-500": error,
             "border-gray-300": !error,
@@ -43,6 +56,31 @@ const Input: React.FC<EnhancedInputProps> = ({
         onChange={onChange}
         type={type}
       />
+
+      <div className="absolute-center">
+        {showClearButton && value && (
+          <button
+            type="button"
+            className={cx("absolute inset-y-0 flex items-center pr-3 focus:outline-none", {
+              "right-8": icon,
+              "right-1": !icon
+            })}
+            onClick={handleClearClick}
+          >
+            <span className="text-gray-500 cursor-pointer">✕</span>
+          </button>
+        )}
+
+        {icon &&
+          <Image
+            src={icon}
+            alt="paste"
+            width={28}
+            height={28}
+            onClick={onIconClick}
+            className="absolute right-2 p-1 top-1/2 transform -translate-y-1/2 cursor-pointer"
+          />}
+      </div>
 
       {error && (
         <div className="absolute inset-y-0 right-3 flex items-center">

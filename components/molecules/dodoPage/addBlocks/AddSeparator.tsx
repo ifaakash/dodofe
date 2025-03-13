@@ -145,7 +145,7 @@ const AddSeparator = ({
             onClick={handleSubmit}
             className="w-full"
           >
-            Add
+            Add to draft
           </NewButton>
         ) : (
           <NewButton
@@ -154,7 +154,7 @@ const AddSeparator = ({
             onClick={handleUpdateBlock}
             className="w-full"
           >
-            Update
+            Update to draft
           </NewButton>
         )}
       </div>

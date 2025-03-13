@@ -5,8 +5,9 @@ import Image from "next/image";
 import { useDraggable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { BADGE_COLORS_MAP } from "utils/constants";
+import { isEmpty } from "@utils/index";
 
-const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
+const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: any, inPreview?: boolean }) => {
   const {
     attributes,
     listeners,
@@ -24,7 +25,8 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
   };
 
   const displayImage = () => {
-    if (block.blockData?.linkDisplayPicture) {
+    console.log(block.blockData?.linkDisplayPicture)
+    if (!isEmpty(block.blockData?.linkDisplayPicture)) {
       if (typeof block.blockData?.linkDisplayPicture === "string") {
         return block.blockData.linkDisplayPicture;
       }
@@ -37,12 +39,12 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
     <div
       className="p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
       ref={setNodeRef}
-      style={{ ...style, height: '66px' }}
+      style={{ ...style, height: block.blockCardSize === "SMALL" ? '66px' : '180px' }}
       {...attributes}
     >
       {block.blockCardSize === "SMALL" ? (
         <div className="flex gap-2">
-          {mode === "edit" && (
+          {mode === "edit" && !inPreview && (
             <Image
               src={DragIcon}
               alt="Drag handle"
@@ -89,7 +91,7 @@ const LinkBlock = ({ mode, block }: { mode: string; block: any }) => {
 
           <div className="flex gap-2 justify-between">
             <div className="flex items-center gap-2">
-              {mode === "edit" && (
+              {mode === "edit" && !inPreview && (
                 <Image
                   src={DragIcon}
                   alt="Drag handle"

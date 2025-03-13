@@ -189,7 +189,7 @@ export default function Home() {
     return (
         <Screen>
 
-            <div className={cx("pt-12 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
+            <div className={cx("pt-8 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
                 style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed' }}>
                 <div className="fixed w-full"
                     style={{
@@ -207,7 +207,7 @@ export default function Home() {
                     }}
                 >
                     <div className="flex">
-                        <div className={cx("flex mb-6", !userId ? 'w-full absolute-center' : 'justify-between')}>
+                        <div className={cx("flex", !userId ? 'w-full absolute-center mb-6' : 'justify-between mb-4')}>
                             {!userId && (
                                 <Image
                                     height={50}
@@ -222,11 +222,11 @@ export default function Home() {
                                     <div
                                         onClick={toggleSidebar}
                                         data-sidebar-toggle
-                                        className="cursor-pointer p-2"
+                                        className="cursor-pointer p-2 pb-0"
                                     >
                                         <Image
-                                            height={24}
-                                            width={24}
+                                            height={32}
+                                            width={32}
                                             src={sideBarIcon}
                                             alt="side bar"
                                         />

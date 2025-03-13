@@ -57,6 +57,7 @@ const DodoPageDashboard = () => {
     const [activeId, setActiveId] = useState(null);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [isOpened, setIsOpened] = useState(false);
 
     const sensors = useSensors(
         useSensor(MouseSensor, {
@@ -290,7 +291,7 @@ const DodoPageDashboard = () => {
         }
 
         return (
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative" }} key={block.id}>
                 <div style={{ position: "absolute", top: 'calc(100% - 10px)', right: '10px' }}>
                     {icon}
                 </div>
@@ -302,9 +303,9 @@ const DodoPageDashboard = () => {
     // console.log("dodoPageDetails", dodoPageDetails);
     return (
         <div
-            className={`${styles.dodoBackground} ${styles.scrollableContainer}`}
+            className={`${styles.dodoBackground} ${styles.scrollableContainer}}`}
         >
-            <div className="flex flex-col gap-3">
+            <div className={`flex flex-col gap-3 ${isOpened ? 'backdrop-filter blur-[5px]' : ''}`}>
                 <DodoPageHeader mode={mode} url={url} />
                 <HeroSection
                     mode={mode}
@@ -358,11 +359,15 @@ const DodoPageDashboard = () => {
                 </div>
             </div>
             {mode === "edit" && (
-                <div className="bottom-0 fixed w-full p-4">
+                <div
+                    className={`bottom-0 fixed w-full p-4`}
+                >
                     <FooterBar
                         mode={mode}
                         url={url}
                         dodoPageId={dodoPageDetails?.id}
+                        isOpened={isOpened}
+                        setIsOpened={setIsOpened}
                     />
                 </div>
             )}

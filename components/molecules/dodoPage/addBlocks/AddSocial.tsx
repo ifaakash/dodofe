@@ -160,9 +160,9 @@ const AddSocial = ({
 
   const router = useRouter();
   const dispatch = useDispatch();
-  
+
   const socialLinks = useSelector((state: any) => state.dodoPage.socialLinks);
-  
+
   useEffect(() => {
     setNewSocialLinks({
       website: socialLinks?.website || "",
@@ -182,14 +182,14 @@ const AddSocial = ({
 
   const isValidUrl = (url: string) => {
     const urlPattern = new RegExp(
-      "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$", // fragment locator
+      "^(https?:\\/\\/)?(www\\.)?" + // Protocol & "www."
+      "([a-zA-Z0-9.-]+)\\.(com|net|org|io|co|me|dev|tv|app)" + // Domain with common TLDs
+      "(\\/([a-zA-Z0-9._-]+))?" + // Standard profile paths (e.g., /elonmusk, /johndoe)
+      "(\\/@[a-zA-Z0-9._-]+)?" + // Handles with "@" (e.g., /@username)
+      "(\\/[a-zA-Z0-9._?=~-]*)?$", // Optional sub-paths or query strings
       "i"
     );
+
     return !!urlPattern.test(url);
   };
 
@@ -261,7 +261,7 @@ const AddSocial = ({
           className="w-full"
           onClick={handleSubmit}
         >
-          Next
+          Add to draft
         </NewButton>
       </div>
     </div>

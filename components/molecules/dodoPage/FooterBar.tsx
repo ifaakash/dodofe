@@ -28,7 +28,7 @@ import { toast } from "react-toastify";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
 import { useParams } from "next/navigation";
 
-const BlockModal = () => {
+const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
   const { dodopageUrl } = useParams();
   const Blocks = [
     {
@@ -62,8 +62,13 @@ const BlockModal = () => {
       link: `/dodo/${dodopageUrl}/addBlock?type=heading`,
     },
   ];
+
   return (
-    <div className="mb-4 bg-white p-4 rounded-[10px]">
+    <div
+      className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${isOpen ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-full scale-0 opacity-0'
+        }`}
+    >
+      <div className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>
       <div className="grid grid-cols-3 gap-2">
         {Blocks.map((block, index) => {
           return (
@@ -88,12 +93,15 @@ const FooterBar = ({
   mode,
   url,
   dodoPageId,
+  isOpened,
+  setIsOpened,
 }: {
   mode: string;
   url: string;
   dodoPageId: string;
+  isOpened: boolean;
+  setIsOpened: (isOpened: boolean) => void;
 }) => {
-  const [isOpened, setIsOpened] = useState(false);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const {
     dodoPageName,
@@ -350,16 +358,15 @@ const FooterBar = ({
 
   return (
     <div>
-      {isOpened && <BlockModal />}
+      {<BlockModal isOpen={isOpened} />}
       <div className="flex gap-2">
         <button className="bg-white shadow-md border-[1px] py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70">
           Analytics
         </button>
 
         <div
-          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
-            isOpened ? "rotate-45" : "rotate-0"
-          }`}
+          className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${isOpened ? "rotate-45" : "rotate-0"
+            }`}
           onClick={() => setIsOpened(!isOpened)}
         >
           <Plus size={32} />

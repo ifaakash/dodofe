@@ -127,7 +127,7 @@ const AddHeading = ({
           onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >
-          {mode === "edit" ? "Update" : "Add"}
+          {mode === "edit" ? "Update" : "Add"} to draft
         </NewButton>
       </div>
     </div>

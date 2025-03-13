@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import cx from "classnames";
+import styles from "./button.module.css";
 
 interface Button2Props {
-  variant?: "primary" | "secondary" | "disabled" ;
+  variant?: "primary" | "secondary" | "disabled";
   size: "small" | "large" | "tertiary";
   children: React.ReactNode;
   onClick?: () => void;
@@ -16,6 +18,17 @@ const NewButton = ({
   onClick,
   className,
 }: Button2Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = () => {
+    if (variant !== "disabled" && onClick) {
+      setIsLoading(true);
+      onClick();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 8000); // 8 seconds
+    }
+  };
 
   const getButtonSizeClass = () => {
     switch (size) {
@@ -60,14 +73,19 @@ const NewButton = ({
       )}
 
       <button
-        onClick={isDisabled ? undefined : onClick}
+        onClick={handleClick}
         disabled={isDisabled}
         className={`relative z-20 flex items-center justify-center transition-all font-semibold ${getButtonSizeClass()} ${getButtonVariantClass()}`}
       >
         <span>{children}</span>
-        <ChevronRight className={`ml-2 h-5 w-5 ${size === "tertiary" && "text-brandPrimary"}`} strokeWidth={3} />
-      </button>
-    </div>
+        {isLoading ? (
+          <div className={cx("ml-2 h-5 w-5", styles.loader)}></div>
+        ) : (
+          <ChevronRight className={`ml-2 h-5 w-5 ${size === "tertiary" && "text-brandPrimary"}`} strokeWidth={3} />
+        )
+        }
+      </button >
+    </div >
   );
 };
 

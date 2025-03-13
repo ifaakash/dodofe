@@ -26,11 +26,11 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
 
 
     return (
-        <div className="px-5 py-4 mt-8 flex items-center justify-between">
+        <div className="px-5 py-4 mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <Link href="/">
                     <div className="py-3 pr-2">
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={22} />
                     </div>
                 </Link>
                 <div>

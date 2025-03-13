@@ -42,7 +42,7 @@ export const Header = ({
 
     return (
         <div
-            className={`h-16 flex pt-12 pb-6 fixed top-0 left-0 flex-row items-center w-full z-50 transition-transform duration-300 ${isScrolling ? "translate-y-0" : "-translate-y-full"
+            className={`h-16 flex pt-10 pb-6 fixed top-0 left-0 flex-row items-center w-full z-50 transition-transform duration-300 ${isScrolling ? "translate-y-0" : "-translate-y-full"
                 }`}
             style={{
                 backgroundColor: scrollY === 0 ? initialBackgroundColor : "white",
