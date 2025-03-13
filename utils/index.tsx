@@ -171,3 +171,12 @@ export const gotoLink = (link: string) => {
     newWindow.opener = null;
   }
 };
+
+export const handlePasteFromClipboard = async (cb) => {
+  try {
+    const text = await navigator.clipboard.readText();
+    cb(text);
+  } catch (error) {
+    console.error("Failed to read clipboard contents: ", error);
+  }
+};

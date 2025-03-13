@@ -1,7 +1,7 @@
 "use client";
 import NewButton from "@components/atoms/Button/NewButton";
 import { Input } from "@components/atoms";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Switcher from "@components/atoms/Switcher/Switcher";
 import AddImageIcon from "public/icons/addImage.svg";
 import Image from "next/image";
@@ -11,6 +11,8 @@ import { addBlock, updateBlock } from "store/slice/blocksSlice";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
+import PasteIcon from "public/icons/paste.svg";
+import { handlePasteFromClipboard } from "@utils/index";
 
 const badges = [
   {
@@ -65,6 +67,14 @@ const AddLink = ({
   const [badgeText, setBadgeText] = useState<string>(
     block?.blockData?.badge?.text || null
   );
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (titleEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [titleEditing]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -197,7 +207,9 @@ const AddLink = ({
       },
       hasMedia: !!(uploadedImage || block?.blockData?.linkDisplayPicture),
       isUpdated: true,
+      isNew: true,
     };
+
     dispatch(updateBlock(updatedBlock as any));
     router.back();
   };
@@ -217,7 +229,7 @@ const AddLink = ({
 
   return (
     <div className="py-5 flex flex-col items-center">
-      <div className="flex flex-col gap-8 w-full">
+      <div className="flex flex-col gap-3 w-full">
         <div className="flex flex-col gap-3">
           <div
             className={`flex ${displayType === "SMALL" ? "flex-row items-center" : "flex-col"
@@ -225,8 +237,8 @@ const AddLink = ({
           >
             <div
               className={`bg-[#979EAD] ${displayType === "SMALL"
-                  ? "w-10 h-10 rounded-md"
-                  : "w-full h-32 rounded-[10px]"
+                ? "w-10 h-10 rounded-md"
+                : "w-full h-32 rounded-[10px]"
                 } flex items-center justify-center relative cursor-pointer`}
             >
               <input
@@ -240,8 +252,8 @@ const AddLink = ({
                   src={displayImage()}
                   alt="uploaded preview"
                   className={`${displayType === "SMALL"
-                      ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px] aspect-square"
-                      : "w-full h-full object-cover rounded-[6px]"
+                    ? "w-full object-cover rounded-[6px] max-w-[50px] h-[50px] aspect-square"
+                    : "w-full h-full object-cover rounded-[6px]"
                     }`}
                 />
               ) : (
@@ -261,10 +273,11 @@ const AddLink = ({
                     <Input
                       type="text"
                       placeholder="Add Title...."
-                      value={title}
+                      value={title || ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setTitle(e.target.value)
                       }
+                      ref={inputRef}
                     />
                   ) : (
                     <div className="flex items-center gap-2">
@@ -295,13 +308,24 @@ const AddLink = ({
             </div>
           )}
 
-          <Input
-            placeholder="Paste your link here....."
-            value={link}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setLink(e.target.value)
-            }
-          />
+          <div className="relative">
+            <Input
+              placeholder="Paste your link here....."
+              value={link}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setLink(e.target.value)
+              }
+              className="pr-10"
+            />
+            <Image
+              src={PasteIcon}
+              alt="paste"
+              width={20}
+              height={20}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={() => handlePasteFromClipboard(setLink)}
+            />
+          </div>
           {linkError && (
             <div className="text-red-500 flex items-center gap-2">
               <TriangleAlert strokeWidth={2} size={16} />
@@ -310,8 +334,7 @@ const AddLink = ({
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="font-semibold"> Add text badge </div>
+        <div className="flex flex-col gap-3">
           <Input
             placeholder="Add Badge Text"
             value={badgeText}

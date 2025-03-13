@@ -13,6 +13,7 @@ import { userDetailsProps, InvoiceProps } from "types";
 import { Header } from "@components/molecules/Header";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@utils/constants";
+import useLoaderVisibility from "hooks/useLoaderVisibility";
 
 interface DashboardProps {
   userDetails: userDetailsProps;
@@ -20,6 +21,8 @@ interface DashboardProps {
 
 const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
   const [invoices, setInvoices] = useState<InvoiceProps[]>([]);
+  const { isVisible: isLoaderVisible } = useLoaderVisibility();
+
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -86,9 +89,11 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
               ))}
             </div>
           ) : (
-            <div className="text-gray-500 text-center text-sm">
-              No invoices available.
-            </div>
+            isLoaderVisible ? (
+              <div className="text-gray-500 text-center text-sm" style={{ minHeight: '480px' }} >
+                No invoices available.
+              </div>) : null
+
           )}
         </div>
 
@@ -99,7 +104,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
           <Image src={RunningGirl} width={150} height={210} alt="running" />
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -1,0 +1,23 @@
+.bulletLoader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.bullet {
+  width: 10px;
+  height: 10px;
+  background-color: var(--theme-3); /* Use a theme color */
+  border-radius: 50%;
+  animation: bulletAnimation 0.6s infinite alternate;
+}
+
+@keyframes bulletAnimation {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.5);
+  }
+} 

@@ -219,15 +219,18 @@ export default function Home() {
 
                             {userId && (
                                 <div className="ml-4" style={{ transform: "rotate(180deg)" }}>
-                                    <Image
-                                        height={24}
-                                        width={24}
-                                        src={sideBarIcon}
-                                        alt="side bar"
+                                    <div
                                         onClick={toggleSidebar}
                                         data-sidebar-toggle
-                                        className="cursor-pointer"
-                                    />
+                                        className="cursor-pointer p-2"
+                                    >
+                                        <Image
+                                            height={24}
+                                            width={24}
+                                            src={sideBarIcon}
+                                            alt="side bar"
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>

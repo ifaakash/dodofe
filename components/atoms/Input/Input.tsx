@@ -8,6 +8,7 @@ import styles from "./styles.module.css";
 
 interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
+  ref?: React.RefObject<HTMLInputElement>;
 }
 
 const Input: React.FC<EnhancedInputProps> = ({
@@ -17,6 +18,7 @@ const Input: React.FC<EnhancedInputProps> = ({
   onChange,
   type = "text",
   error,
+  ref
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -27,6 +29,7 @@ const Input: React.FC<EnhancedInputProps> = ({
   return (
     <div className="relative w-full">
       <input
+        ref={ref}
         className={cx(
           className,
           "bg-theme-2 px-4 py-1 h-12 text-sm rounded-lg w-full border",

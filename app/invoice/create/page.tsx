@@ -33,15 +33,18 @@ const CreateInvoice = () => {
   const [currentStage, setCurrentStage] = useState("senderDetails");
   const router = useRouter();
   const dispatch = useDispatch();
-  const state = useSelector((state: RootState) => state);
+
+  // Instead of selecting the entire state, select only the parts you need
+  const invoice = useSelector((state: RootState) => state.invoice);
+  const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null);
   const [error, setError] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
-  const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
 
   useEffect(() => {
+    dispatch(showLoader(true));
+
     const fetchUserDetails = async () => {
-      dispatch(showLoader(true));
       try {
         const res = await getUserDetails(userId);
         if (res) {
@@ -69,7 +72,9 @@ const CreateInvoice = () => {
   const progressPercentage = ((currentIndex + 1) / stages.length) * 100;
 
   const renderStage = () => {
-    if (!userDetails) return <div>Loading...</div>; // Handle loading state
+    if (!userDetails) {
+      return null;
+    }
 
     switch (currentStage) {
       case "senderDetails":
@@ -111,8 +116,6 @@ const CreateInvoice = () => {
   const handleInvoiceSubmit = async () => {
     dispatch(showLoader(true));
     try {
-      const invoice = state.invoice;
-
       if (!userDetails?.id) {
         console.error("User details are missing.");
         return;
@@ -163,7 +166,6 @@ const CreateInvoice = () => {
   const createBankDetails = async () => {
     dispatch(showLoader(true));
     try {
-      const invoice = state.invoice;
       const newBankDetails = await addBankDetails({
         userId: userDetails!.id,
         bankName: invoice.currentBankDetails.bankName,
@@ -185,7 +187,6 @@ const CreateInvoice = () => {
   const createClientDetails = async () => {
     dispatch(showLoader(true));
     try {
-      const invoice = state.invoice;
       const newClient = await createClient({
         userId: userDetails!.id,
         name: invoice.currentClientDetails.name,
@@ -210,7 +211,6 @@ const CreateInvoice = () => {
   const createRecipientDetails = async () => {
     dispatch(showLoader(true));
     try {
-      const invoice = state.invoice;
       const newRecipient = await createRecipient({
         userId: userDetails!.id,
         name: invoice.currentRecipientDetails.name,
@@ -243,7 +243,6 @@ const CreateInvoice = () => {
   }) => {
     dispatch(showLoader(true));
     try {
-      const invoice = state.invoice;
 
       const res = await createInvoice({
         userId: userDetails!.id,

@@ -191,16 +191,17 @@ const DodoPageDashboard = () => {
         }
 
         const handleNavigate = (block: Block) => {
-            if (block.isNew) {
-                toast.info(
-                    "Please publish your Dodo Page to update this block"
-                );
+            // if (block.isNew) {
+            //     toast.info(
+            //         "Please publish your Dodo Page to update this block"
+            //     );
 
-                return null;
-            } else {
-                router.push(`/dodo/${url}/editBlock/${block.id}`);
-            }
+            //     return null;
+            // } else {
+            router.push(`/dodo/${url}/editBlock/${block.id}`);
         };
+
+        const icon = block?.isNew ? "⏳" : "";
 
         let content;
         switch (block.blockType) {
@@ -287,11 +288,18 @@ const DodoPageDashboard = () => {
             default:
                 return null;
         }
-        return content;
+
+        return (
+            <div style={{ position: "relative" }}>
+                <div style={{ position: "absolute", top: 'calc(100% - 10px)', right: '10px' }}>
+                    {icon}
+                </div>
+                {content}
+            </div>
+        );
     };
 
     // console.log("dodoPageDetails", dodoPageDetails);
-
     return (
         <div
             className={`${styles.dodoBackground} ${styles.scrollableContainer}`}

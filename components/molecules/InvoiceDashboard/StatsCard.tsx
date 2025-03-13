@@ -8,6 +8,7 @@ import DueIcon from "public/icons/DuesIcon.svg";
 import HalfDonutChart from "@components/atoms/StatsChart/HalfDonutChart";
 import { getInvoiceStats } from "api";
 import { userDetailsProps } from "types";
+import { useRouter } from "next/navigation";
 
 interface InvoiceStats {
   outStandingAmount: number;
@@ -49,8 +50,7 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
   const [userInvoicesData, setUserInvoicesData] = useState<InvoiceStats | null>(null);
   const [loading, setLoading] = useState(false);
 
-  console.log('invoice data', userInvoicesData)
-
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStatsData = async () => {
@@ -119,13 +119,13 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
           </div>
         </div>
         <div className="bg-[#C1C7D0] w-full h-[1px]"></div>
-        <Link
-          href={"/invoice/create"}
-          className="border-[1px] border-[#C1C7D0] rounded-[10px] py-3 px-4 flex justify-center gap-1 items-center"
+        <div
+          onClick={() => router.push("/invoice/create")}
+          className="cursor-pointer border-[1px] border-[#C1C7D0] rounded-[10px] py-3 px-4 flex justify-center gap-1 items-center"
         >
           <div className="text-sm font-medium">Create new invoice</div>
           <FileText size={16} className="text-brandPrimary" />
-        </Link>
+        </div>
       </div>
 
       <div className="flex gap-2">
