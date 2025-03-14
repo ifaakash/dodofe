@@ -22,7 +22,7 @@ import gotoIcon from "public/icons/goto.svg";
 
 import { useRouter } from "next/navigation";
 import { BLOCKS, ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
@@ -44,31 +44,38 @@ export default function Home() {
     const [isMounted, setIsMounted] = useState(false);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
     const dodoPageDetail = userDetails?.dodoPages?.[0];
-    const [isFadingOut, setIsFadingOut] = useState(false);
     const [mainContentVisible, setMainContentVisible] = useState(false);
     const [blurAmount, setBlurAmount] = useState(0);
+    const scrollAnimationFrame = useRef<number | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
 
-        let handleScroll: any;
+        const handleScroll = () => {
+            if (scrollAnimationFrame.current === null) {
+                scrollAnimationFrame.current = requestAnimationFrame(() => {
+                    const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+                    let blurValue = Math.min((scrollProgress + 10) / 10, 10);
+
+                    if (scrollProgress === 0) {
+                        blurValue = 0;
+                    }
+
+                    setBlurAmount(blurValue);
+                    scrollAnimationFrame.current = null;
+                });
+            }
+        };
 
         if (typeof window !== 'undefined') {
-            handleScroll = () => {
-                const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-
-                let blurValue = Math.min((scrollProgress + 10) / 10, 10);
-
-                if (scrollProgress === 0) {
-                    blurValue = 0;
-                }
-
-                setBlurAmount(blurValue);
-            };
-
             window.addEventListener("scroll", handleScroll);
         }
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            if (scrollAnimationFrame.current !== null) {
+                cancelAnimationFrame(scrollAnimationFrame.current);
+            }
+            window.removeEventListener("scroll", handleScroll);
+        };
     }, []);
 
     const toggleSidebar = () => {
