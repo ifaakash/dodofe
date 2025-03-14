@@ -28,6 +28,7 @@ const CtaSection = ({
   buttonTextColor = "#fdfbff",
   showProfileImage = false,
   profileImageURL = "",
+  noImg = false,
 }) => {
   if (!title) {
     return (
@@ -129,13 +130,13 @@ const CtaSection = ({
 
         <div className={styles.thirdPart} style={{ backgroundColor: bgColor }}>
           <div onClick={onImageClick}>
-            <Image
+            {!noImg && <Image
               height={imgSize > 0 ? imgSize : 84}
               width={imgSize > 0 ? imgSize : 84}
               src={img}
               alt="user"
               className="mb-2 mt-2"
-            />
+            />}
           </div>
         </div>
       </div>
@@ -155,4 +156,4 @@ CtaSection.propTypes = {
   buttonTextColor: PropTypes.string,
 };
 
-export default CtaSection;
+export default React.memo(CtaSection);

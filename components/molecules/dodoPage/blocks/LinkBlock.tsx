@@ -25,7 +25,6 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
   };
 
   const displayImage = () => {
-    console.log(block.blockData?.linkDisplayPicture)
     if (!isEmpty(block.blockData?.linkDisplayPicture)) {
       if (typeof block.blockData?.linkDisplayPicture === "string") {
         return block.blockData.linkDisplayPicture;

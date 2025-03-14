@@ -22,7 +22,7 @@ import gotoIcon from "public/icons/goto.svg";
 
 import { useRouter } from "next/navigation";
 import { BLOCKS, ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
-import { lazy, useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
@@ -43,7 +43,7 @@ export default function Home() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
-    const dodoPageDetail = userDetails?.dodoPages?.[0];
+    const dodoPageDetail = useMemo(() => userDetails?.dodoPages?.[0], [userDetails]);
     const [mainContentVisible, setMainContentVisible] = useState(false);
     const [blurAmount, setBlurAmount] = useState(0);
     const scrollAnimationFrame = useRef<number | null>(null);
@@ -78,9 +78,9 @@ export default function Home() {
         };
     }, []);
 
-    const toggleSidebar = () => {
+    const toggleSidebar = useCallback(() => {
         setIsSidebarOpen(!isSidebarOpen);
-    };
+    }, [isSidebarOpen]);
 
     useEffect(() => {
         if (userId) {
@@ -90,12 +90,7 @@ export default function Home() {
         }
     }, [userId]);
 
-
-    if (!isMounted) {
-        return null;
-    }
-
-    const gotoLinksPage = (url: string) => {
+    const gotoLinksPage = useCallback((url: string) => {
         const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
         if (!userId) {
@@ -113,9 +108,9 @@ export default function Home() {
         router.push(ROUTE_CONSTANTS.LINKS + `?userId=${userId}`, {
             scroll: false,
         });
-    };
+    }, [router, userDetails]);
 
-    const handleInvoiceNavigation = () => {
+    const handleInvoiceNavigation = useCallback(() => {
         const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
         if (!userId) {
@@ -124,9 +119,9 @@ export default function Home() {
         }
 
         router.push(ROUTE_CONSTANTS.INVOICE);
-    };
+    }, [router]);
 
-    const copyToClipboard = (textToCopy: string) => {
+    const copyToClipboard = useCallback((textToCopy: string) => {
         navigator.clipboard
             .writeText(textToCopy)
             .then(() => {
@@ -136,9 +131,9 @@ export default function Home() {
                 console.error("Failed to copy text: ", error);
                 toast.error("Failed to copy text.");
             });
-    };
+    }, []);
 
-    const shareContent = () => {
+    const shareContent = useCallback(() => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
 
         if (navigator.share && !isEmpty(dodoPageDetail)) {
@@ -158,18 +153,18 @@ export default function Home() {
         } else {
             toast.error("Sharing is not supported on this browser.");
         }
-    };
+    }, [userDetails]);
 
     const getUserCard = () => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
 
         if (isEmpty(dodoPageDetail)) {
-            return <></>;
+            return <CtaSection title="Dodo user" description="Some issue in fetching your dodo pages" noImg />;
         }
 
         return (
             <div>
-                {userDetails.dodoPages.map((page: any) => (
+                {userDetails?.dodoPages?.map((page: any) => (
                     <CtaSection
                         key={page.id}
                         title={dodoPageDetail?.name || "Dodo user"}
@@ -189,9 +184,13 @@ export default function Home() {
         );
     };
 
-    const handleCoinsNavigation = () => {
+    const handleCoinsNavigation = useCallback(() => {
         router.push(ROUTE_CONSTANTS.COINS);
-    };
+    }, [router]);
+
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <Screen>
@@ -345,7 +344,7 @@ export default function Home() {
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
                             <Card
-                                title="Ig Price Estimator"
+                                title="IG Price Estimator"
                                 description=""
                                 icon={priceCalc}
                                 bgColor="var(--neon-rose)"
@@ -369,7 +368,7 @@ export default function Home() {
 
                 </div>
                 <HomeFooter />
-                {isMounted && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
+                {isMounted && isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
             </div>
 
         </Screen>

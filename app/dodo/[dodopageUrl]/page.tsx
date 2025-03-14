@@ -305,7 +305,17 @@ const DodoPageDashboard = () => {
         <div
             className={`${styles.dodoBackground} ${styles.scrollableContainer}}`}
         >
-            <div className={`flex flex-col gap-3 ${isOpened ? 'backdrop-filter blur-[5px]' : ''}`}>
+            {isOpened && <div
+                className="absolute inset-0"
+                style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)", // For Safari support
+                    zIndex: 9,
+                }}
+            />}
+
+            <div className={`flex flex-col gap-3`}>
                 <DodoPageHeader mode={mode} url={url} />
                 <HeroSection
                     mode={mode}
@@ -360,7 +370,7 @@ const DodoPageDashboard = () => {
             </div>
             {mode === "edit" && (
                 <div
-                    className={`bottom-0 fixed w-full p-4`}
+                    className={`bottom-0 fixed w-full p-4 z-10`}
                 >
                     <FooterBar
                         mode={mode}

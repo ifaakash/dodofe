@@ -65,7 +65,7 @@ const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
 
   return (
     <div
-      className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${isOpen ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-full scale-0 opacity-0'
+      className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${isOpen ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-full scale-0 opacity-0 hidden'
         }`}
     >
       <div className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>

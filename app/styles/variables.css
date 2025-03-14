@@ -19,7 +19,7 @@
   --grey: #4d4d4d;
   --neon-rose: #ffd9a8;
   --neon-purple: #e6affe;
---neon-yellow: #FFCB8A;
+  --neon-yellow: #FFCB8A;
 --neon-blue: #E09AFE;
   --main-bg-theme: #eae9ec;
   --text-color: #000000;
@@ -28,6 +28,7 @@
   --yellow: #FFF455;
   --warm-green: #C0FA59;
   --pink: #F4668E;
+  --red: #FF0000;
 }
 
 [data-theme="light"] {

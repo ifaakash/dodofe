@@ -1,6 +1,6 @@
 "use client"
 import { ROUTE_CONSTANTS } from 'utils/constants';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 // Import icons
@@ -10,6 +10,7 @@ import feedbackIcon from 'public/assets/note-list-check.svg';
 import starIcon from 'public/icons/star.svg';
 import contactUsIcon from 'public/icons/EnvelopeSimple.svg';
 import HelpIcon from 'public/icons/whatsapp.svg';
+import { useRouter } from 'next/navigation';
 
 const Sidebar = ({
     isSidebarOpen,
@@ -18,10 +19,13 @@ const Sidebar = ({
     isSidebarOpen: boolean;
     toggleSidebar: () => void;
 }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
+
     const handleLogout = () => {
         localStorage.clear();
         toggleSidebar();
-        window.location.href = ROUTE_CONSTANTS.LOGIN;
+        router.push(ROUTE_CONSTANTS.LOGIN);
     };
 
     const menuItems = [
@@ -86,7 +90,6 @@ const Sidebar = ({
             bottom: true
         },
     ];
-
     // Only render the sidebar content when it's open
     if (!isSidebarOpen) return null;
 
@@ -133,15 +136,15 @@ const Sidebar = ({
                         {menuItems.slice(0, -1).map((item, index) => (
                             <div
                                 key={index}
-                                className="py-4 px-4 cursor-pointer text-xl flex items-center"
+                                className="py-6 mx-2 px-4 cursor-pointer text-xl flex items-center"
                                 onClick={item.action}
                                 style={{
                                     fontFamily: "Clash Display",
                                 }}
                             >
                                 {item.icon && (
-                                    <span className="mr-2">
-                                        <Image src={item.icon} alt={item.text} width={24} height={24} />
+                                    <span className="mr-3">
+                                        <Image src={item.icon} alt={item.text} width={16} height={20} />
                                     </span>
                                 )}
                                 <span className="text-base">{item.text}</span>
@@ -154,16 +157,9 @@ const Sidebar = ({
                         <div
                             className="py-4 px-4 cursor-pointer text-xl flex items-center"
                             onClick={logoutItem.action}
-                            style={{
-                                fontFamily: "Clash Display",
-                                color: "var(--red)"
-                            }}
                         >
-                            {/* <span className="mr-2">
-                                <Image src={logoutItem.icon} alt={logoutItem.text} width={24} height={24} />
-                            </span> */}
                             <span className="mr-2">👋</span>
-                            {logoutItem.text}
+                            <span className="text-base clr-red" style={{ color: "var(--red)" }}>{logoutItem.text}</span>
                         </div>
                     </div>
                 </div>
@@ -172,4 +168,4 @@ const Sidebar = ({
     );
 };
 
-export default Sidebar;
+export default React.memo(Sidebar);
