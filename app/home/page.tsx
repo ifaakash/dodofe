@@ -22,7 +22,7 @@ import gotoIcon from "public/icons/goto.svg";
 
 import { useRouter } from "next/navigation";
 import { BLOCKS, ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
-import { useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useRef, useState } from "react";
 import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
@@ -30,7 +30,7 @@ import { isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
 import { Card } from "@utils/uiUtils";
 import CtaSection from "@components/molecules/CtaSection";
-import HomeFooter from "./homeFooter";
+const HomeFooter = lazy(() => import("./homeFooter"));
 import Link from "next/link";
 import dynamic from "next/dynamic";
 

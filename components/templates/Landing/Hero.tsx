@@ -23,7 +23,6 @@ const Hero = () => {
                 <Image
                     src="/placeholder-image.jpg"
                     alt="Placeholder"
-                    layout="fill"
                     objectFit="cover"
                     className="rounded-lg"
                 />

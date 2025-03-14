@@ -23,6 +23,7 @@ const HomeFooter = () => {
                 height={20}
                 src={creatorsImg}
                 alt="creators"
+                loading="lazy"
                 className="mt-6"
             />
             <span className="text-sm font-normal">100+ Creators Onboarded...</span><br />
@@ -35,10 +36,10 @@ const HomeFooter = () => {
         <Image
             height={100}
             src={greenBg}
-            layout="responsive"
             alt="green bg"
             className="mt-4 w-full"
             style={{ marginBottom: '-20px' }}
+            loading="lazy"
         />
 
         <div className={styles.movingStripWrapper} >
@@ -46,16 +47,16 @@ const HomeFooter = () => {
                 <Image
                     height={100}
                     src={footerStrip}
-                    layout="responsive"
                     alt="green bg"
+                    loading="lazy"
                     className={cx('mt-4 w-full', styles.stripImage)}
                 />
                 <Image
                     height={100}
                     src={greenBg}
-                    layout="responsive"
                     alt="green bg duplicate"
                     className="strip-image"
+                    loading="lazy"
                 />
             </div>
         </div>
