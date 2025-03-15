@@ -47,6 +47,7 @@ const HomeFooter = () => {
                 <Image
                     height={100}
                     src={footerStrip}
+                    layout="responsive"
                     alt="green bg"
                     loading="lazy"
                     className={cx('mt-4 w-full', styles.stripImage)}
@@ -54,6 +55,7 @@ const HomeFooter = () => {
                 <Image
                     height={100}
                     src={greenBg}
+                    layout="responsive"
                     alt="green bg duplicate"
                     className="strip-image"
                     loading="lazy"
