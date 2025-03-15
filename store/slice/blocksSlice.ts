@@ -105,8 +105,6 @@ const blocksSlice = createSlice({
       state.blocksToBeDeleted = true;
     },
     updateBlock: (state, action: PayloadAction<Block>) => {
-      console.log("action.payload", action.payload);
-
       const block = state.blocks.find(
         (block) => block.id === action.payload.id
       );
@@ -146,6 +144,8 @@ const blocksSlice = createSlice({
           state.blocksToBeUpdated = true;
           break;
       }
+
+      state.unPublishedBlocks = true;
     },
 
     archiveBlock: (state, action: PayloadAction<{ blockId: string }>) => {

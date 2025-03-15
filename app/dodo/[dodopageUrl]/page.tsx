@@ -80,6 +80,8 @@ const DodoPageDashboard = () => {
     );
     const existingBlocks = useSelector((state: any) => state.blocks.blocks);
 
+    // this useeffect ensures that the data is fetched from the server and the store is updated
+    // and if there is data in the store then api is not called
     useEffect(() => {
         // Use a ref to track if we've already loaded data
         const shouldFetchData =
@@ -300,7 +302,6 @@ const DodoPageDashboard = () => {
         );
     };
 
-    // console.log("dodoPageDetails", dodoPageDetails);
     return (
         <div
             className={`${styles.dodoBackground} ${styles.scrollableContainer}}`}

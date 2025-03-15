@@ -14,10 +14,11 @@ const rootReducer = combineReducers({
   loader: loaderReducer,
 });
 
+// do add any reducer here that you don't want to persist
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["invoice"],
+  blacklist: ["invoice", "loader"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

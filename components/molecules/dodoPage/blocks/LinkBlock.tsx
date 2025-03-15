@@ -25,23 +25,24 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
   };
 
   const displayImage = () => {
-    if (!isEmpty(block.blockData?.linkDisplayPicture)) {
-      if (typeof block.blockData?.linkDisplayPicture === "string") {
-        return block.blockData.linkDisplayPicture;
+    if (block?.blockData?.linkDisplayPicture) {
+      if (typeof block?.blockData?.linkDisplayPicture === "string") {
+        return block?.blockData?.linkDisplayPicture;
       }
       return URL.createObjectURL(block.blockData.linkDisplayPicture);
     }
     return null;
   };
 
+  console.log(displayImage(), block);
   return (
     <div
       className="p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
       ref={setNodeRef}
-      style={{ ...style, height: block.blockCardSize === "SMALL" ? '66px' : '180px' }}
+      style={{ ...style, height: block?.blockCardSize === "SMALL" ? '66px' : '180px' }}
       {...attributes}
     >
-      {block.blockCardSize === "SMALL" ? (
+      {block?.blockCardSize === "SMALL" ? (
         <div className="flex gap-2">
           {mode === "edit" && !inPreview && (
             <Image

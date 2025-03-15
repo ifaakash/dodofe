@@ -12,32 +12,10 @@ import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
 import PasteIcon from "public/icons/paste.svg";
-import { handlePasteFromClipboard } from "@utils/index";
+import { handlePasteFromClipboard, isEmpty } from "@utils/index";
 import Tooltip from "@components/atoms/Tooltip";
 import LinkBlock from "../blocks/LinkBlock";
-
-const badges = [
-  {
-    text: "Sunflower",
-    backgroundColor: "#FFCF58",
-    color: "#000000",
-  },
-  {
-    text: "Grapefruit",
-    backgroundColor: "#FB7053",
-    color: "#FFFFFF",
-  },
-  {
-    text: "Aqua",
-    backgroundColor: "#51C0EB",
-    color: "#FFFFFF",
-  },
-  {
-    text: "Plum",
-    backgroundColor: "#8066BE",
-    color: "#FFFFFF",
-  },
-];
+import { BADGES } from "@utils/constants";
 
 const AddLink = ({
   dodoPageId,
@@ -55,7 +33,7 @@ const AddLink = ({
   const router = useRouter();
   const dispatch = useDispatch();
   const [selectedBadgeCategory, setSelectedBadgeCategory] = useState<string>(
-    badges.find(
+    BADGES.find(
       (badge) => badge.text === block?.blockData?.badge?.backgroundColor
     )?.text || null
   );
@@ -84,7 +62,7 @@ const AddLink = ({
         ? {
           text: badgeText,
           backgroundColor: selectedBadgeCategory,
-          color: badges.find((badge) => badge.text === selectedBadgeCategory)?.color || "",
+          color: BADGES.find((badge) => badge.text === selectedBadgeCategory)?.color || "",
         }
         : null,
     },
@@ -110,7 +88,7 @@ const AddLink = ({
           ? {
             text: badgeText,
             backgroundColor: selectedBadgeCategory,
-            color: badges.find((badge) => badge.text === selectedBadgeCategory)?.color || "",
+            color: BADGES.find((badge) => badge.text === selectedBadgeCategory)?.color || "",
           }
           : null,
       },
@@ -134,7 +112,7 @@ const AddLink = ({
 
     if (text && !selectedBadgeCategory) {
       // Automatically assign the first badge color if none is selected
-      setSelectedBadgeCategory(badges[0].text);
+      setSelectedBadgeCategory(BADGES[0].text);
     } else if (!text) {
       // Clear the selected badge if the badge text is deleted
       setSelectedBadgeCategory(null);
@@ -210,7 +188,7 @@ const AddLink = ({
                 text: badgeText,
                 backgroundColor: selectedBadgeCategory,
                 color:
-                  badges.find((badge) => badge.text === selectedBadgeCategory)
+                  BADGES.find((badge) => badge.text === selectedBadgeCategory)
                     ?.color || null,
               }
               : null,
@@ -242,7 +220,7 @@ const AddLink = ({
           text: badgeText,
           backgroundColor: selectedBadgeCategory,
           color:
-            badges.find((badge) => badge.text === selectedBadgeCategory)
+            BADGES.find((badge) => badge.text === selectedBadgeCategory)
               ?.color || "",
         },
       },
@@ -259,6 +237,7 @@ const AddLink = ({
     if (uploadedImage) {
       return URL.createObjectURL(uploadedImage);
     }
+
     if (block?.blockData?.linkDisplayPicture) {
       if (typeof block?.blockData?.linkDisplayPicture === "string") {
         return block?.blockData?.linkDisplayPicture;
@@ -266,6 +245,13 @@ const AddLink = ({
       return URL.createObjectURL(block?.blockData?.linkDisplayPicture);
     }
     return null;
+  };
+
+
+  const checkForImage = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (uploadedImage) {
+      e.stopPropagation();
+    }
   };
 
   return (
@@ -357,8 +343,8 @@ const AddLink = ({
                 setLink(e.target.value)
               }
               className="pr-10"
-              icon={PasteIcon}
-              onIconClick={() => handlePasteFromClipboard(setLink)}
+            // icon={PasteIcon}
+            // onIconClick={() => handlePasteFromClipboard(setLink)}
             />
           </div>
           {linkError && (
@@ -377,7 +363,7 @@ const AddLink = ({
           />
 
           <div className="flex justify-between">
-            {badges.map((badge) => (
+            {BADGES.map((badge) => (
               <div
                 key={badge.text}
                 style={{
@@ -411,14 +397,14 @@ const AddLink = ({
         </div>
 
         {/* Live Preview Section */}
-        <div className="mt-5 w-full">
+        {/* <div className="mt-5 w-full">
           <h3 className="text-lg font-semibold mb-2">Live Preview</h3>
           <LinkBlock inPreview mode={mode} block={previewBlock} />
-        </div>
+        </div> */}
       </div>
 
-      <div className="bottom-0 fixed mb-4 px-4 w-full flex flex-col gap-4 items-center">
-        <Switcher displayType={displayType} setDisplayType={setDisplayType} />
+      <div className="bottom-0 fixed mb-4 px-4 w-full flex flex-col gap-4 items-center" onClick={checkForImage}>
+        <Switcher uploadedImage={uploadedImage} displayType={displayType} setDisplayType={setDisplayType} />
         {mode === "add" ? (
           <NewButton
             size="large"

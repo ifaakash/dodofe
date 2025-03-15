@@ -155,3 +155,26 @@ export const INDIAN_STATES = [
   "Jammu and Kashmir",
   "Ladakh",
 ];
+
+export const BADGES = [
+  {
+    text: "Sunflower",
+    backgroundColor: "#FFCF58",
+    color: "#000000",
+  },
+  {
+    text: "Grapefruit",
+    backgroundColor: "#FB7053",
+    color: "#FFFFFF",
+  },
+  {
+    text: "Aqua",
+    backgroundColor: "#51C0EB",
+    color: "#FFFFFF",
+  },
+  {
+    text: "Plum",
+    backgroundColor: "#8066BE",
+    color: "#FFFFFF",
+  },
+];
