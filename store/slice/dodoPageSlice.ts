@@ -61,11 +61,11 @@ const dodoPageSlice = createSlice({
       state.unsavedChanges = true;
     },
     resetDodoPage: (state) => {
-      state.dodoPageImage = null;
-      state.dodoPageName = null;
-      state.dodoPageThought = null;
-      state.socialLinks = null;
-      state.audioBio = null;
+      // state.dodoPageImage = null;
+      // state.dodoPageName = null;
+      // state.dodoPageThought = null;
+      // state.socialLinks = null;
+      // state.audioBio = null;
       state.unsavedChanges = false;
       state.isImageChanged = false;
       state.isAudioBioChanged = false;

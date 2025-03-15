@@ -144,3 +144,12 @@ export const updateBlockWithMedia = async (payload: any): Promise<any> =>
 export const toggleInvoicePaymentStatus = async (payload: any): Promise<any> =>
   Put<any>(API_CONSTANTS.toggleInvoicePaymentStatus, payload);
 
+export const updateBlocksByPageId = async (
+  pageId: string,
+  payload: any
+): Promise<any> =>
+  Patch<any>(
+    API_CONSTANTS.updateBlocks + API_CONSTANTS.slash + pageId,
+    payload
+  );
+

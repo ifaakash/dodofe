@@ -29,12 +29,13 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
       if (typeof block?.blockData?.linkDisplayPicture === "string") {
         return block?.blockData?.linkDisplayPicture;
       }
-      return URL.createObjectURL(block.blockData.linkDisplayPicture);
+      if (block?.blockData?.linkDisplayPicture instanceof Blob) {
+        return URL.createObjectURL(block?.blockData?.linkDisplayPicture);
+      }
     }
     return null;
   };
 
-  console.log(displayImage(), block);
   return (
     <div
       className="p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"

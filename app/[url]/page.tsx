@@ -23,7 +23,12 @@ const DodoPage = () => {
   useEffect(() => {
     getDodoPageByURL(url as string).then((res) => {
       if (res.success) {
-        setDodoPageDetails(res.dodoPage);
+        const dodoPage = {
+          ...res?.dodoPage,
+          blocks: res?.dodoPage?.blocks?.reverse(),
+        };
+
+        setDodoPageDetails(dodoPage);
         console.log("Page Fetched");
       }
     });

@@ -197,7 +197,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
                         </div>
                     </div>
 
-                    <div className="bg-[#EAE9EC] rounded-2xl py-6 px-4 flex flex-col gap-2">
+                    <div className="bg-[#EAE9EC] rounded-2xl p-4 flex flex-col gap-2">
                         <input
                             value={mobileNumber}
                             onChange={handleMobileNumber}

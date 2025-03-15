@@ -11,13 +11,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { resetUnPublishedBlocks } from "store/slice/blocksSlice";
+import { removeIsNewFromBlocks, resetUnpublishedBlocks, removeIsUpdatedFromBlocks, removeToRemoveFromBlocks } from "store/slice/blocksSlice";
 import {
   createBlock,
   createBlockWithMedia,
   deleteBlock,
   reorderBlocks,
   updateBlock,
+  updateBlocksByPageId,
   updateBlockWithMedia,
   updateDodoPage,
 } from "api/services";
@@ -27,6 +28,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
 import { useParams } from "next/navigation";
+import { Block } from "types";
 
 const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
   const { dodopageUrl } = useParams();
@@ -114,9 +116,10 @@ const FooterBar = ({
   const dispatch = useDispatch();
   const blockState = useSelector((state: any) => state.blocks);
   const dodoPageState = useSelector((state: any) => state.dodoPage);
+  const { unpublishedBlocks } = blockState;
+  const enablePublish = unpublishedBlocks || unsavedChanges;
 
   const handlePublish = async () => {
-    console.log("Handle Publish");
     try {
       if (blockState.newBlocksAdded) {
         const newBlocks = blockState.blocks.filter((block) => block.isNew);
@@ -154,8 +157,13 @@ const FooterBar = ({
                   );
                 }
 
-                const createLink = await createBlockWithMedia(formData);
-                console.log("createLink", createLink);
+                try {
+                  const createLink = await createBlockWithMedia(formData);
+                  console.log("createLink", createLink);
+                } catch (error) {
+                  console.error("Error creating link block:", error);
+                  return false; // Return false if any block creation fails
+                }
                 break;
 
               case "PRODUCT":
@@ -208,7 +216,6 @@ const FooterBar = ({
       }
 
       if (blockState.blocksToBeDeleted) {
-        console.log("blocksToBeDeleted");
         const blocksToBeDeleted = blockState.blocks.filter(
           (block) => block.toRemove
         );
@@ -251,30 +258,57 @@ const FooterBar = ({
           formData.append("audioBio", audioBio);
         }
 
-        const DodoPageRes = await updateDodoPage(formData);
-        console.log("updateDodoPage", DodoPageRes);
+        try {
+          const DodoPageRes = await updateDodoPage(formData);
+        } catch (error) {
+          console.error("Error updating Dodo Page:", error);
+          return false; // Return false if any Dodo Page update fails
+        }
+      }
+
+      if (unpublishedBlocks) {
+        console.log("Unpublished Blocks", unpublishedBlocks);
+
+        // Create a copy of blocks with filler properties removed
+        const sanitizedBlocks = blockState.blocks.map((block) => {
+          const { isNew, isUpdated, isDeleted, ...rest } = block;
+          return rest;
+        });
+
+        try {
+          const updateBlocks = await updateBlocksByPageId(dodoPageId, sanitizedBlocks);
+
+        } catch (error) {
+          console.error("Error updating Blocks:", error);
+          return false; // Return false if any Blocks update fails
+        }
       }
 
       if (blockState.blocksToBeUpdated) {
-        console.log("Blocks to be updated");
-        const updatedBlocks = blockState.blocks.filter(
-          (block) => block.isUpdated
+        const updatedBlocks = blockState?.blocks?.filter(
+          (block: Block) => block?.isUpdated
         );
 
-        updatedBlocks.forEach(async (block) => {
+        updatedBlocks.forEach(async (block: Block) => {
           try {
             switch (block.blockType) {
               case "HEADING":
-                const headingRes = await updateBlock({
-                  blockId: block.id,
-                  userId: userId,
-                  dodopageUrl: url,
-                  blockData: {
-                    title: block.blockData.title,
-                  },
-                });
-                console.log("headingRes", headingRes);
+
+                try {
+                  const headingRes = await updateBlock({
+                    blockId: block.id,
+                    userId: userId,
+                    dodopageUrl: url,
+                    blockData: {
+                      title: block.blockData.title,
+                    },
+                  });
+                } catch (error) {
+                  console.error("Error publishing heading block:", error);
+                  return false; // Return false if any block update fails
+                }
                 break;
+
               case "PRODUCT":
                 const formDataProduct = new FormData();
                 formDataProduct.append(
@@ -290,8 +324,13 @@ const FooterBar = ({
                 formDataProduct.append("userId", userId);
                 formDataProduct.append("dodopageUrl", url);
                 formDataProduct.append("blockCardSize", block.blockCardSize);
-                const productRes = await updateBlockWithMedia(formDataProduct);
-                console.log("productRes", productRes);
+                try {
+                  const productRes = await updateBlockWithMedia(formDataProduct);
+                  console.log("productRes", productRes);
+                } catch (error) {
+                  console.error("Error publishing product block:", error);
+                  return false; // Return false if any block update fails
+                }
                 break;
 
               case "LINK":
@@ -320,19 +359,31 @@ const FooterBar = ({
                   block.blockData.badge.color
                 );
 
-                const linkRes = await updateBlockWithMedia(formDataLink);
-                console.log("linkRes", linkRes);
+                try {
+                  const linkRes = await updateBlockWithMedia(formDataLink);
+                  console.log("linkRes", linkRes);
+                } catch (error) {
+                  console.error("Error updating block:", error);
+                  return false; // Return false if any block update fails
+                }
+
                 break;
               case "SEPARATOR":
-                const separatorRes = await updateBlock({
-                  blockId: block.id,
-                  userId: userId,
-                  dodopageUrl: url,
-                  blockData: {
-                    separatorType: block.blockData.separatorType,
-                  },
-                });
-                console.log("separatorRes", separatorRes);
+
+                try {
+                  const separatorRes = await updateBlock({
+                    blockId: block.id,
+                    userId: userId,
+                    dodopageUrl: url,
+                    blockData: {
+                      separatorType: block.blockData.separatorType,
+                    },
+                  });
+                  console.log("separatorRes", separatorRes);
+                } catch (error) {
+                  console.error("Error updating block:", error);
+                  return false; // Return false if any block update fails
+                }
                 break;
               default:
                 break;
@@ -344,17 +395,25 @@ const FooterBar = ({
         });
       }
 
-      dispatch(resetDodoPage());
-      dispatch(resetUnPublishedBlocks());
+      resetReduxForDodoPage();
+
       toast.success("Dodo Page published successfully");
 
-      window.location.href = `/dodo/${url}`;
+      // window.location.href = `/dodo/${url}`;
       return true;
     } catch (error) {
       console.error("Error in handlePublish:", error);
       return false;
     }
   };
+
+  const resetReduxForDodoPage = () => {
+    dispatch(resetDodoPage());
+    dispatch(resetUnpublishedBlocks());
+    dispatch(removeIsNewFromBlocks());
+    dispatch(removeIsUpdatedFromBlocks());
+    dispatch(removeToRemoveFromBlocks());
+  }
 
   return (
     <div>
@@ -374,7 +433,8 @@ const FooterBar = ({
 
         <button
           onClick={handlePublish}
-          className="bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70"
+          disabled={!enablePublish}
+          className={`bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70 ${!enablePublish ? "bg-gray-200 clr-light-green" : ""}`}
         >
           Publish
         </button>

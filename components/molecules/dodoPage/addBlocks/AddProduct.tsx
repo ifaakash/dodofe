@@ -141,14 +141,16 @@ const AddProduct = ({
   };
 
   const displayImage = () => {
-    if (uploadedImage) {
+    if (uploadedImage && uploadedImage instanceof Blob) {
       return URL.createObjectURL(uploadedImage);
     }
     if (block?.blockData?.productImage) {
       if (typeof block?.blockData?.productImage === "string") {
         return block?.blockData?.productImage;
       }
-      return URL.createObjectURL(block?.blockData?.productImage);
+      if (block?.blockData?.productImage) {
+        return URL.createObjectURL(block?.blockData?.productImage);
+      }
     }
     return null;
   };

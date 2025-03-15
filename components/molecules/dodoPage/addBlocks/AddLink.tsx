@@ -226,7 +226,6 @@ const AddLink = ({
       },
       hasMedia: !!(uploadedImage || block?.blockData?.linkDisplayPicture),
       isUpdated: true,
-      isNew: true,
     };
 
     dispatch(updateBlock(updatedBlock as any));
@@ -234,7 +233,7 @@ const AddLink = ({
   };
 
   const displayImage = () => {
-    if (uploadedImage) {
+    if (uploadedImage && uploadedImage instanceof Blob) {
       return URL.createObjectURL(uploadedImage);
     }
 
@@ -242,7 +241,9 @@ const AddLink = ({
       if (typeof block?.blockData?.linkDisplayPicture === "string") {
         return block?.blockData?.linkDisplayPicture;
       }
-      return URL.createObjectURL(block?.blockData?.linkDisplayPicture);
+      if (block?.blockData?.linkDisplayPicture instanceof Blob) {
+        return URL.createObjectURL(block?.blockData?.linkDisplayPicture);
+      }
     }
     return null;
   };

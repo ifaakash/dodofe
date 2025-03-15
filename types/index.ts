@@ -164,4 +164,5 @@ export interface Block {
   toArchive?: boolean
   isActive?: boolean
   isNew?: boolean
+  isUpdated?: boolean
 }

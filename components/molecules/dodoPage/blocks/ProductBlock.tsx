@@ -30,7 +30,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
 
   const displayImage = () => {
     if (block.isNew || block.isUpdated) {
-      if (block?.blockData?.productImage?.name) {
+      if (block?.blockData?.productImage instanceof Blob) {
         const url = URL.createObjectURL(block.blockData.productImage);
         console.log({ url }, 1)
         return url;

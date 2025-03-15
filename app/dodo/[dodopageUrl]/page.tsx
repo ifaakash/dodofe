@@ -94,13 +94,14 @@ const DodoPageDashboard = () => {
             getDodoPageByURL(dodopageUrl)
                 .then((res) => {
                     if (!res?.dodoPage) return; // Add error handling
+                    const reversedBlocks = res.dodoPage.blocks.reverse();
 
                     // Batch the state updates
                     setDodoPageDetails(res.dodoPage);
-                    setBlocks(res.dodoPage.blocks || []);
+                    setBlocks(reversedBlocks || []);
 
                     // Batch the dispatch actions
-                    dispatch(addBlocksToStore(res.dodoPage.blocks || []));
+                    dispatch(addBlocksToStore(reversedBlocks || []));
                     dispatch(
                         dodoStoreInitialisation({
                             dodoPageId: res.dodoPage.id,
@@ -204,7 +205,7 @@ const DodoPageDashboard = () => {
             router.push(`/dodo/${url}/editBlock/${block.id}`);
         };
 
-        const icon = block?.isNew ? "⏳" : "";
+        const icon = block?.isNew || block?.isUpdated ? "⏳" : "";
 
         let content;
         switch (block.blockType) {

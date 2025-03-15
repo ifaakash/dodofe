@@ -7,20 +7,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
-import { resetUnPublishedBlocks } from "store/slice/blocksSlice";
+import { resetUnpublishedBlocks } from "store/slice/blocksSlice";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
     const { unsavedChanges } = useSelector(
         (state: any) => state.dodoPage
     );
-    const { unPublishedBlocks } = useSelector(
+    const { unpublishedBlocks } = useSelector(
         (state: any) => state.blocks
     );
     const dispatch = useDispatch();
 
     const handleDiscardChanges = () => {
         dispatch(resetDodoPage());
-        dispatch(resetUnPublishedBlocks());
+        dispatch(resetUnpublishedBlocks());
         window.location.href = `/dodo/${url}`;
     };
 
@@ -35,7 +35,7 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
                 </Link>
                 <div>
                     <div>
-                        {(unsavedChanges || (unPublishedBlocks && mode === "edit")) && (
+                        {(unsavedChanges || (unpublishedBlocks && mode === "edit")) && (
                             <div>
                                 <button
                                     onClick={handleDiscardChanges}
