@@ -266,24 +266,6 @@ const FooterBar = ({
         }
       }
 
-      if (unpublishedBlocks) {
-        console.log("Unpublished Blocks", unpublishedBlocks);
-
-        // Create a copy of blocks with filler properties removed
-        const sanitizedBlocks = blockState.blocks.map((block) => {
-          const { isNew, isUpdated, isDeleted, ...rest } = block;
-          return rest;
-        });
-
-        try {
-          const updateBlocks = await updateBlocksByPageId(dodoPageId, sanitizedBlocks);
-
-        } catch (error) {
-          console.error("Error updating Blocks:", error);
-          return false; // Return false if any Blocks update fails
-        }
-      }
-
       if (blockState.blocksToBeUpdated) {
         const updatedBlocks = blockState?.blocks?.filter(
           (block: Block) => block?.isUpdated
