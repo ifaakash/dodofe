@@ -12,9 +12,8 @@ const Dialog = (props: any) => {
     (props.animationType === "enter"
       ? props.enterAnimation
       : props.leaveAnimation) || props.animation;
-  const className = `rounded-b-none modal-inner-content modal-${animation}-${
-    props.animationType
-  } ${props?.bottomSheet ? "bottom-sheet" : "dialog"}`;
+  const className = `rounded-b-none modal-inner-content modal-${animation}-${props.animationType
+    } ${props?.bottomSheet ? "bottom-sheet" : "dialog"}`;
   const { width, duration, customStyles, fullVhHeight } = props;
   const style = {
     width: width + "%",
@@ -107,17 +106,11 @@ const Dialog = (props: any) => {
         {props?.showCloseIcon && (
           <span
             onClick={props?.onCloseIconClick}
-            className="flex close-icon m-1 mb-3"
+            className="flex close-icon m-1 mb-3 text-2xl"
             data-unit-test-label={`modal-close-${props.unitTestLabel}`}
             data-e2e-test-label="modal-close-icon"
           >
-            <Image
-              height={16}
-              width={16}
-              src={cross}
-              alt="user profile"
-              className="my-4"
-            />
+            x
           </span>
         )}
         {props.modalHeader && (
@@ -143,14 +136,14 @@ const Modal: React.FC<ModalProps> = ({
   isPullable = true,
   modalHeader,
   modalHeaderClass = "",
-  showCloseIcon,
+  showCloseIcon = true,
   isBackgroundBlur,
   onCloseIconClick,
   headerIcon,
   unitTestLabel,
   center,
   rectangleVisible = true,
-  showOuterCloseIcon = false,
+  showOuterCloseIcon = true,
   bottomSheet = false,
   disableBackdropClick = false,
   customStyles,
@@ -213,8 +206,8 @@ const Modal: React.FC<ModalProps> = ({
         !disableBackdropClick
           ? onClose ?? onCloseIconClick
           : () => {
-              //
-            }
+            //
+          }
       }
     />
   ) : null;

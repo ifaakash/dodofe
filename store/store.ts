@@ -3,6 +3,7 @@ import invoiceReducer from "./slice/invoiceSlice";
 import dodoPageReducer from "./slice/dodoPageSlice";
 import blocksReducer from "./slice/blocksSlice";
 import loaderReducer from "./slice/loaderSlice";
+import commonReducer from "./slice/commonSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   dodoPage: dodoPageReducer,
   blocks: blocksReducer,
   loader: loaderReducer,
+  common: commonReducer,
 });
 
 // do add any reducer here that you don't want to persist

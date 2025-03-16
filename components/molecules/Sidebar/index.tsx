@@ -12,6 +12,8 @@ import starIcon from 'public/icons/star.svg';
 import contactUsIcon from 'public/icons/EnvelopeSimple.svg';
 import HelpIcon from 'public/icons/whatsapp.svg';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { toggleLogoutModalState } from 'store/slice/commonSlice';
 
 const Sidebar = ({
     isSidebarOpen,
@@ -22,13 +24,13 @@ const Sidebar = ({
     toggleSidebar: () => void;
     url?: string;
 }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const dispatch = useDispatch();
     const router = useRouter();
 
     const handleLogout = () => {
-        localStorage.clear();
         toggleSidebar();
-        router.push(ROUTE_CONSTANTS.LOGIN);
+
+        dispatch(toggleLogoutModalState());
     };
 
     const menuItems = [
