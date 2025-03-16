@@ -178,3 +178,13 @@ export const BADGES = [
     color: "#FFFFFF",
   },
 ];
+
+export const WEBVIEW_ACTIONS = {
+  requestAudioPermission: 'requestAudioPermission',
+  copyToClipboard: 'copyToClipboard',
+  pasteFromClipboard: 'pasteFromClipboard',
+  openUrlInBrowser: 'openUrlInBrowser',
+  shareContent: 'shareContent',
+  requestLocationPermission: 'requestLocationPermission',
+  vibrateDevice: 'vibrateDevice'
+}

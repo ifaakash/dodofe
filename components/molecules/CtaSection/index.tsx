@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styles from "./ctaSection.module.css"; // Optional CSS for styling
 
@@ -18,7 +18,7 @@ const CtaSection = ({
   buttonLabel = "Create now",
   onClick = () => { },
   onButtonClick = () => { },
-  onImageClick = () => { },
+  onImageClick = (e: any) => { },
   img = profileIcon,
   imgSize = -1,
   floatingPosition = "bottom-right", // 'top-right' or 'bottom-right'
@@ -30,6 +30,8 @@ const CtaSection = ({
   profileImageURL = "",
   noImg = false,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   if (!title) {
     return (
       <div className={styles.floatingSection} style={{ color: "#000" }}>
@@ -65,11 +67,17 @@ const CtaSection = ({
     );
   }
 
+  const onDivClick = () => {
+    setIsLoading(true);
+    onClick();
+    setTimeout(() => setIsLoading(false), 2000);
+  }
+
   return (
     <div
       className={styles.floatingSection}
       style={{ color: textColor }}
-      onClick={onClick}
+      onClick={onDivClick}
     >
       <div className={styles.firstPart} style={{ backgroundColor: bgColor }}>
         <div>
@@ -114,13 +122,21 @@ const CtaSection = ({
           <span className="text-xs font-normal whitespace-nowrap">{buttonLabel}</span>
 
           {buttonLabel !== "Coming soon..." && (
-            <Image
-              height={12}
-              width={12}
-              src={gotoIcon}
-              alt="user"
-              className="ml-2"
-            />
+            <div style={{ minWidth: "22px" }}>
+              {
+                isLoading ? (
+                  <div className={`${styles.loader} ml-2`}></div>
+                ) : (
+                  <Image
+                    height={12}
+                    width={12}
+                    src={gotoIcon}
+                    alt="user"
+                    className="ml-2"
+                  />
+                )
+              }
+            </div>
           )}
         </div>
         <div

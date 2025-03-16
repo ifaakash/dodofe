@@ -886,3 +886,36 @@ body::-webkit-scrollbar {
   padding-right: 8px; /* Optional: space for scrollbar */
   position: relative; /* Ensure proper stacking context */
 }
+
+.webview-body {
+  /* Disable text selection */
+  user-select: none;
+
+  /* Disable text copying */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Edge */
+
+  /* Disable zooming */
+  touch-action: manipulation; /* Prevents double-tap to zoom */
+  overscroll-behavior: none; /* Prevents overscroll bounce effect */
+
+  /* Disable context menu */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Edge */
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+
+  /* Hide scrollbars */
+  scrollbar-width: none; /* Firefox */
+}
+
+.webview-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

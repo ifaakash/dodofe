@@ -24,6 +24,8 @@ import {
   setIsImageChanged,
   setIsAudioBioChanged,
 } from "store/slice/dodoPageSlice";
+import { sendToNative } from "@utils/index";
+import { WEBVIEW_ACTIONS } from "@utils/constants";
 
 const HeroSection = ({
   mode = "public",
@@ -155,39 +157,64 @@ const HeroSection = ({
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      setMediaRecorder(recorder);
+      // Check if running in a React Native WebView
+      if (window.ReactNativeWebView) {
+        // Request audio permission from React Native
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({ action: 'requestAudioPermission' })
+        );
 
-      // Set up audio visualization
-      audioContextRef.current = new AudioContext();
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-      const analyser = audioContextRef.current.createAnalyser();
-      analyser.fftSize = 256;
-      source.connect(analyser);
-      analyserRef.current = analyser;
+        // Listen for a message back from the native app indicating permission status
+        window.addEventListener('message', async (event) => {
+          const { action, status } = JSON.parse(event.data);
 
-      const chunks: Blob[] = [];
-      recorder.ondataavailable = (e) => chunks.push(e.data);
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/wav" });
-        setAudioBlob(blob);
-        console.log("Audio saved", blob);
-      };
-
-      recorder.start();
-      setIsRecording(true);
-      setAudioChunks([]);
-
-      // Stop recording after 20 seconds
-      setTimeout(() => {
-        if (recorder.state === "recording") {
-          stopRecording();
-        }
-      }, 20000);
+          if (action === 'audioPermissionResponse' && status === 'granted') {
+            // Permission granted, proceed with recording
+            await startRecordingProcess();
+          } else {
+            console.error("Audio permission denied");
+          }
+        }, { once: true }); // Ensure the listener is removed after the first call
+      } else {
+        // For web, start recording immediately
+        await startRecordingProcess();
+      }
     } catch (err) {
       console.error("Error accessing microphone:", err);
     }
+  };
+
+  const startRecordingProcess = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(stream);
+    setMediaRecorder(recorder);
+
+    // Set up audio visualization
+    audioContextRef.current = new AudioContext();
+    const source = audioContextRef.current.createMediaStreamSource(stream);
+    const analyser = audioContextRef.current.createAnalyser();
+    analyser.fftSize = 256;
+    source.connect(analyser);
+    analyserRef.current = analyser;
+
+    const chunks: Blob[] = [];
+    recorder.ondataavailable = (e) => chunks.push(e.data);
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: "audio/wav" });
+      setAudioBlob(blob);
+      console.log("Audio saved", blob);
+    };
+
+    recorder.start();
+    setIsRecording(true);
+    setAudioChunks([]);
+
+    // Stop recording after 20 seconds
+    setTimeout(() => {
+      if (recorder.state === "recording") {
+        stopRecording();
+      }
+    }, 20000);
   };
 
   const stopRecording = () => {

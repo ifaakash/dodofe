@@ -5,5 +5,6 @@ declare global {
         otpless: any; // Adjust the type as needed (if you know the exact type, replace `any`)
         recaptchaVerifier: any;
         confirmationResult: any;
+        ReactNativeWebView: any;
     }
 }

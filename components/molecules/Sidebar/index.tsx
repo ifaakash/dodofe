@@ -15,9 +15,11 @@ import { useRouter } from 'next/navigation';
 const Sidebar = ({
     isSidebarOpen,
     toggleSidebar,
+    url
 }: {
     isSidebarOpen: boolean;
     toggleSidebar: () => void;
+    url?: string;
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
@@ -33,7 +35,10 @@ const Sidebar = ({
             text: "DodoPage",
             icon: DodoPageIcon,
             action: () => {
-                window.location.href = ROUTE_CONSTANTS.DODOPAGE;
+                router.push(
+                    ROUTE_CONSTANTS.DODOPAGE + ROUTE_CONSTANTS.SLASH + `${url}`
+                );
+
                 toggleSidebar();
             },
             delay: 0,
@@ -42,7 +47,10 @@ const Sidebar = ({
             text: "Digi-Invoice",
             icon: digiInvoiceIcon,
             action: () => {
-                window.location.href = ROUTE_CONSTANTS.LINKS;
+                router.push(
+                    ROUTE_CONSTANTS.INVOICE
+                );
+
                 toggleSidebar();
             },
             delay: 50,

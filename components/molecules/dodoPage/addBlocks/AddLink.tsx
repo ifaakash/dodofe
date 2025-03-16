@@ -233,7 +233,7 @@ const AddLink = ({
   };
 
   const displayImage = () => {
-    if (uploadedImage && uploadedImage instanceof Blob) {
+    if (uploadedImage) {
       return URL.createObjectURL(uploadedImage);
     }
 
@@ -279,6 +279,8 @@ const AddLink = ({
                 <img
                   src={displayImage()}
                   alt="uploaded preview"
+                  width={displayType === "SMALL" ? 20 : '100%'}
+                  height={displayType === "SMALL" ? 20 : '100%'}
                   className={`transition-all duration-300 ease-in-out ${displayType === "SMALL"
                     ? "w-[50px] h-[50px] object-cover rounded-[6px]"
                     : "w-full h-full object-cover rounded-[6px]"
@@ -344,8 +346,8 @@ const AddLink = ({
                 setLink(e.target.value)
               }
               className="pr-10"
-            // icon={PasteIcon}
-            // onIconClick={() => handlePasteFromClipboard(setLink)}
+              icon={PasteIcon}
+              onIconClick={() => handlePasteFromClipboard(setLink)}
             />
           </div>
           {linkError && (

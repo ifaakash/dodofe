@@ -174,9 +174,47 @@ export const gotoLink = (link: string) => {
 
 export const handlePasteFromClipboard = async (cb) => {
   try {
-    const text = await navigator.clipboard.readText();
-    cb(text);
+    let text;
+    if (window && window.ReactNativeWebView) {
+      // Native environment: Listen for messages from native
+      const handleMessage = (event) => {
+        try {
+          const { action, content } = JSON.parse(event.data);
+          if (action === 'clipboardContent') {
+            console.log('Text received from native clipboard:', content);
+            cb(content);
+          }
+        } catch (error) {
+          console.error("Failed to process message from native:", error);
+        }
+      };
+
+      // Add event listener for messages from native
+      window.addEventListener('message', handleMessage);
+
+      // Optionally, return a function to remove the listener
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
+    } else {
+      // Web environment
+      text = await navigator.clipboard.readText();
+      console.log('Text pasted from web clipboard:', text);
+      cb(text);
+    }
   } catch (error) {
     console.error("Failed to read clipboard contents: ", error);
   }
 };
+
+export const isWebview = () => {
+  return window && window.ReactNativeWebView;
+}
+
+export const sendToNative = (action: string, payload = {}) => {
+  if (window && window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+    window.ReactNativeWebView.postMessage(JSON.stringify({ action, ...payload }));
+  } else {
+    console.warn('Not in WebView environment');
+  }
+}

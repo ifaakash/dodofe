@@ -121,7 +121,9 @@ export default function Home() {
         router.push(ROUTE_CONSTANTS.INVOICE);
     }, [router]);
 
-    const copyToClipboard = useCallback((textToCopy: string) => {
+    const copyToClipboard = useCallback((e: any, textToCopy: string) => {
+        e.stopPropagation();
+
         navigator.clipboard
             .writeText(textToCopy)
             .then(() => {
@@ -135,13 +137,15 @@ export default function Home() {
 
     const shareContent = useCallback(() => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
+        const content = `Check out my Dodo Page: https://dodoclub.in/${dodoPageDetail?.url}`;
 
-        if (navigator.share && !isEmpty(dodoPageDetail)) {
+        if (typeof navigator !== 'undefined' && navigator.share && !isEmpty(dodoPageDetail)) {
+            // Web sharing
             navigator
                 .share({
                     title: "Check out my Dodo Page",
                     text: "Here's my Dodo Page, check it out!",
-                    url: `https://dodoclub.in/${dodoPageDetail?.url}`, // Replace with dynamic URL
+                    url: `https://dodoclub.in/${dodoPageDetail?.url}`,
                 })
                 .then(() => toast.success("Shared successfully!"))
                 .catch((error) => {
@@ -150,8 +154,14 @@ export default function Home() {
                         toast.error("Failed to share content.");
                     }
                 });
+        } else if (window.ReactNativeWebView) {
+            // Native sharing via postMessage
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'shareContent',
+                content: content
+            }));
         } else {
-            toast.error("Sharing is not supported on this browser.");
+            toast.error("Sharing is not supported on this platform.");
         }
     }, [userDetails]);
 
@@ -172,7 +182,7 @@ export default function Home() {
                         buttonBgColor="var(--pink)"
                         profileImageURL={dodoPageDetail?.profilePicture}
                         onClick={() => gotoLinksPage(page.url)}
-                        onImageClick={() => copyToClipboard(dodoPageDetail?.url)}
+                        onImageClick={(e) => copyToClipboard(e, 'https://dodoclub.in/' + dodoPageDetail?.url)}
                         img={copy}
                         imgSize={32}
                         onButtonClick={shareContent}
@@ -228,13 +238,14 @@ export default function Home() {
                                     <div
                                         onClick={toggleSidebar}
                                         data-sidebar-toggle
-                                        className="cursor-pointer p-2 pb-0"
+                                        className="cursor-pointer p-2 pr-0 pb-0"
                                     >
                                         <Image
                                             height={32}
                                             width={32}
                                             src={sideBarIcon}
                                             alt="side bar"
+                                            priority
                                         />
                                     </div>
                                 </div>
@@ -242,7 +253,7 @@ export default function Home() {
                         </div>
 
                         {userId && (
-                            <div className="flex row justify-between w-full ml-2">
+                            <div className="flex row justify-between w-full ml-1">
                                 <p>
                                     Hi,{" "}
                                     <span className="font-bold">
@@ -368,7 +379,7 @@ export default function Home() {
 
                 </div>
                 <HomeFooter />
-                {isMounted && isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
+                {isMounted && isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} url={dodoPageDetail?.url} />}
             </div>
 
         </Screen>
