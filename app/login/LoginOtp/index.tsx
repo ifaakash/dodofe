@@ -25,6 +25,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
     const inputRefs = useRef<(HTMLInputElement | null)[]>(
         Array.from({ length: otpLength }, () => null)
     );
+    const [isTermsChecked, setIsTermsChecked] = useState(true);
 
     const handleOnChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -42,7 +43,8 @@ export const LoginOtp = ({ setLoginState }: any) => {
         // Check if all digits are filled
         if (
             updatedOtp.every((digit) => digit !== "") &&
-            updatedOtp.join("").length === otpLength
+            updatedOtp.join("").length === otpLength &&
+            isTermsChecked
         ) {
             verifyOTP(updatedOtp.join(""));
         }
@@ -128,6 +130,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
         setLoginState(1);
     };
 
+    const isButtonDisabled = !isTermsChecked || otp.some((digit) => digit === "");
 
     return (
         <div>
@@ -184,10 +187,19 @@ export const LoginOtp = ({ setLoginState }: any) => {
                             <RotateCcw size={12} />
                         </div>
                     </div>
+
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            checked={isTermsChecked}
+                            onChange={() => setIsTermsChecked(!isTermsChecked)}
+                        />
+                        <span className="text-xs">I agree to the terms and conditions</span>
+                    </div>
                 </div>
 
                 <NewButton
-                    variant={"primary"}
+                    variant={isButtonDisabled ? "disabled" : "primary"}
                     size="large"
                     onClick={() => { }}
                     className="w-full"

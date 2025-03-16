@@ -5,8 +5,6 @@ import styles from "./loginNumber.module.css";
 import { saveState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import {
-    getAuth,
-    RecaptchaVerifier,
     signInWithPhoneNumber,
 } from "firebase/auth";
 import { auth } from "config/firebase";
@@ -14,108 +12,16 @@ import { toast } from "react-toastify";
 import PhoneNumberInputBg from "public/assets/phoneNumberScreen.png";
 import Image from "next/image";
 import NewButton from "@components/atoms/Button/NewButton";
+import { RecaptchaVerifier } from "firebase/auth";
 
 export const LoginNumber = ({ setLoginState }: any) => {
     const [mobileNumber, setMobileNumber] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [recaptchaVerified, setRecaptchaVerified] = useState(false);
-    const [showRecaptcha, setShowRecaptcha] = useState(false);
-    const recaptchaContainerRef = useRef<HTMLDivElement>(null);
 
     const handleMobileNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/[^0-9]/g, "");
         setMobileNumber(value);
-
-        if (value.length === 10) {
-            setShowRecaptcha(true);
-            // Delay recaptcha initialization to ensure container is rendered
-            setTimeout(() => {
-                initRecaptcha();
-            }, 0);
-        } else {
-            setShowRecaptcha(false);
-            setRecaptchaVerified(false);
-            if (window.recaptchaVerifier) {
-                try {
-                    window.recaptchaVerifier.clear();
-                } catch (error) {
-                    console.error("Error clearing reCAPTCHA:", error);
-                }
-                window.recaptchaVerifier = null;
-            }
-        }
     };
-
-    const initRecaptcha = () => {
-        try {
-            // Clear existing instance if any
-            if (window.recaptchaVerifier) {
-                try {
-                    window.recaptchaVerifier.clear();
-                } catch (error) {
-                    console.error("Error clearing existing reCAPTCHA:", error);
-                }
-                window.recaptchaVerifier = null;
-            }
-
-            // Create new instance
-            if (!window.recaptchaVerifier && recaptchaContainerRef.current) {
-                window.recaptchaVerifier = new RecaptchaVerifier(
-                    auth,
-                    recaptchaContainerRef.current,
-                    {
-                        size: "normal",
-                        callback: () => {
-                            console.log("reCAPTCHA verified");
-                            setRecaptchaVerified(true);
-                        },
-                        "expired-callback": () => {
-                            console.log("reCAPTCHA expired");
-                            setRecaptchaVerified(false);
-                            if (window.recaptchaVerifier) {
-                                try {
-                                    window.recaptchaVerifier.clear();
-                                } catch (error) {
-                                    console.error(
-                                        "Error clearing expired reCAPTCHA:",
-                                        error
-                                    );
-                                }
-                                window.recaptchaVerifier = null;
-                            }
-                            setShowRecaptcha(false);
-                            setTimeout(() => {
-                                setShowRecaptcha(true);
-                                initRecaptcha();
-                            }, 100);
-                        },
-                    }
-                );
-
-                window.recaptchaVerifier.render();
-            }
-        } catch (error) {
-            console.error("Error initializing reCAPTCHA:", error);
-            // Reset states on error
-            setShowRecaptcha(false);
-            setRecaptchaVerified(false);
-            window.recaptchaVerifier = null;
-        }
-    };
-
-    // Cleanup on unmount
-    useEffect(() => {
-        return () => {
-            if (window.recaptchaVerifier) {
-                try {
-                    window.recaptchaVerifier.clear();
-                } catch (error) {
-                    console.error("Error cleaning up reCAPTCHA:", error);
-                }
-                window.recaptchaVerifier = null;
-            }
-        };
-    }, []);
 
     const gotoOtpScreen = async () => {
         if (mobileNumber.length !== 10) {
@@ -123,12 +29,37 @@ export const LoginNumber = ({ setLoginState }: any) => {
             return;
         }
 
-        if (!recaptchaVerified) {
-            toast.error("Please complete the reCAPTCHA verification");
-            return;
-        }
-
         setIsLoading(true);
+        try {
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(
+                    auth,
+                    'recaptcha-container', // Ensure this matches an existing element ID
+                    {
+                        size: "invisible",
+                        callback: async () => {
+                            console.log("reCAPTCHA verified");
+                            await sendOtp();
+                        },
+                        "expired-callback": () => {
+                            console.log("reCAPTCHA expired");
+                            toast.error("reCAPTCHA expired, please try again.");
+                        },
+                    },
+                );
+            }
+
+            // Trigger reCAPTCHA
+            await window.recaptchaVerifier.verify();
+
+        } catch (error) {
+            console.error("Error during reCAPTCHA verification:", error);
+            toast.error("Failed to verify reCAPTCHA. Please try again.");
+            setIsLoading(false);
+        }
+    };
+
+    const sendOtp = async () => {
         try {
             console.log("Initiating phone authentication for:", mobileNumber);
             const formattedNumber = `+91${mobileNumber}`;
@@ -156,23 +87,6 @@ export const LoginNumber = ({ setLoginState }: any) => {
             }
 
             toast.error(errorMessage);
-            setShowRecaptcha(false);
-            setRecaptchaVerified(false);
-            if (window.recaptchaVerifier) {
-                try {
-                    window.recaptchaVerifier.clear();
-                } catch (error) {
-                    console.error(
-                        "Error clearing reCAPTCHA after OTP error:",
-                        error
-                    );
-                }
-                window.recaptchaVerifier = null;
-            }
-            setTimeout(() => {
-                setShowRecaptcha(true);
-                initRecaptcha();
-            }, 100);
         } finally {
             setIsLoading(false);
         }
@@ -193,7 +107,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
                             <span className={styles.shimmerBg}>Digits,</span> please!
                         </div>
                         <div className="text-[#979EAD] text-[20px] leading-normal">
-                            Let’s make this official 🫣
+                            Let's make this official 🫣
                         </div>
                     </div>
 
@@ -204,17 +118,13 @@ export const LoginNumber = ({ setLoginState }: any) => {
                             type="number"
                             className="w-full outline-none bg-transparent placeholder:text-[#3D4966] placeholder:font-normal placeholder:text-xl leading-normal font-semibold text-[#000] text-2xl"
                             placeholder="Enter here"
+                            maxLength={10}
                         />
                         {/* <div className="bg-[#D0D0D0] w-full h-[1px]"></div> */}
                     </div>
                 </div>
 
-                {showRecaptcha && (
-                    <div
-                        ref={recaptchaContainerRef}
-                        className="flex justify-center mt-4"
-                    />
-                )}
+                <div id="recaptcha-container"></div>
 
                 <NewButton
                     variant={mobileNumber.length === 10 ? "primary" : "disabled"}
@@ -226,6 +136,5 @@ export const LoginNumber = ({ setLoginState }: any) => {
                 </NewButton>
             </div>
         </div>
-
     );
 };
