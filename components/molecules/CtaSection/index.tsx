@@ -70,7 +70,7 @@ const CtaSection = ({
   const onDivClick = () => {
     setIsLoading(true);
     onClick();
-    setTimeout(() => setIsLoading(false), 2000);
+    setTimeout(() => setIsLoading(false), 5000);
   }
 
   return (

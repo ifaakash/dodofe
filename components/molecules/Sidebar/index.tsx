@@ -2,6 +2,7 @@
 import { ROUTE_CONSTANTS } from 'utils/constants';
 import React, { useState } from 'react';
 import Image from 'next/image';
+import packageJson from 'package.json';
 
 // Import icons
 import DodoPageIcon from 'public/assets/file.svg';
@@ -160,10 +161,11 @@ const Sidebar = ({
                         ))}
                     </div>
 
+                    <span className="text-center text-sm text-gray-500 mb-2">Version: {packageJson.version}</span>
                     {/* Logout Button at the Bottom */}
-                    <div className="mt-auto">
+                    <div className="mt-auto border-t border-gray-200">
                         <div
-                            className="py-4 px-4 cursor-pointer text-xl flex items-center"
+                            className="py-4 px-4 cursor-pointer text-xl flex items-center justify-center"
                             onClick={logoutItem.action}
                         >
                             <span className="mr-2">👋</span>

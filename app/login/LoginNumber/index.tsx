@@ -2,7 +2,7 @@ import { Footer, UserInput } from "@components/atoms";
 import { useState, useEffect, useRef } from "react";
 import cx from "classnames";
 import styles from "./loginNumber.module.css";
-import { saveState } from "@utils/localStorage";
+import { loadState, saveState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import {
     signInWithPhoneNumber,
@@ -15,8 +15,34 @@ import NewButton from "@components/atoms/Button/NewButton";
 import { RecaptchaVerifier } from "firebase/auth";
 
 export const LoginNumber = ({ setLoginState }: any) => {
-    const [mobileNumber, setMobileNumber] = useState("");
+    const [mobileNumber, setMobileNumber] = useState(loadState(STORAGE_CONSTANTS.MOBILE) || "");
     const [isLoading, setIsLoading] = useState(false);
+
+    const numberRef = useRef<string>(mobileNumber);
+
+    useEffect(() => {
+        numberRef.current = mobileNumber;
+    }, [mobileNumber]);
+
+    useEffect(() => {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(
+                auth,
+                'recaptcha-container',
+                {
+                    size: "invisible",
+                    callback: async () => {
+                        console.log("reCAPTCHA verified");
+                        await sendOtp();
+                    },
+                    "expired-callback": () => {
+                        console.log("reCAPTCHA expired");
+                        toast.error("reCAPTCHA expired, please try again.");
+                    },
+                }
+            );
+        }
+    }, []); // Empty dependency array to run only on mount
 
     const handleMobileNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/[^0-9]/g, "");
@@ -31,24 +57,6 @@ export const LoginNumber = ({ setLoginState }: any) => {
 
         setIsLoading(true);
         try {
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(
-                    auth,
-                    'recaptcha-container', // Ensure this matches an existing element ID
-                    {
-                        size: "invisible",
-                        callback: async () => {
-                            console.log("reCAPTCHA verified");
-                            await sendOtp();
-                        },
-                        "expired-callback": () => {
-                            console.log("reCAPTCHA expired");
-                            toast.error("reCAPTCHA expired, please try again.");
-                        },
-                    },
-                );
-            }
-
             // Trigger reCAPTCHA
             await window.recaptchaVerifier.verify();
 
@@ -60,9 +68,10 @@ export const LoginNumber = ({ setLoginState }: any) => {
     };
 
     const sendOtp = async () => {
+        const latestNumber = numberRef.current;
         try {
-            console.log("Initiating phone authentication for:", mobileNumber);
-            const formattedNumber = `+91${mobileNumber}`;
+            console.log("Initiating phone authentication for:", latestNumber);
+            const formattedNumber = `+91${latestNumber}`;
 
             console.log("Sending OTP to:", formattedNumber);
             const confirmationResult = await signInWithPhoneNumber(
@@ -73,7 +82,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
 
             console.log("OTP sent successfully");
             window.confirmationResult = confirmationResult;
-            saveState(STORAGE_CONSTANTS.MOBILE, mobileNumber);
+            saveState(STORAGE_CONSTANTS.MOBILE, latestNumber);
             toast.success("OTP sent successfully!");
             setLoginState(2);
         } catch (error: any) {
@@ -124,7 +133,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
                     </div>
                 </div>
 
-                <div id="recaptcha-container"></div>
+                <div id="recaptcha-container" className="invisible"></div>
 
                 <NewButton
                     variant={mobileNumber.length === 10 ? "primary" : "disabled"}
