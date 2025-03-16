@@ -19,6 +19,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const numberRef = useRef<string>(mobileNumber);
+    const recaptchaRef = useRef<any>(null);
 
     useEffect(() => {
         numberRef.current = mobileNumber;
@@ -42,6 +43,14 @@ export const LoginNumber = ({ setLoginState }: any) => {
                 }
             );
         }
+
+        // Cleanup function to reset reCAPTCHA verifier on unmount
+        return () => {
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.clear();
+                window.recaptchaVerifier = null;
+            }
+        };
     }, []); // Empty dependency array to run only on mount
 
     const handleMobileNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +108,12 @@ export const LoginNumber = ({ setLoginState }: any) => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Function to handle successful reCAPTCHA verification
+    const onCaptchaSuccess = (token: string) => {
+        // Handle the successful verification
+        console.log('reCAPTCHA verified:', token);
     };
 
     return (
