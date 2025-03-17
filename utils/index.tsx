@@ -223,7 +223,7 @@ export const sendToNative = (action: string, payload = {}) => {
 
 export const handleNativeBackButton = (event: MessageEvent, defaultBack: () => void, onBackClick?: () => void,) => {
   try {
-    console.log(event.data)
+    console.log('Received message on WebView:', event.data)
     const data = JSON.parse(event.data);
     if (data.action === 'backButtonPressed') {
       if (onBackClick) {
