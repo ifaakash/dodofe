@@ -175,6 +175,8 @@ export const gotoLink = (link: string) => {
 export const handlePasteFromClipboard = async (cb) => {
   try {
     let text;
+    sendToNative('pasteFromClipboard');
+
     if (window && window.ReactNativeWebView) {
       // Native environment: Listen for messages from native
       const handleMessage = (event) => {
@@ -221,6 +223,7 @@ export const sendToNative = (action: string, payload = {}) => {
 
 export const handleNativeBackButton = (event: MessageEvent, defaultBack: () => void, onBackClick?: () => void,) => {
   try {
+    console.log(event.data)
     const data = JSON.parse(event.data);
     if (data.action === 'backButtonPressed') {
       if (onBackClick) {

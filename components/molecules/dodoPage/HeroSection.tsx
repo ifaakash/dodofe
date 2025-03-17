@@ -156,6 +156,33 @@ const HeroSection = ({
     dispatch(setIsImageChanged(true));
   };
 
+  useEffect(() => {
+    const messageHandler = async (event) => {
+      try {
+        const { action, status } = JSON.parse(event.data);
+        console.log('Received from Native:', action, status);
+
+        if (action === 'audioPermissionResponse') {
+          if (status === 'granted') {
+            await startRecordingProcess();
+          } else if (status === 'blocked') {
+            toast.info("Microphone permission is blocked. Please enable it from settings.");
+          } else {
+            toast.error("Microphone permission denied.");
+          }
+        }
+      } catch (err) {
+        console.error('Message parse error:', err);
+      }
+    };
+
+    window.addEventListener('message', messageHandler);
+
+    return () => {
+      window.removeEventListener('message', messageHandler);
+    };
+  }, []);
+
   const startRecording = async () => {
     try {
       // Check if running in a React Native WebView
@@ -164,20 +191,6 @@ const HeroSection = ({
         window.ReactNativeWebView.postMessage(
           JSON.stringify({ action: 'requestAudioPermission' })
         );
-
-        // Listen for a message back from the native app indicating permission status
-        window.addEventListener('message', async (event) => {
-          const { action, status } = JSON.parse(event.data);
-          console.log(action, status);
-          if (action === 'audioPermissionResponse' && status === 'granted') {
-            // Permission granted, proceed with recording
-            await startRecordingProcess();
-          } else if (status === 'blocked') {
-            toast.info("Microphone permission is blocked. Please enable it from settings.");
-          } else {
-            toast.error("Microphone permission denied.");
-          }
-        }, { once: true }); // Ensure the listener is removed after the first call
       } else {
         // For web, start recording immediately
         await startRecordingProcess();

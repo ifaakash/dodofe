@@ -22,6 +22,26 @@ export const Header = ({
     const [scrollY, setScrollY] = useState(0);
 
     useEffect(() => {
+        let scrollTimeout: NodeJS.Timeout;
+
+        const handleScroll = () => {
+            setScrollY(window.scrollY);
+            setIsScrolling(false);
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                setIsScrolling(true);
+            }, 500);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            clearTimeout(scrollTimeout);
+        };
+    }, []);
+
+    useEffect(() => {
         window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
 
         return () => {
