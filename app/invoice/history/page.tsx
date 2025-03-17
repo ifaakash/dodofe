@@ -65,6 +65,8 @@ const InvoiceHistory = () => {
     }
   }
 
+  console.log('filteredInvoices', filteredInvoices)
+
   return (
     <div className="flex flex-col px-5 gap-4">
       <Link

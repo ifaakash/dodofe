@@ -52,12 +52,18 @@ const PreviewInvoice = () => {
     "recipientDetails" in invoice ? invoice.recipientDetails : null;
   const bankDetails = "bankDetails" in invoice ? invoice.bankDetails : null;
 
+  const discountAmount = (invoice.subTotal * invoice.discount) / 100;
+  const gstAmount = (invoice.subTotal * invoice.gst) / 100;
+  const tdsAmount = (invoice.subTotal * invoice.tds) / 100;
 
+  const totalAmount = invoice.subTotal - discountAmount + gstAmount + tdsAmount;
 
   return (
-    <div className="bg-[#D8D6DC] pt-16">
+    <div className="pt-16">
       <Header title={invoice.subHeading || "Invoice"} />
-      <div className="bg-[#D8D6DC] md:h-64 w-full lg:px-[280px] px-0">
+      <div className="h-64 bg-[#D8D6DC] absolute top-0 left-0 right-0 -z-10"></div>
+
+      <div className="w-full lg:px-[280px] px-0">
         <div className="py-6 flex justify-center">
           <div className="flex flex-col gap-1">
             <h1 className="uppercase font-bold text-[22px] text-center">
@@ -108,8 +114,8 @@ const PreviewInvoice = () => {
                 <h2 className="font-semibold">Invoice by</h2>
                 <div className="bg-white p-4 rounded-[10px] flex flex-col gap-[10px] md:h-[180px]">
                   <Image
-                    src={Rajveer}
-                    alt="Rajveer"
+                    src={DodoIconCircle}
+                    alt="DodoIconCircle"
                     width={40}
                     className="rounded-full"
                   />
@@ -157,20 +163,48 @@ const PreviewInvoice = () => {
                     ₹{invoice.subTotal}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-[#5E6C84] font-medium">
-                    Discount
-                  </span>
-                  <span className="text-sm font-medium">
-                    {invoice.discount}%
-                  </span>
-                </div>
+                {
+                  invoice.discount !== null && (
+                    <div className="flex justify-between">
+                      <span className="text-sm text-[#5E6C84] font-medium">
+                        Discount
+                      </span>
+                      <span className="text-sm font-medium">
+                        {invoice.discount}%
+                      </span>
+                    </div>
+                  )
+                }
+                {
+                  invoice.gst !== null && (
+                    <div className="flex justify-between">
+                      <span className="text-sm text-[#5E6C84] font-medium">
+                        GST
+                      </span>
+                      <span className="text-sm font-medium">
+                        {invoice.gst}%
+                      </span>
+                    </div>
+                  )
+                }
+                {
+                  invoice.tds !== null && (
+                    <div className="flex justify-between">
+                      <span className="text-sm text-[#5E6C84] font-medium">
+                        TDS
+                      </span>
+                      <span className="text-sm font-medium">
+                        {invoice.tds}%
+                      </span>
+                    </div>
+                  )
+                }
               </div>
             </div>
             <div className="py-[14px] px-4 rounded-b-[10px] bg-[#D8D6DC] flex justify-between">
               <span className="text-sm text-[#5E6C84]">Total</span>
               <span className="font-semibold">
-                {formatCurrency(invoice.subTotal)}
+                {formatCurrency(totalAmount)}
               </span>
             </div>
           </div>
