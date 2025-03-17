@@ -24,7 +24,7 @@ import {
   setIsImageChanged,
   setIsAudioBioChanged,
 } from "store/slice/dodoPageSlice";
-import { sendToNative } from "@utils/index";
+import { isWebview, sendToNative } from "@utils/index";
 import { WEBVIEW_ACTIONS } from "@utils/constants";
 import { toast } from "react-toastify";
 
@@ -158,23 +158,25 @@ const HeroSection = ({
 
   useEffect(() => {
     const messageHandler = async (event) => {
-      try {
-        const { action, status } = JSON.parse(event.data);
-        console.log('Received from Native:', action, status);
+      if (isWebview()) {
+        try {
+          const { action, status } = JSON.parse(event.data);
+          console.log('Received from Native:', action, status);
 
-        if (action === 'audioPermissionResponse') {
-          if (status === 'granted') {
-            await startRecordingProcess();
-          } else if (status === 'blocked') {
-            toast.info("Microphone permission is blocked. Please enable it from settings.");
-          } else {
-            toast.error("Microphone permission denied.");
+          if (action === 'audioPermissionResponse') {
+            if (status === 'granted') {
+              await startRecordingProcess();
+            } else if (status === 'blocked') {
+              toast.info("Microphone permission is blocked. Please enable it from settings.");
+            } else {
+              toast.error("Microphone permission denied.");
+            }
           }
+        } catch (err) {
+          console.error('Message parse error:', err);
         }
-      } catch (err) {
-        console.error('Message parse error:', err);
-      }
-    };
+      };
+    }
 
     window.addEventListener('message', messageHandler);
 
