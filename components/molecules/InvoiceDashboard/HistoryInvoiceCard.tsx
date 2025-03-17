@@ -12,16 +12,16 @@ import Link from "next/link";
 
 const StatusBadge = ({ isDue, status, isExpanded }: StatusBadgeProps) => {
   const getBgColor = () => {
-    if (isDue) return "bg-[#FFA742]";
+
     if (status === "paid") return "bg-brandPrimary";
+    if (isDue) return "bg-[#FFA742]";
     return "bg-[#979EAD]";
   };
 
   return (
     <div
-      className={` ${getBgColor()} w-fit ${
-        isExpanded ? "rounded-tl-lg  rounded-br-lg" : "rounded-l-lg"
-      } flex justify-center items-center max-w-[21px] transition-all duration-300`}
+      className={` ${getBgColor()} w-fit ${isExpanded ? "rounded-tl-lg  rounded-br-lg" : "rounded-l-lg"
+        } flex justify-center items-center max-w-[21px] transition-all duration-300`}
     >
       <div className="text-[10px] text-white h-fit -rotate-90">
         {isDue ? "Due" : status === "paid" ? "Paid" : "Unpaid"}
@@ -55,7 +55,7 @@ const HistoryInvoiceCard = ({
 }: InvoiceHistoryCard) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
-  
+
   // Measure the expanded content height
   useEffect(() => {
     if (contentRef.current) {
@@ -64,9 +64,9 @@ const HistoryInvoiceCard = ({
           setContentHeight(entry.contentRect.height);
         }
       });
-      
+
       resizeObserver.observe(contentRef.current);
-      
+
       return () => {
         if (contentRef.current) {
           resizeObserver.unobserve(contentRef.current);
@@ -124,9 +124,9 @@ const HistoryInvoiceCard = ({
         </div>
       </div>
 
-      <div 
-        className="overflow-hidden transition-all duration-300 ease-in-out" 
-        style={{ 
+      <div
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{
           maxHeight: isExpanded ? `${contentHeight + 100}px` : '0px',
           opacity: isExpanded ? 1 : 0
         }}

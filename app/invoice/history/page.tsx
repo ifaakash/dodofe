@@ -8,17 +8,18 @@ import { getAllInvoices } from "api";
 import { InvoiceProps } from "types";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
-
+import { useSearchParams } from "next/navigation";
 
 
 const InvoiceHistory = () => {
-  const [timeFrame, setTimeFrame] = useState("all");
+  const searchParams = useSearchParams();
+  const mode = searchParams.get('mode');
+  const [timeFrame, setTimeFrame] = useState(mode || "all");
   const [invoices, setInvoices] = useState<InvoiceProps[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceProps[]>([]);
   const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
 
-  
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
@@ -44,7 +45,7 @@ const InvoiceHistory = () => {
         invoices.filter((invoice) => {
           const dueDate = new Date(invoice.dueDate);
           return (
-            invoice.status.toLowerCase() === "unpaid" && 
+            invoice.status.toLowerCase() === "unpaid" &&
             dueDate <= currentDate
           );
         })
@@ -63,6 +64,8 @@ const InvoiceHistory = () => {
       setExpandedInvoiceId(invoiceId);
     }
   }
+
+  console.log('filteredInvoices', filteredInvoices)
 
   return (
     <div className="flex flex-col px-5 gap-4">
@@ -85,17 +88,15 @@ const InvoiceHistory = () => {
               key={label}
               onClick={() => setTimeFrame(label.toLowerCase())}
               className={`py-2 px-3 w-full text-sm text-center cursor-pointer
-                ${
-                  index === 0
-                    ? "rounded-l-lg"
-                    : index === 3
+                ${index === 0
+                  ? "rounded-l-lg"
+                  : index === 3
                     ? "rounded-r-lg"
                     : ""
                 }
-                ${
-                  timeFrame === label.toLowerCase()
-                    ? "bg-white text-brandPrimary font-medium"
-                    : "bg-[#F2F1F3]"
+                ${timeFrame === label.toLowerCase()
+                  ? "bg-white text-brandPrimary font-medium"
+                  : "bg-[#F2F1F3]"
                 }
               `}
               role="tab"
@@ -109,9 +110,9 @@ const InvoiceHistory = () => {
           {filteredInvoices.length > 0 ? (
             filteredInvoices.map((invoice, index) => (
               <div key={index}>
-                <InvoiceHistoryCard 
-                  invoice={invoice} 
-                  isExpanded={expandedInvoiceId === invoice.id} 
+                <InvoiceHistoryCard
+                  invoice={invoice}
+                  isExpanded={expandedInvoiceId === invoice.id}
                   handleCardExpand={handleCardExpand}
                 />
               </div>

@@ -1,57 +1,34 @@
-import React from 'react';
+import React from "react";
+import { PieChart, Pie, Cell } from "recharts";
 
-const HalfDonutChart = ({ paidAmount, pendingAmount }: { paidAmount: number, pendingAmount: number }) => {
-  const total = paidAmount + pendingAmount;
-  const radius = 120;
-  const strokeWidth = 30;
-  const center = radius + strokeWidth;
-  const circumference = Math.PI * radius;
+const HalfDonutChart = ({paidAmount, pendingAmount}: {paidAmount: number, pendingAmount: number}) => {
+  const data = [
+    { name: "Paid", value: paidAmount },
+    { name: "Pending", value: pendingAmount }
+  ];
 
-  const outStandingPercentage = (paidAmount / total) * 100;
-  const pendingPercentage = (pendingAmount / total) * 100;
-
-  const outStandingStroke = (outStandingPercentage / 100) * circumference;
-  const pendingStroke = (pendingPercentage / 100) * circumference;
+  const COLORS = ["#4CAF50", "#FF5733"]; // Customize colors
 
   return (
-    <div className="w-full max-w-md">
-      <div>
-        <div className="relative flex flex-col items-center">
-          <svg
-            width={center * 2}
-            height={center + strokeWidth / 2}
-            className=""
-            viewBox={`0 0 ${center * 2} ${center + strokeWidth / 2}`}
-          >
-            {/* Background circle */}
-            <path
-              d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${center * 2 - strokeWidth} ${center}`}
-              fill="none"
-              stroke="#e2e8f0"
-              strokeWidth={strokeWidth}
-            />
-
-            {/* Outstanding amount arc */}
-            <path
-              d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${center * 2 - strokeWidth} ${center}`}
-              fill="none"
-              stroke="#15CF62"
-              strokeWidth={strokeWidth}
-              strokeDasharray={`${outStandingStroke} ${circumference}`}
-            />
-
-            {/* Pending amount arc */}
-            <path
-              d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${center * 2 - strokeWidth} ${center}`}
-              fill="none"
-              stroke="#FF865A"
-              strokeWidth={strokeWidth}
-              strokeDasharray={`${pendingStroke} ${circumference}`}
-              strokeDashoffset={-outStandingStroke}
-            />
-          </svg>
-        </div>
-      </div>
+    <div className="flex justify-center items-center w-full">
+      <PieChart width={400} height={200}>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="100%"
+          startAngle={180}
+          endAngle={0}
+          innerRadius={120}
+          outerRadius={150}
+          paddingAngle={2} 
+          cornerRadius={10}
+          dataKey="value"
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index]} />
+          ))}
+        </Pie>
+      </PieChart>
     </div>
   );
 };
