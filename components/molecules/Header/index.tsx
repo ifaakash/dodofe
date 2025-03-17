@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import leftArrow from "public/icons/leftArrow.svg";
-import { handleNativeBackButton } from "@utils/index";
+import { handleNativeBackButton, isWebview } from "@utils/index";
 
 interface HeaderProps {
     title?: string;
@@ -42,10 +42,14 @@ export const Header = ({
     }, []);
 
     useEffect(() => {
-        window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
+        if (isWebview()) {
+            document.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
+        }
 
         return () => {
-            window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
+            if (isWebview()) {
+                document.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
+            }
         };
     }, [router]);
 

@@ -50,7 +50,7 @@ import {
 } from "api";
 import { loadState } from "@utils/localStorage";
 import Screen from "@components/molecules/Screen";
-import { debounce, handleNativeBackButton, isEmpty } from "@utils/index";
+import { debounce, handleNativeBackButton, isEmpty, isWebview } from "@utils/index";
 import { toast } from "react-toastify";
 import VoiceRecorder from "../../components/molecules/VoiceRecorder";
 import ThoughtsModal from "./ThoughtModal";
@@ -137,10 +137,13 @@ function Links() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
-
+    if (isWebview()) {
+      document.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+    }
     return () => {
-      window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+      if (isWebview()) {
+        document.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+      }
     };
   }, [router]);
 
