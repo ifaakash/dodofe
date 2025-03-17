@@ -4,6 +4,8 @@ import { toggleInvoicePaymentStatus } from "../../../api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { toast } from "react-toastify";
+import Confetti from 'react-confetti';
+
 
 const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
   const [isPaid, setIsPaid] = useState(false);
@@ -14,6 +16,18 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
   const maxPosition = useRef(0);
   const startX = useRef(0);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+  const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const confettiRef = React.useRef(null);
+
+  useEffect(() => {
+    if (confettiRef.current) {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    }
+  }, [isConfettiActive])
 
   useEffect(() => {
     setIsPaid(invoice.status === "paid");
@@ -40,6 +54,7 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
       setPosition(maxPosition.current);
       if (!isPaid) {
         setIsPaid(true);
+
         handleMarkAsPaid();
       }
     } else {
@@ -113,6 +128,11 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
     });
     if (res.success) {
       console.log("res", res);
+      setIsConfettiActive(true);
+      // Stop the confetti after 5 seconds
+      setTimeout(() => {
+        setIsConfettiActive(false);
+      }, 5000);
       setIsPaid(true);
       toast.success("Invoice marked as paid");
     }
@@ -133,6 +153,7 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
 
   return (
     <div className="relative w-full max-w-xs">
+      {isConfettiActive && <Confetti ref={confettiRef} width={dimensions.width} height={dimensions.height} numberOfPieces={100} initialVelocityY={10} />}
       <div
         ref={buttonRef}
         className={`relative h-12 rounded-full flex items-center overflow-hidden ${isPaid ? "border-2 border-brandPrimary bg-[#ECFAF2]" : "bg-[#EAE9EC]"
