@@ -27,6 +27,7 @@
     "react-redux": "^9.2.0",
     "react-swipeable": "^7.0.1",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.15.1",
     "redux-persist": "^6.0.0",
     "uuid": "^11.0.5"
   },

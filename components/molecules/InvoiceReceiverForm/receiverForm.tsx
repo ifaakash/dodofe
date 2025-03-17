@@ -31,6 +31,14 @@ const ReceiverForm = ({
   const [disableNextButton, setDisableNextButton] = useState(true);
   const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
 
+  const currentRecipientDetails: any = useSelector(
+    (state: RootState) => state.invoice.currentRecipientDetails || {}
+  );
+
+  const selectedReceiverID = useSelector(
+    (state: RootState) => state.invoice.recipientDetailsID
+  );
+  
   useEffect(() => {
     if (receiveID) {
       dispatch(addRecipientDetailsID(receiveID));
@@ -41,13 +49,16 @@ const ReceiverForm = ({
     dispatch(setShowInputFields(receiverDetails.length === 0))
   }, [receiverDetails]);
 
-  const currentRecipientDetails: any = useSelector(
-    (state: RootState) => state.invoice.currentRecipientDetails || {}
-  );
+  useEffect(() => {
+    const textarea = document.querySelector('textarea');
+    if (textarea) {
+      textarea.style.height = '4rem'; // Reset height to 2 rows
+      const scrollHeight = textarea.scrollHeight;
+      textarea.style.height = scrollHeight + 'px';
+    }
+  }, [currentRecipientDetails.address]);
 
-  const selectedReceiverID = useSelector(
-    (state: RootState) => state.invoice.recipientDetailsID
-  );
+
 
   console.log('selectedReceiverID', selectedReceiverID)
 
@@ -177,7 +188,7 @@ const ReceiverForm = ({
               onChange={(e) => handleChange("zipcode", e.target.value)}
               error={errors.zipcode}
             />
-            <select
+            {/* <select
               className="p-2 border rounded"
               value={currentRecipientDetails.state || ""}
               onChange={(e) => handleChange("state", e.target.value)}
@@ -190,17 +201,44 @@ const ReceiverForm = ({
                   {state}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <Input
+              placeholder="State"
+              value={currentRecipientDetails.state || ""}
+              onChange={(e) => handleChange("state", e.target.value)}
+              error={errors.state}
+            />
             <Input
               placeholder="City"
               value={currentRecipientDetails.city || ""}
               onChange={(e) => handleChange("city", e.target.value)}
             />
-            <Input
+            {/* <Input
               placeholder="Address"
               value={currentRecipientDetails.address || ""}
               onChange={(e) => handleChange("address", e.target.value)}
-            />
+            /> */}
+            <div className="relative">
+              <textarea
+                className="border border-[#E5E7EB] rounded-lg p-2 h-fit w-full"
+                placeholder="Address"
+                value={currentRecipientDetails.address || ""}
+                onChange={(e) => handleChange("address", e.target.value)}
+                rows={2}
+                maxLength={40}
+                style={{
+                  resize: 'none',
+                  minHeight: '4rem',
+                  height: 'auto'
+                }}
+              />
+              <span
+                className={`absolute bottom-2 right-2 text-xs ${(currentRecipientDetails.address?.length || 0) >= 40 ? 'text-red-500' : 'text-gray-500'
+                  }`}
+              >
+                {(currentRecipientDetails.address?.length || 0)}/40
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-col gap-3">

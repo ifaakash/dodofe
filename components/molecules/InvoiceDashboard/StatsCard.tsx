@@ -5,10 +5,11 @@ import Link from "next/link";
 import CreatedIcon from "public/icons/CreatedIcon.svg";
 import PaidIcon from "public/icons/PaidIcon.svg";
 import DueIcon from "public/icons/DuesIcon.svg";
-import HalfDonutChart from "@components/atoms/StatsChart/HalfDonutChart";
 import { getInvoiceStats } from "api";
 import { userDetailsProps } from "types";
 import { useRouter } from "next/navigation";
+import HalfDonutChart from "@components/atoms/Charts/HalfDonutChart";
+import TabSwitch from "@components/atoms/TabSwitch/TabSwitch";
 
 interface InvoiceStats {
   outStandingAmount: number;
@@ -27,19 +28,19 @@ interface StatsCardProps {
 
 const timePeriods = [
   {
-    title: "Overall",
+    label: "Overall",
     value: "overall",
   },
   {
-    title: "Week",
+    label: "Week",
     value: "week",
   },
   {
-    title: "Month",
+    label: "Month",
     value: "month",
   },
   {
-    title: "Year",
+    label: "Year",
     value: "year",
   },
 ];
@@ -69,22 +70,17 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
     fetchStatsData();
   }, [timePeriod, userDetails]);
 
+  const handleTimePeriodChange = (value: string) => {
+    setTimePeriod(value);
+  }
+
+
 
   return (
     <div className="px-5 flex flex-col gap-2">
       <div className="bg-white rounded-xl p-4 flex flex-col gap-4">
-        <div className="w-full flex border-2 rounded-lg">
-          {timePeriods.map((time, index) => (
-            <button
-              key={index}
-              onClick={() => setTimePeriod(time.value)}
-              className={`p-2 w-full ${timePeriod === time.value ? "bg-[#EAE9EC] font-semibold" : ""
-                }`}
-            >
-              {time.title}
-            </button>
-          ))}
-        </div>
+      <TabSwitch timeRange={timePeriod} setTimeRange={setTimePeriod} timeRangeOptions={timePeriods.map((time) => ({ label: time.label, value: time.value }))} handleTimeRangeChange={handleTimePeriodChange} />
+
 
         <div className="flex flex-col gap-3">
           <div className="flex justify-center relative">
@@ -129,27 +125,27 @@ const StatsCard = ({ userDetails }: StatsCardProps) => {
       </div>
 
       <div className="flex gap-2">
-        <div className="bg-white w-full rounded-xl flex flex-col justify-between p-3 text-center">
+        <Link href={"/invoice/history?mode=all"} className="bg-white w-full rounded-xl flex flex-col justify-between p-3 text-center">
           <div className="text-xl font-semibold text-[#414D55]">{userInvoicesData?.invoices.created}</div>
           <div className="flex gap-2 items-center justify-center">
             <div>Created</div>
             <Image src={CreatedIcon} width={20} alt="created icon" />
           </div>
-        </div>
-        <div className="bg-white w-full rounded-xl flex flex-col justify-between p-3 text-center">
+        </Link>
+        <Link href={"/invoice/history?mode=paid"} className="bg-white w-full rounded-xl flex flex-col justify-between p-3 text-center">
           <div className="text-xl font-semibold text-[#414D55]">{userInvoicesData?.invoices.paid}</div>
           <div className="flex gap-2 items-center justify-center">
             <div>Paid</div>
             <Image src={PaidIcon} width={20} alt="created icon" />
           </div>
-        </div>
-        <div className="bg-white w-full rounded-xl flex flex-col justify-between p-3 text-center">
+        </Link>
+        <Link href={"/invoice/history?mode=due"} className="bg-white w-full rounded-xl flex flex-col justify-between p-3 text-center">
           <div className="text-xl font-semibold text-[#414D55]">{userInvoicesData?.invoices.due}</div>
           <div className="flex gap-2 items-center justify-center">
             <div>Due</div>
             <Image src={DueIcon} width={20} alt="created icon" />
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );

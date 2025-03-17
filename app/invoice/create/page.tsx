@@ -313,9 +313,9 @@ const CreateInvoice = () => {
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
-          <div className="py-2 px-1 font-bold rounded-full bg-brandPrimary text-xs h-fit text-white">
+          {/* <div className="py-2 px-1 font-bold rounded-full bg-brandPrimary text-xs h-fit text-white">
             {Math.round(progressPercentage)}%
-          </div>
+          </div> */}
         </div>
       </div>
 

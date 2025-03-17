@@ -3,14 +3,17 @@ import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
 import CalendarSVG from "public/icons/calendar.svg";
 import React, { useEffect, useState } from "react";
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import Calendar from '@components/atoms/Calender/Caledner';
 import { useDispatch } from "react-redux";
 import { addDueDate, addDate } from "store/slice/invoiceSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import NewButton from "@components/atoms/Button/NewButton";
 import cx from "classnames";
+import { STORAGE_CONSTANTS } from "@utils/constants";
+import { loadState } from "@utils/localStorage";
+import { getUserDetails } from "api/services";
+import { hideLoader } from "store/slice/loaderSlice";
 
 type Value = Date | null;
 
@@ -21,6 +24,24 @@ const InvoiceDueDate = ({ handleInvoiceSubmit }: any) => {
   const [dueDate, setDueDate] = useState<Value>(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [disableNextButton, setDisableNextButton] = useState(false);
+  const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+  const [userDetails, setUserDetails] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await getUserDetails(userId);
+        if (res) {
+          setUserDetails(res.user);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  console.log('userDetails', userDetails);
 
   const state = useSelector((state: any) => state.invoice);
 
@@ -38,16 +59,11 @@ const InvoiceDueDate = ({ handleInvoiceSubmit }: any) => {
     dispatch(addDueDate(defaultDueDate.toISOString()));
   }, [dispatch]);
 
-  const handleDateChange = (
-    value: Value,
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    if (value instanceof Date) {
-      setDueDate(value);
-      const dateStr = value.toISOString();
-      dispatch(addDueDate(dateStr));
-      setShowCalendar(false);
-    }
+  const handleDateChange = (value: Date) => {
+    setDueDate(value);
+    const dateStr = value.toISOString();
+    dispatch(addDueDate(dateStr));
+    setShowCalendar(false);
   };
 
   // Format date to display in MM/DD/YY format
@@ -59,13 +75,22 @@ const InvoiceDueDate = ({ handleInvoiceSubmit }: any) => {
     return `${month}/${day}/${year}`;
   };
 
+  const getInvoiceNumber = () => {
+    const currentYear = new Date().getFullYear().toString().slice(-2);
+    const totalInvoices = userDetails?.invoices?.length;
+    const invoiceCount = (totalInvoices + 1).toString().padStart(2, '0');
+
+    return `${currentYear}${invoiceCount}`;
+  };
+
+  console.log('getInvoiceNumber', getInvoiceNumber());
 
   return (
     <div className="py-4 px-5 flex flex-col gap-1">
       {/* Invoice Info Section */}
       <div className="p-4 rounded-lg bg-white flex justify-between">
         <div className="flex flex-col gap-1">
-          <div className="text-[#414D55] font-semibold">#1323</div>
+          <div className="text-[#414D55] font-semibold">#{getInvoiceNumber()}</div>
           <div className="text-xs text-[#5E6C84]">Invoice number</div>
         </div>
         <div className="flex flex-col gap-1 relative">
@@ -90,13 +115,14 @@ const InvoiceDueDate = ({ handleInvoiceSubmit }: any) => {
       </div>
 
       {showCalendar && (
-        <div className="absolute z-10 bg-white shadow-lg rounded-lg p-2">
-          <Calendar
-            onChange={handleDateChange}
-            value={dueDate}
-            minDate={new Date()}
-            className="react-calendar"
-          />
+        <div className="absolute z-10 top-60 transform right-10">
+          <div className="mt-2 shadow-lg">
+            <Calendar
+              onChange={handleDateChange}
+              value={dueDate}
+              minDate={new Date()}
+            />
+          </div>
         </div>
       )}
 

@@ -6,7 +6,7 @@ import LeftArrow from "public/icons/leftArrow.svg";
 import HelpIcon from "public/icons/HelpIcon.svg";
 import RightArrow from "public/icons/rightArrow.svg";
 import LastInvoiceCard from "@components/molecules/InvoiceDashboard/LastInvoiceCard";
-import RunningGirl from "public/assets/RunningGirl.svg";
+import InvoiceFootImg from "public/assets/InvoiceFootImg.png";
 import StatsCard from "@components/molecules/InvoiceDashboard/StatsCard";
 import { getAllInvoices } from "api";
 import { userDetailsProps, InvoiceProps } from "types";
@@ -55,7 +55,8 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="bg-[#D8D6DC] pt-20 h-48 w-full flex flex-col gap-6 h-full">
+         <div className="h-64 bg-[#D8D6DC] absolute top-0 left-0 right-0 -z-10"></div>
+      <div className="pt-20 w-full flex flex-col gap-6 h-full">
         <Header onBackClick={onBackClick} title="Invoice Dashboard" />
 
         {/* <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">
@@ -97,11 +98,9 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
           )}
         </div>
 
-        <div className="mt-[100px] px-5 flex py-10 items-center">
-          <div className="text-[#CDCBD2] text-[40px] leading-10 font-bold">
-            Create Track <br /> Get Paid
-          </div>
-          <Image src={RunningGirl} width={150} height={210} alt="running" />
+        <div className="mt-[80px] px-5 flex flex-col gap-2 py-10 items-center">
+          <Image src={InvoiceFootImg} width={150} height={150} alt="running" />
+          <div className="text-2xl font-semibold text-gray-400">Create Track Get <span className="text-brandPrimary">Paid</span></div>
         </div>
       </div>
     </div >

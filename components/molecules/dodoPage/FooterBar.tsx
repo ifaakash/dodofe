@@ -27,7 +27,7 @@ import { STORAGE_CONSTANTS } from "@utils/constants";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Block } from "types";
 
 const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
@@ -114,6 +114,7 @@ const FooterBar = ({
     audioBio,
   } = useSelector((state: any) => state.dodoPage);
   const dispatch = useDispatch();
+  const router = useRouter();
   const blockState = useSelector((state: any) => state.blocks);
   const dodoPageState = useSelector((state: any) => state.dodoPage);
   const { unpublishedBlocks } = blockState;
@@ -397,11 +398,15 @@ const FooterBar = ({
     dispatch(removeToRemoveFromBlocks());
   }
 
+  const handleAnalyticsNavigation = () => {
+    router.push(`/dodo/${url}/analytics`);
+  };  
+
   return (
     <div>
       {<BlockModal isOpen={isOpened} />}
       <div className="flex gap-2">
-        <button className="bg-white shadow-md border-[1px] py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70">
+        <button onClick={handleAnalyticsNavigation} className="bg-white shadow-md border-[1px] py-[14px] px-[10px] rounded-full w-full flex text-sm font-semibold items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70">
           Analytics
         </button>
 
