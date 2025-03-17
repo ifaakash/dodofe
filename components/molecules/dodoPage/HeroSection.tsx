@@ -168,7 +168,7 @@ const HeroSection = ({
         // Listen for a message back from the native app indicating permission status
         window.addEventListener('message', async (event) => {
           const { action, status } = JSON.parse(event.data);
-
+          console.log(action, status);
           if (action === 'audioPermissionResponse' && status === 'granted') {
             // Permission granted, proceed with recording
             await startRecordingProcess();
