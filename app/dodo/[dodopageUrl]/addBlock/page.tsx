@@ -15,7 +15,7 @@ import AddProduct from "@components/molecules/dodoPage/addBlocks/AddProduct";
 import AddSocial from "@components/molecules/dodoPage/addBlocks/AddSocial";
 import AddPoll from "@components/molecules/dodoPage/addBlocks/AddPoll";
 import AddLink from "@components/molecules/dodoPage/addBlocks/AddLink";
-
+import { handleNativeBackButton } from "@utils/index";
 
 const AddBlock = () => {
   const { dodopageUrl } = useParams();
@@ -37,6 +37,14 @@ const AddBlock = () => {
       setDodoPageDetails(res?.dodoPage);
     });
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+
+    return () => {
+      window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+    };
+  }, [router]);
 
   const renderBlock = () => {
     switch (type) {

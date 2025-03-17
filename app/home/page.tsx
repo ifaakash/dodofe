@@ -157,7 +157,7 @@ export default function Home() {
         } else if (window.ReactNativeWebView) {
             // Native sharing via postMessage
             window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'shareContent',
+                action: 'shareContent',
                 content: content
             }));
         } else {

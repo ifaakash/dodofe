@@ -218,3 +218,19 @@ export const sendToNative = (action: string, payload = {}) => {
     console.warn('Not in WebView environment');
   }
 }
+
+export const handleNativeBackButton = (event: MessageEvent, defaultBack: () => void, onBackClick?: () => void,) => {
+  try {
+    const data = JSON.parse(event.data);
+    if (data.action === 'backButtonPressed') {
+      if (onBackClick) {
+        onBackClick();
+      } else {
+        defaultBack();
+      }
+    }
+  } catch (error) {
+    console.error("Failed to parse message data", error);
+  }
+};
+

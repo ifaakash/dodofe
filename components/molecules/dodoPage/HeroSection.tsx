@@ -26,6 +26,7 @@ import {
 } from "store/slice/dodoPageSlice";
 import { sendToNative } from "@utils/index";
 import { WEBVIEW_ACTIONS } from "@utils/constants";
+import { toast } from "react-toastify";
 
 const HeroSection = ({
   mode = "public",
@@ -171,8 +172,10 @@ const HeroSection = ({
           if (action === 'audioPermissionResponse' && status === 'granted') {
             // Permission granted, proceed with recording
             await startRecordingProcess();
+          } else if (status === 'blocked') {
+            toast.info("Microphone permission is blocked. Please enable it from settings.");
           } else {
-            console.error("Audio permission denied");
+            toast.error("Microphone permission denied.");
           }
         }, { once: true }); // Ensure the listener is removed after the first call
       } else {

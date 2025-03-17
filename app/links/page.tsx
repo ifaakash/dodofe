@@ -50,7 +50,7 @@ import {
 } from "api";
 import { loadState } from "@utils/localStorage";
 import Screen from "@components/molecules/Screen";
-import { debounce, isEmpty } from "@utils/index";
+import { debounce, handleNativeBackButton, isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
 import VoiceRecorder from "../../components/molecules/VoiceRecorder";
 import ThoughtsModal from "./ThoughtModal";
@@ -135,6 +135,14 @@ function Links() {
       document.body.style.backgroundImage = "";
     };
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+
+    return () => {
+      window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+    };
+  }, [router]);
 
   const handlers = useSwipeable({
     onSwipedLeft: () => handleArchive(),

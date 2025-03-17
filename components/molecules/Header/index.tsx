@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import leftArrow from "public/icons/leftArrow.svg";
+import { handleNativeBackButton } from "@utils/index";
 
 interface HeaderProps {
     title?: string;
@@ -21,24 +22,12 @@ export const Header = ({
     const [scrollY, setScrollY] = useState(0);
 
     useEffect(() => {
-        let scrollTimeout: NodeJS.Timeout;
-
-        const handleScroll = () => {
-            setScrollY(window.scrollY);
-            setIsScrolling(false);
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                setIsScrolling(true);
-            }, 500);
-        };
-
-        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
 
         return () => {
-            window.removeEventListener("scroll", handleScroll);
-            clearTimeout(scrollTimeout);
+            window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
         };
-    }, []);
+    }, [router]);
 
     return (
         <div

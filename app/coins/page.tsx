@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
-import { isEmpty } from "@utils/index";
+import { handleNativeBackButton, isEmpty } from "@utils/index";
 import { toast } from "react-toastify";
 import Sidebar from "@components/molecules/Sidebar";
 import CtaSection from "@components/molecules/CtaSection";
@@ -108,6 +108,14 @@ export default function Coins() {
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
+    useEffect(() => {
+        window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+
+        return () => {
+            window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+        };
+    }, [router]);
 
     useEffect(() => {
         if (userId) {

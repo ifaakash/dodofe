@@ -23,7 +23,7 @@ import { getLinkList, getUserDetails } from "api";
 import { getLinkBoxUI, getSeperatorOptionsUI } from "@utils/uiUtils";
 import ThoughtsModal from "@app/links/ThoughtModal";
 import VoiceRecorder from "@components/molecules/VoiceRecorder";
-import { gotoLink, isEmpty } from "@utils/index";
+import { gotoLink, handleNativeBackButton, isEmpty } from "@utils/index";
 
 function Preview({
     mainBgTheme,
@@ -57,6 +57,14 @@ function Preview({
             document.body.style.backgroundImage = '';
         };
     }, []);
+
+    useEffect(() => {
+        window.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+
+        return () => {
+            window.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+        };
+    }, [router]);
 
     const fetchAudioBio = (userData: any) => {
         if (userData.audioBio) {

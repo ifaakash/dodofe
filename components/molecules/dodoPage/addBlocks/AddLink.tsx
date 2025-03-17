@@ -298,7 +298,7 @@ const AddLink = ({
             </div>
             <div className="w-full">
               {mode === "add" ? (
-                <div onClick={() => setTitleEditing(true)}>
+                <div onClick={() => setTitleEditing(true)} className="font-heavy">
                   {titleEditing ? (
                     <Input
                       type="text"
@@ -308,6 +308,7 @@ const AddLink = ({
                         setTitle(e.target.value)
                       }
                       ref={inputRef}
+                      className="font-medium"
                     />
                   ) : (
                     <div className="flex items-center gap-2">
