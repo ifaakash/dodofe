@@ -171,6 +171,9 @@ const DodoPageDashboard = () => {
                 })
             );
 
+            // Update the state with the new order of blocks
+            setBlocks(updatedBlocks);
+
             const formattedBlocks = {
                 dodoPageId: dodoPageDetails.id,
                 blocks: updatedBlocks
