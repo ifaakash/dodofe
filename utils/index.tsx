@@ -191,12 +191,14 @@ export const handlePasteFromClipboard = async (cb) => {
         }
       };
 
-      // Add event listener for messages from native
-      window.addEventListener('message', handleMessage);
+      if (isWebview()) {
+        document.addEventListener('message', handleMessage);
+      }
 
-      // Optionally, return a function to remove the listener
       return () => {
-        window.removeEventListener('message', handleMessage);
+        if (isWebview()) {
+          document.removeEventListener('message', handleMessage);
+        }
       };
     } else {
       // Web environment

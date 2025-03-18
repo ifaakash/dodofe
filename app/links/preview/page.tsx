@@ -58,9 +58,11 @@ function Preview({
         };
     }, []);
 
+    const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.back());
+
     useEffect(() => {
         if (isWebview()) {
-            document.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+            document.addEventListener("message", handleBack);
         }
 
         return () => {

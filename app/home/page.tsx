@@ -169,7 +169,7 @@ export default function Home() {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
 
         if (isEmpty(dodoPageDetail)) {
-            return <CtaSection title="Dodo user" description="Some issue in fetching your dodo pages" noImg />;
+            return <CtaSection title="Dodo user" description="Some issue in fetching your dodo pages" noImg onClick={() => router.push(ROUTE_CONSTANTS.LOGIN)} />;
         }
 
         return (

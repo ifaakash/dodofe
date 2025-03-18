@@ -41,14 +41,16 @@ export const Header = ({
         };
     }, []);
 
+    const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick);
+
     useEffect(() => {
         if (isWebview()) {
-            document.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
+            document.addEventListener("message", handleBack);
         }
 
         return () => {
             if (isWebview()) {
-                document.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back(), onBackClick));
+                document.removeEventListener("message", handleBack);
             }
         };
     }, [router]);

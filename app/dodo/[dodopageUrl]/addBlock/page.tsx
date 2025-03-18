@@ -38,14 +38,17 @@ const AddBlock = () => {
     });
   }, []);
 
+
+  const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.back());
+
   useEffect(() => {
     if (isWebview()) {
-      document.addEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+      document.addEventListener("message", handleBack);
     }
 
     return () => {
       if (isWebview()) {
-        document.removeEventListener("message", (event: MessageEvent) => handleNativeBackButton(event, () => router.back()));
+        document.removeEventListener("message", handleBack);
       }
     };
   }, [router]);

@@ -178,10 +178,11 @@ const HeroSection = ({
       };
     }
 
-    window.addEventListener('message', messageHandler);
-
+    if (isWebview()) {
+      document.addEventListener('message', messageHandler);
+    }
     return () => {
-      window.removeEventListener('message', messageHandler);
+      document.removeEventListener('message', messageHandler);
     };
   }, []);
 
