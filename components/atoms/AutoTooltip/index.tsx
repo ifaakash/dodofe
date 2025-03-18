@@ -9,7 +9,7 @@ type AutoTooltipProps = {
 const AutoTooltip = ({
     children,
     tooltipText,
-    tooltipDuration = 53000,
+    tooltipDuration = 3000,
 }: AutoTooltipProps) => {
     const [showTooltip, setShowTooltip] = useState(true);
 
