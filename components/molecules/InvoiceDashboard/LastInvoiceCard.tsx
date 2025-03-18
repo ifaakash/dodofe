@@ -5,23 +5,16 @@ import { ChevronsRight } from "lucide-react";
 import Link from "next/link";
 import { InvoiceProps } from "types";
 import MarkAsPaidButton from "./MarkAsPaidButton";
+import { formatDate } from "@utils/helperFunctions";
 
 interface LastInvoiceCardProps {
   invoice: InvoiceProps;
+  isPaymentStatusChanged: boolean;
+  setIsPaymentStatusChanged: (value: boolean) => void;
 }
 
-const LastInvoiceCard = ({ invoice }: LastInvoiceCardProps) => {
-  const formatDate = (isoDate: string | undefined) => {
-    if (!isoDate) return "N/A";
-    const date = new Date(isoDate);
-    const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  };
-
+const LastInvoiceCard = ({ invoice, isPaymentStatusChanged, setIsPaymentStatusChanged }: LastInvoiceCardProps) => {
+  
   // Calculate Subtotal
   const calculateSubtotal = () => {
     return invoice.items.reduce(
@@ -38,6 +31,11 @@ const LastInvoiceCard = ({ invoice }: LastInvoiceCardProps) => {
   const tdsAmount = calculateTDS(subtotal);
   const gstAmount = calculateGST(subtotal);
   const totalAmount = subtotal - tdsAmount + gstAmount - invoice.discount;
+
+  const invoiceNumber = ({ number, year }: { number: number; year: number }) => {
+    const yearSuffix = year.toString().slice(-2);
+    return `${yearSuffix}${number.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div className="bg-white rounded-xl p-3 flex flex-col gap-3">
@@ -61,7 +59,7 @@ const LastInvoiceCard = ({ invoice }: LastInvoiceCardProps) => {
           <div>
             <div className="text-xs">Invoice Number</div>
             <div className="font-semibold">
-              {invoice?.invoiceNumber.toString().padStart(3, "0") || "N/A"}
+              {invoiceNumber({ number: invoice?.invoiceNumber, year: new Date().getFullYear() })}
             </div>
           </div>
           <div>
@@ -90,7 +88,7 @@ const LastInvoiceCard = ({ invoice }: LastInvoiceCardProps) => {
           <Image src={EditPen} width={16} height={16} alt="edit" />
         </Link>
 
-        <MarkAsPaidButton invoice={invoice} />
+        <MarkAsPaidButton invoice={invoice} isPaymentStatusChanged={isPaymentStatusChanged} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
       </div>
     </div>
   );

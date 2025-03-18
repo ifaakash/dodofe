@@ -8,20 +8,25 @@ import RightArrow from "public/icons/rightArrow.svg";
 import LastInvoiceCard from "@components/molecules/InvoiceDashboard/LastInvoiceCard";
 import InvoiceFootImg from "public/assets/InvoiceFootImg.png";
 import StatsCard from "@components/molecules/InvoiceDashboard/StatsCard";
-import { getAllInvoices } from "api";
+import { getAllInvoices, getInvoiceStats } from "api";
 import { userDetailsProps, InvoiceProps } from "types";
 import { Header } from "@components/molecules/Header";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@utils/constants";
+import { UserInvoicesData } from "types";
 import useLoaderVisibility from "hooks/useLoaderVisibility";
 
-interface DashboardProps {
+interface DashboardProps { 
   userDetails: userDetailsProps;
 }
 
+
 const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
   const [invoices, setInvoices] = useState<InvoiceProps[]>([]);
+  const [timePeriod, setTimePeriod] = useState("overall");
   const { isVisible: isLoaderVisible } = useLoaderVisibility();
+  const [userInvoicesData, setUserInvoicesData] = useState<UserInvoicesData | null>(null);
+  const [isPaymentStatusChanged, setIsPaymentStatusChanged] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -31,10 +36,11 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
       setLoading(true);
       try {
         const res = await getAllInvoices({ userId: userDetails?.id });
+        console.log("res", res);
         if (res && res.data) {
-          // Sort invoices by createdAt in descending order and take the latest 2
+          // Sort invoices by invoiceDate in descending order and take the latest 2
           const sortedInvoices = res.data.sort((a: InvoiceProps, b: InvoiceProps) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime()
           ).slice(0, 2);
           setInvoices(sortedInvoices);
         }
@@ -48,6 +54,23 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
     fetchInvoices();
   }, [userDetails]);
 
+  useEffect(() => {
+    const fetchStatsData = async () => {
+      setLoading(true);
+      const res = await getInvoiceStats({
+        userId: userDetails?.id,
+        timeFrame: timePeriod,
+      });
+      if (!res.success) {
+        console.log("Something went wrong");
+        return;
+      }
+      setUserInvoicesData(res.data);
+      setIsPaymentStatusChanged(false);
+      setLoading(false);
+    };
+    fetchStatsData();
+  }, [timePeriod, userDetails, isPaymentStatusChanged]);
 
   const onBackClick = () => {
     router.push(ROUTE_CONSTANTS.HOME);
@@ -59,20 +82,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
       <div className="pt-20 w-full flex flex-col gap-6 h-full">
         <Header onBackClick={onBackClick} title="Invoice Dashboard" />
 
-        {/* <div className="pt-[10px] px-5 flex gap-[10px] items-center justify-between w-full">
-            <div className="flex gap-[10px] items-center">
-              <Link href={"/"} className="p-2">
-                <Image src={LeftArrow} width={20} alt="left arrow" />
-              </Link>
-              <div className="font-semibold">Invoice Dashboard</div>
-            </div>
-            <div className="flex p-1 gap-1 rounded-full bg-[#EAE9EC] font-medium text-xs text-[#3D4966] items-center">
-              <Image src={HelpIcon} width={20} alt="help icon" />
-              <div>Help</div>
-            </div>
-          </div> */}
-
-        {userDetails && <StatsCard userDetails={userDetails} />}
+        {userDetails && <StatsCard userInvoicesData={userInvoicesData} setTimePeriod={setTimePeriod} timePeriod={timePeriod} />}
 
         <div className="px-5 flex flex-col gap-3">
           <div className="flex justify-between items-center">
@@ -86,7 +96,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
           {invoices.length > 0 ? (
             <div className="flex flex-col gap-2">
               {invoices.map((invoice) => (
-                <LastInvoiceCard key={invoice.id} invoice={invoice} />
+                <LastInvoiceCard key={invoice.id} invoice={invoice} isPaymentStatusChanged={isPaymentStatusChanged} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
               ))}
             </div>
           ) : (

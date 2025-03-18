@@ -188,3 +188,22 @@ export const WEBVIEW_ACTIONS = {
   requestLocationPermission: 'requestLocationPermission',
   vibrateDevice: 'vibrateDevice'
 }
+
+export const TIME_PERIODS = [
+  {
+    label: "Overall",
+    value: "overall",
+  },
+  {
+    label: "Week",
+    value: "week",
+  },
+  {
+    label: "Month",
+    value: "month",
+  },
+  {
+    label: "Year",
+    value: "year",
+  },
+];
