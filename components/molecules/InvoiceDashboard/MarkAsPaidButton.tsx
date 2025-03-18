@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import Confetti from 'react-confetti';
 
 
-const MarkAsPaidButton = ({ invoice, isPaymentStatusChanged, setIsPaymentStatusChanged }: { invoice: any, isPaymentStatusChanged: boolean, setIsPaymentStatusChanged: (value: boolean) => void }) => {
+const MarkAsPaidButton = ({ invoice, setIsPaymentStatusChanged }: { invoice: any, setIsPaymentStatusChanged: (value: boolean) => void }) => {
   const [isPaid, setIsPaid] = useState(false);
   const [position, setPosition] = useState(0);
   const [isDragging, setIsDragging] = useState(false);

@@ -52,6 +52,7 @@ const HistoryInvoiceCard = ({
   onMarkAsPaid,
   isExpanded,
   handleCardExpand,
+  setIsPaymentStatusChanged,
 }: InvoiceHistoryCard) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
@@ -170,7 +171,7 @@ const HistoryInvoiceCard = ({
               <Image src={EditPen} width={16} height={16} alt="edit" />
             </Link>
 
-            <MarkAsPaidButton invoice={invoice} />
+            <MarkAsPaidButton invoice={invoice} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
           </div>
         </div>
       </div>

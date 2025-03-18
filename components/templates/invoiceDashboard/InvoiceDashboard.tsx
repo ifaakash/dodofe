@@ -96,7 +96,7 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
           {invoices.length > 0 ? (
             <div className="flex flex-col gap-2">
               {invoices.map((invoice) => (
-                <LastInvoiceCard key={invoice.id} invoice={invoice} isPaymentStatusChanged={isPaymentStatusChanged} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
+                <LastInvoiceCard key={invoice.id} invoice={invoice} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
               ))}
             </div>
           ) : (

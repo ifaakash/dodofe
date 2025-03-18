@@ -19,6 +19,7 @@ const InvoiceHistory = () => {
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceProps[]>([]);
   const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+  const [isPaymentStatusChanged, setIsPaymentStatusChanged] = useState(false);
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -55,7 +56,7 @@ const InvoiceHistory = () => {
         invoices.filter((invoice) => invoice.status.toLowerCase() === timeFrame)
       );
     }
-  }, [timeFrame, invoices]);
+  }, [timeFrame, invoices, isPaymentStatusChanged]);
 
   const handleCardExpand = (invoiceId: string) => {
     if (expandedInvoiceId === invoiceId) {
@@ -114,6 +115,7 @@ const InvoiceHistory = () => {
                   invoice={invoice}
                   isExpanded={expandedInvoiceId === invoice.id}
                   handleCardExpand={handleCardExpand}
+                  setIsPaymentStatusChanged={setIsPaymentStatusChanged}
                 />
               </div>
             ))

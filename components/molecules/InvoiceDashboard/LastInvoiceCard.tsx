@@ -9,11 +9,10 @@ import { formatDate } from "@utils/helperFunctions";
 
 interface LastInvoiceCardProps {
   invoice: InvoiceProps;
-  isPaymentStatusChanged: boolean;
   setIsPaymentStatusChanged: (value: boolean) => void;
 }
 
-const LastInvoiceCard = ({ invoice, isPaymentStatusChanged, setIsPaymentStatusChanged }: LastInvoiceCardProps) => {
+const LastInvoiceCard = ({ invoice, setIsPaymentStatusChanged }: LastInvoiceCardProps) => {
   
   // Calculate Subtotal
   const calculateSubtotal = () => {
@@ -88,7 +87,7 @@ const LastInvoiceCard = ({ invoice, isPaymentStatusChanged, setIsPaymentStatusCh
           <Image src={EditPen} width={16} height={16} alt="edit" />
         </Link>
 
-        <MarkAsPaidButton invoice={invoice} isPaymentStatusChanged={isPaymentStatusChanged} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
+        <MarkAsPaidButton invoice={invoice} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
       </div>
     </div>
   );

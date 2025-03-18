@@ -252,7 +252,7 @@ const CreateInvoice = () => {
         items: invoice.items,
         discount: invoice.discount,
         note: invoice.note,
-        date: invoice.date || new Date().toISOString(),
+        date: invoice.invoiceDate || new Date().toISOString(),
         dueDate: invoice.dueDate,
         gst: invoice.gst,
         tds: invoice.tds,
