@@ -18,6 +18,8 @@ const ArchivedBlocks = () => {
   const blocks = useSelector((state: any) => state.blocks.blocks);
   const archivedBlocks = useSelector((state: any) => state.blocks.blocks.filter((block: any) => block.toArchive && block.isActive));
 
+
+
   const renderBlock = (block: {
     id: string;
     blockType: string;

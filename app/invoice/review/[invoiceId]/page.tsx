@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { addSubHeading, getInvoiceById } from "api";
 import { InvoiceProps } from "../../../../types";
 import { toast } from "react-toastify";
+import { Header } from "@components/molecules/Header";
 
 
 const ReviewInvoice = () => {
@@ -111,7 +112,9 @@ const ReviewInvoice = () => {
     <div className="h-full w-full">
       <div className="h-64 bg-[#D8D6DC] absolute top-0 left-0 right-0 -z-10"></div>
 
-      <div className="py-8 flex justify-center">
+      <Header title="Edit Invoice" />
+
+      <div className="py-8 mt-12 flex justify-center">
         <div className="flex flex-col gap-1">
           <div className="uppercase font-bold text-[22px] text-center">
             Invoice

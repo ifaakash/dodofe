@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ArchiveRestore, ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { handleNativeBackButton, isWebview } from "@utils/index";
+import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@utils/constants";
 
 const BlockHeader = ({
   dodopageUrl,
@@ -13,6 +16,22 @@ const BlockHeader = ({
   handleDelete: () => void;
   mode: "edit" | "add";
 }) => {
+  const router = useRouter();
+
+  const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.push(ROUTE_CONSTANTS.DODOPAGE + ROUTE_CONSTANTS.SLASH + dodopageUrl));
+
+  useEffect(() => {
+    if (isWebview()) {
+      document.addEventListener("message", handleBack);
+    }
+
+    return () => {
+      if (isWebview()) {
+        document.removeEventListener("message", handleBack);
+      }
+    }
+  })
+
   return (
     <div className="flex justify-between px-5 py-4 ">
       <Link href={`/dodo/${dodopageUrl}`}>

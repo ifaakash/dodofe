@@ -6,6 +6,8 @@ import { AlertCircle } from "lucide-react";
 
 import styles from "./styles.module.css";
 import Image from "next/image";
+import AutoTooltip from "../AutoTooltip";
+import { isEmpty } from "@utils/index";
 
 interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -13,6 +15,7 @@ interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement>
   showClearButton?: boolean;
   icon?: any;
   onIconClick?: () => void;
+  tooltipText?: string;
 }
 
 const Input: React.FC<EnhancedInputProps> = ({
@@ -25,7 +28,8 @@ const Input: React.FC<EnhancedInputProps> = ({
   ref,
   showClearButton = true,
   icon,
-  onIconClick
+  onIconClick,
+  tooltipText
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -49,12 +53,14 @@ const Input: React.FC<EnhancedInputProps> = ({
           {
             "border-red-500": error,
             "border-gray-300": !error,
-          }
+          },
+          "text-ellipsis"
         )}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         type={type}
+        style={{ paddingRight: showClearButton ? '3.5rem' : '1.5rem' }}
       />
 
       <div className="absolute-center">
@@ -71,15 +77,27 @@ const Input: React.FC<EnhancedInputProps> = ({
           </button>
         )}
 
-        {icon &&
-          <Image
-            src={icon}
-            alt="paste"
-            width={28}
-            height={28}
-            onClick={onIconClick}
-            className="absolute right-2 p-1 top-1/2 transform -translate-y-1/2 cursor-pointer"
-          />}
+        {icon && (
+          tooltipText ? (<>
+            <AutoTooltip tooltipText={tooltipText}>
+              <Image
+                src={icon}
+                alt="paste"
+                width={28}
+                height={28}
+                onClick={onIconClick}
+                className="absolute right-2 p-1 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              />
+            </AutoTooltip>
+          </>) :
+            <Image
+              src={icon}
+              alt="paste"
+              width={28}
+              height={28}
+              onClick={onIconClick}
+              className="absolute right-2 p-1 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            />)}
       </div>
 
       {error && (

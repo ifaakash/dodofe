@@ -182,8 +182,7 @@ export const handlePasteFromClipboard = async (cb) => {
       const handleMessage = (event) => {
         try {
           const { action, content } = JSON.parse(event.data);
-          if (action === 'clipboardContent') {
-            console.log('Text received from native clipboard:', content);
+          if (action === 'clipboardContent' && content !== '') {
             cb(content);
           }
         } catch (error) {

@@ -1,9 +1,27 @@
+import { ROUTE_CONSTANTS } from '@utils/constants';
+import { handleNativeBackButton, isWebview } from '@utils/index';
 import { ArrowLeftIcon, ChevronsDown } from 'lucide-react'
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const AnalyticsHeader = ({ url }: { url: string }) => {
     const router = useRouter();
+
+    const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.push(ROUTE_CONSTANTS.DODOPAGE + ROUTE_CONSTANTS.SLASH + url));
+
+    useEffect(() => {
+        if (isWebview()) {
+            document.addEventListener("message", handleBack);
+        }
+
+        return () => {
+            if (isWebview()) {
+                document.removeEventListener("message", handleBack);
+            }
+        }
+    })
+
+
     return (
         <div className='flex items-center justify-between p-5 relative'>
             <div>

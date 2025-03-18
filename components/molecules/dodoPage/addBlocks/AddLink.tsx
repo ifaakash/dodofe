@@ -13,8 +13,6 @@ import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
 import PasteIcon from "public/icons/paste.svg";
 import { handlePasteFromClipboard, isEmpty } from "@utils/index";
-import Tooltip from "@components/atoms/Tooltip";
-import LinkBlock from "../blocks/LinkBlock";
 import { BADGES } from "@utils/constants";
 
 const AddLink = ({
@@ -349,6 +347,7 @@ const AddLink = ({
               className="pr-10"
               icon={PasteIcon}
               onIconClick={() => handlePasteFromClipboard(setLink)}
+              tooltipText="Tap to paste from clipboard"
             />
           </div>
           {linkError && (

@@ -10,6 +10,7 @@ import { resetDodoPage } from "store/slice/dodoPageSlice";
 import { resetUnpublishedBlocks } from "store/slice/blocksSlice";
 import { handleNativeBackButton, isWebview } from "@utils/index";
 import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@utils/constants";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
     const router = useRouter();
@@ -28,7 +29,7 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
         window.location.href = `/dodo/${url}`;
     };
 
-    const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.back());
+    const handleBack = (event: MessageEvent) => handleNativeBackButton(event, () => router.push(ROUTE_CONSTANTS.HOME));
 
     useEffect(() => {
         if (isWebview()) {
@@ -45,7 +46,7 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
     return (
         <div className="px-5 py-4 mt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <div className="py-3 pr-2" onClick={() => router.back()}>
+                <div className="py-3 pr-2" onClick={() => router.push(ROUTE_CONSTANTS.HOME)}>
                     <ArrowLeft size={22} />
                 </div>
                 <div>
