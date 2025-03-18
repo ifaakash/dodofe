@@ -40,7 +40,7 @@ const initialState: InvoiceWithDetails = {
   discount: null,
   note: "",
   dueDate: "",
-  date: "",
+  invoiceDate: "",
   clientDetailsID: null,
   status: "",
   invoiceNumber: 0,
@@ -149,7 +149,7 @@ export const invoiceSlice = createSlice({
       state.bankDetailsID = action.payload;
     },
     addDate: (state, action) => {
-      state.date = action.payload;
+      state.invoiceDate = action.payload;
     },
     toggleShowInputFields: (state) => {
       state.showInputFields = !state.showInputFields;

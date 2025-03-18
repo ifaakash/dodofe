@@ -72,7 +72,7 @@ interface BaseInvoice {
   discount: number;
   note: string;
   dueDate: string;
-  date: string;
+  invoiceDate: string;
   status: string;
   invoiceNumber: number;
   subTotal: number;
@@ -117,6 +117,7 @@ export interface InvoiceHistoryCard {
   timeFrame?: any;
   handleCardExpand?: any;
   isExpanded?: boolean;
+  setIsPaymentStatusChanged?: any;
 }
 
 export interface StatusBadgeProps {
@@ -165,4 +166,16 @@ export interface Block {
   isActive?: boolean
   isNew?: boolean
   isUpdated?: boolean
+}
+
+export interface UserInvoicesData {
+  outStandingAmount: number;
+  paidAmount: number;
+  pendingAmount: number;
+  unpaidAmount: number;
+  invoices: {
+    created: number;
+    paid: number;
+    due: number;
+  };
 }

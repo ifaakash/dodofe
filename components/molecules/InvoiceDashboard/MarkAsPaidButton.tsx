@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import Confetti from 'react-confetti';
 
 
-const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
+const MarkAsPaidButton = ({ invoice, setIsPaymentStatusChanged }: { invoice: any, setIsPaymentStatusChanged: (value: boolean) => void }) => {
   const [isPaid, setIsPaid] = useState(false);
   const [position, setPosition] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -129,6 +129,7 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
     if (res.success) {
       console.log("res", res);
       setIsConfettiActive(true);
+      setIsPaymentStatusChanged(true);
       // Stop the confetti after 5 seconds
       setTimeout(() => {
         setIsConfettiActive(false);
@@ -146,6 +147,7 @@ const MarkAsPaidButton = ({ invoice }: { invoice: any }) => {
     });
     if (res.success) {
       console.log("res", res);
+      setIsPaymentStatusChanged(true);
       setIsPaid(false);
       toast.success("Invoice marked as unpaid");
     }

@@ -19,11 +19,14 @@ export const formatCurrency = (amount: number): string => {
  * @param isoDate - ISO 8601 date string to format
  * @returns A formatted date string in "DD MMM YYYY" format, or "N/A" if no date provided
  */
-export const formatDate = (isoDate?: string): string => {
+
+export const formatDate = (isoDate: string | undefined) => {
   if (!isoDate) return "N/A";
-  return new Intl.DateTimeFormat("en-US", {
+  const date = new Date(isoDate);
+  const options: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }).format(new Date(isoDate));
+  };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
 };

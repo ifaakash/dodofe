@@ -52,6 +52,7 @@ const HistoryInvoiceCard = ({
   onMarkAsPaid,
   isExpanded,
   handleCardExpand,
+  setIsPaymentStatusChanged,
 }: InvoiceHistoryCard) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
@@ -85,6 +86,11 @@ const HistoryInvoiceCard = ({
     }
   };
 
+  const invoiceNumber = ({ number, year }: { number: number; year: number }) => {
+    const yearSuffix = year.toString().slice(-2);
+    return `${yearSuffix}${number.toString().padStart(2, "0")}`;
+  };
+
   return (
     <div
       className="bg-white flex flex-col rounded-xl hover:shadow-md transition-all duration-300"
@@ -105,9 +111,7 @@ const HistoryInvoiceCard = ({
           <div className="flex flex-col gap-0.5 py-3">
             <div className="text-xs">
               {invoice.subHeading ||
-                `Invoice Number: ${invoice.invoiceNumber
-                  .toString()
-                  .padStart(3, "0")}`}
+                invoiceNumber({ number: invoice.invoiceNumber, year: new Date().getFullYear() })}
             </div>
             <div className="text-[#414D55] font-semibold">
               {"clientDetails" in invoice
@@ -143,7 +147,7 @@ const HistoryInvoiceCard = ({
             <div className="flex flex-col gap-0.5">
               <div className="text-xs">Invoice number</div>
               <div className="text-[#414D55] font-semibold">
-                {invoice.invoiceNumber.toString().padStart(3, "0")}
+                {invoiceNumber({ number: invoice.invoiceNumber, year: new Date().getFullYear() })}
               </div>
             </div>
 
@@ -167,7 +171,7 @@ const HistoryInvoiceCard = ({
               <Image src={EditPen} width={16} height={16} alt="edit" />
             </Link>
 
-            <MarkAsPaidButton invoice={invoice} />
+            <MarkAsPaidButton invoice={invoice} setIsPaymentStatusChanged={setIsPaymentStatusChanged} />
           </div>
         </div>
       </div>
