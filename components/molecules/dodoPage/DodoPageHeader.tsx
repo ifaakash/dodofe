@@ -8,10 +8,12 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
 import { resetUnpublishedBlocks } from "store/slice/blocksSlice";
-import router from "next/router";
 import { handleNativeBackButton, isWebview } from "@utils/index";
+import { useRouter } from "next/navigation";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
+    const router = useRouter();
+
     const { unsavedChanges } = useSelector(
         (state: any) => state.dodoPage
     );
