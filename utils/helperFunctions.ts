@@ -30,3 +30,19 @@ export const formatDate = (isoDate: string | undefined) => {
   };
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };
+
+/**
+ * Formats an ISO date string into a human-readable format with long month name
+ * @param isoDate - ISO 8601 date string to format
+ * @returns A formatted date string in "DD MMM YYYY" format, or "N/A" if no date provided
+ */
+export const formatDateLong = (isoDate: string | undefined) => {
+  if (!isoDate) return "N/A";
+  const date = new Date(isoDate);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+};

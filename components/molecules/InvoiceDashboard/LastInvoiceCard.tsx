@@ -31,11 +31,6 @@ const LastInvoiceCard = ({ invoice, setIsPaymentStatusChanged }: LastInvoiceCard
   const gstAmount = calculateGST(subtotal);
   const totalAmount = subtotal - tdsAmount + gstAmount - invoice.discount;
 
-  const invoiceNumber = ({ number, year }: { number: number; year: number }) => {
-    const yearSuffix = year.toString().slice(-2);
-    return `${yearSuffix}${number.toString().padStart(2, "0")}`;
-  };
-
   return (
     <div className="bg-white rounded-xl p-3 flex flex-col gap-3">
       <Link href={`/invoice/${invoice.id}`} className="flex flex-col gap-3">
@@ -58,7 +53,7 @@ const LastInvoiceCard = ({ invoice, setIsPaymentStatusChanged }: LastInvoiceCard
           <div>
             <div className="text-xs">Invoice Number</div>
             <div className="font-semibold">
-              {invoiceNumber({ number: invoice?.invoiceNumber, year: new Date().getFullYear() })}
+              {invoice?.invoiceNumber}
             </div>
           </div>
           <div>
