@@ -86,11 +86,6 @@ const HistoryInvoiceCard = ({
     }
   };
 
-  const invoiceNumber = ({ number, year }: { number: number; year: number }) => {
-    const yearSuffix = year.toString().slice(-2);
-    return `${yearSuffix}${number.toString().padStart(2, "0")}`;
-  };
-
   return (
     <div
       className="bg-white flex flex-col rounded-xl hover:shadow-md transition-all duration-300"
@@ -111,7 +106,7 @@ const HistoryInvoiceCard = ({
           <div className="flex flex-col gap-0.5 py-3">
             <div className="text-xs">
               {invoice.subHeading ||
-                invoiceNumber({ number: invoice.invoiceNumber, year: new Date().getFullYear() })}
+                invoice.invoiceNumber}
             </div>
             <div className="text-[#414D55] font-semibold">
               {"clientDetails" in invoice
@@ -147,7 +142,7 @@ const HistoryInvoiceCard = ({
             <div className="flex flex-col gap-0.5">
               <div className="text-xs">Invoice number</div>
               <div className="text-[#414D55] font-semibold">
-                {invoiceNumber({ number: invoice.invoiceNumber, year: new Date().getFullYear() })}
+                {invoice.invoiceNumber}
               </div>
             </div>
 

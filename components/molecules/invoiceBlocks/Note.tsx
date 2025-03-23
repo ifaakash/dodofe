@@ -1,0 +1,30 @@
+import React from 'react'
+import Image from 'next/image'
+import PenIcon from 'public/icons/EditPen.svg'
+
+interface NoteProps {
+  mode: 'edit' | 'view'
+  note: string
+}
+
+const Note = ({ mode, note }: NoteProps) => {
+  return (
+    <div className='px-4 py-3 bg-white rounded-[10px] flex flex-col gap-2'>
+      <div className='flex justify-between'>
+        <div className='text-sm font-semibold'> NOTE </div>
+        {
+          mode === 'edit' && (
+            <div>
+              <Image src={PenIcon} alt='edit' width={20} height={20} />
+            </div>
+          )
+        }
+      </div>
+      <div className='text-sm'>
+        {note}
+      </div>
+    </div>
+  )
+}
+
+export default Note
