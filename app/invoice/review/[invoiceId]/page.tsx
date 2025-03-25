@@ -95,6 +95,7 @@ const ReviewInvoice = () => {
   return (
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
+      <Header/>
 
       <div className="pt-6 pb-16">
         {/* Header */}
