@@ -16,6 +16,7 @@ import Image from "next/image";
 import { Download } from "lucide-react";
 import ShareIcon from 'public/icons/share.svg'
 import { formatDateLong } from '@utils/helperFunctions'
+import { Header } from "@components/molecules/Header";
 
 const ReviewInvoice = () => {
   const { invoiceId } = useParams();
@@ -94,6 +95,7 @@ const ReviewInvoice = () => {
   return (
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
+      <Header/>
 
       <div className="pt-6 pb-16">
         {/* Header */}
