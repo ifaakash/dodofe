@@ -192,6 +192,8 @@ const DodoPageDashboard = () => {
         }
     };
 
+    console.log('blocks')
+
     const renderBlock = (block: Block, index: number) => {
         if (block.toRemove) {
             return null;
@@ -280,17 +282,51 @@ const DodoPageDashboard = () => {
                     );
                 break;
             case "PRODUCT":
-                content = (
-                    <div key={block.id} className="w-full">
-                        {mode === "edit" ? (
-                            <div onClick={() => handleNavigate(block)}>
-                                <ProductBlock block={block} mode={mode} />
+                const nextBlock = blocks[index + 1];
+                const isNextBlockProduct = nextBlock?.blockType === "PRODUCT";
+                const isPreviousBlockProduct = index % 2 === 1 && blocks[index - 1]?.blockType === "PRODUCT";
+                
+                // Skip if this block was already rendered as part of a previous pair
+                if (isPreviousBlockProduct) {
+                    content = null;
+                } else if (isNextBlockProduct) {
+                    // Create a wrapper for two product blocks
+                    content = (
+                        <div key={`product-pair-${block.id}`} className="grid grid-cols-2 gap-3 w-full">
+                            <div className="w-full">
+                                {mode === "edit" ? (
+                                    <div onClick={() => handleNavigate(block)}>
+                                        <ProductBlock block={block} mode={mode} />
+                                    </div>
+                                ) : (
+                                    <ProductBlock block={block} mode={mode} />
+                                )}
                             </div>
-                        ) : (
-                            <ProductBlock block={block} mode={mode} />
-                        )}
-                    </div>
-                );
+                            <div className="w-full">
+                                {mode === "edit" ? (
+                                    <div onClick={() => handleNavigate(nextBlock)}>
+                                        <ProductBlock block={nextBlock} mode={mode} />
+                                    </div>
+                                ) : (
+                                    <ProductBlock block={nextBlock} mode={mode} />
+                                )}
+                            </div>
+                        </div>
+                    );
+                } else {
+                    // Single product block in full width
+                    content = (
+                        <div key={block.id} className="w-full">
+                            {mode === "edit" ? (
+                                <div onClick={() => handleNavigate(block)}>
+                                    <ProductBlock block={block} mode={mode} />
+                                </div>
+                            ) : (
+                                <ProductBlock block={block} mode={mode} />
+                            )}
+                        </div>
+                    );
+                }
                 break;
             default:
                 return null;
