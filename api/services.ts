@@ -153,3 +153,30 @@ export const updateBlocksByPageId = async (
     payload
   );
 
+export const generateContent = async (prompt: string): Promise<string | null> => {
+  const AI_API_KEY = process.env.NEXT_PUBLIC_AI_API_KEY;
+  console.log(AI_API_KEY);
+  const body = {
+    contents: [
+      {
+        parts: [
+          {
+            text: prompt,
+          },
+        ],
+      },
+    ],
+  };
+
+  try {
+    const response = await Post<any>(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${AI_API_KEY}`,
+      body
+    );
+    return response?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+  } catch (error) {
+    console.error('Error with AI API:', error);
+    return null;
+  }
+};
+

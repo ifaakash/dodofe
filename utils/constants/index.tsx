@@ -55,6 +55,8 @@ export const ROUTE_CONSTANTS = {
   USER_CATEGORY: "/user-category",
   COINS: '/coins',
   DODOPAGE: "/dodo",
+  SCRIPT_GENERATOR: "/script-generator",
+  PRICE_CALCULATOR: "/price-calculator",
 };
 
 export const BLOCKS = {

@@ -352,9 +352,10 @@ export default function Home() {
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
                             <Card
-                                title="Engagement Calculator"
+                                title="Script Generator"
                                 description=""
                                 icon={engagementCalc}
+                                onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
                                 bgColor="var(--neon-purple)"
                                 bgColorGo="var(--neon-blue)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
@@ -364,6 +365,7 @@ export default function Home() {
                                 description=""
                                 icon={priceCalc}
                                 bgColor="var(--neon-rose)"
+                                onClick={() => router.push(ROUTE_CONSTANTS.PRICE_CALCULATOR)}
                                 bgColorGo="var(--neon-yellow)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />

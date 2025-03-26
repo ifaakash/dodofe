@@ -15,6 +15,14 @@ export const routeArray = {
         type: ROUTE_TYPE.PRIVATE,
         restricted: false,
     },
+    [ROUTE_CONSTANTS.SCRIPT_GENERATOR]: {
+        type: ROUTE_TYPE.PUBLIC,
+        restricted: false,
+    },
+    [ROUTE_CONSTANTS.PRICE_CALCULATOR]: {
+        type: ROUTE_TYPE.PUBLIC,
+        restricted: false,
+    },
     [ROUTE_CONSTANTS.LINKS]: {
         type: ROUTE_TYPE.PRIVATE,
         restricted: false,
