@@ -155,7 +155,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
                             <input
                                 key={index}
                                 type="number"
-                                className="bg-[#EAE9EC] p-2 w-12 rounded-xl text-center text-lg focus:outline-none"
+                                className="bg-[#EAE9EC] p-2 w-12 rounded-xl text-center text-lg focus:outline-none font-bold"
                                 maxLength={1}
                                 onChange={(e) => handleOnChange(e, index)}
                                 onKeyDown={(e) => handleKeyDown(e, index)}

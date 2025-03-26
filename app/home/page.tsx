@@ -33,6 +33,8 @@ import CtaSection from "@components/molecules/CtaSection";
 const HomeFooter = lazy(() => import("./homeFooter"));
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import LogoutModal from "@components/templates/LogoutModal";
+import { useSelector } from "react-redux";
 
 // Dynamically import the Sidebar component with SSR disabled
 const Sidebar = dynamic(() => import("@components/molecules/Sidebar"), { ssr: false });
@@ -47,6 +49,9 @@ export default function Home() {
     const [mainContentVisible, setMainContentVisible] = useState(false);
     const [blurAmount, setBlurAmount] = useState(0);
     const scrollAnimationFrame = useRef<number | null>(null);
+    const isLogoutModalOpen = useSelector((state: any) => {
+        return state.common.logoutModalState;
+    });
 
     useEffect(() => {
         setIsMounted(true);
@@ -382,6 +387,7 @@ export default function Home() {
                 {isMounted && isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} url={dodoPageDetail?.url} />}
             </div>
 
+            <LogoutModal isModalOpen={isLogoutModalOpen} />
         </Screen>
     );
 }

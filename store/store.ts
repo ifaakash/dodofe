@@ -8,7 +8,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   invoice: invoiceReducer,
   dodoPage: dodoPageReducer,
   blocks: blocksReducer,
@@ -16,11 +16,18 @@ const rootReducer = combineReducers({
   common: commonReducer,
 });
 
+const rootReducer = (state: any, action: any) => {
+  if (action.type === 'RESET_STORE') {
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
+
 // do add any reducer here that you don't want to persist
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["invoice", "loader"],
+  blacklist: ["invoice", "loader", "common"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

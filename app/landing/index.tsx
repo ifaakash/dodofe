@@ -110,7 +110,7 @@ const Section3 = () => {
   );
 };
 
-const App = () => {
+const LandingPage = () => {
   return (
     <>
       <div className="flex flex-col w-full items-center mt-6 lg:mt-14 px-6">
@@ -139,4 +139,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default LandingPage;

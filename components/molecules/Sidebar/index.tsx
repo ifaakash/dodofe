@@ -13,7 +13,7 @@ import contactUsIcon from 'public/icons/EnvelopeSimple.svg';
 import HelpIcon from 'public/icons/whatsapp.svg';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { toggleLogoutModalState } from 'store/slice/commonSlice';
+import { hideLogoutModalState, showLogoutModalState } from 'store/slice/commonSlice';
 
 const Sidebar = ({
     isSidebarOpen,
@@ -30,7 +30,7 @@ const Sidebar = ({
     const handleLogout = () => {
         toggleSidebar();
 
-        dispatch(toggleLogoutModalState());
+        dispatch(showLogoutModalState());
     };
 
     const menuItems = [

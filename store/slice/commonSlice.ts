@@ -12,12 +12,15 @@ const commonSlice = createSlice({
     name: 'common',
     initialState,
     reducers: {
-        toggleLogoutModalState(state) {
-            state.logoutModalState = !state.logoutModalState;
+        hideLogoutModalState(state) {
+            state.logoutModalState = false;
+        },
+        showLogoutModalState(state) {
+            state.logoutModalState = true;
         },
     },
 });
 
-export const { toggleLogoutModalState } = commonSlice.actions;
+export const { hideLogoutModalState, showLogoutModalState } = commonSlice.actions;
 
 export default commonSlice.reducer;
