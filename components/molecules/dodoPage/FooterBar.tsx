@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
 import { useParams, useRouter } from "next/navigation";
 import { Block } from "types";
+import confetti from 'canvas-confetti'
 
 const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
   const { dodopageUrl } = useParams();
@@ -97,12 +98,14 @@ const FooterBar = ({
   dodoPageId,
   isOpened,
   setIsOpened,
+  setIsPublishedModalOpened
 }: {
   mode: string;
   url: string;
   dodoPageId: string;
   isOpened: boolean;
   setIsOpened: (isOpened: boolean) => void;
+  setIsPublishedModalOpened: (isPublishedModalOpened: boolean) => void;
 }) => {
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const {
@@ -121,6 +124,7 @@ const FooterBar = ({
   const enablePublish = unpublishedBlocks || unsavedChanges;
 
   const handlePublish = async () => {
+
     try {
       if (blockState.newBlocksAdded) {
         const newBlocks = blockState.blocks.filter((block) => block.isNew);
@@ -158,13 +162,9 @@ const FooterBar = ({
                   );
                 }
 
-                try {
-                  const createLink = await createBlockWithMedia(formData);
-                  console.log("createLink", createLink);
-                } catch (error) {
-                  console.error("Error creating link block:", error);
-                  return false; // Return false if any block creation fails
-                }
+                const createLink = await createBlockWithMedia(formData);
+                console.log("createLink", createLink);
+
                 break;
 
               case "PRODUCT":
@@ -187,11 +187,13 @@ const FooterBar = ({
                   formDataProduct
                 );
                 console.log("createProduct", createProduct);
+
                 break;
 
               default:
                 const createNewBlock = await createBlock(block);
                 console.log("createNewBlock", createNewBlock);
+
                 break;
             }
           } catch (error) {
@@ -202,18 +204,15 @@ const FooterBar = ({
       }
 
       if (blockState.isReordered) {
-        console.log("isReordered");
-        try {
-          await reorderBlocks({
-            dodoPageId: dodoPageId,
-            blocks: blockState.blocks.map((block) => ({
-              blockId: block.id as string,
-              newIndex: block.blockPositionalIndex as number,
-            })),
-          });
-        } catch (error) {
-          console.error("Error reordering blocks:", error);
-        }
+
+        await reorderBlocks({
+          dodoPageId: dodoPageId,
+          blocks: blockState.blocks.map((block) => ({
+            blockId: block.id as string,
+            newIndex: block.blockPositionalIndex as number,
+          })),
+        });
+
       }
 
       if (blockState.blocksToBeDeleted) {
@@ -222,17 +221,11 @@ const FooterBar = ({
         );
 
         for (const block of blocksToBeDeleted) {
-          try {
-            await deleteBlock({ blockId: block.id as string, userId: userId });
-          } catch (error) {
-            console.error("Error deleting block:", error);
-            return false; // Return false if any block deletion fails
-          }
+          await deleteBlock({ blockId: block.id as string, userId: userId });
         }
       }
 
       if (dodoPageState.unsavedChanges) {
-        console.log("Updating Dodo Page", dodoPageState);
         const formData = new FormData();
         formData.append("id", dodoPageId);
         formData.append("userId", userId);
@@ -247,8 +240,6 @@ const FooterBar = ({
 
         }
 
-        console.log("Form Data", formData.get("socialLinks"));
-
         if (dodoPageState.isImageChanged) {
           console.log("Img");
           formData.append("profilePicture", dodoPageImage);
@@ -259,12 +250,7 @@ const FooterBar = ({
           formData.append("audioBio", audioBio);
         }
 
-        try {
-          const DodoPageRes = await updateDodoPage(formData);
-        } catch (error) {
-          console.error("Error updating Dodo Page:", error);
-          return false; // Return false if any Dodo Page update fails
-        }
+        const DodoPageRes = await updateDodoPage(formData);
       }
 
       if (blockState.blocksToBeUpdated) {
@@ -277,19 +263,15 @@ const FooterBar = ({
             switch (block.blockType) {
               case "HEADING":
 
-                try {
-                  const headingRes = await updateBlock({
-                    blockId: block.id,
-                    userId: userId,
-                    dodopageUrl: url,
-                    blockData: {
-                      title: block.blockData.title,
-                    },
-                  });
-                } catch (error) {
-                  console.error("Error publishing heading block:", error);
-                  return false; // Return false if any block update fails
-                }
+                const headingRes = await updateBlock({
+                  blockId: block.id,
+                  userId: userId,
+                  dodopageUrl: url,
+                  blockData: {
+                    title: block.blockData.title,
+                  },
+                });
+
                 break;
 
               case "PRODUCT":
@@ -307,13 +289,10 @@ const FooterBar = ({
                 formDataProduct.append("userId", userId);
                 formDataProduct.append("dodopageUrl", url);
                 formDataProduct.append("blockCardSize", block.blockCardSize);
-                try {
-                  const productRes = await updateBlockWithMedia(formDataProduct);
-                  console.log("productRes", productRes);
-                } catch (error) {
-                  console.error("Error publishing product block:", error);
-                  return false; // Return false if any block update fails
-                }
+
+                const productRes = await updateBlockWithMedia(formDataProduct);
+                console.log("productRes", productRes);
+
                 break;
 
               case "LINK":
@@ -342,31 +321,21 @@ const FooterBar = ({
                   block.blockData.badge.color
                 );
 
-                try {
-                  const linkRes = await updateBlockWithMedia(formDataLink);
-                  console.log("linkRes", linkRes);
-                } catch (error) {
-                  console.error("Error updating block:", error);
-                  return false; // Return false if any block update fails
-                }
+                const linkRes = await updateBlockWithMedia(formDataLink);
+                console.log("linkRes", linkRes);
 
                 break;
               case "SEPARATOR":
 
-                try {
-                  const separatorRes = await updateBlock({
-                    blockId: block.id,
-                    userId: userId,
-                    dodopageUrl: url,
-                    blockData: {
-                      separatorType: block.blockData.separatorType,
-                    },
-                  });
-                  console.log("separatorRes", separatorRes);
-                } catch (error) {
-                  console.error("Error updating block:", error);
-                  return false; // Return false if any block update fails
-                }
+                const separatorRes = await updateBlock({
+                  blockId: block.id,
+                  userId: userId,
+                  dodopageUrl: url,
+                  blockData: {
+                    separatorType: block.blockData.separatorType,
+                  },
+                });
+
                 break;
               default:
                 break;
@@ -378,14 +347,24 @@ const FooterBar = ({
         });
       }
 
+      // we are removing all the data from redux, if any api fails above, that
+      // data will neither be in the backend nor in the redux store
       resetReduxForDodoPage();
 
-      toast.success("Dodo Page published successfully");
+      setIsPublishedModalOpened(true);
 
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: {
+          y: 0.7
+        }
+      });
       // window.location.href = `/dodo/${url}`;
       return true;
     } catch (error) {
       console.error("Error in handlePublish:", error);
+      toast.error(error?.msg || "Error publishing Dodo Page");
       return false;
     }
   };
@@ -400,7 +379,7 @@ const FooterBar = ({
 
   const handleAnalyticsNavigation = () => {
     router.push(`/dodo/${url}/analytics`);
-  };  
+  };
 
   return (
     <div>

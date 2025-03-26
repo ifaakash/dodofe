@@ -52,12 +52,13 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
                 <div>
                     <div>
                         {(unsavedChanges || (unpublishedBlocks && mode === "edit")) && (
-                            <div>
+                            <div style={{ border: '2px solid var(--red)' }}
+                                className="px-2 py-1 rounded-3xl">
                                 <button
                                     onClick={handleDiscardChanges}
                                     className="text-xs font-semibold flex items-center gap-1 text-red-500"
                                 >
-                                    Discard Changes <X size={16} />{" "}
+                                    Discard <X size={16} />{" "}
                                 </button>
                             </div>
                         )}

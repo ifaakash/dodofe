@@ -45,6 +45,7 @@ import { reorderBlocks } from "store/slice/blocksSlice";
 import { dodoStoreInitialisation } from "store/slice/dodoPageSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import PublishedModal from "./PublishedModal";
 
 const DodoPageDashboard = () => {
     const searchParams = useSearchParams();
@@ -58,6 +59,7 @@ const DodoPageDashboard = () => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [isOpened, setIsOpened] = useState(false);
+    const [isPublishedModalOpened, setIsPublishedModalOpened] = useState(false);
 
     const sensors = useSensors(
         useSensor(MouseSensor, {
@@ -383,6 +385,7 @@ const DodoPageDashboard = () => {
                         dodoPageId={dodoPageDetails?.id}
                         isOpened={isOpened}
                         setIsOpened={setIsOpened}
+                        setIsPublishedModalOpened={setIsPublishedModalOpened}
                     />
                 </div>
             )}
@@ -405,6 +408,8 @@ const DodoPageDashboard = () => {
                     </div>
                 </div>
             )}
+
+            <PublishedModal isOpened={isPublishedModalOpened} setIsOpened={setIsPublishedModalOpened} url={url} />
         </div>
     );
 };
