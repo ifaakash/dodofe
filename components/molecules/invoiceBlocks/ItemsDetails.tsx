@@ -1,4 +1,4 @@
-import { formatCurrency } from '@utils/helperFunctions'
+import { formatCurrency, formatCurrencyInWords } from '@utils/helperFunctions'
 import React from 'react'
 import Image from 'next/image'
 import PenIcon from 'public/icons/EditPen.svg'
@@ -118,7 +118,7 @@ const ItemsDetails = ({ mode, items, discount, gst, tds }: ItemsDetailsProps) =>
           <div className='text-white font-semibold'> {formatCurrency(items.reduce((acc, item) => acc + item.price * item.quantity, 0) - (items.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.1))}</div>
         </div>
         <div className='text-end font-medium text-xs'>
-          Three thousand six hundred only
+          {formatCurrencyInWords(items.reduce((acc, item) => acc + item.price * item.quantity, 0) - (items.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.1))}
         </div>
       </div>
     </div>
