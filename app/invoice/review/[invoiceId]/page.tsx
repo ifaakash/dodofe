@@ -98,7 +98,7 @@ const ReviewInvoice = () => {
       <div className="pt-6 pb-16">
         {/* Header */}
         <div className="pb-7 text-center">
-          <div className="text-xl font-semibold"> Invoice</div>
+          <div className="text-xl font-semibold"> INVOICE</div>
           <div className="text-sm text-[#3D4966] font-medium">
             <span>{formatDateLong(invoice.invoiceDate)}</span>
           </div>
