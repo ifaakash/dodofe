@@ -24,9 +24,10 @@ const UserCard = ({ type, mode, userDetails }: userCardProps) => {
                 }
             </div>
 
-            <div>
+            {/* Todo : Add user image functionality */}
+            {/* <div>
                 <Image src={DodoIconCircle} alt='user' width={40} height={40} />
-            </div>
+            </div> */}
 
             <div className='flex flex-col gap-[6px]'>
                 <div className='font-semibold'> {userDetails.name} </div>

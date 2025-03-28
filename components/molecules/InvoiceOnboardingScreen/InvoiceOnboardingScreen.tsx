@@ -92,7 +92,7 @@ const InvoiceOnboardingScreen = () => {
       <div className="absolute bottom-0 w-full px-5 py-4 flex flex-col gap-[10px]">
         <div className="flex justify-center gap-1 text-sm">
           <Image src={DodoCoin} width={20} alt="dodo coin" />
-          <div className="font-semibold">50</div>
+          <div className="font-semibold">5</div>
           <div className="font-normal">per invoice</div>
         </div>
         <NewButton variant="primary" size="large" onClick={() => { handleNavigation() }} className="w-full">
