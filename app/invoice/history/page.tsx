@@ -20,7 +20,7 @@ const InvoiceHistory = () => {
   const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
   const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
   const [isPaymentStatusChanged, setIsPaymentStatusChanged] = useState(false);
-
+  
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
@@ -34,8 +34,9 @@ const InvoiceHistory = () => {
         console.error("Error fetching invoices:", error);
       }
     };
+    setIsPaymentStatusChanged(false); // Reset the payment status changed flag
     fetchInvoices();
-  }, []);
+  }, [isPaymentStatusChanged]);
 
   useEffect(() => {
     if (timeFrame === "all") {
@@ -65,8 +66,6 @@ const InvoiceHistory = () => {
       setExpandedInvoiceId(invoiceId);
     }
   }
-
-  console.log('filteredInvoices', filteredInvoices)
 
   return (
     <div className="flex flex-col px-5 gap-4">
