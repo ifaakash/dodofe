@@ -207,10 +207,13 @@ const FooterBar = ({
 
         await reorderBlocks({
           dodoPageId: dodoPageId,
-          blocks: blockState.blocks.map((block) => ({
-            blockId: block.id as string,
-            newIndex: block.blockPositionalIndex as number,
-          })),
+          blocks: blockState.blocks
+            // filter out deleted blocks
+            .filter(block => !block.isDeleted)
+            .map((block) => ({
+              blockId: block.id as string,
+              newIndex: block.blockPositionalIndex as number,
+            })),
         });
 
       }
@@ -349,7 +352,10 @@ const FooterBar = ({
 
       // we are removing all the data from redux, if any api fails above, that
       // data will neither be in the backend nor in the redux store
-      resetReduxForDodoPage();
+
+      localStorage.removeItem("persist:root")
+      window.location.href = `/dodo/${url}`;
+      // resetReduxForDodoPage();
 
       setIsPublishedModalOpened(true);
 
@@ -369,6 +375,7 @@ const FooterBar = ({
     }
   };
 
+  // TODO: Remove this once we have a better way to reset the redux store
   const resetReduxForDodoPage = () => {
     dispatch(resetDodoPage());
     dispatch(resetUnpublishedBlocks());

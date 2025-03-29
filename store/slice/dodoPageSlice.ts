@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { persistor } from "../store";
 
 interface DodoPageState {
   dodoPageId: string | null;
@@ -61,14 +62,8 @@ const dodoPageSlice = createSlice({
       state.unsavedChanges = true;
     },
     resetDodoPage: (state) => {
-      // state.dodoPageImage = null;
-      // state.dodoPageName = null;
-      // state.dodoPageThought = null;
-      // state.socialLinks = null;
-      // state.audioBio = null;
-      state.unsavedChanges = false;
-      state.isImageChanged = false;
-      state.isAudioBioChanged = false;
+      console.log("Resetting Dodo Page");
+      persistor.purge();
     },
     setIsImageChanged: (state, action: PayloadAction<boolean>) => {
       state.isImageChanged = action.payload;
