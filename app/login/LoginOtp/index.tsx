@@ -7,7 +7,7 @@ import editIcon from "public/icons/edit.svg";
 import { loadState, saveState } from "@utils/localStorage";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import { useRouter } from "next/navigation";
-import { registerUser } from "api";
+import { registerUser, sendOtp } from "api";
 import OTPscreenBg from "public/assets/OTPscreen.png";
 import NewButton from "@components/atoms/Button/NewButton";
 import { toast } from "react-toastify";
@@ -26,6 +26,8 @@ export const LoginOtp = ({ setLoginState }: any) => {
         Array.from({ length: otpLength }, () => null)
     );
     const [isTermsChecked, setIsTermsChecked] = useState(true);
+    const [timer, setTimer] = useState(60);
+    const [isResendDisabled, setIsResendDisabled] = useState(true);
 
     const handleOnChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -70,6 +72,18 @@ export const LoginOtp = ({ setLoginState }: any) => {
             inputRefs.current[activeOtpIndex]?.focus();
         }
     }, [activeOtpIndex]);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        } else {
+            setIsResendDisabled(false);
+        }
+        return () => clearInterval(interval);
+    }, [timer]);
 
     const verifyOTP = async (otpCode?: string) => {
         const codeToVerify = otpCode || otp.join("");
@@ -122,8 +136,12 @@ export const LoginOtp = ({ setLoginState }: any) => {
         }
     };
 
-    const handleResend = () => {
-        console.log("Resending OTP...");
+    const handleResend = async () => {
+        if (!isResendDisabled) {
+            console.log("Resending OTP...");
+            setTimer(60);
+            setIsResendDisabled(true);
+        }
     };
 
     const handleNavigateToLoginNumber = () => {
@@ -180,10 +198,14 @@ export const LoginOtp = ({ setLoginState }: any) => {
                             <Image src={editIcon} alt="edit" />
                         </div>
                         <div
-                            className="flex items-center gap-1 text-xs"
+                            className={`flex items-center gap-1 text-xs ${
+                                isResendDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                            }`}
                             onClick={handleResend}
                         >
-                            <span className="text-brandPrimary font-semibold">Resend</span>
+                            <span className="text-brandPrimary font-semibold">
+                                {timer > 0 ? `${Math.floor(timer / 60)}:${(timer % 60).toString().padStart(2, '0')}` : 'Resend'}
+                            </span>
                             <RotateCcw size={12} />
                         </div>
                     </div>
