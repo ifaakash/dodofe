@@ -138,7 +138,7 @@ export const useDodoPageAnalytics = (dodoPageId: string) => {
                 dodoPageId,
                 visitorId: visitorIdRef.current,
                 sessionId: sessionIdRef.current,
-                timeSpentInSeconds,
+                timeSpent: timeSpentInSeconds,
             });
 
             // Reset the session start time
@@ -172,6 +172,7 @@ export const useDodoPageAnalytics = (dodoPageId: string) => {
         isLoading,
         error,
         trackBlockInteraction,
+        recordPageView,
         visitorId: visitorIdRef.current,
         sessionId: sessionIdRef.current,
     };
