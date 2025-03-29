@@ -301,7 +301,7 @@ export default function Home() {
                                 )}
                                 onClick={() => gotoLinksPage(dodoPageDetail?.url)}
                             >
-                                <div className="flex text-lg">
+                                <div className="flex text-sm">
                                     Login to get free
                                     <Image
                                         className="mx-1"

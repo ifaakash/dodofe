@@ -9,8 +9,8 @@ import { Card } from '@utils/uiUtils';
 import styles from '../mediakit.module.css';
 import otherFeatures from "public/assets/otherFeatures.png";
 import invoiceIcon from "public/assets/invoice.png";
-import engagementCalc from "public/assets/engagementCalc.svg";
-import priceCalc from "public/assets/priceCalc.svg";
+import engagementCalc from "public/assets/content.png";
+import priceCalc from "public/assets/priceEstimate.png";
 import mediakitIcon from "public/assets/mediakit.png";
 import NewButton from '@components/atoms/Button/NewButton';
 import crossBg from "public/icons/crossBg.svg";
@@ -75,7 +75,7 @@ const MediaKitWaitlist = () => {
         <Screen>
             <div className={cx("pt-8 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
                 style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed', }}>
-                <div className="fixed w-full pt-20"
+                <div className="fixed w-full pt-5"
                     style={{
                         filter: `blur(${blurAmount}px)`,
                         transition: 'filter 0.15s ease-out',
@@ -91,10 +91,10 @@ const MediaKitWaitlist = () => {
                     }}
                 >
                     <div className="mx-4 flex flex-col items-center gap-5">
-                        <div className='flex flex-col items-center gap-2 text-2xl font-bold'>
+                        <div className='flex flex-col items-center gap-2 text-2xl font-black'>
                             <span className='leading-none'>🎉You’re on the</span>
                             <span className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] bg-clip-text text-transparent leading-none" >
-                                Waitlist</span>
+                                Waitlist!</span>
                         </div>
 
                         <div className='text-sm text-center max-w-[310px]'>
@@ -134,22 +134,22 @@ const MediaKitWaitlist = () => {
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
-                            <Card
+                        <Card
                                 title="Script Generator"
                                 description=""
                                 icon={engagementCalc}
                                 onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
-                                bgColor="var(--neon-purple)"
-                                bgColorGo="var(--neon-blue)"
+                                bgColor="var(--light-orange)"
+                                bgColorGo="var(--orange)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
                             <Card
                                 title="IG Price Estimator"
                                 description=""
                                 icon={priceCalc}
-                                bgColor="var(--neon-rose)"
+                                bgColor="var(--neon-purple)"
                                 onClick={() => router.push(ROUTE_CONSTANTS.PRICE_CALCULATOR)}
-                                bgColorGo="var(--neon-yellow)"
+                                bgColorGo="var(--purple)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
                         </div>
