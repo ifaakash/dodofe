@@ -179,3 +179,17 @@ export interface UserInvoicesData {
     due: number;
   };
 }
+
+export interface AnalyticsData {
+    totalViews: number;
+    uniqueVisitors: number;
+    averageDuration: number;
+    topReferrers: Array<{ source: string; count: number }>;
+    blockInteractions: Array<{
+        blockId: string;
+        blockType: string;
+        interactionCount: number;
+    }>;
+    viewsByDate: Array<{ date: string; count: number }>;
+    deviceBreakdown: Array<{ device: string; percentage: number }>;
+}

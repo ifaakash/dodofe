@@ -153,6 +153,27 @@ export const updateBlocksByPageId = async (
     payload
   );
 
+export const recordAnalyticsPageView = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.recordAnalyticsPageView, payload);
+
+export const recordAnalyticsTimeSpent = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.recordAnalyticsTimeSpent, payload);
+
+export const recordAnalyticsBlockInteraction = async (
+    payload: any
+): Promise<any> =>
+    Post<any>(API_CONSTANTS.recordAnalyticsBlockInteraction, payload);
+
+export const getAnalyticsDataByDodoPageId = async (
+    dodoPageId: any
+): Promise<any> =>
+    Get<any>(
+        API_CONSTANTS.getAnalyticsDataByDodoPageId +
+            API_CONSTANTS.slash +
+            dodoPageId
+    );
+
+
 export const generateContent = async (prompt: string): Promise<string | null> => {
   const AI_API_KEY = process.env.NEXT_PUBLIC_AI_API_KEY;
   console.log(AI_API_KEY);
