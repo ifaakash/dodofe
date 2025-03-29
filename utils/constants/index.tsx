@@ -57,6 +57,7 @@ export const ROUTE_CONSTANTS = {
   DODOPAGE: "/dodo",
   SCRIPT_GENERATOR: "/script-generator",
   PRICE_CALCULATOR: "/price-calculator",
+  MEDIA_KIT: "/media-kit",
 };
 
 export const BLOCKS = {
@@ -208,4 +209,14 @@ export const TIME_PERIODS = [
     label: "Year",
     value: "year",
   },
+];
+
+export const CURRENCY_ONES = [
+  "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+  "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+  "Seventeen", "Eighteen", "Nineteen"
+];
+
+export const CURRENCY_TENS = [
+  "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
 ];

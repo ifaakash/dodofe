@@ -24,8 +24,9 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
     const dispatch = useDispatch();
 
     const handleDiscardChanges = () => {
-        dispatch(resetDodoPage());
-        dispatch(resetUnpublishedBlocks());
+        // dispatch(resetDodoPage());
+        // dispatch(resetUnpublishedBlocks());
+        localStorage.removeItem("persist:root") // clear redux store
         window.location.href = `/dodo/${url}`;
     };
 

@@ -160,7 +160,7 @@ const HistoryInvoiceCard = ({
             {/* Edit Button */}
             <Link
               href={`/invoice/review/${invoice.id}`}
-              className="border-[1px] border-[#CEF2DC] py-2 px-[10px] rounded-full flex items-center gap-[6px] w-[100px] justify-center cursor-pointer"
+              className="border-[1px] border-[#CEF2DC] py-2 px-5 rounded-full flex items-center gap-[6px] w-[100px] justify-center cursor-pointer"
             >
               <div className="text-xs font-bold">Edit</div>
               <Image src={EditPen} width={16} height={16} alt="edit" />

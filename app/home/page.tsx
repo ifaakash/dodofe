@@ -325,6 +325,8 @@ export default function Home() {
                         <div className="mx-4 py-4">{getUserCard()}</div>
                     )}
                 </div>
+
+                
                 <div
                     className={cx(
                         "w-full px-4 rounded-t-[32px] bg-white",
@@ -377,7 +379,8 @@ export default function Home() {
                         img={mediakitIcon}
                         title="Your MediaKit"
                         description="A digital resume for you"
-                        buttonLabel="Coming soon..."
+                        buttonLabel="Know More"
+                        onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
                     />
 
                     <span className="absolute-center text-sm mt-4">
