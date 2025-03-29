@@ -36,6 +36,10 @@ const formatNumber = (num: number) => {
     return num.toString();
 };
 
+const formatDuration = (seconds: number) => {
+    return seconds ? seconds.toFixed(1) + " sec" : "--";
+};
+
 const AnalyticsMain = ({
     timeRange,
     setTimeRange,
@@ -100,9 +104,7 @@ const AnalyticsMain = ({
 
                     <div className="flex flex-col gap-1">
                         <div className="text-[#414D55] font-bold text-2xl text-center">
-                            {data.averageDuration
-                                ? data.averageDuration + " sec"
-                                : "--"}{" "}
+                            {formatDuration(data.averageDuration)}
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={ClockIcon} alt="clicks" />
