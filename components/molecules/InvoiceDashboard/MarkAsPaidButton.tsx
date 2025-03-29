@@ -108,6 +108,12 @@ const MarkAsPaidButton = ({ invoice, setIsPaymentStatusChanged }: { invoice: any
     }
   };
 
+  const playAudio = (audio: string) => {
+    const audioToPlay = new Audio(audio);
+    audioToPlay.play();
+  };
+
+
   const handleMarkAsPaid = async () => {
     const res = await toggleInvoicePaymentStatus({
       invoiceId: invoice.id,
@@ -115,7 +121,7 @@ const MarkAsPaidButton = ({ invoice, setIsPaymentStatusChanged }: { invoice: any
       paymentStatus: "paid",
     });
     if (res.success) {
-      console.log("res", res);
+      playAudio('https://dodo-profile-audio.s3.ap-south-1.amazonaws.com/dodo-audio/tring_sound.mp3')
       setIsPaymentStatusChanged(true);
       if (res.success) {
         confetti({

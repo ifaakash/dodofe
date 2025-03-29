@@ -1,3 +1,6 @@
+
+import { CURRENCY_ONES, CURRENCY_TENS } from "./constants";
+
 /**
  * Formats a number as Indian Rupees (INR)
  * @param amount - The number to format as currency
@@ -45,4 +48,29 @@ export const formatDateLong = (isoDate: string | undefined) => {
     year: "numeric"
   };
   return new Intl.DateTimeFormat("en-US", options).format(date);
+};
+
+export const formatCurrencyInWords = (amount: number): string => {
+  if (amount === 0) return "Zero";
+
+  const convertChunk = (n: number): string => {
+    if (n < 20) return CURRENCY_ONES[n];
+    if (n < 100) return `${CURRENCY_TENS[Math.floor(n / 10)]} ${CURRENCY_ONES[n % 10]}`.trim();
+    return `${CURRENCY_ONES[Math.floor(n / 100)]} Hundred ${convertChunk(n % 100)}`.trim();
+  };
+
+  const units = ["", "Thousand", "Lakh", "Crore"];
+  let i = 0, words = "", numCopy = amount;
+
+  while (numCopy > 0) {
+    let chunk = numCopy % (i === 1 ? 100 : 1000);
+    if (chunk > 0) {
+      words = `${convertChunk(chunk)} ${units[i]} ${words}`.trim();
+    }
+    numCopy = Math.floor(numCopy / (i === 1 ? 100 : 1000));
+    i++;
+  }
+
+  return words;
+
 };

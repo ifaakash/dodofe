@@ -33,6 +33,8 @@ import CtaSection from "@components/molecules/CtaSection";
 const HomeFooter = lazy(() => import("./homeFooter"));
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import LogoutModal from "@components/templates/LogoutModal";
+import { useSelector } from "react-redux";
 
 // Dynamically import the Sidebar component with SSR disabled
 const Sidebar = dynamic(() => import("@components/molecules/Sidebar"), { ssr: false });
@@ -47,6 +49,9 @@ export default function Home() {
     const [mainContentVisible, setMainContentVisible] = useState(false);
     const [blurAmount, setBlurAmount] = useState(0);
     const scrollAnimationFrame = useRef<number | null>(null);
+    const isLogoutModalOpen = useSelector((state: any) => {
+        return state.common.logoutModalState;
+    });
 
     useEffect(() => {
         setIsMounted(true);
@@ -320,6 +325,8 @@ export default function Home() {
                         <div className="mx-4 py-4">{getUserCard()}</div>
                     )}
                 </div>
+
+                
                 <div
                     className={cx(
                         "w-full px-4 rounded-t-[32px] bg-white",
@@ -347,9 +354,10 @@ export default function Home() {
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
                             <Card
-                                title="Engagement Calculator"
+                                title="Script Generator"
                                 description=""
                                 icon={engagementCalc}
+                                onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
                                 bgColor="var(--neon-purple)"
                                 bgColorGo="var(--neon-blue)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
@@ -359,6 +367,7 @@ export default function Home() {
                                 description=""
                                 icon={priceCalc}
                                 bgColor="var(--neon-rose)"
+                                onClick={() => router.push(ROUTE_CONSTANTS.PRICE_CALCULATOR)}
                                 bgColorGo="var(--neon-yellow)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
@@ -370,7 +379,8 @@ export default function Home() {
                         img={mediakitIcon}
                         title="Your MediaKit"
                         description="A digital resume for you"
-                        buttonLabel="Coming soon..."
+                        buttonLabel="Know More"
+                        onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
                     />
 
                     <span className="absolute-center text-sm mt-4">
@@ -382,6 +392,7 @@ export default function Home() {
                 {isMounted && isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} url={dodoPageDetail?.url} />}
             </div>
 
+            <LogoutModal isModalOpen={isLogoutModalOpen} />
         </Screen>
     );
 }
