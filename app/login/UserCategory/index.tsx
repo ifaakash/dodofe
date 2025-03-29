@@ -7,6 +7,7 @@ import styles from "./userCategory.module.css";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import { completeProfile } from "api";
 import { loadState } from "@utils/localStorage";
+import NewButton from "@components/atoms/Button/NewButton";
 
 const categories = [
   { name: "tech", code: "#ffffff" },
@@ -20,6 +21,15 @@ const categories = [
   { name: "gaming", code: "#d83248" },
   { name: "diy", code: "#d83248" },
   { name: "vlogger", code: "#d83248" },
+  { name: "gym & fitness", code: "#d83248" },
+  { name: "educator", code: "#d83248" },
+  { name: "dancer", code: "#d83248" },
+  { name: "singer", code: "#d83248" },
+  { name: "doctor", code: "#d83248" },
+  { name: "motivational", code: "#d83248" },
+  { name: "real estate", code: "#d83248" },
+  { name: "home design", code: "#d83248" },
+  { name: "Other", code: "#d83248" },
 ];
 
 export const UserCategory = () => {
@@ -106,7 +116,23 @@ export const UserCategory = () => {
         ))}
       </div>
 
-      <Footer variant="default" primaryActionText="Continue" primaryAction={gotoHome} />
+      <div className={cx(
+        "bottom-0 py-4 fixed justify-center w-[90%]"
+      )}
+      // style={isEmpty(receiverDetails) ? { width: '80%' } : { width: '90%' }
+      // }
+      >
+        <NewButton
+          size="large"
+          variant="primary"
+          className="w-full"
+          onClick={gotoHome}
+        >
+          Next
+        </NewButton>
+      </div>
+
+      {/* <Footer variant="default" primaryActionText="Continue" primaryAction={gotoHome} /> */}
     </div>
   );
 };

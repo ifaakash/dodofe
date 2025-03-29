@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import logoutSad from 'public/assets/logout_sad.png'
 
 import { hideLogoutModalState } from 'store/slice/commonSlice';
+import NewButton from "@components/atoms/Button/NewButton";
 
 const LogoutModal = ({ isModalOpen }: { isModalOpen: boolean }) => {
     const router = useRouter();
@@ -27,7 +28,7 @@ const LogoutModal = ({ isModalOpen }: { isModalOpen: boolean }) => {
     return isModalOpen && (
         <Modal showOuterCloseIcon visible={isModalOpen} onClose={handleCancel} showCloseIcon={false} isBackgroundBlur>
             <>
-                <p className="text-xl mt-2 font-bold clr-dark-text">Wait! Are you leaving already?</p>
+                <p className="text-xl mt-2 font-bold clr-dark-text">Wait, why are you leaving? </p>
 
                 <div className="flex flex-row gap-2 items-center justify-between mb-8 mt-2">
                     <Image
@@ -41,9 +42,11 @@ const LogoutModal = ({ isModalOpen }: { isModalOpen: boolean }) => {
                             router.back()
                         }}
                     />
-                    <p className="mt-2 text-lg">Give us one more chance!</p>
+                    <p className="mt-2 text-base leading-tight">Give us one more chance to make things awesome for you! </p>
                 </div>
                 <div className="flex justify-center gap-2 w-full">
+
+                    {/* KESHAV TODO: FIX UI */}
                     <Button
                         size="medium"
                         className="w-full rounded-[10px] py-3 px-4"
