@@ -57,6 +57,7 @@ export const ROUTE_CONSTANTS = {
   DODOPAGE: "/dodo",
   SCRIPT_GENERATOR: "/script-generator",
   PRICE_CALCULATOR: "/price-calculator",
+  MEDIA_KIT: "/media-kit",
 };
 
 export const BLOCKS = {
