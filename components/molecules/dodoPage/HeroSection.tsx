@@ -13,6 +13,8 @@ import Quote from "public/icons/Quote.svg";
 import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
 import micIcon from "public/icons/mic.svg";
+import playIcon from "public/icons/whitePlay.svg";
+import pauseIcon from "public/icons/whitePause.svg";
 
 import Speaker from "public/icons/Speaker.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +29,7 @@ import {
   setIsImageChanged,
   setIsAudioBioChanged,
 } from "store/slice/dodoPageSlice";
-import { isWebview, sendToNative } from "@utils/index";
+import { isEmpty, isWebview, sendToNative } from "@utils/index";
 import { WEBVIEW_ACTIONS } from "@utils/constants";
 import { toast } from "react-toastify";
 
@@ -69,6 +71,8 @@ const HeroSection = ({
   const profileAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
   const waveSurferRef = useRef<WaveSurfer | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const audioUrlRef = useRef<string | null>(null);
 
   // Create refs for popup content to handle click outside
   const thoughtsPopupRef = useRef<HTMLDivElement>(null);
@@ -190,6 +194,31 @@ const HeroSection = ({
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+        audioRef.current = null;
+      }
+    };
+  }, [])
+
+  useEffect(() => {
+    if (audioBlob) {
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(audioUrlRef.current); // clean up old
+      }
+      audioUrlRef.current = URL.createObjectURL(audioBlob);
+    }
+    return () => {
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(audioUrlRef.current);
+        audioUrlRef.current = null;
+      }
+    };
+  }, [audioBlob]);
+
   const startRecording = async () => {
     try {
       // Check if running in a React Native WebView
@@ -252,8 +281,8 @@ const HeroSection = ({
     if (!waveSurferRef.current) {
       waveSurferRef.current = WaveSurfer.create({
         container: document.getElementById('waveform') as HTMLElement,
-        waveColor: 'rgb(200, 0, 200)',
-        progressColor: 'rgb(100, 0, 100)',
+        waveColor: '#E2E4E9',
+        progressColor: '#17CF62',
         backend: 'MediaElement',
       });
 
@@ -284,34 +313,30 @@ const HeroSection = ({
   };
 
   const playAudio = () => {
-    if (!audioBlob) {
+    if (!audioBlob || !audioUrlRef.current) {
       console.log("No audio recorded yet");
       return;
     }
 
-    // Create a new audio element each time to ensure the source is fresh
-    const audioUrl = URL.createObjectURL(audioBlob);
-    console.log("audioRef.current", audioRef.current, isPlaying);
+    const audioUrl = audioUrlRef.current;
+
     if (!audioRef.current) {
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.onended = () => {
-        setIsPlaying(false);
-      };
-    } else {
-      if (audioRef.current.src !== audioUrl && !isPlaying) {
-        audioRef.current.src = audioUrl;
-      }
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.addEventListener('ended', () => setIsPlaying(false));
+      audio.addEventListener('timeupdate', () => {
+        setCurrentTime(audio.currentTime);
+      });
     }
 
-    if (isPlaying) {
-      audioRef.current.pause();
+    const audio = audioRef.current;
 
+    if (isPlaying) {
+      audio.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().catch((error) => {
-        console.error("Error playing audio:", error);
-      });
-
+      audio.play().catch((err) => console.error("Playback error:", err));
       setIsPlaying(true);
     }
 
@@ -380,8 +405,8 @@ const HeroSection = ({
     if (!isRecording && audioBlob) {
       waveSurferRef.current = WaveSurfer.create({
         container: document.getElementById('waveform') as HTMLElement,
-        waveColor: 'rgb(200, 0, 200)',
-        progressColor: 'rgb(100, 0, 100)',
+        waveColor: '#E2E4E9',
+        progressColor: '#17CF62',
         backend: 'MediaElement',
       });
 
@@ -400,6 +425,27 @@ const HeroSection = ({
       };
     }
   }, [isRecording, audioBlob]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      console.log("audioRef.current", audioRef.current);
+      const updateTime = () => {
+        setCurrentTime(audioRef.current?.currentTime || 0);
+      };
+
+      audioRef.current.addEventListener('timeupdate', updateTime);
+
+      return () => {
+        audioRef.current?.removeEventListener('timeupdate', updateTime);
+      };
+    }
+  }, [audioRef.current]);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
 
   return (
     <div
@@ -492,11 +538,14 @@ const HeroSection = ({
         {mode === "edit" && (
           <div
             className="flex gap-0.5 items-center border-[1px] border-[#979EAD] rounded-full py-[6px] px-3 cursor-pointer"
-            onClick={() => setAddAudioBioPopup(true)}
+            onClick={() => {
+              setAddAudioBioPopup(true)
+            }
+            }
             id="audio-bio-button"
           >
             <div className="text-xs font-medium text-[#414D55]">
-              Add Audio Bio
+              {dodoPageDetails.audioBio ? "Edit" : "Add"} Audio Bio
             </div>
             <Image
               src={PlusCircle}
@@ -633,15 +682,28 @@ const HeroSection = ({
                   <div id="waveform" className="w-full"></div>
                 )}
               </div>
+              <div className="text-center mt-2" style={{ minHeight: '24px' }}>
+                {isPlaying && formatTime(currentTime)}
+              </div>
               <div className="flex items-center flex-col">
-                <Image
-                  src={micIcon}
-                  alt="Audio Record"
-                  width={48}
-                  height={48}
-                  onClick={isRecording ? stopRecording : startRecording}
-                  className={`cursor-pointer ${isRecording ? 'wave-animation' : ''}`}
-                />
+                <div className="relative w-12 h-12">
+                  {isRecording && (
+                    <>
+                      <span className="absolute inset-0 animate-wave bg-gray-300 rounded-full opacity-50"></span>
+                      <span className="absolute inset-0 animate-wave2 bg-gray-300 rounded-full opacity-30"></span>
+                    </>
+                  )}
+                  <div className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center bg-theme-3">
+                    <Image
+                      src={isRecording ? pauseIcon : playIcon}
+                      alt="Audio Record"
+                      width={24}
+                      height={24}
+                      onClick={isRecording ? stopRecording : startRecording}
+                      className={`cursor-pointer ${isRecording ? 'wave-animation' : ''}`}
+                    />
+                  </div>
+                </div>
                 <span className="text-[#3D4966] mt-2 text-xs font-medium">
                   {isRecording ? "Tap to pause" : "Tap to play"}
                 </span>
@@ -651,6 +713,7 @@ const HeroSection = ({
                   className="border-[1px] border-[#979EAD] rounded-full flex items-center gap-1 py-[14px] pl-[26px] pr-10"
                   onClick={playAudio}
                   disabled={!audioBlob}
+                  style={{ minWidth: '110px' }}
                 >
                   <span className="text-xs font-medium">
                     {isPlaying ? "Stop" : "Listen"}
@@ -662,7 +725,7 @@ const HeroSection = ({
                   onClick={handleSaveAudioBio}
                   disabled={!audioBlob}
                 >
-                  Save
+                  Save in draft
                 </button>
               </div>
             </div>
