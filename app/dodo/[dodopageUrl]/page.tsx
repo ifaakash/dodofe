@@ -336,7 +336,7 @@ const DodoPageDashboard = () => {
 
         return (
             <div style={{ position: "relative" }} key={block.id}>
-                <div style={{ position: "absolute", top: 'calc(100% - 10px)', right: '10px' }}>
+                <div style={{ position: "absolute", top: '10px', right: '10px' }}>
                     {icon}
                 </div>
                 {content}

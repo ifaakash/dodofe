@@ -45,23 +45,10 @@ const LogoutModal = ({ isModalOpen }: { isModalOpen: boolean }) => {
                     <p className="mt-2 text-base leading-tight">Give us one more chance to make things awesome for you! </p>
                 </div>
                 <div className="flex justify-center gap-2 w-full">
-
-                    {/* KESHAV TODO: FIX UI */}
-                    <Button
-                        size="medium"
-                        className="w-full rounded-[10px] py-3 px-4"
-                        variant="contained"
-                        onClick={handleCancel}
-                        text="Cancel"
-                    />
-                    <Button
-                        size="medium"
-                        className="w-full rounded-[10px] py-3 px-4"
-                        variant="outline"
-                        onClick={handleLogout}
-                        text="Logout"
-                        btnColor="theme-1"
-                    />
+                    <button className="w-full rounded-full border-[1px] border-red-500 text-sm font-medium" onClick={handleLogout}>
+                        Logout
+                    </button>
+                    <button className="w-full rounded-full py-3 border-[1px] border-brandPrimary bg-brandPrimary text-white" onClick={handleCancel}> Cancel </button>
                 </div>
             </>
         </Modal>
