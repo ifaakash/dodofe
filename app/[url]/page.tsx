@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { getDodoPageByURL } from "api";
 import HeroSection from "@components/molecules/dodoPage/HeroSection";
@@ -20,6 +20,8 @@ const DodoPage = () => {
     const { url } = useParams();
     const [dodoPageDetails, setDodoPageDetails] = useState<any>(null);
     const [mode] = useState("public");
+    const hasFetchedRef = useRef(false);
+    const hasRecordedViewRef = useRef(false);
 
     // Add analytics hook
     const { trackBlockInteraction, recordPageView } = useDodoPageAnalytics(
@@ -27,21 +29,20 @@ const DodoPage = () => {
     );
 
     useEffect(() => {
-        if (url) {
+        if (url && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
             getDodoPageByURL(url as string).then((res) => {
                 if (res.success) {
                     setDodoPageDetails(res.dodoPage);
+                    // Record page view immediately after getting dodo page details
+                    if (!hasRecordedViewRef.current) {
+                        hasRecordedViewRef.current = true;
+                        recordPageView(res.dodoPage.id);
+                    }
                 }
             });
         }
-    }, [url]);
-
-    // Record page view when dodoPageDetails is loaded
-    useEffect(() => {
-        if (dodoPageDetails?.id) {
-            recordPageView(dodoPageDetails.id);
-        }
-    }, [dodoPageDetails?.id, recordPageView]);
+    }, [url, recordPageView]);
 
     // Track block interactions
     const handleBlockInteraction = (
