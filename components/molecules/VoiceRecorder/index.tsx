@@ -56,6 +56,10 @@ const VoiceRecorder = (props: any) => {
             };
         }
 
+        console.log('navigator.mediaDevices', navigator.mediaDevices);
+        window.ReactNativeWebView.postMessage(
+            JSON.stringify({ action: JSON.stringify(navigator.mediaDevices) })
+        );
         // return () => {
         //     audioRef.current = null;
         //     lastTimeRef.current = 0;
