@@ -37,7 +37,22 @@ const formatNumber = (num: number) => {
 };
 
 const formatDuration = (seconds: number) => {
-    return seconds ? seconds.toFixed(1) + " sec" : "--";
+    if (!seconds) return "--";
+
+    if (seconds < 60) {
+        return seconds.toFixed(1) + " sec";
+    } else if (seconds < 3600) {
+        const minutes = seconds / 60;
+        return minutes.toFixed(1) + " min";
+    } else {
+        const hours = seconds / 3600;
+        return hours.toFixed(1) + " hr";
+    }
+};
+
+const formatCTR = (clicks: number, views: number) => {
+    if (!views) return "--";
+    return ((clicks / views) * 100).toFixed(2) + " %";
 };
 
 const AnalyticsMain = ({
@@ -85,15 +100,15 @@ const AnalyticsMain = ({
                 <div className="w-full flex justify-center">
                     <AnalyticsChart
                         value1={data.totalViews}
-                        value2={data.blockInteractions.length}
+                        value2={data.totalClicks}
                     />
                 </div>
 
                 <div className="pt-5 pb-2 flex justify-between px-5">
                     <div className="flex flex-col gap-1">
                         <div className="text-[#414D55] font-bold text-2xl text-center">
-                            {data.blockInteractions
-                                ? formatNumber(data.blockInteractions.length)
+                            {data.totalClicks
+                                ? formatNumber(data.totalClicks)
                                 : "00"}
                         </div>
                         <div className="flex items-center gap-1">
@@ -115,12 +130,7 @@ const AnalyticsMain = ({
                     <div className="flex flex-col gap-1">
                         {/* ctr= clicks/totalViews */}
                         <div className="text-[#414D55] font-bold text-2xl text-center">
-                            {data.totalViews
-                                ? (data.blockInteractions.length /
-                                      data.totalViews) *
-                                      100 +
-                                  " %"
-                                : "--"}{" "}
+                            {formatCTR(data.totalClicks, data.totalViews)}
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={CTRIcon} alt="clicks" />

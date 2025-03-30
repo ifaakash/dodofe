@@ -122,6 +122,7 @@ const AnalyticsPage = () => {
                                         totalViews: 0,
                                         uniqueVisitors: 0,
                                         averageDuration: 0,
+                                        totalClicks: 0,
                                         topReferrers: [],
                                         blockInteractions: [],
                                         viewsByDate: [],

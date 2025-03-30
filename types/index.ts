@@ -184,6 +184,7 @@ export interface AnalyticsData {
     totalViews: number;
     uniqueVisitors: number;
     averageDuration: number;
+    totalClicks: number;
     topReferrers: Array<{ source: string; count: number }>;
     blockInteractions: Array<{
         blockId: string;

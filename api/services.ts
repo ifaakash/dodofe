@@ -154,8 +154,12 @@ export const updateBlocksByPageId = async (
 export const recordAnalyticsPageView = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.recordAnalyticsPageView, payload);
 
-export const recordAnalyticsTimeSpent = async (payload: any): Promise<any> =>
-    Post<any>(API_CONSTANTS.recordAnalyticsTimeSpent, payload);
+export const recordAnalyticsTimeSpent = async (payload: {
+    dodoPageId: string;
+    visitorId: string;
+    timeSpent: number;
+    sessionId?: string;
+}): Promise<any> => Post<any>(API_CONSTANTS.recordAnalyticsTimeSpent, payload);
 
 export const recordAnalyticsBlockInteraction = async (
     payload: any

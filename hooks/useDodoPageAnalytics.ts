@@ -150,16 +150,21 @@ export const useDodoPageAnalytics = (dodoPageId: string) => {
 
     // Track block interaction
     const trackBlockInteraction = async (
-        blockInteraction: BlockInteraction
+        blockId: string,
+        interactionType: "click" | "view" | "scroll"
     ) => {
         try {
-            const response = await recordAnalyticsBlockInteraction({
-                ...blockInteraction,
+            const payload = {
+                dodoPageId,
+                blockId,
                 visitorId: visitorIdRef.current,
                 sessionId: sessionIdRef.current,
-            });
+                interactionType,
+                timestamp: new Date().toISOString(),
+            };
 
-            if (!response.ok) {
+            const response = await recordAnalyticsBlockInteraction(payload);
+            if (!response.success) {
                 console.error("Failed to record block interaction");
             }
         } catch (err) {
