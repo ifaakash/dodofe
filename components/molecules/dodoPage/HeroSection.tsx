@@ -168,7 +168,7 @@ const HeroSection = ({
     const messageHandler = async (event) => {
       if (isWebview()) {
         try {
-          const { action, status } = JSON.parse(event.data);
+          const { action, status, blobUrl } = JSON.parse(event.data);
           console.log('Received from Native:', action, status);
 
           if (action === 'audioPermissionResponse') {
@@ -179,6 +179,15 @@ const HeroSection = ({
             } else {
               toast.error("Microphone permission denied.");
             }
+          }
+
+          if (action === 'audioRecordingComplete' && blobUrl) {
+            const response = await fetch(blobUrl);
+            const blob = await response.blob();
+
+            setAudioBlob(blob);
+            // toast.success('Recording received');
+            dispatch(setIsAudioBioChanged(true));
           }
         } catch (err) {
           if (window.ReactNativeWebView) {
@@ -276,6 +285,14 @@ const HeroSection = ({
   };
 
   const stopRecording = () => {
+    if (isWebview()) {
+      window.ReactNativeWebView?.postMessage(
+        JSON.stringify({ action: 'stopRecording' })
+      );
+      setIsRecording(false);
+      return; // ⛔ prevents calling mediaRecorder.stop()
+    }
+
     if (mediaRecorder && mediaRecorder.state !== "inactive") {
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks().forEach((track) => track.stop());
