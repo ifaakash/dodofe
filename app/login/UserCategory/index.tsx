@@ -10,26 +10,26 @@ import { loadState } from "@utils/localStorage";
 import NewButton from "@components/atoms/Button/NewButton";
 
 const categories = [
-  { name: "tech", code: "#ffffff" },
-  { name: "entertainment", code: "#d83248" },
-  { name: "food", code: "#d83248" },
-  { name: "finance", code: "#d83248" },
-  { name: "comedy", code: "#d83248" },
-  { name: "beauty", code: "#d83248" },
-  { name: "travel", code: "#d83248" },
-  { name: "sports", code: "#d83248" },
-  { name: "gaming", code: "#d83248" },
-  { name: "diy", code: "#d83248" },
-  { name: "vlogger", code: "#d83248" },
-  { name: "gym & fitness", code: "#d83248" },
-  { name: "educator", code: "#d83248" },
-  { name: "dancer", code: "#d83248" },
-  { name: "singer", code: "#d83248" },
-  { name: "doctor", code: "#d83248" },
-  { name: "motivational", code: "#d83248" },
-  { name: "real estate", code: "#d83248" },
-  { name: "home design", code: "#d83248" },
-  { name: "Other", code: "#d83248" },
+  { name: "tech", code: "#ffffff", emoji: "💻" },
+  { name: "entertainment", code: "#d83248", emoji: "🎥" },
+  { name: "food", code: "#d83248", emoji: "🍔" },
+  { name: "finance", code: "#d83248", emoji: "💰" },
+  { name: "comedy", code: "#d83248", emoji: "🤣" },
+  { name: "beauty", code: "#d83248", emoji: "💄" },
+  { name: "travel", code: "#d83248", emoji: "🌍" },
+  { name: "sports", code: "#d83248", emoji: "🏃‍♂️" },
+  { name: "gaming", code: "#d83248", emoji: "🎮" },
+  { name: "diy", code: "#d83248", emoji: "🔨" },
+  { name: "vlogger", code: "#d83248", emoji: "📸" },
+  { name: "gym & fitness", code: "#d83248", emoji: "🏋️‍♂️" },
+  { name: "educator", code: "#d83248", emoji: "🎓" },
+  { name: "dancer", code: "#d83248", emoji: "💃" },
+  { name: "singer", code: "#d83248", emoji: "🎤" },
+  { name: "doctor", code: "#d83248", emoji: "🩺" },
+  { name: "motivational", code: "#d83248", emoji: "💪" },
+  { name: "real estate", code: "#d83248", emoji: "🏠" },
+  { name: "home design", code: "#d83248", emoji: "🏠" },
+  { name: "Other", code: "#d83248", emoji: "👀" },
 ];
 
 export const UserCategory = () => {
@@ -73,8 +73,7 @@ export const UserCategory = () => {
       <br />
       <span className="text-3xl font-black clr-heading-text">Your Name</span>
 
-      <div className={cx("card my-4 px-4 flex items-center flex-col w-full", styles.cardDimensions)}>
-        <UserInput
+      {/* <UserInput
           name="fullName"
           className="w-full"
           value={name}
@@ -84,14 +83,16 @@ export const UserCategory = () => {
           errorMsg={"Please enter a valid name"}
           type="text"
           maxLength={16}
-        />
+        /> */}
+      <div className="bg-white pt-6 pb-4 px-4 rounded-xl mb-6">
+        <input type="text" className="w-full border-b border-[#C7C6CB] pb-1 focus:outline-none font-semibold text-lg" value={name} onChange={handleName} placeholder="Enter your first name" />
       </div>
 
       <span className="text-xl clr-heading-text mb-2">Choose</span>
       <br />
       <span className="text-3xl font-black clr-heading-text mb-2">Categories</span>
 
-      <div className="my-4 flex flex-wrap w-full">
+      <div className="my-4 flex flex-wrap w-full pb-16">
         {categories.map((data) => (
           <div
             key={data.name}
@@ -104,6 +105,7 @@ export const UserCategory = () => {
             )}
             onClick={() => handleCategorySelection(data.name)}
           >
+            <span className="mr-2">{data.emoji}</span>
             {data.name}
             <input
               value={data.name}
@@ -124,7 +126,7 @@ export const UserCategory = () => {
       >
         <NewButton
           size="large"
-          variant="primary"
+          variant={name.length > 0 ? "primary" : "disabled"}
           className="w-full"
           onClick={gotoHome}
         >
