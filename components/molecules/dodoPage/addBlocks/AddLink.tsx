@@ -407,7 +407,7 @@ const AddLink = ({
       </div>
 
       <div className="bottom-0 fixed mb-4 px-4 w-full flex flex-col gap-4 items-center" onClick={checkForImage}>
-        <Switcher uploadedImage={uploadedImage} displayType={displayType} setDisplayType={setDisplayType} />
+        <Switcher uploadedImage={uploadedImage} block={block} displayType={displayType} setDisplayType={setDisplayType} />
         {mode === "add" ? (
           <NewButton
             size="large"
