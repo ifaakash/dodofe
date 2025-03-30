@@ -161,31 +161,33 @@ const DodoPageDashboard = () => {
     const handleDragEnd = async (event: any) => {
         setActiveId(null);
         const { active, over } = event;
-
+    
         if (active.id !== over.id) {
             const oldIndex = blocks.findIndex((item) => item.id === active.id);
             const newIndex = blocks.findIndex((item) => item.id === over.id);
-
-            const updatedBlocks = arrayMove(blocks, oldIndex, newIndex).map(
-                (block, index) => ({
-                    ...block,
-                    blockPositionalIndex: index,
-                })
-            );
-
-            // Update the state with the new order of blocks
-            setBlocks(updatedBlocks);
-
+    
+            // Move in reversed array (as user sees it)
+            const reorderedBlocks = arrayMove(blocks, oldIndex, newIndex);
+    
+            // Reverse back to save in DB in original order
+            const updatedBlocks = [...reorderedBlocks].reverse().map((block, index) => ({
+                ...block,
+                blockPositionalIndex: index,
+            }));
+    
+            // Update local state in UI (still reversed)
+            setBlocks(reorderedBlocks);
+    
             const formattedBlocks = {
                 dodoPageId: dodoPageDetails.id,
                 blocks: updatedBlocks
                     .filter((block) => block.id !== undefined)
-                    .map((block, index) => ({
+                    .map((block) => ({
                         blockId: block.id as string,
-                        newIndex: index,
+                        newIndex: block.blockPositionalIndex,
                     })),
             };
-
+    
             try {
                 dispatch(reorderBlocks(formattedBlocks));
             } catch (error) {
@@ -193,7 +195,7 @@ const DodoPageDashboard = () => {
             }
         }
     };
-
+    
     console.log('blocks')
 
     const renderBlock = (block: Block, index: number) => {
