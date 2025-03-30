@@ -237,6 +237,7 @@ const HeroSection = ({
         await startRecordingProcess();
       }
     } catch (err) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'error', message: err.message + " " + err }));
       console.error("Error accessing microphone:", err);
     }
   };
