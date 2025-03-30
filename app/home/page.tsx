@@ -9,8 +9,8 @@ import userProfileImg from "public/assets/userProfile.png";
 import crossBg from "public/icons/crossBg.svg";
 import noUserDp from "public/assets/noUserDp.png";
 // import footerImg from "public/assets/footerImg.png";
-import engagementCalc from "public/assets/engagementCalc.svg";
-import priceCalc from "public/assets/priceCalc.svg";
+import engagementCalc from "public/assets/content.png";
+import priceCalc from "public/assets/priceEstimate.png";
 import copy from "public/icons/copy.svg";
 import sideBarIcon from "public/icons/sideBarIcon.svg";
 import dodoCoinIcon from "public/icons/dodoCoin.svg";
@@ -187,12 +187,11 @@ export default function Home() {
                         buttonBgColor="var(--pink)"
                         profileImageURL={dodoPageDetail?.profilePicture}
                         onClick={() => gotoLinksPage(page.url)}
-                        onImageClick={(e) => copyToClipboard(e, 'https://dodoclub.in/' + dodoPageDetail?.url)}
-                        img={copy}
-                        imgSize={32}
+                        copyText={'https://dodoclub.in/' + dodoPageDetail?.url}
                         onButtonClick={shareContent}
                         buttonLabel=""
                         showProfileImage={true}
+                        noImg={true}
                     />
                 ))}
             </div>
@@ -211,7 +210,7 @@ export default function Home() {
         <Screen>
 
             <div className={cx("pt-8 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
-                style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed' }}>
+                style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed', backgroundRepeat: 'no-repeat' }}>
                 <div className="fixed w-full"
                     style={{
                         filter: `blur(${blurAmount}px)`,
@@ -296,7 +295,7 @@ export default function Home() {
 
                             <div
                                 className={cx(
-                                    "rounded-2xl flex px-3 py-2 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
+                                    "rounded-full flex px-5 py-3 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
                                     styles.shimmerBg
                                 )}
                                 onClick={() => gotoLinksPage(dodoPageDetail?.url)}
@@ -326,7 +325,7 @@ export default function Home() {
                     )}
                 </div>
 
-                
+
                 <div
                     className={cx(
                         "w-full px-4 rounded-t-[32px] bg-white",
@@ -348,8 +347,8 @@ export default function Home() {
                             onClick={handleInvoiceNavigation}
                             bgColor="var(--yellow)"
                             img={invoiceIcon}
-                            title="Your Invoices"
-                            description="Create stunning digital invoices in a few seconds"
+                            title="Dodo  Invoice"
+                            description="Create stunning digital invoices in clicks."
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
@@ -358,17 +357,17 @@ export default function Home() {
                                 description=""
                                 icon={engagementCalc}
                                 onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
-                                bgColor="var(--neon-purple)"
-                                bgColorGo="var(--neon-blue)"
+                                bgColor="var(--light-orange)"
+                                bgColorGo="var(--orange)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
                             <Card
                                 title="IG Price Estimator"
                                 description=""
                                 icon={priceCalc}
-                                bgColor="var(--neon-rose)"
+                                bgColor="var(--neon-purple)"
                                 onClick={() => router.push(ROUTE_CONSTANTS.PRICE_CALCULATOR)}
-                                bgColorGo="var(--neon-yellow)"
+                                bgColorGo="var(--purple)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
                             />
                         </div>
@@ -378,7 +377,7 @@ export default function Home() {
                         bgColor="var(--warm-green)"
                         img={mediakitIcon}
                         title="Your MediaKit"
-                        description="A digital resume for you"
+                        description="A Digital & Dyanamic resume for you!"
                         buttonLabel="Know More"
                         onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
                     />

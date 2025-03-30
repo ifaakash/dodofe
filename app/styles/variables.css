@@ -17,18 +17,21 @@
   --border-color-1: #f2f2f2;
   --heading-text: #5e6c84;
   --grey: #4d4d4d;
-  --neon-rose: #ffd9a8;
-  --neon-purple: #e6affe;
+  --neon-rose: #F4E4FC;
+  --neon-purple: #F4E4FC;
   --neon-yellow: #FFCB8A;
 --neon-blue: #E09AFE;
   --main-bg-theme: #eae9ec;
   --text-color: #000000;
   --dark-text-color: #414D55;
   --card-bg: transparent;
-  --yellow: #FFF455;
-  --warm-green: #C0FA59;
+  --yellow: #F9F5C8;
+  --warm-green: #E3F6C0;
   --pink: #F4668E;
   --red: #FF0000;
+  --light-orange: #FFEDD6;
+  --orange: #FFDBAD;
+  --purple: #F1D2FE;
 }
 
 [data-theme="light"] {

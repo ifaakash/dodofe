@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Rajveer from "public/assets/rajveer.png";
+import WaveSurfer from 'wavesurfer.js'
+
 import Image from "next/image";
 import WhatsOnYourMind from "public/assets/thoughts.svg";
 import ReadMyMind from "public/assets/thoughts1.svg";
@@ -11,6 +12,8 @@ import { X } from "lucide-react";
 import Quote from "public/icons/Quote.svg";
 import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
+import micIcon from "public/icons/mic.svg";
+
 import Speaker from "public/icons/Speaker.svg";
 import { useDispatch, useSelector } from "react-redux";
 import PlayIcon from "public/icons/playIcon.svg";
@@ -65,6 +68,7 @@ const HeroSection = ({
   const [isProfileAudioPlaying, setIsProfileAudioPlaying] = useState(false);
   const profileAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
+  const waveSurferRef = useRef<WaveSurfer | null>(null);
 
   // Create refs for popup content to handle click outside
   const thoughtsPopupRef = useRef<HTMLDivElement>(null);
@@ -244,6 +248,41 @@ const HeroSection = ({
     }
   };
 
+  const initializeWaveSurfer = (audioUrl: string) => {
+    if (!waveSurferRef.current) {
+      waveSurferRef.current = WaveSurfer.create({
+        container: document.getElementById('waveform') as HTMLElement,
+        waveColor: 'rgb(200, 0, 200)',
+        progressColor: 'rgb(100, 0, 100)',
+        backend: 'MediaElement',
+      });
+
+      waveSurferRef.current.load(audioUrl);
+
+      waveSurferRef.current.on('ready', () => {
+        waveSurferRef.current?.playPause();
+      });
+    } else {
+      // If waveSurferRef.current already exists, toggle play/pause
+      waveSurferRef.current?.playPause();
+    }
+
+    return () => {
+      waveSurferRef.current?.destroy();
+      waveSurferRef.current = null;
+    };
+  };
+
+  const togglePlayPauseWave = () => {
+    console.log("waveSurferRef.current", waveSurferRef.current);
+    if (waveSurferRef.current) {
+      waveSurferRef.current.playPause();
+    } else if (audioBlob) {
+      const audioUrl = URL.createObjectURL(audioBlob);
+      initializeWaveSurfer(audioUrl);
+    }
+  };
+
   const playAudio = () => {
     if (!audioBlob) {
       console.log("No audio recorded yet");
@@ -252,25 +291,31 @@ const HeroSection = ({
 
     // Create a new audio element each time to ensure the source is fresh
     const audioUrl = URL.createObjectURL(audioBlob);
+    console.log("audioRef.current", audioRef.current, isPlaying);
     if (!audioRef.current) {
       audioRef.current = new Audio(audioUrl);
       audioRef.current.onended = () => {
         setIsPlaying(false);
       };
     } else {
-      // Update the source if the audio element already exists
-      audioRef.current.src = audioUrl;
+      if (audioRef.current.src !== audioUrl && !isPlaying) {
+        audioRef.current.src = audioUrl;
+      }
     }
 
     if (isPlaying) {
       audioRef.current.pause();
+
       setIsPlaying(false);
     } else {
       audioRef.current.play().catch((error) => {
         console.error("Error playing audio:", error);
       });
+
       setIsPlaying(true);
     }
+
+    togglePlayPauseWave();
   };
 
   const handleSaveAudioBio = () => {
@@ -330,6 +375,31 @@ const HeroSection = ({
   const handlePopupContentClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  useEffect(() => {
+    if (!isRecording && audioBlob) {
+      waveSurferRef.current = WaveSurfer.create({
+        container: document.getElementById('waveform') as HTMLElement,
+        waveColor: 'rgb(200, 0, 200)',
+        progressColor: 'rgb(100, 0, 100)',
+        backend: 'MediaElement',
+      });
+
+      const audioUrl = URL.createObjectURL(audioBlob);
+      waveSurferRef.current.load(audioUrl);
+
+      waveSurferRef.current.on('ready', () => {
+        waveSurferRef.current.on('click', () => {
+          waveSurferRef.current.playPause();
+        });
+      });
+
+      return () => {
+        waveSurferRef.current.destroy();
+        waveSurferRef.current = null;
+      };
+    }
+  }, [isRecording, audioBlob]);
 
   return (
     <div
@@ -557,17 +627,23 @@ const HeroSection = ({
                 </div>
               </div>
               <div className="h-16 w-full flex items-center justify-center">
-                {isRecording && <Image src={Waves} alt="Audio Record" />}
+                {isRecording ? (
+                  <Image src={Waves} alt="Audio Record" />
+                ) : (
+                  <div id="waveform" className="w-full"></div>
+                )}
               </div>
               <div className="flex items-center flex-col">
                 <Image
-                  src={AudioRecord}
+                  src={micIcon}
                   alt="Audio Record"
+                  width={48}
+                  height={48}
                   onClick={isRecording ? stopRecording : startRecording}
-                  className="cursor-pointer"
+                  className={`cursor-pointer ${isRecording ? 'wave-animation' : ''}`}
                 />
-                <span className="text-[#3D4966] text-xs font-medium">
-                  {isRecording ? "Press to stop" : "Press to start"}
+                <span className="text-[#3D4966] mt-2 text-xs font-medium">
+                  {isRecording ? "Tap to pause" : "Tap to play"}
                 </span>
               </div>
               <div className="flex gap-3">

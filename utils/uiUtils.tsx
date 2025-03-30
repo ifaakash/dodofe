@@ -85,11 +85,11 @@ export const getBadgeUI = (badgeText: string, badgeColor: string) => {
 
 export function Card({ title, description, icon, bgColor, bgColorGo, className, onClick }) {
     return (
-        <div className={`rounded-2xl p-3 h-80 flex flex-col justify-between ${className}`} style={{ backgroundColor: bgColor }} onClick={onClick}>
-            <div>
-                <h1 className="text-lg text-left font-bold mb-1 leading-[16px] mb-4">{title}</h1>
+        <div className={`rounded-2xl p-[14px] h-80 flex flex-col justify-between ${className}`} style={{ backgroundColor: bgColor }} onClick={onClick}>
+            <div className="px-2">
+                <h1 className="text-lg text-left font-bold pt-2 leading-none">{title}</h1>
 
-                <p className="text-xs text-left leading-[16px] mb-4">{description}</p>
+                <p className="text-xs text-left leading-[16px] mb-5">{description}</p>
 
             </div>
             <div className="flex justify-between items-end">

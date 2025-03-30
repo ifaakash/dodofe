@@ -11,10 +11,11 @@ import Image from "next/image";
 import gotoIcon from "public/icons/gotoIcon.svg";
 import profileIcon from "public/assets/userProfile.png";
 import { isEmpty } from "@utils/index";
+import CopyBox from "../CopyBox";
 
 const CtaSection = ({
   title = "DodoPage",
-  description = "Create dynamic links in your bio that stands out",
+  description = "Create dynamic page that stands out",
   buttonLabel = "Create now",
   onClick = () => { },
   onButtonClick = () => { },
@@ -29,6 +30,7 @@ const CtaSection = ({
   showProfileImage = false,
   profileImageURL = "",
   noImg = false,
+  copyText = ""
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -88,14 +90,14 @@ const CtaSection = ({
                 alt="profile"
                 height={52}
                 width={52}
-                className="rounded-full aspect-square"
+                className="rounded-md aspect-square"
               />
             </div>
           )}
         </div>
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-bold mb-1">{title}</h1>
-          <p className="text-base font-light leading-[20px]">{description}</p>
+          <h1 className="text-xl font-bold">{title}</h1>
+          <p className="text-lg font-light leading-[20px]">{description}</p>
         </div>
       </div>
       <div className={styles.secondThirdContainer}>
@@ -153,7 +155,10 @@ const CtaSection = ({
               alt="user"
               className="mb-2 mt-2"
             />}
+
           </div>
+          {copyText && <CopyBox text={copyText} />}
+
         </div>
       </div>
     </div>
