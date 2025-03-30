@@ -173,7 +173,7 @@ const HeroSection = ({
 
           if (action === 'audioPermissionResponse') {
             if (status === 'granted') {
-              await startRecordingProcess();
+              window.ReactNativeWebView?.postMessage(JSON.stringify({ action: 'startRecording' }))
             } else if (status === 'blocked') {
               toast.info("Microphone permission is blocked. Please enable it from settings.");
             } else {
