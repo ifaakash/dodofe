@@ -181,6 +181,11 @@ const HeroSection = ({
             }
           }
         } catch (err) {
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({ action: err.message + " " + err })
+            );
+          }
           console.error('Message parse error:', err);
         }
       };
