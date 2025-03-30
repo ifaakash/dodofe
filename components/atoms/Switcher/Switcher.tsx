@@ -1,10 +1,19 @@
 import React from "react";
 import { toast } from "react-toastify";
 
-const Switcher = ({ uploadedImage, displayType, setDisplayType }: { uploadedImage: any; displayType: string; setDisplayType: (type: string) => void }) => {
-
+const Switcher = ({
+  uploadedImage,
+  block,
+  displayType,
+  setDisplayType,
+}: {
+  uploadedImage: any;
+  block?: any;
+  displayType: string;
+  setDisplayType: (type: string) => void;
+}) => {
   const checkForImage = () => {
-    if (uploadedImage) {
+    if (uploadedImage || block?.blockData?.linkDisplayPicture) {
       return true;
     }
 
@@ -15,27 +24,40 @@ const Switcher = ({ uploadedImage, displayType, setDisplayType }: { uploadedImag
   return (
     <div className="flex bg-[#3D4966] rounded-lg p-1">
       <button
-        onClick={() => { if (checkForImage()) { setDisplayType("SMALL") } }}
-        className={`p-2 rounded transition-colors ${displayType === "SMALL" ? "bg-[#FDFBFF]" : "bg-[#3D4966]"
-          }`}
+        onClick={() => {
+          if (checkForImage()) {
+            setDisplayType("SMALL");
+          }
+        }}
+        className={`p-2 rounded transition-colors ${
+          displayType === "SMALL" ? "bg-[#FDFBFF]" : "bg-[#3D4966]"
+        }`}
       >
         <div
-          className={`w-5 border-[1px] h-[5px] ${displayType === "SMALL" ? "bg-[#3D4966]" : "bg-[#FDFBFF]"
-            } rounded-[3px]`}
+          className={`w-5 border-[1px] h-[5px] ${
+            displayType === "SMALL" ? "bg-[#3D4966]" : "bg-[#FDFBFF]"
+          } rounded-[3px]`}
         />
       </button>
       <button
-        onClick={() => { if (checkForImage()) { setDisplayType("LARGE") } }}
-        className={`p-2 rounded transition-colors ${displayType === "LARGE" ? "bg-[#FDFBFF]" : "bg-[#3D4966]"
-          }`}
+        onClick={() => {
+          if (checkForImage()) {
+            setDisplayType("LARGE");
+          }
+        }}
+        className={`p-2 rounded transition-colors ${
+          displayType === "LARGE" ? "bg-[#FDFBFF]" : "bg-[#3D4966]"
+        }`}
       >
         <div
-          className={`w-5 border-[1px] h-3 ${displayType === "LARGE" ? "bg-[#3D4966]" : "bg-[#FDFBFF]"
-            } rounded-[3px]`}
+          className={`w-5 border-[1px] h-3 ${
+            displayType === "LARGE" ? "bg-[#3D4966]" : "bg-[#FDFBFF]"
+          } rounded-[3px]`}
         />
       </button>
     </div>
   );
 };
+
 
 export default Switcher;
