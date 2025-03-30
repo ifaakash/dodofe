@@ -60,7 +60,6 @@ const HeroSection = ({
     null
   );
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -173,7 +172,16 @@ const HeroSection = ({
 
           if (action === 'audioPermissionResponse') {
             if (status === 'granted') {
-              window.ReactNativeWebView?.postMessage(JSON.stringify({ action: 'startRecording' }))
+              window.ReactNativeWebView?.postMessage(JSON.stringify({ action: 'startRecording' }));
+
+              setIsRecording(true);
+
+              // Stop recording after 20 seconds
+              setTimeout(() => {
+                if (isRecording) {
+                  stopRecording();
+                }
+              }, 20000);
             } else if (status === 'blocked') {
               toast.info("Microphone permission is blocked. Please enable it from settings.");
             } else {
@@ -274,7 +282,6 @@ const HeroSection = ({
 
     recorder.start();
     setIsRecording(true);
-    setAudioChunks([]);
 
     // Stop recording after 20 seconds
     setTimeout(() => {
