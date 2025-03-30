@@ -11,6 +11,7 @@ import Image from "next/image";
 import gotoIcon from "public/icons/gotoIcon.svg";
 import profileIcon from "public/assets/userProfile.png";
 import { isEmpty } from "@utils/index";
+import CopyBox from "../CopyBox";
 
 const CtaSection = ({
   title = "DodoPage",
@@ -29,6 +30,7 @@ const CtaSection = ({
   showProfileImage = false,
   profileImageURL = "",
   noImg = false,
+  copyText = ""
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -153,7 +155,10 @@ const CtaSection = ({
               alt="user"
               className="mb-2 mt-2"
             />}
+
           </div>
+          {copyText && <CopyBox text={copyText} />}
+
         </div>
       </div>
     </div>

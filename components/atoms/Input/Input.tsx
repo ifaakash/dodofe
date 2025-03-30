@@ -60,7 +60,7 @@ const Input: React.FC<EnhancedInputProps> = ({
         value={value}
         onChange={onChange}
         type={type}
-        style={{ paddingRight: showClearButton ? '3.5rem' : '1.5rem' }}
+        style={{ paddingRight: showClearButton ? '4rem' : '1.5rem' }}
       />
 
       <div className="absolute-center">
@@ -71,6 +71,7 @@ const Input: React.FC<EnhancedInputProps> = ({
               "right-8": icon,
               "right-1": !icon
             })}
+            style={{ top: '2px' }}
             onClick={handleClearClick}
           >
             <span className="text-gray-500 cursor-pointer">✕</span>

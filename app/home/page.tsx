@@ -187,12 +187,11 @@ export default function Home() {
                         buttonBgColor="var(--pink)"
                         profileImageURL={dodoPageDetail?.profilePicture}
                         onClick={() => gotoLinksPage(page.url)}
-                        onImageClick={(e) => copyToClipboard(e, 'https://dodoclub.in/' + dodoPageDetail?.url)}
-                        img={copy}
-                        imgSize={32}
+                        copyText={'https://dodoclub.in/' + dodoPageDetail?.url}
                         onButtonClick={shareContent}
                         buttonLabel=""
                         showProfileImage={true}
+                        noImg={true}
                     />
                 ))}
             </div>
@@ -301,7 +300,7 @@ export default function Home() {
                                 )}
                                 onClick={() => gotoLinksPage(dodoPageDetail?.url)}
                             >
-                                <div className="flex text-lg">
+                                <div className="flex text-sm">
                                     Login to get free
                                     <Image
                                         className="mx-1"
