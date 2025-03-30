@@ -6,6 +6,7 @@ import {
     getAnalyticsDataByDodoPageId,
     recordAnalyticsBlockInteraction,
 } from "api/services";
+import { Timeframe } from "types";
 
 interface BlockInteraction {
     blockId: string;
@@ -185,9 +186,7 @@ export const useDodoPageAnalyticsView = (dodoPageId: string) => {
     const [error, setError] = useState<string | null>(null);
 
     // Fetch analytics data
-    const fetchAnalyticsData = async (
-        timeframe: "day" | "week" | "month" | "overall" = "week"
-    ) => {
+    const fetchAnalyticsData = async (timeframe: Timeframe = "week") => {
         setIsLoading(true);
         setError(null);
 

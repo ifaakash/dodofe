@@ -1,5 +1,6 @@
 import { Get, Patch, Post, Put, Delete, BASE_URL } from "api";
 import API_CONSTANTS from "./constants";
+import { Timeframe } from "types";
 
 export const sendOtp = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.sendOtp, payload);
@@ -168,7 +169,7 @@ export const recordAnalyticsBlockInteraction = async (
 
 export const getAnalyticsDataByDodoPageId = async (
     dodoPageId: string,
-    timeframe: "day" | "week" | "month" | "overall" = "week"
+    timeframe: Timeframe = "week"
 ): Promise<any> =>
     Get<any>(
         API_CONSTANTS.getAnalyticsDataByDodoPageId +
