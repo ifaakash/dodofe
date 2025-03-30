@@ -194,3 +194,5 @@ export interface AnalyticsData {
     viewsByDate: Array<{ date: string; count: number }>;
     deviceBreakdown: Array<{ device: string; percentage: number }>;
 }
+
+export type Timeframe = "day" | "week" | "month" | "overall" | "year";

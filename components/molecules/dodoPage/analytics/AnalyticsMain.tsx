@@ -5,9 +5,7 @@ import CTRIcon from 'public/icons/ctr.svg'
 import Image from 'next/image'
 import AnalyticsChart from 'components/atoms/Charts/AnalyticsChart'
 import TabSwitch from '@components/atoms/TabSwitch/TabSwitch'
-import { AnalyticsData } from "types";
-
-type Timeframe = "day" | "week" | "month" | "overall";
+import { AnalyticsData, Timeframe } from "types";
 
 const timeRangeOptions: { value: Timeframe; label: string }[] = [
     {

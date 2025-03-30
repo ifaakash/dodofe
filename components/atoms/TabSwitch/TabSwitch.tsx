@@ -1,6 +1,5 @@
 import React from 'react'
-
-type Timeframe = "day" | "week" | "month" | "overall";
+import { Timeframe } from "types";
 
 interface TabSwitchProps {
     timeRange: Timeframe;
