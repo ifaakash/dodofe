@@ -167,7 +167,7 @@ const HeroSection = ({
     const messageHandler = async (event) => {
       if (isWebview()) {
         try {
-          const { action, status, blobUrl } = JSON.parse(event.data);
+          const { action, status, base64, mimeType } = JSON.parse(event.data);
           console.log('Received from Native:', action, status);
 
           if (action === 'audioPermissionResponse') {
@@ -189,14 +189,22 @@ const HeroSection = ({
             }
           }
 
-          if (action === 'audioRecordingComplete' && blobUrl) {
-            const response = await fetch(blobUrl);
-            const blob = await response.blob();
+          if (action === 'audioRecordingComplete' && base64) {
+            const binaryData = atob(base64);
+            const byteNumbers = new Array(binaryData.length);
+            for (let i = 0; i < binaryData.length; i++) {
+              byteNumbers[i] = binaryData.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+
+            const blob = new Blob([byteArray], { type: mimeType || 'audio/mp4' });
+            const url = URL.createObjectURL(blob);
 
             setAudioBlob(blob);
-            // toast.success('Recording received');
             dispatch(setIsAudioBioChanged(true));
+            // Optionally: setAudioPreviewUrl(url) or pass to WaveSurfer
           }
+
         } catch (err) {
           if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(
