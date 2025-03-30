@@ -31,7 +31,8 @@
     "react-toastify": "^10.0.5",
     "recharts": "^2.15.1",
     "redux-persist": "^6.0.0",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "wavesurfer.js": "^7.9.4"
   },
   "devDependencies": {
     "@types/babel__core": "^7.20.5",
