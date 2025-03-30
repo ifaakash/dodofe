@@ -13,8 +13,6 @@ import Quote from "public/icons/Quote.svg";
 import Upload2 from "public/icons/upload2.svg";
 import AudioRecord from "public/icons/AudioRecord.svg";
 import micIcon from "public/icons/mic.svg";
-import playIcon from "public/icons/whitePlay.svg";
-import pauseIcon from "public/icons/whitePause.svg";
 
 import Speaker from "public/icons/Speaker.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -731,19 +729,19 @@ const HeroSection = ({
                       <span className="absolute inset-0 animate-wave2 bg-gray-300 rounded-full opacity-30"></span>
                     </>
                   )}
-                  <div className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center bg-theme-3">
+                  <div className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center">
                     <Image
-                      src={isRecording ? pauseIcon : playIcon}
+                      src={micIcon}
                       alt="Audio Record"
-                      width={24}
-                      height={24}
+                      width={36}
+                      height={36}
                       onClick={isRecording ? stopRecording : startRecording}
                       className={`cursor-pointer ${isRecording ? 'wave-animation' : ''}`}
                     />
                   </div>
                 </div>
                 <span className="text-[#3D4966] mt-2 text-xs font-medium">
-                  {isRecording ? "Tap to pause" : "Tap to play"}
+                  {isRecording ? "Tap to stop" : "Tap to record"}
                 </span>
               </div>
               <div className="flex gap-3">
