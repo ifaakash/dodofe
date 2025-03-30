@@ -7,22 +7,24 @@ import AnalyticsChart from 'components/atoms/Charts/AnalyticsChart'
 import TabSwitch from '@components/atoms/TabSwitch/TabSwitch'
 import { AnalyticsData } from "types";
 
-const timeRangeOptions = [
+type Timeframe = "day" | "week" | "month" | "overall";
+
+const timeRangeOptions: { value: Timeframe; label: string }[] = [
     {
         label: "Overall",
         value: "overall",
     },
     {
-        label: "Today",
-        value: "today",
+        label: "Day",
+        value: "day",
     },
     {
-        label: "This Week",
-        value: "thisWeek",
+        label: "Week",
+        value: "week",
     },
     {
-        label: "This Month",
-        value: "thisMonth",
+        label: "Month",
+        value: "month",
     },
 ];
 
@@ -60,12 +62,12 @@ const AnalyticsMain = ({
     setTimeRange,
     data,
 }: {
-    timeRange: string;
-    setTimeRange: (value: string) => void;
+    timeRange: Timeframe;
+    setTimeRange: (value: Timeframe) => void;
     data: AnalyticsData;
 }) => {
     console.log("data in analytics main", data);
-    const handleTimeRangeChange = (value: string) => {
+    const handleTimeRangeChange = (value: Timeframe) => {
         setTimeRange(value);
     };
 

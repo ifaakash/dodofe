@@ -15,6 +15,7 @@ interface BlockInteraction {
 
 interface AnalyticsData {
     totalViews: number;
+    totalClicks: number;
     uniqueVisitors: number;
     averageDuration: number;
     topReferrers: Array<{ source: string; count: number }>;
@@ -185,14 +186,17 @@ export const useDodoPageAnalyticsView = (dodoPageId: string) => {
 
     // Fetch analytics data
     const fetchAnalyticsData = async (
-        timeframe: "day" | "week" | "month" | "year" = "week"
+        timeframe: "day" | "week" | "month" | "overall" = "week"
     ) => {
         setIsLoading(true);
         setError(null);
 
         try {
             console.log("DEBUG -2: dodoPageId", dodoPageId);
-            const response = await getAnalyticsDataByDodoPageId(dodoPageId);
+            const response = await getAnalyticsDataByDodoPageId(
+                dodoPageId,
+                timeframe
+            );
             console.log(
                 "DEBUG -1: response from fetch analytics data",
                 response

@@ -7,15 +7,15 @@ const AnalyticsChart = ({ value1, value2 }: { value1: number, value2: number }) 
 
     const data = hasValues
         ? [
-              { name: "Clicks", value: value1 },
-              { name: "Views", value: value2 },
+              { name: "Views", value: value1 },
+              { name: "Clicks", value: value2 },
           ]
         : [
               { name: "Default 1", value: 75 },
               { name: "Default 2", value: 25 },
           ];
 
-    const total = hasValues ? value1 + value2 : "00";
+    const total = hasValues ? value1 : "00";
 
     const COLORS = hasValues ? ["#924CEA", "#FF7EA2"] : ["#D1D5DB", "#D1D5DB"]; // Green/Orange or Gray Shades
     return (

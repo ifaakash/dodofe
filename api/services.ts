@@ -167,12 +167,14 @@ export const recordAnalyticsBlockInteraction = async (
     Post<any>(API_CONSTANTS.recordAnalyticsBlockInteraction, payload);
 
 export const getAnalyticsDataByDodoPageId = async (
-    dodoPageId: any
+    dodoPageId: string,
+    timeframe: "day" | "week" | "month" | "overall" = "week"
 ): Promise<any> =>
     Get<any>(
         API_CONSTANTS.getAnalyticsDataByDodoPageId +
             API_CONSTANTS.slash +
-            dodoPageId
+            dodoPageId,
+        { timeframe }
     );
 
 export const generateContent = async (
