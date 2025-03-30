@@ -1,5 +1,6 @@
 import { Get, Patch, Post, Put, Delete, BASE_URL } from "api";
 import API_CONSTANTS from "./constants";
+import { Timeframe } from "types";
 
 export const sendOtp = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.sendOtp, payload);
@@ -154,8 +155,12 @@ export const updateBlocksByPageId = async (
 export const recordAnalyticsPageView = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.recordAnalyticsPageView, payload);
 
-export const recordAnalyticsTimeSpent = async (payload: any): Promise<any> =>
-    Post<any>(API_CONSTANTS.recordAnalyticsTimeSpent, payload);
+export const recordAnalyticsTimeSpent = async (payload: {
+    dodoPageId: string;
+    visitorId: string;
+    timeSpent: number;
+    sessionId?: string;
+}): Promise<any> => Post<any>(API_CONSTANTS.recordAnalyticsTimeSpent, payload);
 
 export const recordAnalyticsBlockInteraction = async (
     payload: any
@@ -163,12 +168,14 @@ export const recordAnalyticsBlockInteraction = async (
     Post<any>(API_CONSTANTS.recordAnalyticsBlockInteraction, payload);
 
 export const getAnalyticsDataByDodoPageId = async (
-    dodoPageId: any
+    dodoPageId: string,
+    timeframe: Timeframe = "week"
 ): Promise<any> =>
     Get<any>(
         API_CONSTANTS.getAnalyticsDataByDodoPageId +
             API_CONSTANTS.slash +
-            dodoPageId
+            dodoPageId,
+        { timeframe }
     );
 
 export const generateContent = async (

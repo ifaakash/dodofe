@@ -7,11 +7,14 @@ import { useRouter, useParams } from 'next/navigation';
 import { useDodoPageAnalyticsView } from "hooks/useDodoPageAnalytics";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { loadState } from "@utils/localStorage";
-import { getAnalyticsDataByDodoPageId, getDodoPageByURL } from "api";
+import { getDodoPageByURL } from "api";
 import { AnalyticsData } from "types";
+
+type Timeframe = "day" | "week" | "month" | "overall";
+
 const AnalyticsPage = () => {
     const router = useRouter();
-    const [timeRange, setTimeRange] = useState("week");
+    const [timeRange, setTimeRange] = useState<Timeframe>("week");
     const { dodopageUrl } = useParams();
     const [dodoPageDetails, setDodoPageDetails] = useState<any>(null);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
@@ -69,7 +72,7 @@ const AnalyticsPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dodoPageId, timeRange]);
 
-    const handleTimeRangeChange = (range: string) => {
+    const handleTimeRangeChange = (range: Timeframe) => {
         setTimeRange(range);
     };
     return (
@@ -122,6 +125,7 @@ const AnalyticsPage = () => {
                                         totalViews: 0,
                                         uniqueVisitors: 0,
                                         averageDuration: 0,
+                                        totalClicks: 0,
                                         topReferrers: [],
                                         blockInteractions: [],
                                         viewsByDate: [],

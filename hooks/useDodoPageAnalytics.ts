@@ -6,6 +6,7 @@ import {
     getAnalyticsDataByDodoPageId,
     recordAnalyticsBlockInteraction,
 } from "api/services";
+import { Timeframe } from "types";
 
 interface BlockInteraction {
     blockId: string;
@@ -15,6 +16,7 @@ interface BlockInteraction {
 
 interface AnalyticsData {
     totalViews: number;
+    totalClicks: number;
     uniqueVisitors: number;
     averageDuration: number;
     topReferrers: Array<{ source: string; count: number }>;
@@ -43,26 +45,19 @@ export const useDodoPageAnalytics = (dodoPageId: string) => {
     // Initialize visitor ID and session ID
     useEffect(() => {
         // Get or create visitor ID using localStorage instead of cookies
-        const getOrCreateVisitorId = () => {
-            if (typeof window === "undefined") return `visitor-${uuidv4()}`;
-
-            try {
-                const storedVisitorId = localStorage.getItem("dodo_visitor_id");
-                if (storedVisitorId) return storedVisitorId;
-
-                const newVisitorId = `visitor-${uuidv4()}`;
-                localStorage.setItem("dodo_visitor_id", newVisitorId);
-                return newVisitorId;
-            } catch (e) {
-                // In case localStorage is not available (e.g., private browsing)
-                return `visitor-${uuidv4()}`;
+        if (typeof window !== "undefined") {
+            let visitorId = localStorage.getItem("visitorId");
+            if (!visitorId) {
+                visitorId = `visitor-${uuidv4()}`;
+                localStorage.setItem("visitorId", visitorId);
             }
-        };
+            visitorIdRef.current = visitorId;
 
-        visitorIdRef.current = getOrCreateVisitorId();
-
-        // Create a new session ID
-        sessionIdRef.current = `${visitorIdRef.current}-${Date.now()}`;
+            // Create a new session ID for each visit with format: visitor-id-timestamp
+            const sessionId = `${visitorId}-${Date.now()}`;
+            sessionIdRef.current = sessionId;
+            localStorage.setItem("sessionId", sessionId);
+        }
 
         // Set up activity tracking
         const updateLastActivity = () => {
@@ -150,16 +145,21 @@ export const useDodoPageAnalytics = (dodoPageId: string) => {
 
     // Track block interaction
     const trackBlockInteraction = async (
-        blockInteraction: BlockInteraction
+        blockId: string,
+        interactionType: "click" | "view" | "scroll"
     ) => {
         try {
-            const response = await recordAnalyticsBlockInteraction({
-                ...blockInteraction,
+            const payload = {
+                dodoPageId,
+                blockId,
                 visitorId: visitorIdRef.current,
                 sessionId: sessionIdRef.current,
-            });
+                interactionType,
+                timestamp: new Date().toISOString(),
+            };
 
-            if (!response.ok) {
+            const response = await recordAnalyticsBlockInteraction(payload);
+            if (!response.success) {
                 console.error("Failed to record block interaction");
             }
         } catch (err) {
@@ -186,15 +186,16 @@ export const useDodoPageAnalyticsView = (dodoPageId: string) => {
     const [error, setError] = useState<string | null>(null);
 
     // Fetch analytics data
-    const fetchAnalyticsData = async (
-        timeframe: "day" | "week" | "month" | "year" = "week"
-    ) => {
+    const fetchAnalyticsData = async (timeframe: Timeframe = "week") => {
         setIsLoading(true);
         setError(null);
 
         try {
             console.log("DEBUG -2: dodoPageId", dodoPageId);
-            const response = await getAnalyticsDataByDodoPageId(dodoPageId);
+            const response = await getAnalyticsDataByDodoPageId(
+                dodoPageId,
+                timeframe
+            );
             console.log(
                 "DEBUG -1: response from fetch analytics data",
                 response

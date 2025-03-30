@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { getDodoPageByURL } from "api";
 import HeroSection from "@components/molecules/dodoPage/HeroSection";
@@ -19,48 +19,76 @@ import { useDodoPageAnalytics } from "hooks/useDodoPageAnalytics";
 const DodoPage = () => {
     const { url } = useParams();
     const [dodoPageDetails, setDodoPageDetails] = useState<any>(null);
-    const mode = "preview";
+    const [mode] = useState("public");
+    const hasFetchedRef = useRef(false);
+    const hasRecordedViewRef = useRef(false);
 
-    // Add analytics recording
-    const dodoPageId = dodoPageDetails?.id;
-    const { recordPageView } = useDodoPageAnalytics(dodoPageId);
+    // Add analytics hook
+    const { trackBlockInteraction, recordPageView } = useDodoPageAnalytics(
+        dodoPageDetails?.id
+    );
 
-    // Record page view when component mounts
     useEffect(() => {
-        if (dodoPageId) {
-            recordPageView(dodoPageId);
+        if (url && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
+            getDodoPageByURL(url as string).then((res) => {
+                if (res.success) {
+                    setDodoPageDetails(res.dodoPage);
+                    // Record page view immediately after getting dodo page details
+                    if (!hasRecordedViewRef.current) {
+                        hasRecordedViewRef.current = true;
+                        recordPageView(res.dodoPage.id);
+                    }
+                }
+            });
         }
-    }, [dodoPageId, recordPageView]);
+    }, [url, recordPageView]);
 
-    useEffect(() => {
-        getDodoPageByURL(url as string).then((res) => {
-            if (res.success) {
-                const dodoPage = {
-                    ...res?.dodoPage,
-                    blocks: res?.dodoPage?.blocks?.reverse(),
-                };
-
-                setDodoPageDetails(dodoPage);
-                console.log("Page Fetched");
-            }
-        });
-    }, []);
-
-    console.log("Blocks", dodoPageDetails?.blocks);
-
-    const renderBlock = (
-        block: {
-            id: string;
-            blockType: string;
-            blockData: any;
-        },
-        index: number
+    // Track block interactions
+    const handleBlockInteraction = (
+        blockId: string,
+        interactionType: "click" | "view" | "scroll"
     ) => {
+        if (dodoPageDetails?.id) {
+            trackBlockInteraction(blockId, interactionType);
+        }
+    };
+
+    const renderBlock = (block: any, index: number) => {
         let content;
         switch (block.blockType) {
+            case "LINK":
+                content = (
+                    <a
+                        href={block.blockData.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                            handleBlockInteraction(block.id, "click");
+                            // Prevent default to ensure analytics is recorded before navigation
+                            e.preventDefault();
+                            // Navigate after a small delay to ensure analytics is sent
+                            setTimeout(() => {
+                                window.open(block.blockData.url, "_blank");
+                            }, 100);
+                        }}
+                    >
+                        <LinkBlock key={block.id} mode={mode} block={block} />
+                    </a>
+                );
+                break;
             case "POLL":
                 content = (
-                    <PollBlock mode={"public"} blockData={block.blockData} />
+                    <PollBlock
+                        mode={mode}
+                        blockData={{
+                            ...block.blockData,
+                            blockId: block.id,
+                            onVote: () =>
+                                handleBlockInteraction(block.id, "click"),
+                        }}
+                        id={block.id}
+                    />
                 );
                 break;
             case "HEADING":
@@ -76,13 +104,6 @@ const DodoPage = () => {
                     />
                 );
                 break;
-            case "LINK":
-                content = (
-                    <Link href={`${block.blockData?.url}`} target="_blank">
-                        <LinkBlock mode={"public"} block={block} />
-                    </Link>
-                );
-                break;
             case "PRODUCT":
                 if (
                     index > 0 &&
@@ -93,32 +114,57 @@ const DodoPage = () => {
                 const nextBlock = dodoPageDetails?.blocks[index + 1];
 
                 if (nextBlock?.blockType === "PRODUCT") {
-                    console.log(
-                        "dodoPageDetails?.blocks",
-                        dodoPageDetails?.blocks
-                    );
                     content = (
                         <div className="grid grid-cols-2 gap-[10px] w-full">
+                            <div
+                                onClick={() =>
+                                    handleBlockInteraction(block.id, "click")
+                                }
+                            >
+                                <Link href={`${block.blockData.link}`}>
+                                    <ProductBlock block={block} mode={mode} />
+                                </Link>
+                            </div>
+                            <div
+                                onClick={() =>
+                                    handleBlockInteraction(
+                                        nextBlock.id,
+                                        "click"
+                                    )
+                                }
+                            >
+                                <Link href={`${nextBlock.blockData.link}`}>
+                                    <ProductBlock
+                                        block={nextBlock}
+                                        mode={mode}
+                                    />
+                                </Link>
+                            </div>
+                        </div>
+                    );
+                } else {
+                    content = (
+                        <div
+                            onClick={() =>
+                                handleBlockInteraction(block.id, "click")
+                            }
+                        >
                             <Link href={`${block.blockData.link}`}>
-                                <ProductBlock block={block} mode={mode} />
-                            </Link>
-
-                            <Link href={`${nextBlock.blockData.link}`}>
                                 <ProductBlock block={block} mode={mode} />
                             </Link>
                         </div>
                     );
                 }
-                return content;
+                break;
             default:
                 return null;
         }
 
-        return content; // For PRODUCT blocks, content already includes SortableBlock
+        return content;
     };
 
     return (
-        <div className={`flex flex-col gap-3 pt-10 ${styles.dodoBackground} `}>
+        <div className={`flex flex-col gap-3 pt-10 ${styles.dodoBackground}`}>
             <HeroSection
                 mode={"public"}
                 dodoPageId={dodoPageDetails?.id}
@@ -145,7 +191,7 @@ const DodoPage = () => {
                     target="_blank"
                     className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2"
                 >
-                    <div className=" font-semibold text-xs">
+                    <div className="font-semibold text-xs">
                         Create your DODOpage now
                     </div>
                     <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
