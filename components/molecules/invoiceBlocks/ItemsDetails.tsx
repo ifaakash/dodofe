@@ -84,7 +84,7 @@ const ItemsDetails = ({ mode, items, discount, gst, tds }: ItemsDetailsProps) =>
               gst > 0 && (
                 <div className='flex justify-between pt-[10px]'>
                   <div className='text-[#3D4966] text-sm font-medium'>
-                    TAX
+                    GST
                   </div>
                   <div className='font-medium text-sm flex items-end'>
                     {gst}%

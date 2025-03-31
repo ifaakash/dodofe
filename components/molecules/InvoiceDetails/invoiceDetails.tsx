@@ -187,7 +187,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
           <div className="bg-theme-2 px-4 py-1 h-12 text-sm text-[#414D55] rounded-lg w-full flex gap-[10px] items-center">
             <div className="w-full text-black">Total</div>
             <div className="flex items-center gap-1">
-              <span className="font-semibold">₹{subTotal}</span>
+              <span className="font-semibold">₹{state.items.reduce((sum, item) => sum + (item.rate * item.quantity), 0)}</span>
             </div>
           </div>
 
@@ -253,7 +253,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
           <div className="bg-theme-2 px-4 py-1 h-12 text-sm text-[#414D55] rounded-lg w-full flex gap-[10px] items-center border border-[#C1C7D0]">
             <div className="w-full text-black">Sub Total</div>
             <div className="flex text-black text-sm font-semibold">
-              ₹{state.items.reduce((sum, item) => sum + (item.rate * item.quantity), 0)}
+              ₹{subTotal}
             </div>
           </div>
         </div>

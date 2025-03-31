@@ -161,23 +161,23 @@ const DodoPageDashboard = () => {
     const handleDragEnd = async (event: any) => {
         setActiveId(null);
         const { active, over } = event;
-    
+
         if (active.id !== over.id) {
             const oldIndex = blocks.findIndex((item) => item.id === active.id);
             const newIndex = blocks.findIndex((item) => item.id === over.id);
-    
+
             // Move in reversed array (as user sees it)
             const reorderedBlocks = arrayMove(blocks, oldIndex, newIndex);
-    
+
             // Reverse back to save in DB in original order
             const updatedBlocks = [...reorderedBlocks].reverse().map((block, index) => ({
                 ...block,
                 blockPositionalIndex: index,
             }));
-    
+
             // Update local state in UI (still reversed)
             setBlocks(reorderedBlocks);
-    
+
             const formattedBlocks = {
                 dodoPageId: dodoPageDetails.id,
                 blocks: updatedBlocks
@@ -187,7 +187,7 @@ const DodoPageDashboard = () => {
                         newIndex: block.blockPositionalIndex,
                     })),
             };
-    
+
             try {
                 dispatch(reorderBlocks(formattedBlocks));
             } catch (error) {
@@ -195,8 +195,30 @@ const DodoPageDashboard = () => {
             }
         }
     };
-    
-    console.log('blocks')
+
+    console.log('blocks', blocks)
+
+    const groupBlocks = (blocks: Block[]) => {
+        const grouped: (Block | Block[])[] = [];
+
+        for (let i = 0; i < blocks.length; i++) {
+            const curr = blocks[i];
+            const next = blocks[i + 1];
+
+            if (
+                curr.blockType === "PRODUCT" &&
+                next?.blockType === "PRODUCT"
+            ) {
+                grouped.push([curr, next]);
+                i++; // skip next
+            } else {
+                grouped.push(curr);
+            }
+        }
+
+        return grouped;
+    };
+
 
     const renderBlock = (block: Block, index: number) => {
         if (block.toRemove) {
@@ -286,51 +308,17 @@ const DodoPageDashboard = () => {
                     );
                 break;
             case "PRODUCT":
-                const nextBlock = blocks[index + 1];
-                const isNextBlockProduct = nextBlock?.blockType === "PRODUCT";
-                const isPreviousBlockProduct = index % 2 === 1 && blocks[index - 1]?.blockType === "PRODUCT";
-                
-                // Skip if this block was already rendered as part of a previous pair
-                if (isPreviousBlockProduct) {
-                    content = null;
-                } else if (isNextBlockProduct) {
-                    // Create a wrapper for two product blocks
-                    content = (
-                        <div key={`product-pair-${block.id}`} className="grid grid-cols-2 gap-3 w-full">
-                            <div className="w-full">
-                                {mode === "edit" ? (
-                                    <div onClick={() => handleNavigate(block)}>
-                                        <ProductBlock block={block} mode={mode} />
-                                    </div>
-                                ) : (
-                                    <ProductBlock block={block} mode={mode} />
-                                )}
-                            </div>
-                            <div className="w-full">
-                                {mode === "edit" ? (
-                                    <div onClick={() => handleNavigate(nextBlock)}>
-                                        <ProductBlock block={nextBlock} mode={mode} />
-                                    </div>
-                                ) : (
-                                    <ProductBlock block={nextBlock} mode={mode} />
-                                )}
-                            </div>
-                        </div>
-                    );
-                } else {
-                    // Single product block in full width
-                    content = (
-                        <div key={block.id} className="w-full">
-                            {mode === "edit" ? (
-                                <div onClick={() => handleNavigate(block)}>
-                                    <ProductBlock block={block} mode={mode} />
-                                </div>
-                            ) : (
+                content = (
+                    <div key={block.id} className="w-full">
+                        {mode === "edit" ? (
+                            <div onClick={() => handleNavigate(block)}>
                                 <ProductBlock block={block} mode={mode} />
-                            )}
-                        </div>
-                    );
-                }
+                            </div>
+                        ) : (
+                            <ProductBlock block={block} mode={mode} />
+                        )}
+                    </div>
+                );
                 break;
             default:
                 return null;
@@ -395,9 +383,22 @@ const DodoPageDashboard = () => {
                                     )}
                                 strategy={verticalListSortingStrategy}
                             >
-                                {blocks.map((block, index) =>
-                                    renderBlock(block, index)
-                                )}
+                                {groupBlocks(blocks).map((item, index) => {
+                                    if (Array.isArray(item)) {
+                                        return (
+                                            <div key={`group-${index}`} className="flex flex-row gap-3">
+                                                {item.map((block) => (
+                                                    <div className="flex-1" key={block.id}>
+                                                        {renderBlock(block, index)}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        );
+                                    } else {
+                                        return renderBlock(item, index);
+                                    }
+                                })}
+
                             </SortableContext>
                             <DragOverlay>
                                 {activeId

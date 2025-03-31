@@ -55,7 +55,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className={`p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200`}
+      className={`p-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 max-w-[181px]`}
     >
       <div className="flex flex-col items-center space-y-3">
         {block.blockData.productImage && (

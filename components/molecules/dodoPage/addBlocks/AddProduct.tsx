@@ -5,97 +5,82 @@ import Image from "next/image";
 import NewButton from "@components/atoms/Button/NewButton";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { addBlock, updateBlock } from "store/slice/blocksSlice";
+import { addBlock } from "store/slice/blocksSlice";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
 
 interface ProductData {
   name: string;
   link: string;
-  imgUrl: string | File;
+  imgUrl: string | File | null;
 }
 
 interface AddProductProps {
   dodoPageId: string;
-  id?: string;
   userId: string;
   dodopageUrl: string;
   mode: "add" | "edit";
-  block?: {
-    id?: any;
-    blockData?: {
-      title: string;
-      link: string;
-      productImage: string;
-    };
-  };
+  block?: any;
 }
 
-const AddProduct = ({
-  mode,
-  dodoPageId,
-  userId,
-  dodopageUrl,
-  block,
-}: AddProductProps) => {
+const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [product, setProduct] = useState<ProductData>({
-    name: block?.blockData?.title || "",
-    link: block?.blockData?.link || "",
-    imgUrl: block?.blockData?.productImage || "",
-  });
-  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [products, setProducts] = useState<ProductData[]>([
+    { name: "", link: "", imgUrl: null }, // Product 1
+    { name: "", link: "", imgUrl: null }, // Product 2 (optional)
+  ]);
 
-  // Separate error states for better clarity
-  const [titleError, setTitleError] = useState<string>("");
-  const [linkError, setLinkError] = useState<string>("");
-  const [imageError, setImageError] = useState<string>("");
+  const [errors, setErrors] = useState<{ name: string; link: string; img: string }[]>(
+    [{ name: "", link: "", img: "" }, { name: "", link: "", img: "" }]
+  );
 
-  const handleImageUpload = (file: File) => {
-    setUploadedImage(file);
+  const handleInputChange = (index: number, field: keyof ProductData, value: string | File) => {
+    const updatedProducts = [...products];
+    updatedProducts[index][field] = value as string;
+    setProducts(updatedProducts);
   };
 
-  const validateForm = (): boolean => {
-    let isValid = true;
+  const validateForm = () => {
+    const newErrors = products.map((product, i) => {
+      const err = { name: "", link: "", img: "" };
+      const isFilled = product.name || product.link || product.imgUrl;
 
-    // Reset all errors first
-    setTitleError("");
-    setLinkError("");
-    setImageError("");
+      // Product 1 is required
+      if (i === 0 || isFilled) {
+        if (!product.name.trim()) err.name = "Product name is required";
+        if (!product.link.trim()) {
+          err.link = "Product link is required";
+        } else if (
+          !product.link.startsWith("http://") &&
+          !product.link.startsWith("https://")
+        ) {
+          err.link = "Link must start with http:// or https://";
+        }
+        if (!product.imgUrl) err.img = "Product image is required";
+      }
 
-    if (!product.name.trim()) {
-      setTitleError("Product name is required");
-      isValid = false;
-    }
+      return err;
+    });
 
-    if (!product.link.trim()) {
-      setLinkError("Product link is required");
-      isValid = false;
-    } else if (
-      !product.link.startsWith("http://") &&
-      !product.link.startsWith("https://")
-    ) {
-      setLinkError("Please enter a valid URL starting with http:// or https://");
-      isValid = false;
-    }
-
-    if (mode === "add" && !uploadedImage) {
-      setImageError("Product image is required");
-      isValid = false;
-    }
-
-    return isValid;
+    setErrors(newErrors);
+    return newErrors.every((e, i) =>
+      i === 0
+        ? !e.name && !e.link && !e.img
+        : (!products[i].name && !products[i].link && !products[i].imgUrl) ||
+        (!e.name && !e.link && !e.img)
+    );
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-    try {
+  const handleSubmit = () => {
+    if (!validateForm()) return;
+
+    products.forEach((product, index) => {
+      if (!product.name || !product.link || !product.imgUrl) return;
+
       const formData = new FormData();
-      formData.append("productImage", uploadedImage as File);
+      formData.append("productImage", product.imgUrl as File);
       formData.append("blockData[title]", product.name);
       formData.append("blockData[link]", product.link);
       formData.append("blockType", "PRODUCT");
@@ -105,129 +90,104 @@ const AddProduct = ({
 
       dispatch(
         addBlock({
-          ...formData,
           id: uuidv4(),
           blockType: "PRODUCT",
           blockCardSize: "MEDIUM",
           blockData: {
             title: product.name,
             link: product.link,
-            productImage: uploadedImage,
+            productImage: product.imgUrl,
           },
-          hasMedia: !!uploadedImage,
+          hasMedia: !!product.imgUrl,
           isNew: true,
         })
       );
-      router.back();
-    } catch (error) {
-      console.error("Error uploading products:", error);
-    }
-  };
-  const handleUpdate = async () => {
-    const updatedBlock = {
-      id: block?.id,
-      blockType: "PRODUCT",
-      blockCardSize: "MEDIUM",
-      blockData: {
-        title: product.name,
-        link: product.link,
-        productImage: uploadedImage || block?.blockData?.productImage,
-      },
-      isUpdated: true,
-    };
-    console.log("updatedBlock", updatedBlock);
-    dispatch(updateBlock(updatedBlock as any));
+    });
+
     router.back();
   };
 
-  const displayImage = () => {
-    if (uploadedImage && uploadedImage instanceof Blob) {
-      return URL.createObjectURL(uploadedImage);
-    }
-    if (block?.blockData?.productImage) {
-      if (typeof block?.blockData?.productImage === "string") {
-        return block?.blockData?.productImage;
-      }
-      if (block?.blockData?.productImage) {
-        return URL.createObjectURL(block?.blockData?.productImage);
-      }
-    }
+  const displayImage = (img: string | File | null) => {
+    if (img instanceof File) return URL.createObjectURL(img);
+    if (typeof img === "string") return img;
     return null;
   };
 
-  console.log("displayImage", displayImage());
-
   return (
-    <div className="flex flex-col gap-4 items-center">
-      <div className="flex flex-col gap-2 w-full">
-        <div className="flex flex-col gap-[5px]">
+    <div className="flex flex-col gap-4 items-center pb-28 pt-10">
+      {[0, 1].map((index) => (
+        <div key={index} className="w-full flex flex-col gap-3">
+          <h2 className="font-bold text-lg">Product {index + 1}</h2>
           <Input
-            placeholder="Product Name"
-            value={product.name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setProduct({ ...product, name: e.target.value })
-            }
+            placeholder="Name of the product"
+            value={products[index].name}
+            onChange={(e) => handleInputChange(index, "name", e.target.value)}
           />
-          {titleError && (
+          {errors[index].name && (
             <div className="text-red-500 text-sm flex items-center gap-1">
               <TriangleAlert size={14} />
-              {titleError}
+              {errors[index].name}
             </div>
           )}
           <Input
             placeholder="Paste product link here....."
-            value={product.link}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setProduct({ ...product, link: e.target.value })
-            }
+            value={products[index].link}
+            onChange={(e) => handleInputChange(index, "link", e.target.value)}
           />
-          {linkError && (
+          {errors[index].link && (
             <div className="text-red-500 text-sm flex items-center gap-1">
               <TriangleAlert size={14} />
-              {linkError}
+              {errors[index].link}
             </div>
           )}
         </div>
-        <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
-          <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
-            {displayImage() ? (
-              <img
-                src={displayImage() as string}
-                alt={"Product Image"}
-                className="w-full h-full object-cover rounded-2xl"
+      ))}
+
+      <div className="flex gap-3 w-full">
+        {[0, 1].map((index) => (
+          <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
+            <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
+              {displayImage(products[index].imgUrl) ? (
+                <img
+                  src={displayImage(products[index].imgUrl)!}
+                  alt="Uploaded"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Image src={EmptyImage} alt="Empty" />
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={(e) =>
+                  handleInputChange(index, "imgUrl", e.target.files?.[0] as File)
+                }
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Image src={EmptyImage} alt={product.name} />
+            </div>
+            <p className="text-sm font-medium">
+              {products[index].name || `Product ${index + 1}`}
+            </p>
+            {errors[index].img && (
+              <div className="text-red-500 text-sm flex items-center gap-1">
+                <TriangleAlert size={14} />
+                {errors[index].img}
               </div>
             )}
-            <input
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleImageUpload(file);
-              }}
-            />
           </div>
-          <p className="text-sm font-medium">{product.name}</p>
-        </div>
-        {imageError && (
-          <div className="text-red-500 text-sm flex items-center gap-1">
-            <TriangleAlert size={14} />
-            {imageError}
-          </div>
-        )}
+        ))}
       </div>
-      <div className="bottom-0 fixed mb-4 px-4 w-full">
+
+      <div className="fixed bottom-4 px-4 w-full">
         <NewButton
           size="large"
           variant="primary"
-          onClick={mode === "add" ? handleSubmit : handleUpdate}
+          onClick={handleSubmit}
           className="w-full"
         >
-          {mode === "add" ? "Save" : "Update"} to draft
+          Add
         </NewButton>
       </div>
     </div>
