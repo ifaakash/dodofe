@@ -126,11 +126,11 @@ const MediaKitWaitlist = () => {
 
                     <div className="absolute-center flex-col">
                         <CtaSection
-                            onClick={() => { }}
                             bgColor="var(--yellow)"
                             img={invoiceIcon}
                             title="Your Invoices"
                             description="Create stunning digital invoices in a few seconds"
+                            onClick={() => router.push(ROUTE_CONSTANTS.INVOICE)}
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
