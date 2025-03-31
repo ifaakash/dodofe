@@ -17,6 +17,7 @@ import { Download } from "lucide-react";
 import ShareIcon from 'public/icons/share.svg'
 import { formatDateLong } from '@utils/helperFunctions'
 import { Header } from "@components/molecules/Header";
+import EditPen from "public/icons/EditPen.svg";
 
 const ReviewInvoice = () => {
   const { invoiceId } = useParams();
@@ -87,6 +88,13 @@ const ReviewInvoice = () => {
     }
   };
 
+  const handleSubHeadingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSubHeading(newValue);
+    setIsEdited(newValue !== originalSubHeading);
+  };
+
+
   // Add type guard check
   if (!('clientDetails' in invoice)) {
     return <div>Loading client details...</div>;
@@ -95,13 +103,24 @@ const ReviewInvoice = () => {
   return (
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
-      <Header/>
+      <Header />
 
       <div className="pt-6 pb-16">
         {/* Header */}
-        <Header/>
-        <div className="pb-7 text-center">
+        <Header />
+        <div className="pb-7 pt-10 text-center">
           <div className="text-xl font-semibold"> INVOICE</div>
+          <div className="flex gap-1 justify-center items-center py-0">
+            <input
+              value={subHeading}
+              onChange={handleSubHeadingChange}
+              type="text"
+              className="text-xs font-semibold focus:outline-none text-center bg-transparent leading-none w-fit"
+              placeholder="Add sub-heading"
+            />
+            <Image src={EditPen} alt="EditPen" />
+          </div>
+
           <div className="text-sm text-[#3D4966] font-medium">
             <span>{formatDateLong(invoice.invoiceDate)}</span>
           </div>
@@ -130,7 +149,7 @@ const ReviewInvoice = () => {
         </button>
 
         <button onClick={shareInvoice} className="flex items-center justify-center gap-2 w-full bg-brandPrimary text-white rounded-xl py-3 px-6">
-          Share
+          Save & Share
           <Image src={ShareIcon} alt="share" width={20} height={20} />
         </button>
       </div>

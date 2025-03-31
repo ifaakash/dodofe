@@ -1,0 +1,23 @@
+.slider-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .bar-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 24px;
+    height: 100px;
+  }
+  
+  .bar {
+    width: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

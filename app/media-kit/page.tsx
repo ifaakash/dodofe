@@ -31,7 +31,7 @@ const MediaKit = () => {
       <div className='pt-20 px-5 pb-24 flex justify-center'>
         <div className='flex flex-col gap-20 items-center'>
           <div className='relative flex items-center justify-center flex-col'>
-            <Image src={MediaKitOnboarding} alt='media-kit' />
+            <Image src={MediaKitOnboarding} className='w-[350px]' alt='media-kit' />
             <div className='flex flex-col items-center text-center gap-2 absolute -bottom-12'>
               <div className='text-2xl font-bold flex flex-col gap-1'>
                 <span className='leading-none'>Dodo Media Kit is</span>

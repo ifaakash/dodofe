@@ -57,6 +57,12 @@ const PreviewInvoice = () => {
         {/* Header */}
         <div className="pb-7 text-center">
           <div className="text-xl font-semibold capitalize"> INVOICE</div>
+          <div className="flex gap-2 justify-center items-center">
+              <span className="text-xs font-semibold">
+                {invoice.subHeading || ""}
+              </span>
+            </div>
+
           <div className="text-sm text-[#3D4966] font-medium">
             <span>{formatDateLong(invoice.invoiceDate)}</span>
           </div>

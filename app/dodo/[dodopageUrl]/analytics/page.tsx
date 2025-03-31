@@ -14,7 +14,7 @@ type Timeframe = "day" | "week" | "month" | "overall";
 
 const AnalyticsPage = () => {
     const router = useRouter();
-    const [timeRange, setTimeRange] = useState<Timeframe>("week");
+    const [timeRange, setTimeRange] = useState<Timeframe>("overall");
     const { dodopageUrl } = useParams();
     const [dodoPageDetails, setDodoPageDetails] = useState<any>(null);
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
@@ -76,7 +76,7 @@ const AnalyticsPage = () => {
         setTimeRange(range);
     };
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-[#EAE9EC] py-8">
             {isLoading ? (
                 <div className="flex items-center justify-center min-h-[80vh]">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600" />
