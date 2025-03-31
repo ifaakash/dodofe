@@ -20,9 +20,10 @@ interface AddProductProps {
   userId: string;
   dodopageUrl: string;
   mode: "add" | "edit";
+  block?: any;
 }
 
-const AddProduct = ({ dodoPageId, userId, mode }: AddProductProps) => {
+const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
