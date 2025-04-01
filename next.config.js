@@ -6,15 +6,6 @@ const nextConfig = {
     reactStrictMode: true,
     output: "standalone", // Supports dynamic pages
     trailingSlash: false, // ⬅ Avoids static export behavior
-    // async redirects() {
-    //     return [
-    //         {
-    //             source: '/',
-    //             destination: '/landing/index.html',
-    //             permanent: false,
-    //         },
-    //     ];
-    // }
 };
 
 module.exports = nextConfig;

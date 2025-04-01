@@ -9,10 +9,10 @@
   
   .bar-wrapper {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 100px;
+    width: 12px;
+    height: 50px;
   }
   
   .bar {

@@ -54,7 +54,6 @@ export default function HorizontalSlider({title}: {title: string}) {
           flex
           space-x-4
           w-full
-          px-6
           snap-x 
           snap-mandatory 
           touch-pan-x 
@@ -64,7 +63,7 @@ export default function HorizontalSlider({title}: {title: string}) {
       >
         {values.map((val, i) => {
           const distance = Math.abs(i - selectedIndex);
-          const maxBarHeight = 80;
+          const maxBarHeight = 50;
           const stepDown = 5;
           const minBarHeight = 10;
 
@@ -72,7 +71,7 @@ export default function HorizontalSlider({title}: {title: string}) {
           if (barHeight < minBarHeight) barHeight = minBarHeight;
 
           return (
-            <div key={val} className="bar-wrapper snap-center">
+            <div key={val} className="bar-wrapper snap-center flex items-center">
               <motion.div
                 className={`bar ${
                   val === selectedValue ? 'bg-[#9651ECE5]' : 'bg-[#9651EC99]/60'

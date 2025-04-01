@@ -1,42 +1,16 @@
 'use client'
 import React, { useState } from 'react';
-import PriceCalculator from '@components/templates/PriceCalculator';
 import { Header } from '@components/molecules/Header';
-import WhatsappIcon from 'public/icons/whatsapp2.svg'
-import Image from 'next/image';
 import './priceCalculator.module.css';
-import { ChevronsDown } from 'lucide-react';
 import PriceStats from '@components/templates/PriceCalculator/PriceStats';
 import ContentDropdown from '@components/templates/PriceCalculator/ContentDropdown';
 import StatCard from '@components/templates/PriceCalculator/StatCard';
-
-const priceStatData = [
-    {
-        title: 'Instagram Reel',
-        value: 9999999
-    },
-    {
-        title: 'Instagram Post',
-        value: 9999999
-    },
-    {
-        title: 'Instagram Story',
-        value: 9999999
-    },
-    {
-        title: 'Instagram Story with link',
-        value: 9999999
-    },
-    {
-        title: 'Instagram Instagram Carousel',
-        value: 9999999
-    },
-]
+import styles from './priceCalculator.module.css';
+import cx from 'classnames';
 
 const PriceCalculatorPage: React.FC = () => {
-    const [showAll, setShowAll] = useState(false);
     return (
-        <div className='bg-[#EAE9EC]'>
+        <div className={cx(styles.priceCalculator)}>
             <Header />
             <div className='pt-20 px-5 flex flex-col gap-5 min-h-screen h-full'>
                 <div className='flex flex-col gap-1'>
@@ -46,18 +20,18 @@ const PriceCalculatorPage: React.FC = () => {
 
 
                 <div className='flex gap-2 flex-col'>
-                    <div className='bg-white rounded-lg p-2 flex gap-2'>
+                    {/* <div className='bg-white rounded-lg p-2 flex gap-2'>
                         <Image src={WhatsappIcon} width={16} height={16} alt='Whatsapp Icon' />
                         <div className='text-[#3D4966] font-medium text-xs'>
                             This pricing is based on user data, Price may different based on user and brand value.
                         </div>
-                    </div>
+                    </div> */}
 
 
 
-                    <div className='bg-[#FDFBFF] min-h-[100px] rounded-lg relative overflow-visible z-0 mb-10'>
+                    <div className='bg-[#FDFBFF] min-h-[100px] rounded-2xl relative overflow-visible z-0 mb-10'>
 
-                        <PriceStats setShowAll={setShowAll} showAll={showAll} priceStatData={priceStatData} />
+                        <PriceStats />
 
                         <div className='bg-white flex items-center relative my-3'>
                             <div className="w-5 h-3 bg-[#EAE9EC] rounded-b-xl z-10 rotate-90 absolute -right-1"></div>
