@@ -99,10 +99,17 @@ const blocksSlice = createSlice({
                 (block) => block.id === action.payload
             );
             if (blockIndex !== -1) {
-                state.blocks[blockIndex].toRemove = true;
+                const block = state.blocks[blockIndex];
+                if (block.isNew) {
+                    // If it's a new block, remove it from the state
+                    state.blocks.splice(blockIndex, 1);
+                } else {
+                    // If it's an existing block, mark it for deletion
+                    block.toRemove = true;
+                    state.blocksToBeDeleted = true;
+                }
                 state.unpublishedBlocks = true;
             }
-            state.blocksToBeDeleted = true;
         },
         updateBlock: (state, action: PayloadAction<Block>) => {
             const block = state.blocks.find(
