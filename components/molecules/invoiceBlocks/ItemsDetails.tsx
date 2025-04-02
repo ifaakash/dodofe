@@ -26,7 +26,7 @@ const ItemsDetails = ({ mode, items, discount, gst, tds, handleEditNagigation }:
           <div>
             {
               mode === 'edit' && (
-                <div className='cursor-pointer' onClick={() => handleEditNagigation({ section: 'items' })}>
+                <div className='cursor-pointer' onClick={() => handleEditNagigation({ section: 'invoiceDetails' })}>
                   <Image src={PenIcon} alt='edit' width={20} height={20} />
                 </div>
               )
