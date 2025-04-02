@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { generateContent } from "api/services";
+import { generateScript } from "api/services";
 import { Header } from "@components/molecules/Header";
 
 const ScriptGenerator = () => {
@@ -13,8 +13,9 @@ const ScriptGenerator = () => {
         setLoading(true);
         setError('');
         try {
-            // const generatedScript = await generateContent(prompt);
-            setScript('No content generated.');
+            const generatedScript = await generateScript({ prompt, category: 'comedy' });
+
+            setScript(generatedScript?.content || 'Sorry, No content generated!');
         } catch (error) {
             console.error('Error generating script:', error);
             setError('Failed to generate script. Please try again.');
@@ -43,10 +44,12 @@ const ScriptGenerator = () => {
                     {loading ? 'Generating...' : 'Generate Script'}
                 </button>
                 {error && <div className="text-red-500 mt-2">{error}</div>}
-                <div className="mt-4">
+                {script && <div className="mt-4">
                     <h3 className="font-semibold">Generated Script:</h3>
-                    <pre className="bg-gray-100 p-2 rounded">{script}</pre>
-                </div>
+                    <pre className="bg-gray-100 p-2 rounded whitespace-pre-wrap">
+                        <code style={{ fontFamily: 'Clash Display' }}>{script}</code>
+                    </pre>
+                </div>}
             </div>
         </>
     );

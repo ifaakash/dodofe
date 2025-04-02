@@ -178,35 +178,6 @@ export const getAnalyticsDataByDodoPageId = async (
         { timeframe }
     );
 
-export const generateContent = async (
-    prompt: string
-): Promise<string | null> => {
-    const AI_API_KEY = process.env.NEXT_PUBLIC_AI_API_KEY;
-    console.log(AI_API_KEY);
-    const body = {
-        contents: [
-            {
-                parts: [
-                    {
-                        text: prompt,
-                    },
-                ],
-            },
-        ],
-    };
-
-    try {
-        const response = await Post<any>(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${AI_API_KEY}`,
-            body
-        );
-        return response?.candidates?.[0]?.content?.parts?.[0]?.text || null;
-    } catch (error) {
-        console.error("Error with AI API:", error);
-        return null;
-    }
-};
-
 export const updateInvoiceBank = async (payload: any): Promise<any> =>
     Patch<any>(API_CONSTANTS.updateBankDetails + API_CONSTANTS.slash + payload.id, payload);
 
@@ -218,3 +189,15 @@ export const updateInvoiceRecipient = async (payload: any): Promise<any> =>
 
 export const updateInvoiceItemsAndNotes = async (payload: any): Promise<any> =>
     Patch<any>(API_CONSTANTS.updateItemsNotes + API_CONSTANTS.slash + payload.invoiceId, payload);
+
+export const generateScript = async (payload: {
+    prompt: string;
+    category: string;
+    additionalDetails?: {
+        tone: string;
+        targetAudience: string;
+        length: string;
+    };
+}): Promise<any> =>
+    Post<any>(API_CONSTANTS.contentGenerate, payload);
+

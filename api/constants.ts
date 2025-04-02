@@ -44,4 +44,5 @@ export default {
     updateClientDetails: '/client/update',
     updateRecipientDetails: '/recipient/update',
     updateItemsNotes: '/invoice/updateItemsNotes',
+    contentGenerate: '/content/generate',
 };
