@@ -49,6 +49,7 @@ export default function Home() {
     const [mainContentVisible, setMainContentVisible] = useState(false);
     const [blurAmount, setBlurAmount] = useState(0);
     const scrollAnimationFrame = useRef<number | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const isLogoutModalOpen = useSelector((state: any) => {
         return state.common.logoutModalState;
     });
@@ -89,9 +90,16 @@ export default function Home() {
 
     useEffect(() => {
         if (userId) {
+            setIsLoading(true);
             getUserDetails(userId).then((res) => {
                 setUserDetails(res?.user);
-            });
+
+            }).catch((error) => {
+                console.error("Error fetching user details:", error);
+            }).finally(() => {
+
+                setIsLoading(false);
+            })
         }
     }, [userId]);
 
@@ -126,20 +134,6 @@ export default function Home() {
         router.push(ROUTE_CONSTANTS.INVOICE);
     }, [router]);
 
-    const copyToClipboard = useCallback((e: any, textToCopy: string) => {
-        e.stopPropagation();
-
-        navigator.clipboard
-            .writeText(textToCopy)
-            .then(() => {
-                toast.success("Your link is copied");
-            })
-            .catch((error) => {
-                console.error("Failed to copy text: ", error);
-                toast.error("Failed to copy text.");
-            });
-    }, []);
-
     const shareContent = useCallback(() => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
         const content = `Check out my Dodo Page: https://dodoclub.in/${dodoPageDetail?.url}`;
@@ -173,7 +167,7 @@ export default function Home() {
     const getUserCard = () => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
 
-        if (isEmpty(dodoPageDetail)) {
+        if (isEmpty(dodoPageDetail) && !isLoading) {
             return <CtaSection title="Dodo user" description="Some issue in fetching your dodo pages" noImg onClick={() => router.push(ROUTE_CONSTANTS.LOGIN)} />;
         }
 

@@ -77,7 +77,7 @@ const CtaSection = ({
 
   return (
     <div
-      className={styles.floatingSection}
+      className={cx(styles.floatingSection, "active:scale-[0.98] active:opacity-90 transition-all duration-150")}
       style={{ color: textColor }}
       onClick={onDivClick}
     >
