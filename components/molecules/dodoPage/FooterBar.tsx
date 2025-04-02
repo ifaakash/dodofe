@@ -439,9 +439,9 @@ const FooterBar = ({
             // we are removing all the data from redux, if any api fails above, that
             // data will neither be in the backend nor in the redux store
 
-            localStorage.removeItem("persist:root");
-            window.location.href = `/dodo/${url}`;
-            // resetReduxForDodoPage();
+            // adding state clear to Modal close
+            // localStorage.removeItem("persist:root");
+            // window.location.href = `/dodo/${url}`;
 
             setIsPublishedModalOpened(true);
 
