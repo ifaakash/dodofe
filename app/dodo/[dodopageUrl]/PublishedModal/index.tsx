@@ -8,8 +8,12 @@ import PublishedSuccessImg from "public/assets/published.png";
 import CopyBox from "@components/molecules/CopyBox";
 
 const PublishedModal = ({ isOpened, setIsOpened, url }: { isOpened: boolean, setIsOpened: (isOpened: boolean) => void, url: string }) => {
+    const onCLose = () => {
+        localStorage.removeItem("persist:root");
+        window.location.href = `/dodo/${url}`;
+    };
     return (
-        <MiddleModal isOpened={isOpened} setIsOpened={setIsOpened} modalStyle={{ background: 'linear-gradient(171deg, rgba(254,243,205,1) 0%, rgba(251,208,226,1) 50%, rgba(224,212,247,1) 100%)' }}>
+        <MiddleModal isOpened={isOpened} setIsOpened={setIsOpened} onClose={onCLose} modalStyle={{ background: 'linear-gradient(171deg, rgba(254,243,205,1) 0%, rgba(251,208,226,1) 50%, rgba(224,212,247,1) 100%)' }}>
             <div className="absolute-center flex-col">
                 <div className="mt-6">
                     <Image src={PublishedSuccessImg} height={250} alt="Published Success" />
