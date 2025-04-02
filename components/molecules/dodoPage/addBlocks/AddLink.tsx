@@ -362,8 +362,10 @@ const AddLink = ({
           <Input
             placeholder="Add Badge Text"
             value={badgeText}
+            maxLength={16}
             onChange={handleBadgeTextChange}
           />
+
 
           <div className="flex justify-between">
             {BADGES.map((badge) => (

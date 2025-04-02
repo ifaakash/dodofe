@@ -16,6 +16,7 @@ interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement>
   icon?: any;
   onIconClick?: () => void;
   tooltipText?: string;
+  maxLength?: number;
 }
 
 const Input: React.FC<EnhancedInputProps> = ({
@@ -29,7 +30,8 @@ const Input: React.FC<EnhancedInputProps> = ({
   showClearButton = true,
   icon,
   onIconClick,
-  tooltipText
+  tooltipText,
+  maxLength,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -60,6 +62,7 @@ const Input: React.FC<EnhancedInputProps> = ({
         value={value}
         onChange={onChange}
         type={type}
+        maxLength={maxLength}
         style={{ paddingRight: showClearButton ? '4rem' : '1.5rem' }}
       />
 
