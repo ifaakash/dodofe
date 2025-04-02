@@ -106,6 +106,7 @@ const EditBlock = () => {
           />
         );
       case "PRODUCT":
+        console.log(blockDetails)
         return (
           <AddProduct
             dodoPageId={blockDetails.dodoPageId}

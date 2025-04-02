@@ -19,8 +19,8 @@ const CopyBox: React.FC<CopyBoxProps> = ({ text }) => {
         <div className="flex justify-between items-center bg-white py-2 px-2 rounded-3xl w-full">
             <button
                 onClick={handleCopy}
-                style={{ border: '2px solid var(--main-bg-theme)' }}
-                className="ml-2 px-3 py-1 text-sm font-medium rounded-3xl border-gray-100 transition w-full"
+                style={{ border: '2px solid var(--main-bg-theme)', width: '80px' }}
+                className="ml-2 px-3 py-1 text-sm font-medium rounded-3xl border-gray-100 transition"
             >
                 {isCopied ? 'Copied!' : 'Copy'}
             </button>

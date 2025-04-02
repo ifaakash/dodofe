@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { addBlock } from "store/slice/blocksSlice";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
+import { isEmpty } from "@utils/index";
 
 interface ProductData {
   name: string;
@@ -28,7 +29,7 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
   const dispatch = useDispatch();
 
   const [products, setProducts] = useState<ProductData[]>([
-    { name: "", link: "", imgUrl: null }, // Product 1
+    { name: block?.blockData?.title || "", link: block?.blockData?.link || "", imgUrl: block?.blockData?.productImage || null }, // Product 1
     { name: "", link: "", imgUrl: null }, // Product 2 (optional)
   ]);
 
@@ -113,9 +114,12 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
     return null;
   };
 
+  console.log(block)
+
+
   return (
     <div className="flex flex-col gap-4 items-center pb-28 pt-10">
-      {[0, 1].map((index) => (
+      {(isEmpty(block) ? [0, 1] : [0]).map((index) => (
         <div key={index} className="w-full flex flex-col gap-3">
           <h2 className="font-bold text-lg">Product {index + 1}</h2>
           <Input
@@ -144,7 +148,7 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
       ))}
 
       <div className="flex gap-3 w-full">
-        {[0, 1].map((index) => (
+        {(block ? [0] : [0, 1]).map((index) => (
           <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
             <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
               {displayImage(products[index].imgUrl) ? (
