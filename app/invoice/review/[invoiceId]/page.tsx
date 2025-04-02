@@ -29,6 +29,8 @@ const ReviewInvoice = () => {
   const [originalSubHeading, setOriginalSubHeading] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef(null);
+  const [isEditingSubheading, setIsEditingSubheading] = useState(false);
+  const subHeadingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
@@ -45,12 +47,31 @@ const ReviewInvoice = () => {
     if (invoiceId) fetchInvoiceData();
   }, [invoiceId]);
 
-   useEffect(() => {
+  useEffect(() => {
     const input = inputRef.current;
     if (input) {
       input.style.width = `${input.value.length + 1}ch`; // +1 for caret space
     }
   }, [subHeading]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        subHeadingRef.current &&
+        !subHeadingRef.current.contains(event.target as Node)
+      ) {
+        setIsEditingSubheading(false);
+        if (subHeading !== originalSubHeading) {
+          setIsEdited(true);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [subHeading, originalSubHeading]);
 
   if (!invoice) {
     return (
@@ -121,32 +142,50 @@ const ReviewInvoice = () => {
       <div className="pt-6 pb-16">
         {/* Header */}
         <Header />
-        <div className="pb-7 pt-10 text-center">
-          <div className="text-xl font-semibold"> INVOICE</div>
-          <div className="flex gap-1 justify-center items-center py-0 relative">
-            <input
-              value={subHeading}
-              onChange={handleSubHeadingChange}
-              type="text"
-              className="text-xs font-semibold focus:outline-none text-center bg-transparent leading-none max-w-fit bg-red-400"
-              placeholder="Add sub-heading"
-            />
-            <Image src={EditPen} alt="EditPen" className="absolute right-10" />
+        <div className="pb-7 pt-10 text-center flex flex-col items-center gap-1">
+          {/* Heading */}
+          <div className="text-xl font-semibold">INVOICE</div>
+
+          {/* Subheading + Edit */}
+          <div
+            ref={subHeadingRef}
+            className="flex items-center justify-center gap-1"
+          >
+            {isEditingSubheading ? (
+              <input
+                ref={inputRef}
+                value={subHeading}
+                onChange={handleSubHeadingChange}
+                type="text"
+                autoFocus
+                className="text-xs font-semibold focus:outline-none text-center bg-transparent border-b border-gray-400"
+                placeholder="Add sub-heading"
+              />
+            ) : (
+              <span className="text-xs font-semibold">
+                {subHeading || "Add sub-heading"}
+              </span>
+            )}
+            <button onClick={() => setIsEditingSubheading(true)}>
+              <Image src={EditPen} alt="Edit" className="w-4 h-4" />
+            </button>
           </div>
 
+          {/* Date */}
           <div className="text-sm text-[#3D4966] font-medium">
             <span>{formatDateLong(invoice.invoiceDate)}</span>
           </div>
         </div>
 
+
         {/* Invoice Blocks */}
         <div className="px-4 pb-6 flex flex-col gap-3">
-          <InvoiceDetails mode="edit" invoiceNumber={invoice.invoiceNumber.toString()} dueDate={invoice.dueDate} handleEditNagigation={handleEditNagigation}/>
+          <InvoiceDetails mode="edit" invoiceNumber={invoice.invoiceNumber.toString()} dueDate={invoice.dueDate} handleEditNagigation={handleEditNagigation} />
           <UserCard type="recipient" mode="edit" userDetails={invoice.recipientDetails} handleEditNagigation={handleEditNagigation} />
-          <ItemsDetails mode="edit" items={invoice.items} discount={invoice.discount} gst={invoice.gst} tds={invoice.tds} handleEditNagigation={handleEditNagigation}/>
-          <UserCard type="sender" mode="edit" userDetails={invoice.clientDetails} handleEditNagigation={handleEditNagigation}/>
-          <PaymentDetails mode="edit" bankDetails={invoice.bankDetails} handleEditNagigation={handleEditNagigation}/>
-          <Note mode="edit" note={invoice.note} handleEditNagigation={handleEditNagigation}/>
+          <ItemsDetails mode="edit" items={invoice.items} discount={invoice.discount} gst={invoice.gst} tds={invoice.tds} handleEditNagigation={handleEditNagigation} />
+          <UserCard type="sender" mode="edit" userDetails={invoice.clientDetails} handleEditNagigation={handleEditNagigation} />
+          <PaymentDetails mode="edit" bankDetails={invoice.bankDetails} handleEditNagigation={handleEditNagigation} />
+          <Note mode="edit" note={invoice.note} handleEditNagigation={handleEditNagigation} />
         </div>
 
         <div className="flex items-center justify-center gap-2 py-6">
