@@ -12,6 +12,7 @@ const PublishedModal = ({ isOpened, setIsOpened, url }: { isOpened: boolean, set
         localStorage.removeItem("persist:root");
         window.location.href = `/dodo/${url}`;
     };
+
     return (
         <MiddleModal isOpened={isOpened} setIsOpened={setIsOpened} onClose={onCLose} modalStyle={{ background: 'linear-gradient(171deg, rgba(254,243,205,1) 0%, rgba(251,208,226,1) 50%, rgba(224,212,247,1) 100%)' }}>
             <div className="absolute-center flex-col">
@@ -22,7 +23,7 @@ const PublishedModal = ({ isOpened, setIsOpened, url }: { isOpened: boolean, set
                 <h1 className={cx(styles.title, 'font-semibold text-2xl')}>Yayy!</h1>
                 <p className={cx(styles.description, 'font-medium text-base my-2')}>New changes published.</p>
 
-                <CopyBox text={url} />
+                <CopyBox text={`dodoclub.in/${url}`} />
             </div>
         </MiddleModal >
 

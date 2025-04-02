@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 interface CopyBoxProps {
-    text: string;
+    text?: string;
 }
 
 const CopyBox: React.FC<CopyBoxProps> = ({ text }) => {
@@ -20,10 +20,11 @@ const CopyBox: React.FC<CopyBoxProps> = ({ text }) => {
             <button
                 onClick={handleCopy}
                 style={{ border: '2px solid var(--main-bg-theme)', width: '80px' }}
-                className="ml-2 px-3 py-1 text-sm font-medium rounded-3xl border-gray-100 transition"
+                className="mx-2 px-3 py-1 text-sm font-medium rounded-3xl border-gray-100 transition"
             >
                 {isCopied ? 'Copied!' : 'Copy'}
             </button>
+            <p className="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">{text}</p>
         </div>
     );
 };
