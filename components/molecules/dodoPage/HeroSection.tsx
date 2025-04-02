@@ -523,7 +523,7 @@ const HeroSection = ({
     }
   }, [addAudioBioPopup, dodoPageDetails?.audioBio]);
 
-
+  console.log(mode, thought)
   return (
     <div
       className={`flex flex-col items-center ${mode === "preview" ? "gap-[10px]" : "gap-3"
@@ -571,7 +571,7 @@ const HeroSection = ({
           }
         </div>
 
-        {mode === "edit" || thought !== '' || thought !== null &&
+        {(mode === "edit" || thought !== '' || thought !== null) &&
           (
             <div className="absolute -top-10 -right-10">
               <Image
