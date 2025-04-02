@@ -1,6 +1,6 @@
 import Button from "@components/atoms/Button";
 import { ArrowLeft, X } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import EyeIcon from "../../../public/icons/greenEye.svg";
 import PenIcon from "../../../public/icons/EditPen.svg";
 import Image from "next/image";
@@ -11,9 +11,11 @@ import { resetUnpublishedBlocks } from "store/slice/blocksSlice";
 import { handleNativeBackButton, isWebview } from "@utils/index";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@utils/constants";
+import Modal from "@components/molecules/Modal";
 
 const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
     const router = useRouter();
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const { unsavedChanges } = useSelector(
         (state: any) => state.dodoPage
@@ -56,7 +58,7 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
                             <div style={{ border: '2px solid var(--red)' }}
                                 className="px-2 py-1 rounded-3xl">
                                 <button
-                                    onClick={handleDiscardChanges}
+                                    onClick={() => setShowDeleteConfirm(true)}
                                     className="text-xs font-semibold flex items-center gap-1 text-red-500"
                                 >
                                     Discard <X size={16} />{" "}
@@ -97,6 +99,22 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
                     </Link>
                 )}
             </div>
+
+            <Modal showCloseIcon showOuterCloseIcon visible={showDeleteConfirm} onCloseIconClick={() => setShowDeleteConfirm(false)}>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 mb-8">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <p className="text-xl mt-2 mb-4 text-left font-bold clr-dark-text">Are you sure you want to discard your block changes? </p>
+
+                        <div className="flex justify-center gap-2 w-full my-4 mt-6">
+                            <button className="w-full rounded-full border-[1px] border-red-500 text-sm font-medium" onClick={handleDiscardChanges}>
+                                Discard
+                            </button>
+                            <button className="w-full rounded-full py-3 border-[1px] border-brandPrimary bg-brandPrimary text-white" onClick={() => setShowDeleteConfirm(false)}> Cancel </button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
         </div>
     );
 };

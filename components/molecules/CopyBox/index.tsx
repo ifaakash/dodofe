@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
 interface CopyBoxProps {
-    text?: string;
+    text: string;
+    subText?: string;
 }
 
-const CopyBox: React.FC<CopyBoxProps> = ({ text }) => {
+const CopyBox: React.FC<CopyBoxProps> = ({ text, subText }) => {
     const [isCopied, setIsCopied] = useState(false);
 
     const handleCopy = (e) => {
@@ -24,7 +25,7 @@ const CopyBox: React.FC<CopyBoxProps> = ({ text }) => {
             >
                 {isCopied ? 'Copied!' : 'Copy'}
             </button>
-            <p className="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">{text}</p>
+            <p className="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">{subText}</p>
         </div>
     );
 };

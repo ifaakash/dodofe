@@ -23,7 +23,7 @@ const PublishedModal = ({ isOpened, setIsOpened, url }: { isOpened: boolean, set
                 <h1 className={cx(styles.title, 'font-semibold text-2xl')}>Yayy!</h1>
                 <p className={cx(styles.description, 'font-medium text-base my-2')}>New changes published.</p>
 
-                <CopyBox text={`dodoclub.in/${url}`} />
+                <CopyBox text={`https://dodoclub.in/${url}`} subText={`dodoclub.in/${url}`} />
             </div>
         </MiddleModal >
 

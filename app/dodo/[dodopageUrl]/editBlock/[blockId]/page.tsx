@@ -21,6 +21,7 @@ import AddProduct from "@components/molecules/dodoPage/addBlocks/AddProduct";
 import AddLink from "@components/molecules/dodoPage/addBlocks/AddLink";
 import { useDispatch, useSelector } from "react-redux";
 import { removeBlock, archiveBlock } from "store/slice/blocksSlice";
+import Modal from "@components/molecules/Modal";
 
 const EditBlock = () => {
   const searchParams = useSearchParams();
@@ -152,24 +153,26 @@ const EditBlock = () => {
         </div>
       )}
 
-      {showArchiveConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <p className="mb-4">Are you sure you want to archive this block?</p>
-            <button
-              className="bg-brandPrimary text-white px-4 py-2 rounded mr-2"
-              onClick={confirmArchive}
-            >
-              Archive
-            </button>
-            <button
-              className="bg-gray-300 text-black px-4 py-2 rounded"
-              onClick={() => setShowArchiveConfirm(false)}
-            >
-              Cancel
-            </button>
+      {(
+        <Modal visible={showArchiveConfirm} onCloseIconClick={() => setShowArchiveConfirm(false)}>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+              <p className="mb-4">Are you sure you want to archive this block?</p>
+              <button
+                className="bg-brandPrimary text-white px-4 py-2 rounded mr-2"
+                onClick={confirmArchive}
+              >
+                Archive
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded"
+                onClick={() => setShowArchiveConfirm(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

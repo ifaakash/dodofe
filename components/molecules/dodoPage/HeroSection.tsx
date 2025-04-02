@@ -438,6 +438,7 @@ const HeroSection = ({
   };
 
   useEffect(() => {
+    console.log("audioBlob", audioBlob, isRecording);
     if (!isRecording && audioBlob) {
       waveSurferRef.current = WaveSurfer.create({
         container: document.getElementById('waveform') as HTMLElement,
@@ -482,6 +483,32 @@ const HeroSection = ({
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
+
+  useEffect(() => {
+    if (addAudioBioPopup && dodoPageDetails.audioBio) {
+      const audioUrl = dodoPageDetails.audioBio;
+      console.log("audioUrl", audioUrl);
+      if (!waveSurferRef.current) {
+        waveSurferRef.current = WaveSurfer.create({
+          container: document.getElementById('waveform') as HTMLElement,
+          waveColor: '#E2E4E9',
+          progressColor: '#17CF62',
+          backend: 'MediaElement',
+        });
+
+        waveSurferRef.current.load(audioUrl);
+
+        waveSurferRef.current.on('ready', () => {
+          waveSurferRef.current?.playPause();
+        });
+      }
+
+      return () => {
+        waveSurferRef.current?.destroy();
+        waveSurferRef.current = null;
+      };
+    }
+  }, [addAudioBioPopup, dodoPageDetails.audioBio]);
 
   return (
     <div
