@@ -59,7 +59,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
     >
       <div className="flex flex-col items-center space-y-3">
         {block.blockData.productImage && (
-          <div className="relative w-full h-[130px]">
+          <div className="relative w-full aspect-[3/4]">
             {!isEmpty(displayImage()) ? (
               <Image
                 src={displayImage() || DodoIcon}
