@@ -6,17 +6,18 @@ import { BankDetails } from 'types/index'
 interface PaymentDetailsProps {
   mode: 'edit' | 'view'
   bankDetails: BankDetails
+  handleEditNagigation?: any
 }
 
 
-const PaymentDetails = ({ mode, bankDetails }: PaymentDetailsProps) => {
+const PaymentDetails = ({ mode, bankDetails, handleEditNagigation }: PaymentDetailsProps) => {
   return (
     <div className='px-4 py-3 bg-white rounded-[10px] flex flex-col gap-2'>
       <div className='flex justify-between'>
         <div className='text-sm font-semibold'> PAYMENT DETAILS </div>
         {
           mode === 'edit' && (
-            <div>
+            <div className='cursor-pointer' onClick={() => handleEditNagigation({ section: 'paymentDetails' })}>
               <Image src={PenIcon} alt='edit' width={20} height={20} />
             </div>
           )

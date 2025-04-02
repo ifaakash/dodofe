@@ -77,7 +77,7 @@ const Sidebar = ({
             delay: 150,
         },
         {
-            text: "Constact us",
+            text: "Contact us",
             icon: contactUsIcon,
             action: () => {
                 console.log("Navigate to Help");

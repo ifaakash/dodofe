@@ -10,11 +10,10 @@ interface ItemsDetailsProps {
   discount: number
   gst: number
   tds: number
+  handleEditNagigation?: any
 }
 
-
-
-const ItemsDetails = ({ mode, items, discount, gst, tds }: ItemsDetailsProps) => {
+const ItemsDetails = ({ mode, items, discount, gst, tds, handleEditNagigation }: ItemsDetailsProps) => {
 
   console.log('items', items)
   return (
@@ -27,7 +26,7 @@ const ItemsDetails = ({ mode, items, discount, gst, tds }: ItemsDetailsProps) =>
           <div>
             {
               mode === 'edit' && (
-                <div>
+                <div className='cursor-pointer' onClick={() => handleEditNagigation({ section: 'invoiceDetails' })}>
                   <Image src={PenIcon} alt='edit' width={20} height={20} />
                 </div>
               )
@@ -39,7 +38,7 @@ const ItemsDetails = ({ mode, items, discount, gst, tds }: ItemsDetailsProps) =>
             items?.map((item, index) => (
               <div key={item._id}>
                 <div className='flex justify-between py-[10px]'>
-                  <div>
+                  <div className='flex flex-col gap-1'>
                     <div className='text-[#3D4966] text-sm font-semibold'> {item.name} </div>
                     <div className='text-[#3D4966] text-xs'> {item.quantity} x {formatCurrency(item.price)} </div>
                   </div>
@@ -108,17 +107,29 @@ const ItemsDetails = ({ mode, items, discount, gst, tds }: ItemsDetailsProps) =>
             }
           </div>
 
-          
+
         </div>
       </div>
 
       <div className='bg-black text-white px-4 pb-3 pt-4 rounded-b-[10px] flex flex-col gap-2'>
         <div className='flex justify-between'>
           <div> Grand Total </div>
-          <div className='text-white font-semibold'> {formatCurrency(items.reduce((acc, item) => acc + item.price * item.quantity, 0) - (items.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.1))}</div>
+          <div className='text-white font-semibold'>
+            {formatCurrency(
+              Math.floor(
+                items.reduce((acc, item) => acc + item.price * item.quantity, 0) -
+                (items.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.1)
+              )
+            )}
+          </div>
         </div>
         <div className='text-end font-medium text-xs'>
-          {formatCurrencyInWords(items.reduce((acc, item) => acc + item.price * item.quantity, 0) - (items.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.1))}
+          {formatCurrencyInWords(
+            Math.floor(
+              items.reduce((acc, item) => acc + item.price * item.quantity, 0) -
+              items.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.1
+            )
+          )}
         </div>
       </div>
     </div>

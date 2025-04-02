@@ -7,6 +7,8 @@ import commonReducer from "./slice/commonSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
+import editInvoiceReducer from "./slice/editInvoiceSlice";
+
 
 const appReducer = combineReducers({
   invoice: invoiceReducer,
@@ -14,6 +16,7 @@ const appReducer = combineReducers({
   blocks: blocksReducer,
   loader: loaderReducer,
   common: commonReducer,
+  editInvoice: editInvoiceReducer,
 });
 
 const rootReducer = (state: any, action: any) => {
@@ -27,7 +30,7 @@ const rootReducer = (state: any, action: any) => {
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["invoice", "loader", "common"],
+  blacklist: ["invoice", "loader", "common", "editInvoice"], // reducers that you don't want to persist
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

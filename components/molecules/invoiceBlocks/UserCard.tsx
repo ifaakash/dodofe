@@ -8,16 +8,17 @@ interface userCardProps {
     type: 'sender' | 'recipient'
     mode: 'edit' | 'view'
     userDetails: ClientDetailsProps | RecipientDetails
+    handleEditNagigation?: any
 }
 
-const UserCard = ({ type, mode, userDetails }: userCardProps) => {
+const UserCard = ({ type, mode, userDetails, handleEditNagigation }: userCardProps) => {
     return (
         <div className='bg-white px-4 py-3 rounded-[10px] flex flex-col gap-2'>
             <div className='text-sm font-semibold flex justify-between'>
                 {type === 'sender' ? 'From' : 'To'}
                 {
                     mode === 'edit' && (
-                        <div>
+                        <div className='cursor-pointer' onClick={() => handleEditNagigation({ section: `${type}Details` })}>
                             <Image src={PenIcon} alt='edit' width={20} height={20} />
                         </div>
                     )
