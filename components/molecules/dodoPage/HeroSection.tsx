@@ -508,7 +508,7 @@ const HeroSection = ({
         waveSurferRef.current = null;
       };
     }
-  }, [addAudioBioPopup, dodoPageDetails.audioBio]);
+  }, [addAudioBioPopup, dodoPageDetails?.audioBio]);
 
   return (
     <div
@@ -541,7 +541,7 @@ const HeroSection = ({
             </div>
           )}
           {
-            mode !== "edit" && (
+            mode !== "edit" && dodoPageDetails?.audioBio && (
               <div
                 className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
                 onClick={playProfileAudio}
@@ -556,17 +556,22 @@ const HeroSection = ({
             )
           }
         </div>
-        <div className="absolute -top-10 -right-10">
-          <Image
-            height={70}
-            width={70}
-            src={mode === "edit" ? WhatsOnYourMind : ReadMyMind}
-            alt="thoughts icon"
-            className="cursor-pointer"
-            onClick={() => setShowThoughtsPopup(true)}
-            id="thoughts-icon"
-          />
-        </div>
+
+        {mode === "edit" || thought !== '' &&
+          (
+            <div className="absolute -top-10 -right-10">
+              <Image
+                height={70}
+                width={70}
+                src={mode === "edit" ? WhatsOnYourMind : ReadMyMind}
+                alt="thoughts icon"
+                className="cursor-pointer"
+                onClick={() => setShowThoughtsPopup(true)}
+                id="thoughts-icon"
+              />
+            </div>
+          )
+        }
       </div>
 
       <div

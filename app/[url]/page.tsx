@@ -15,10 +15,12 @@ import styles from "./dodoPage.module.css";
 import LinkBlock from "@components/molecules/dodoPage/blocks/LinkBlock";
 import Link from "next/link";
 import { useDodoPageAnalytics } from "hooks/useDodoPageAnalytics";
+import { Block } from "types";
 
 const DodoPage = () => {
     const { url } = useParams();
     const [dodoPageDetails, setDodoPageDetails] = useState<any>(null);
+    const [blocks, setBlocks] = useState<Block[]>([]);
     const [mode] = useState("public");
     const hasFetchedRef = useRef(false);
     const hasRecordedViewRef = useRef(false);
@@ -33,7 +35,11 @@ const DodoPage = () => {
             hasFetchedRef.current = true;
             getDodoPageByURL(url as string).then((res) => {
                 if (res.success) {
+                    const reversedBlocks = res.dodoPage.blocks.reverse();
+
                     setDodoPageDetails(res.dodoPage);
+                    setBlocks(reversedBlocks || []);
+
                     // Record page view immediately after getting dodo page details
                     if (!hasRecordedViewRef.current) {
                         hasRecordedViewRef.current = true;
@@ -107,11 +113,11 @@ const DodoPage = () => {
             case "PRODUCT":
                 if (
                     index > 0 &&
-                    dodoPageDetails?.blocks[index - 1]?.blockType === "PRODUCT"
+                    blocks[index - 1]?.blockType === "PRODUCT"
                 ) {
                     return null;
                 }
-                const nextBlock = dodoPageDetails?.blocks[index + 1];
+                const nextBlock = blocks[index + 1];
 
                 if (nextBlock?.blockType === "PRODUCT") {
                     content = (
@@ -176,7 +182,7 @@ const DodoPage = () => {
                 mode={"public"}
             />
             <div className="flex flex-col gap-3 px-5">
-                {dodoPageDetails?.blocks?.map((block: any, index: number) =>
+                {blocks?.map((block: any, index: number) =>
                     renderBlock(block, index)
                 )}
             </div>
@@ -187,7 +193,7 @@ const DodoPage = () => {
                     <Image src={DodoIcon} alt="dodo icon" height={20} />
                 </div>
                 <Link
-                    href={`https://app.dodoclub.in/`}
+                    href={`https://dodoclub.in/`}
                     target="_blank"
                     className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2"
                 >
