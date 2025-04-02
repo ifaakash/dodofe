@@ -173,8 +173,8 @@ export const getAnalyticsDataByDodoPageId = async (
 ): Promise<any> =>
     Get<any>(
         API_CONSTANTS.getAnalyticsDataByDodoPageId +
-            API_CONSTANTS.slash +
-            dodoPageId,
+        API_CONSTANTS.slash +
+        dodoPageId,
         { timeframe }
     );
 
@@ -206,3 +206,15 @@ export const generateContent = async (
         return null;
     }
 };
+
+export const updateInvoiceBank = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.updateBankDetails + API_CONSTANTS.slash + payload.id, payload);
+
+export const updateInvoiceClient = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.updateClientDetails + API_CONSTANTS.slash + payload.clientId, payload);
+
+export const updateInvoiceRecipient = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.updateRecipientDetails + API_CONSTANTS.slash + payload.recipientId, payload);
+
+export const updateInvoiceItemsAndNotes = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.updateItemsNotes + API_CONSTANTS.slash + payload.invoiceId, payload);

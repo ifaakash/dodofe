@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { addSubHeading, getInvoiceById } from "api";
 import { InvoiceProps } from "../../../../types";
@@ -18,14 +18,17 @@ import ShareIcon from 'public/icons/share.svg'
 import { formatDateLong } from '@utils/helperFunctions'
 import { Header } from "@components/molecules/Header";
 import EditPen from "public/icons/EditPen.svg";
+import { useRouter } from "next/navigation";
 
 const ReviewInvoice = () => {
   const { invoiceId } = useParams();
+  const router = useRouter();
   const [invoice, setInvoice] = useState<InvoiceProps>()
   const [isEdited, setIsEdited] = useState(false);
   const [subHeading, setSubHeading] = useState("");
   const [originalSubHeading, setOriginalSubHeading] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
@@ -41,6 +44,13 @@ const ReviewInvoice = () => {
 
     if (invoiceId) fetchInvoiceData();
   }, [invoiceId]);
+
+   useEffect(() => {
+    const input = inputRef.current;
+    if (input) {
+      input.style.width = `${input.value.length + 1}ch`; // +1 for caret space
+    }
+  }, [subHeading]);
 
   if (!invoice) {
     return (
@@ -94,6 +104,9 @@ const ReviewInvoice = () => {
     setIsEdited(newValue !== originalSubHeading);
   };
 
+  const handleEditNagigation = ({ section }: { section: string }) => {
+    router.push(`/invoice/edit/${invoiceId}?section=${section}`);
+  }
 
   // Add type guard check
   if (!('clientDetails' in invoice)) {
@@ -110,15 +123,15 @@ const ReviewInvoice = () => {
         <Header />
         <div className="pb-7 pt-10 text-center">
           <div className="text-xl font-semibold"> INVOICE</div>
-          <div className="flex gap-1 justify-center items-center py-0">
+          <div className="flex gap-1 justify-center items-center py-0 relative">
             <input
               value={subHeading}
               onChange={handleSubHeadingChange}
               type="text"
-              className="text-xs font-semibold focus:outline-none text-center bg-transparent leading-none w-fit"
+              className="text-xs font-semibold focus:outline-none text-center bg-transparent leading-none max-w-fit bg-red-400"
               placeholder="Add sub-heading"
             />
-            <Image src={EditPen} alt="EditPen" />
+            <Image src={EditPen} alt="EditPen" className="absolute right-10" />
           </div>
 
           <div className="text-sm text-[#3D4966] font-medium">
@@ -128,12 +141,12 @@ const ReviewInvoice = () => {
 
         {/* Invoice Blocks */}
         <div className="px-4 pb-6 flex flex-col gap-3">
-          <InvoiceDetails mode="edit" invoiceNumber={invoice.invoiceNumber.toString()} dueDate={invoice.dueDate} />
-          <UserCard type="recipient" mode="edit" userDetails={invoice.recipientDetails} />
-          <ItemsDetails mode="edit" items={invoice.items} discount={invoice.discount} gst={invoice.gst} tds={invoice.tds} />
-          <UserCard type="sender" mode="edit" userDetails={invoice.clientDetails} />
-          <PaymentDetails mode="edit" bankDetails={invoice.bankDetails} />
-          <Note mode="edit" note={invoice.note} />
+          <InvoiceDetails mode="edit" invoiceNumber={invoice.invoiceNumber.toString()} dueDate={invoice.dueDate} handleEditNagigation={handleEditNagigation}/>
+          <UserCard type="recipient" mode="edit" userDetails={invoice.recipientDetails} handleEditNagigation={handleEditNagigation} />
+          <ItemsDetails mode="edit" items={invoice.items} discount={invoice.discount} gst={invoice.gst} tds={invoice.tds} handleEditNagigation={handleEditNagigation}/>
+          <UserCard type="sender" mode="edit" userDetails={invoice.clientDetails} handleEditNagigation={handleEditNagigation}/>
+          <PaymentDetails mode="edit" bankDetails={invoice.bankDetails} handleEditNagigation={handleEditNagigation}/>
+          <Note mode="edit" note={invoice.note} handleEditNagigation={handleEditNagigation}/>
         </div>
 
         <div className="flex items-center justify-center gap-2 py-6">

@@ -40,4 +40,8 @@ export default {
     recordAnalyticsTimeSpent: "/analytics/timeSpent",
     recordAnalyticsBlockInteraction: "/analytics/block-interaction",
     getAnalyticsDataByDodoPageId: "/analytics/dodo-page",
+    updateBankDetails: '/bankDetails/update',
+    updateClientDetails: '/client/update',
+    updateRecipientDetails: '/recipient/update',
+    updateItemsNotes: '/invoice/updateItemsNotes',
 };
