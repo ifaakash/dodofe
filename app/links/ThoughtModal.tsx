@@ -11,7 +11,6 @@ export default function ThoughtsModal({ isOpen, onClose, thoughts, editMode }: a
 
     useEffect(() => {
         if (isOpen) {
-            console.log(thoughts)
             setThought(thoughts || ''); // Set thought state when modal opens
         }
     }, [isOpen, thoughts]);

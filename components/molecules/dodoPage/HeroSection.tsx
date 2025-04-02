@@ -339,7 +339,6 @@ const HeroSection = ({
   };
 
   const togglePlayPauseWave = () => {
-    console.log("waveSurferRef.current", waveSurferRef.current);
     if (waveSurferRef.current) {
       waveSurferRef.current.playPause();
     } else if (audioBlob) {
@@ -488,19 +487,33 @@ const HeroSection = ({
     if (addAudioBioPopup && dodoPageDetails.audioBio) {
       const audioUrl = dodoPageDetails.audioBio;
       console.log("audioUrl", audioUrl);
+
+      const fetchAndLoadAudio = async () => {
+        try {
+          const response = await fetch(audioUrl);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+
+          waveSurferRef.current = WaveSurfer.create({
+            container: document.getElementById('waveform') as HTMLElement,
+            waveColor: '#E2E4E9',
+            progressColor: '#17CF62',
+            backend: 'MediaElement',
+          });
+
+          waveSurferRef.current.load(blobUrl);
+
+          waveSurferRef.current.on('ready', () => {
+            waveSurferRef.current?.playPause();
+          });
+        } catch (err) {
+          console.error('Error loading audio blob:', err);
+        }
+      };
+
+      // Prevent multiple instances
       if (!waveSurferRef.current) {
-        waveSurferRef.current = WaveSurfer.create({
-          container: document.getElementById('waveform') as HTMLElement,
-          waveColor: '#E2E4E9',
-          progressColor: '#17CF62',
-          backend: 'MediaElement',
-        });
-
-        waveSurferRef.current.load(audioUrl);
-
-        waveSurferRef.current.on('ready', () => {
-          waveSurferRef.current?.playPause();
-        });
+        fetchAndLoadAudio();
       }
 
       return () => {
@@ -509,6 +522,7 @@ const HeroSection = ({
       };
     }
   }, [addAudioBioPopup, dodoPageDetails?.audioBio]);
+
 
   return (
     <div
@@ -557,7 +571,7 @@ const HeroSection = ({
           }
         </div>
 
-        {mode === "edit" || thought !== '' &&
+        {mode === "edit" || thought !== '' || thought !== null &&
           (
             <div className="absolute -top-10 -right-10">
               <Image
