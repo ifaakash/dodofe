@@ -31,7 +31,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
         Array.from({ length: otpLength }, () => null)
     );
     const [isTermsChecked, setIsTermsChecked] = useState(true);
-    const [timer, setTimer] = useState(60);
+    const [timer, setTimer] = useState(20); // to be set to 60 seconds
     const [isResendDisabled, setIsResendDisabled] = useState(true);
 
     const handleOnChange = (
@@ -181,7 +181,7 @@ export const LoginOtp = ({ setLoginState }: any) => {
             toast.success("OTP resent successfully!");
             setOtp(Array.from({ length: otpLength }, () => ""));
             setActiveOtpIndex(0);
-            setTimer(60);
+            setTimer(20) // to be `set to 60 seconds`
             setIsResendDisabled(true);
         } catch (error: any) {
             console.error("Error resending OTP:", error);
