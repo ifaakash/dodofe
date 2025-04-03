@@ -42,7 +42,7 @@ const InvoiceDetails = ({ mode, invoiceNumber, dueDate, handleEditNagigation }: 
           </div>
         </div>
 
-        <div>
+        {/* <div>
           {
             mode === 'edit' && (
               < div className='cursor-pointer' onClick={() => handleEditNagigation({ section: 'invoiceDetails' })}>
@@ -50,7 +50,7 @@ const InvoiceDetails = ({ mode, invoiceNumber, dueDate, handleEditNagigation }: 
               </div>
             )
           }
-        </div>
+        </div> */}
       </div>
 
 

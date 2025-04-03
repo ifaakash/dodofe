@@ -15,7 +15,7 @@ const Note = ({ mode, note, handleEditNagigation }: NoteProps) => {
         <div className='text-sm font-semibold'> NOTE </div>
         {
           mode === 'edit' && (
-            <div onClick={() => handleEditNagigation({ section: 'paymentDetails' })}>
+            <div onClick={() => handleEditNagigation({ section: 'invoiceDetails' })}>
               <Image src={PenIcon} alt='edit' width={20} height={20} />
             </div>
           )
