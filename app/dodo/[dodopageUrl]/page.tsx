@@ -430,7 +430,7 @@ const DodoPageDashboard = () => {
             )}
 
             {mode === "preview" && (
-                <div className="flex flex-col gap-3 px-5 items-center mb-20">
+                <div className="flex flex-col gap-3 px-5 items-center pb-20">
                     <div className="flex items-center gap-2">
                         <div className="text-[#3D4966] text-xs">
                             powered by:

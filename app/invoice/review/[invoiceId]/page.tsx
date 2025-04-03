@@ -137,11 +137,9 @@ const ReviewInvoice = () => {
   return (
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
-      <Header />
-
       <div className="pt-6 pb-16">
         {/* Header */}
-        <Header />
+        <Header onBackClick={()=>router.push('/invoice')}/>
         <div className="pb-7 pt-10 text-center flex flex-col items-center gap-1">
           {/* Heading */}
           <div className="text-xl font-semibold">INVOICE</div>
