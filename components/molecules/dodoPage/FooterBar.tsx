@@ -245,12 +245,11 @@ const FooterBar = ({
                                         newId: createNewBlock.block.id,
                                     });
                                 }
-
                                 break;
                         }
                     } catch (error) {
                         console.error("Error creating block:", error);
-                        return false; // Return false if any block creation fails
+                        // return false; prevents publish model to open even if no error
                     }
                 }
 
