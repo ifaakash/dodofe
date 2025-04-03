@@ -101,16 +101,14 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
             </div>
 
             <Modal showCloseIcon showOuterCloseIcon visible={showDeleteConfirm} onCloseIconClick={() => setShowDeleteConfirm(false)}>
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 mb-8">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <p className="text-xl mt-2 mb-4 text-left font-bold clr-dark-text">Are you sure you want to discard your block changes? </p>
+                <div className="rounded-lg shadow-lg text-center">
+                    <p className="text-xl mt-2 mb-4 text-left font-bold clr-dark-text">Are you sure you want to discard your block changes? </p>
 
-                        <div className="flex justify-center gap-2 w-full my-4 mt-6">
-                            <button className="w-full rounded-full border-[1px] border-red-500 text-sm font-medium" onClick={handleDiscardChanges}>
-                                Discard
-                            </button>
-                            <button className="w-full rounded-full py-3 border-[1px] border-brandPrimary bg-brandPrimary text-white" onClick={() => setShowDeleteConfirm(false)}> Cancel </button>
-                        </div>
+                    <div className="flex justify-center gap-2 w-full my-4 mt-6">
+                        <button className="w-full rounded-full border-[1px] border-red-500 text-sm font-medium" onClick={handleDiscardChanges}>
+                            Discard
+                        </button>
+                        <button className="w-full rounded-full py-3 border-[1px] border-brandPrimary bg-brandPrimary text-white" onClick={() => setShowDeleteConfirm(false)}> Cancel </button>
                     </div>
                 </div>
             </Modal>

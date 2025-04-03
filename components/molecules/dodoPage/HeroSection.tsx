@@ -11,7 +11,6 @@ import EmptyImage from "public/assets/emptyImage.svg";
 import { X } from "lucide-react";
 import Quote from "public/icons/Quote.svg";
 import Upload2 from "public/icons/upload2.svg";
-import AudioRecord from "public/icons/AudioRecord.svg";
 import micIcon from "public/icons/mic.svg";
 
 import Speaker from "public/icons/Speaker.svg";
