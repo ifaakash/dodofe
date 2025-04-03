@@ -12,6 +12,11 @@ import OTPscreenBg from "public/assets/OTPscreen.png";
 import NewButton from "@components/atoms/Button/NewButton";
 import { toast } from "react-toastify";
 import { RotateCcw } from "lucide-react";
+import { auth } from "config/firebase";
+import { signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier } from "firebase/auth";
+
+
 
 const otpLength = 6;
 
@@ -137,12 +142,56 @@ export const LoginOtp = ({ setLoginState }: any) => {
     };
 
     const handleResend = async () => {
-        if (!isResendDisabled) {
-            console.log("Resending OTP...");
+        if (isResendDisabled) return;
+
+        try {
+            setIsLoading(true);
+            const mobileNumber = loadState(STORAGE_CONSTANTS.MOBILE);
+            if (!mobileNumber) {
+                toast.error("Mobile number not found.");
+                return;
+            }
+
+            // Recreate reCAPTCHA verifier if needed
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(
+                    auth,
+                    'recaptcha-container',
+                    {
+                        size: 'invisible',
+                        callback: () => {
+                            console.log("reCAPTCHA verified again.");
+                        },
+                        'expired-callback': () => {
+                            console.log("reCAPTCHA expired");
+                            toast.error("reCAPTCHA expired, please try again.");
+                        },
+                    }
+                );
+            }
+
+            const formattedNumber = `+91${mobileNumber}`;
+            const confirmationResult = await signInWithPhoneNumber(
+                auth,
+                formattedNumber,
+                window.recaptchaVerifier
+            );
+
+            window.confirmationResult = confirmationResult;
+            toast.success("OTP resent successfully!");
+            setOtp(Array.from({ length: otpLength }, () => ""));
+            setActiveOtpIndex(0);
             setTimer(60);
             setIsResendDisabled(true);
+        } catch (error: any) {
+            console.error("Error resending OTP:", error);
+            toast.error("Failed to resend OTP. Try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
+
+
 
     const handleNavigateToLoginNumber = () => {
         setLoginState(1);
@@ -198,9 +247,8 @@ export const LoginOtp = ({ setLoginState }: any) => {
                             <Image src={editIcon} alt="edit" />
                         </div>
                         <div
-                            className={`flex items-center gap-1 text-xs ${
-                                isResendDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                            }`}
+                            className={`flex items-center gap-1 text-xs ${isResendDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                }`}
                             onClick={handleResend}
                         >
                             <span className="text-brandPrimary font-semibold">
@@ -219,6 +267,8 @@ export const LoginOtp = ({ setLoginState }: any) => {
                         <span className="text-xs">I agree to the terms and conditions</span>
                     </div>
                 </div>
+
+                <div id="recaptcha-container" className="invisible"></div>
 
                 <NewButton
                     variant={isButtonDisabled ? "disabled" : "primary"}
