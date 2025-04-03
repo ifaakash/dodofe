@@ -167,8 +167,8 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
 
       <div className="flex gap-3 w-full">
         {(block ? [0] : [0, 1]).map((index) => (
-          <div className="p-2 bg-white rounded-2xl w-full h-full flex flex-col gap-2">
-            <div className="w-full bg-[#979EAD] rounded-2xl h-[160px] relative group cursor-pointer">
+          <div className="p-2 bg-white w-1/2 rounded-2xl aspect-[3/4] flex flex-col gap-2">
+            <div className=" bg-[#979EAD] rounded-2xl aspect-[3/4] relative group cursor-pointer">
               {displayImage(products[index].imgUrl) ? (
                 <img
                   src={displayImage(products[index].imgUrl)!}
