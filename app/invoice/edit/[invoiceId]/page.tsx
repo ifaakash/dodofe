@@ -122,60 +122,69 @@ const EditInvoice = () => {
 
   const editInvoiceState = useSelector((state: RootState) => state.editInvoice)
 
-  console.log('editInvoiceState', editInvoiceState)
 
   const handleUpdateInvoice = async () => {
     console.log('Updating Invoice')
     let hasErrors = false;
     const updates = [];
 
-    // Update Client Details
-    if (editInvoiceState.isClientDetailsUpdated) {
-      updates.push(
-        updateInvoiceClient({
-          ...editInvoiceState.clientDetails,
-          clientId: editInvoiceState.clientDetails._id,
-          userId: userId,
-        })
-      );
-    }
+    switch (currentStage) {
+      case 'senderDetails':
+        console.log('Sender Details Updated')
+        if (editInvoiceState.isClientDetailsUpdated) {
+          updates.push(
+            updateInvoiceClient({
+              ...editInvoiceState.clientDetails,
+              clientId: editInvoiceState.clientDetails._id,
+              userId: userId,
+            })
+          );
+        }
+        break;
+      case 'recipientDetails':
+        console.log('Recipient Details Updated')
+        if (editInvoiceState.isRecipientDetailsUpdated) {
+          updates.push(
+            updateInvoiceRecipient({
+              ...editInvoiceState.recipientDetails,
+              recipientId: editInvoiceState.recipientDetails._id,
+              userId: userId,
+            })
+          );
+        }
+        break
+      case 'invoiceDetails':
+        console.log('Invoice Details Updated')
+        if (editInvoiceState.isItemsUpdated || editInvoiceState.isUpdated) {
+          updates.push(
+            updateInvoiceItemsAndNotes({
+              invoiceId: editInvoiceState.id,
+              id: editInvoiceState.id,
+              items: editInvoiceState.items,
+              note: editInvoiceState.note,
+              gst: editInvoiceState.gst,
+              tds: editInvoiceState.tds,
+              discount: editInvoiceState.discount,
+              dueDate: editInvoiceState.dueDate,
+              userId: userId,
+            })
+          );
+        }
 
-    // Update Recipient Details
-    if (editInvoiceState.isRecipientDetailsUpdated) {
-      updates.push(
-        updateInvoiceRecipient({
-          ...editInvoiceState.recipientDetails,
-          recipientId: editInvoiceState.recipientDetails._id,
-          userId: userId,
-        })
-      );
-    }
 
-    // Update Bank Details
-    if (editInvoiceState.isBankDetailsUpdated) {
-      updates.push(
-        updateInvoiceBank({
-          ...editInvoiceState.bankDetails,
-          id: editInvoiceState.bankDetails._id
-        })
-      );
-    }
-
-    // Update Items and Notes
-    if (editInvoiceState.isItemsUpdated || editInvoiceState.isUpdated) {
-      updates.push(
-        updateInvoiceItemsAndNotes({
-          invoiceId: editInvoiceState.id,
-          id: editInvoiceState.id,
-          items: editInvoiceState.items,
-          note: editInvoiceState.note,
-          gst: editInvoiceState.gst,
-          tds: editInvoiceState.tds,
-          discount: editInvoiceState.discount,
-          dueDate: editInvoiceState.dueDate,
-          userId: userId,
-        })
-      );
+        break;
+      case 'paymentDetails':
+        console.log('Bank Details Updated')
+        if (editInvoiceState.isBankDetailsUpdated) {
+          updates.push(
+            updateInvoiceBank({
+              ...editInvoiceState.bankDetails,
+              id: editInvoiceState.bankDetails._id,
+              userId: userId
+            })
+          );
+        }
+        break;
     }
 
     try {
@@ -232,9 +241,9 @@ const EditInvoice = () => {
           size="large"
           variant="primary"
           className="w-full"
-          onClick={handleNextStage}
+          onClick={handleUpdateInvoice}
         >
-          {currentStage === 'dueDate' ? 'Update Invoice' : 'Next'}
+          Update Invoice
         </NewButton>
       </div>
     </div>

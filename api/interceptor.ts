@@ -59,8 +59,9 @@ const onErrorInterceptor = (error: AxiosError): any => {
     console.log("------API ERROR-----", Error);
 
     const status = error?.response?.status;
-
-    if (status === 401 || status === 403) {
+    console.log(error.response)
+    const isPageNotFound = status === 404 && typeof error?.response?.data === 'object' && 'message' in error.response.data && error.response.data.message === "Page not found";
+    if (status === 401 || status === 403 || isPageNotFound) {
         // Clear all auth related data
         localStorage.clear();
         // Redirect to login page

@@ -15,6 +15,7 @@ import AudioRecord from "public/icons/AudioRecord.svg";
 import micIcon from "public/icons/mic.svg";
 
 import Speaker from "public/icons/Speaker.svg";
+import SpeakerActive from "public/icons/speaker_active.svg";
 import { useDispatch, useSelector } from "react-redux";
 import PlayIcon from "public/icons/playIcon.svg";
 import Waves from "public/assets/Waves.gif";
@@ -523,7 +524,6 @@ const HeroSection = ({
     }
   }, [addAudioBioPopup, dodoPageDetails?.audioBio]);
 
-  console.log(mode, thought)
   return (
     <div
       className={`flex flex-col items-center ${mode === "preview" ? "gap-[10px]" : "gap-3"
@@ -539,21 +539,46 @@ const HeroSection = ({
           disabled={mode === "public" || mode === "preview"}
         />
         <div onClick={() => mode === "edit" && ImageInputRef.current?.click()}>
-          {imagePreview || state.dodoPageImage ? (
-            <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
-              <Image
-                src={imagePreview || state.dodoPageImage}
-                alt="Dodo Page Image"
-                width={88}
-                height={88}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
-              <Image src={EmptyImage} alt="Rajveer" width={42} height={42} />
-            </div>
-          )}
+          {
+            mode === "edit" || "preview" ? (
+              <div>
+
+                {imagePreview || state.dodoPageImage ? (
+                  <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
+                    <Image
+                      src={imagePreview || state.dodoPageImage}
+                      alt="Dodo Page Image"
+                      width={88}
+                      height={88}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                    <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                {dodoPageDetails?.profilePicture ? (
+                  <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
+                    <Image
+                      src={dodoPageDetails.profilePicture}
+                      alt="Dodo Page Image"
+                      width={88}
+                      height={88}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                    <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
+                  </div>
+                )}
+              </div>
+            )
+          }
           {
             mode !== "edit" && dodoPageDetails?.audioBio && (
               <div
@@ -797,10 +822,10 @@ const HeroSection = ({
                   disabled={!audioBlob}
                   style={{ minWidth: '110px' }}
                 >
-                  <span className="text-xs font-medium">
+                  <span className="text-xs font-bold" style={{ color: audioBlob ? "#3D4966" : "#979EAD" }}>
                     {isPlaying ? "Stop" : "Listen"}
                   </span>
-                  <Image src={Speaker} alt="Speaker" />
+                  <Image src={audioBlob ? SpeakerActive : Speaker} alt="Speaker" />
                 </button>
                 <button
                   className="w-full bg-brandPrimary text-white font-semibold rounded-full"

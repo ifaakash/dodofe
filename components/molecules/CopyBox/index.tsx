@@ -17,15 +17,16 @@ const CopyBox: React.FC<CopyBoxProps> = ({ text, subText }) => {
     };
 
     return (
-        <div className="flex justify-between items-center bg-white py-2 px-2 rounded-3xl w-full">
+        <div className="flex justify-between items-center bg-white py-2 px-3 rounded-3xl w-full">
+            <p className="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">{subText}</p>
+
             <button
                 onClick={handleCopy}
                 style={{ border: '2px solid var(--main-bg-theme)', width: '80px' }}
-                className="mx-2 px-3 py-1 text-sm font-medium rounded-3xl border-gray-100 transition"
+                className="ml-2 px-3 py-1 text-sm font-medium rounded-3xl border-gray-100 transition"
             >
                 {isCopied ? 'Copied!' : 'Copy'}
             </button>
-            <p className="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">{subText}</p>
         </div>
     );
 };
