@@ -2,14 +2,25 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './HorizontalSlider.css';
 
-export default function HorizontalSlider({title}: {title: string}) {
-  const values = Array.from({ length: 20 }, (_, i) => i * (200000 / 19));
-  const [selectedValue, setSelectedValue] = useState(values[Math.floor(values.length / 2)]);
+export default function HorizontalSlider({ title, total, setTotal }: { title: string, total: number, setTotal: (value: number) => void }) {
+
+  const values = Array.from({ length: 201 }, (_, i) => i * 1000);
+  const [selectedValue, setSelectedValue] = useState(() => {
+    const closest = values.reduce((prev, curr) =>
+      Math.abs(curr - total) < Math.abs(prev - total) ? curr : prev
+    );
+    return closest;
+  });
   const sliderRef = useRef(null);
 
   const barWidth = 8;
   const gap = 16;
   const itemWidth = barWidth + gap;
+
+  useEffect(() => {
+    setTotal(selectedValue);
+  }, [selectedValue]);
+
 
   useEffect(() => {
     if (!sliderRef.current) return;
@@ -73,9 +84,8 @@ export default function HorizontalSlider({title}: {title: string}) {
           return (
             <div key={val} className="bar-wrapper snap-center flex items-center">
               <motion.div
-                className={`bar ${
-                  val === selectedValue ? 'bg-[#9651ECE5]' : 'bg-[#9651EC99]/60'
-                }`}
+                className={`bar ${val === selectedValue ? 'bg-[#9651ECE5]' : 'bg-[#9651EC99]/60'
+                  }`}
                 animate={{ height: barHeight }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setSelectedValue(val)}
