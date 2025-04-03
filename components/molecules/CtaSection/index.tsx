@@ -97,7 +97,10 @@ const CtaSection = ({
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-bold">{title}</h1>
-          <p className="text-lg font-light leading-[20px]">{description}</p>
+          <p className="text-lg font-light leading-[20px] line-clamp-1">
+            {description}
+          </p>
+
         </div>
       </div>
       <div className={styles.secondThirdContainer}>
