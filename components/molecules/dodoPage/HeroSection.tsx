@@ -523,8 +523,6 @@ const HeroSection = ({
     }
   }, [addAudioBioPopup, dodoPageDetails?.audioBio]);
 
-  console.log("dodoPageDetails", dodoPageDetails);
-
   return (
     <div
       className={`flex flex-col items-center ${mode === "preview" ? "gap-[10px]" : "gap-3"

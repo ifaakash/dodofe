@@ -5,10 +5,11 @@ import Image from "next/image";
 import NewButton from "@components/atoms/Button/NewButton";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { addBlock } from "store/slice/blocksSlice";
+import { addBlock, updateBlock } from "store/slice/blocksSlice";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
 import { isEmpty } from "@utils/index";
+
 
 interface ProductData {
   name: string;
@@ -108,14 +109,31 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
     router.back();
   };
 
+  const handleUpdateBlock = () => {
+    console.log('update block', block);
+    if (!validateForm()) return;
+    const updatedBlock = {
+      id: block.id,
+      blockType: "PRODUCT",
+      blockCardSize: "MEDIUM",
+      blockData: {
+        title: products[0].name,
+        link: products[0].link,
+        productImage: products[0].imgUrl,
+      },
+      isUpdated: true,
+    };
+    dispatch(
+      updateBlock(updatedBlock as any)
+    );
+    router.back();
+  };
+
   const displayImage = (img: string | File | null) => {
     if (img instanceof File) return URL.createObjectURL(img);
     if (typeof img === "string") return img;
     return null;
   };
-
-  console.log(block)
-
 
   return (
     <div className="flex flex-col gap-4 items-center pb-28 pt-10">
@@ -188,7 +206,7 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
         <NewButton
           size="large"
           variant="primary"
-          onClick={handleSubmit}
+          onClick={mode === "edit" ? handleUpdateBlock : handleSubmit}
           className="w-full"
         >
           Add
