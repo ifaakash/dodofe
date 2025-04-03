@@ -6,9 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const options = ['Fashion', 'Technology', 'Health', 'Finance', 'Travel']
 
-const ContentDropdown = () => {
+const ContentDropdown = ({ contentNiche, setContentNiche }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selected, setSelected] = useState('Fashion')
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Close on click away
@@ -35,7 +34,7 @@ const ContentDropdown = () => {
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className='text-sm font-medium'>
-            {selected}
+            {contentNiche}
           </div>
           <ChevronDown width={16} height={16} strokeWidth={2} />
         </div>
@@ -54,12 +53,11 @@ const ContentDropdown = () => {
                 <div
                   key={option}
                   onClick={() => {
-                    setSelected(option)
+                    setContentNiche(option)
                     setIsOpen(false)
                   }}
-                  className={`px-3 py-2 text-sm font-medium cursor-pointer hover:bg-[#d4d6db] rounded-lg transition-colors duration-150 ${
-                    selected === option ? 'bg-[#d4d6db]' : ''
-                  }`}
+                  className={`px-3 py-2 text-sm font-medium cursor-pointer hover:bg-[#d4d6db] rounded-lg transition-colors duration-150 ${contentNiche === option ? 'bg-[#d4d6db]' : ''
+                    }`}
                 >
                   {option}
                 </div>
