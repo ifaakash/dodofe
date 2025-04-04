@@ -4,7 +4,6 @@ import { Header } from '@components/molecules/Header';
 import './priceCalculator.module.css';
 import PriceStats from '@components/templates/PriceCalculator/PriceStats';
 import ContentDropdown from '@components/templates/PriceCalculator/ContentDropdown';
-import StatCard from '@components/templates/PriceCalculator/StatCard';
 import styles from './priceCalculator.module.css';
 import cx from 'classnames';
 import Slider from '@components/atoms/slider/Slider'
