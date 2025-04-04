@@ -30,7 +30,8 @@ const CtaSection = ({
   showProfileImage = false,
   profileImageURL = "",
   noImg = false,
-  copyText = ""
+  copyText = "",
+  clampDescription = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -97,7 +98,7 @@ const CtaSection = ({
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-bold">{title}</h1>
-          <p className="text-lg font-light leading-[20px] line-clamp-1">
+          <p className={`text-lg font-light leading-[20px] ${clampDescription ? "line-clamp-1" : ""}`}>
             {description}
           </p>
 
