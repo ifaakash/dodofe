@@ -6,8 +6,8 @@ import { loadState } from "utils/localStorage";
 
 import Router from "next/router";
 
-// export const BASE_URL = "https://api.dodoclub.in/api/v1";
-export const BASE_URL = "http://localhost:3002/api/v1/";
+export const BASE_URL = "https://api.dodoclub.in/api/v1";
+// export const BASE_URL = "http://localhost:3002/api/v1/";
 
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
@@ -70,6 +70,13 @@ const handleLogout = async () => {
     }
 };
 
+const MAX_FILE_SIZE_MB = 10; //10MB
+
+export const validateFileSize = (file: File): boolean => {
+    const fileSizeInMB = file.size / (1024 * 1024);
+    return fileSizeInMB <= MAX_FILE_SIZE_MB;
+};
+
 const onErrorInterceptor = (error: AxiosError): any => {
     const status = error?.response?.status;
     console.log("Error interceptor called with status:", status);
@@ -79,6 +86,17 @@ const onErrorInterceptor = (error: AxiosError): any => {
         console.log("Auth error detected, initiating logout...");
         handleLogout();
         return Promise.reject(serializeError(error));
+    }
+
+    // Handle file size too large error
+    if (status === 413) {
+        const errorObj = {
+            name: "FILE_SIZE_ERROR",
+            message: `File size too large. Maximum allowed size is ${MAX_FILE_SIZE_MB}MB.`,
+            code: status.toString(),
+            stack: JSON.stringify(error.toJSON()),
+        };
+        return Promise.reject(errorObj);
     }
 
     // Handle page not found errors
