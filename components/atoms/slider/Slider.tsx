@@ -2,9 +2,22 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './HorizontalSlider.css';
 
-export default function HorizontalSlider({ title, total, setTotal }: { title: string, total: number, setTotal: (value: number) => void }) {
+export default function HorizontalSlider({
+  title,
+  total,
+  setTotal,
+  max = 200000,
+  step = 1000,
+}: {
+  title: string;
+  total: number;
+  setTotal: (value: number) => void;
+  max?: number;
+  step?: number;
+}) {
+  const values = Array.from({ length: Math.floor(max / step) + 1 }, (_, i) => i * step);
 
-  const values = Array.from({ length: 201 }, (_, i) => i * 1000);
+
   const [selectedValue, setSelectedValue] = useState(() => {
     const closest = values.reduce((prev, curr) =>
       Math.abs(curr - total) < Math.abs(prev - total) ? curr : prev
@@ -51,8 +64,12 @@ export default function HorizontalSlider({ title, total, setTotal }: { title: st
       <div className="text-sm font-bold text-gray-700 text-center mb-4">
         {title}
         <div className="text-xl text-black">
-          {Math.round(selectedValue).toLocaleString()}
+          {title === 'Engagement'
+            ? `${Math.round(selectedValue)}%`
+            : Math.round(selectedValue).toLocaleString()}
         </div>
+
+
       </div>
 
       <div
