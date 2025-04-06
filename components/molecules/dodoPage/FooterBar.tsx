@@ -193,7 +193,7 @@ const FooterBar = ({
                                 if (createLink?.block?.id) {
                                     blockIdUpdates.push({
                                         tempId: block.id,
-                                        newId: createLink.data.id,
+                                        newId: createLink.block.id,
                                     });
                                 }
 
@@ -230,7 +230,7 @@ const FooterBar = ({
                                 if (createProduct?.block?.id) {
                                     blockIdUpdates.push({
                                         tempId: block.id,
-                                        newId: createProduct.data.id,
+                                        newId: createProduct.block.id,
                                     });
                                 }
 
@@ -260,35 +260,6 @@ const FooterBar = ({
 
                 // Wait for state to update
                 await new Promise((resolve) => setTimeout(resolve, 0));
-            }
-
-            if (blockState.isReordered) {
-                // Get the latest state from Redux store
-                const latestBlockState = store.getState().blocks;
-                const updatedBlocks = latestBlockState.blocks
-                    .filter((block) => !block.isDeleted)
-                    .map((block) => ({
-                        blockId: block.id as string,
-                        newIndex: block.blockPositionalIndex as number,
-                    }));
-
-                await reorderBlocks({
-                    dodoPageId: dodoPageId,
-                    blocks: updatedBlocks,
-                });
-            }
-
-            if (blockState.blocksToBeDeleted) {
-                const blocksToBeDeleted = blockState.blocks.filter(
-                    (block) => block.toRemove
-                );
-
-                for (const block of blocksToBeDeleted) {
-                    await deleteBlock({
-                        blockId: block.id as string,
-                        userId: userId,
-                    });
-                }
             }
 
             if (dodoPageState.unsavedChanges) {
@@ -433,6 +404,35 @@ const FooterBar = ({
                         return false; // Return false if any block update fails
                     }
                 });
+            }
+
+            if (blockState.isReordered) {
+                // Get the latest state from Redux store
+                const latestBlockState = store.getState().blocks;
+                const updatedBlocks = latestBlockState.blocks
+                    .filter((block) => !block.isDeleted)
+                    .map((block) => ({
+                        blockId: block.id as string,
+                        newIndex: block.blockPositionalIndex as number,
+                    }));
+
+                await reorderBlocks({
+                    dodoPageId: dodoPageId,
+                    blocks: updatedBlocks,
+                });
+            }
+
+            if (blockState.blocksToBeDeleted) {
+                const blocksToBeDeleted = blockState.blocks.filter(
+                    (block) => block.toRemove
+                );
+
+                for (const block of blocksToBeDeleted) {
+                    await deleteBlock({
+                        blockId: block.id as string,
+                        userId: userId,
+                    });
+                }
             }
 
             // we are removing all the data from redux, if any api fails above, that
