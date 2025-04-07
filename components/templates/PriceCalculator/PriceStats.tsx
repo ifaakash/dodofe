@@ -7,7 +7,11 @@ import Card3 from 'public/assets/PriceCalculatorCard3.png'
 import Card4 from 'public/assets/PriceCalculatorCard4.png'
 import { formatCurrency } from '@utils/helperFunctions'
 
-const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' }) => {
+const PriceStats = ({
+  totalFollowers = 0,
+  engagementRate = 0, // now in percentage: 0–100
+  contentNiche = '',
+}) => {
   const [current, setCurrent] = useState(0)
 
   const getEngagementMultiplier = (rate: number) => {
@@ -52,14 +56,38 @@ const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' 
       )
     }
 
+    console.log({
+      engagementMultiplier,
+      nicheMultiplier,
+      baseRates,
+      totalFollowers,
+    })
+
     return [
-      { src: Card1, title: 'INSTAGRAM REEL', value: calculatePrice(baseRates.reel) },
-      { src: Card2, title: 'INSTAGRAM POST', value: calculatePrice(baseRates.post) },
-      { src: Card3, title: 'INSTAGRAM STORY', value: calculatePrice(baseRates.story) },
-      { src: Card4, title: 'INSTAGRAM CAROUSEL', value: calculatePrice(baseRates.carousel) },
+      {
+        src: Card1,
+        title: 'INSTAGRAM REEL',
+        value: calculatePrice(baseRates.reel),
+      },
+      {
+        src: Card2,
+        title: 'INSTAGRAM POST',
+        value: calculatePrice(baseRates.post),
+      },
+      {
+        src: Card3,
+        title: 'INSTAGRAM STORY',
+        value: calculatePrice(baseRates.story),
+      },
+      {
+        src: Card4,
+        title: 'INSTAGRAM CAROUSEL',
+        value: calculatePrice(baseRates.carousel),
+      },
     ]
   }, [totalFollowers, engagementRate, contentNiche])
 
+  // Mobile swipe
   let touchStartX = 0
   let touchEndX = 0
 

@@ -196,3 +196,25 @@ export interface AnalyticsData {
 }
 
 export type Timeframe = "day" | "week" | "month" | "overall" | "year";
+
+
+// Dodo Coins
+
+export enum TransactionType {
+  EARNED = "EARNED",
+  SPENT = "SPENT",
+  REDEEMED = "REDEEMED",
+}
+
+export enum CoinMilestoneType {
+  CREATE_INVOICE = "CREATE_INVOICE",
+  PAGE_VIEWS = "PAGE_VIEWS",
+  CREATE_DODO_PAGE = "CREATE_DODO_PAGE",
+  CREATE_BLOCK = "CREATE_BLOCK",
+  // Add more milestone types as needed
+}
+
+export enum CoinAmount {
+  CREATE_INVOICE = 5,
+  DAILY_CHECKIN = 1,
+}
