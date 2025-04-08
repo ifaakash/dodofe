@@ -28,6 +28,7 @@ import { STORAGE_CONSTANTS } from "@utils/constants";
 import { Header } from "@components/molecules/Header";
 import ErrorPage from "@components/molecules/ErrorPage";
 import { setShowInputFields } from "store/slice/invoiceSlice";
+import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
 
 
 const CreateInvoice = () => {
@@ -316,7 +317,7 @@ const CreateInvoice = () => {
   };
 
   if (error) {
-    return <ErrorPage message={error} />;
+    return <GeneralErrorPage/>
   }
 
   return (
