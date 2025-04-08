@@ -186,6 +186,7 @@ export default function Home() {
                         buttonLabel=""
                         showProfileImage={true}
                         noImg={true}
+                        clampDescription={true}
                     />
                 ))}
             </div>

@@ -19,16 +19,21 @@ const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {
   const subTotal = useSelector((state: RootState) => state.invoice.subTotal);
 
   const calculateSubTotal = (items: any[]) => {
-    const activeItems = items?.filter((item: any) => !item.isDeleted);
-    const subtotal = activeItems?.reduce((acc: number, item: any) => {
-      return acc + (item.quantity * item.price);
-    }, 0);
+      // Filter out deleted items and calculate subtotal
+      const activeItems = items?.filter((item: any) => !item.isDeleted);
+      const subtotal =
+          activeItems?.reduce(
+              (acc: number, item: any) => acc + item.quantity * item.price,
+              0
+          ) || 0;
 
-    const gstAmount = (subtotal * (invoiceDetails?.gst || 0)) / 100;
-    const tdsAmount = (subtotal * (invoiceDetails?.tds || 0)) / 100;
-    const discountAmount = (subtotal * (invoiceDetails?.discount || 0)) / 100;
+      // Calculate all adjustments based on subtotal
+      const gstAmount = (subtotal * (invoiceDetails?.gst || 0)) / 100;
+      const tdsAmount = (subtotal * (invoiceDetails?.tds || 0)) / 100;
+      const discountAmount = (subtotal * (invoiceDetails?.discount || 0)) / 100;
 
-    return subtotal + gstAmount - tdsAmount - discountAmount;
+      // Final amount = subtotal + gst - tds - discount
+      return subtotal + gstAmount - tdsAmount - discountAmount;
   };
 
   const calculateTotal = (items: any[]) => {

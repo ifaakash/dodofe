@@ -16,6 +16,7 @@ import PaymentDetails from "@components/molecules/invoiceBlocks/PaymentDetails";
 import Note from "@components/molecules/invoiceBlocks/Note";
 import { formatDateLong } from '@utils/helperFunctions'
 import styles from "../invoice.module.css";
+import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
 
 
 const PreviewInvoice = () => {
@@ -42,7 +43,7 @@ const PreviewInvoice = () => {
   }, [invoiceId, dispatch]);
 
   if (error) {
-    return <ErrorPage message={error} />; // Render error page if there's an error
+    return <GeneralErrorPage/>
   }
 
   if (!invoice) {

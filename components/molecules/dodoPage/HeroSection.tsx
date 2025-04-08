@@ -523,6 +523,78 @@ const HeroSection = ({
     }
   }, [addAudioBioPopup, dodoPageDetails?.audioBio]);
 
+  const renderHeroImage = () => {
+    switch (mode) {
+      case "edit":
+        return (
+          <div onClick={() => ImageInputRef.current?.click()}>
+            {imagePreview || state.dodoPageImage ? (
+              <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
+                <Image
+                  src={imagePreview || state.dodoPageImage}
+                  alt="Dodo Page Image"
+                  width={88}
+                  height={88}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
+              </div>
+            )}
+          </div>
+        )
+      case "preview":
+        return (
+          <div>
+            {imagePreview || state.dodoPageImage ? (
+              <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
+                <Image
+                  src={imagePreview || state.dodoPageImage}
+                  alt="Dodo Page Image"
+                  width={88}
+                  height={88}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
+              </div>
+            )}
+          </div>
+        )
+      case "public":
+        return (
+          <div>
+            {dodoPageDetails?.profilePicture ? (
+              <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
+                <Image
+                  src={dodoPageDetails.profilePicture}
+                  alt="Dodo Page Image"
+                  width={88}
+                  height={88}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
+              </div>
+            )}
+          </div>
+        )
+      default:
+        return (
+          <div>
+            Default
+          </div>
+        )
+
+    }
+  }
+
   return (
     <div
       className={`flex flex-col items-center ${mode === "preview" ? "gap-[10px]" : "gap-3"
@@ -537,47 +609,8 @@ const HeroSection = ({
           ref={ImageInputRef}
           disabled={mode === "public" || mode === "preview"}
         />
-        <div onClick={() => mode === "edit" && ImageInputRef.current?.click()}>
-          {
-            mode === "edit" || "preview" ? (
-              <div>
-
-                {imagePreview || state.dodoPageImage ? (
-                  <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
-                    <Image
-                      src={imagePreview || state.dodoPageImage}
-                      alt="Dodo Page Image"
-                      width={88}
-                      height={88}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
-                    <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div>
-                {dodoPageDetails?.profilePicture ? (
-                  <div className="w-[88px] h-[88px] rounded-full overflow-hidden">
-                    <Image
-                      src={dodoPageDetails.profilePicture}
-                      alt="Dodo Page Image"
-                      width={88}
-                      height={88}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-[88px] h-[88px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
-                    <Image src={EmptyImage} alt="Empty Image" width={42} height={42} />
-                  </div>
-                )}
-              </div>
-            )
-          }
+        <div>
+          {renderHeroImage()}
           {
             mode !== "edit" && dodoPageDetails?.audioBio && (
               <div

@@ -1,0 +1,30 @@
+.backgroundDots::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: radial-gradient(circle, black 2px, transparent 2px);
+  background-size: 28px 28px;
+  background-repeat: repeat;
+  background-position: center;
+  z-index: -1;
+  opacity: 0.1;
+  background-color: #EAE9EC;
+}
+
+.backgroundDots {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, black 2px, transparent 2px);
+  background-size: 28px 28px;
+  background-repeat: repeat;
+  background-position: center;
+  z-index: 0;
+  opacity: 0.1;
+  background-color: #EAE9EC;
+}

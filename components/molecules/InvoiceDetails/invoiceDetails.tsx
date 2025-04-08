@@ -47,19 +47,20 @@ const InvoiceDetails = ({ setCurrentStage }) => {
     }
 
     const calculateTotals = () => {
-      // Calculate items total
-      const itemsTotal = state.items.reduce((sum: any, item: any) => {
-        return sum + item.price * item.quantity;
-      }, 0);
+        // Calculate subtotal first
+        const subtotal = state.items.reduce(
+            (sum: number, item: any) => sum + item.price * item.quantity,
+            0
+        );
 
-      // Calculate tax amounts
-      const gstAmount = itemsTotal * (state.gst / 100);
-      const tdsAmount = itemsTotal * (state.tds / 100);
-      const discountAmount = itemsTotal * (state.discount / 100);
+        // Calculate all adjustments based on subtotal
+        const gstAmount = (subtotal * (state.gst || 0)) / 100;
+        const tdsAmount = (subtotal * (state.tds || 0)) / 100;
+        const discountAmount = (subtotal * (state.discount || 0)) / 100;
 
-      // Calculate final subtotal
-      const finalSubTotal = itemsTotal + gstAmount - tdsAmount - discountAmount;
-      setSubTotal(finalSubTotal);
+        // Final amount = subtotal + gst - tds - discount
+        const finalSubTotal = subtotal + gstAmount - tdsAmount - discountAmount;
+        setSubTotal(finalSubTotal);
     };
 
     calculateTotals();
