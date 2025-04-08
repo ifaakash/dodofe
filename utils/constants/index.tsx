@@ -58,6 +58,7 @@ export const ROUTE_CONSTANTS = {
   SCRIPT_GENERATOR: "/script-generator",
   PRICE_CALCULATOR: "/price-calculator",
   MEDIA_KIT: "/media-kit",
+  BLOGS: "/blogs",
 };
 
 export const BLOCKS = {
@@ -220,3 +221,13 @@ export const CURRENCY_ONES = [
 export const CURRENCY_TENS = [
   "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
 ];
+
+export const BLOGS = {
+  "how-dodopage-skyrockets-your-clicks-and-views": {
+    title: "How DodoPage Skyrockets Your Clicks and Views",
+    description: "Audio Bio, Polls, Analytics, and More!",
+    image: "https://images.unsplash.com/photo-1636819488524-1f019c4e1c44",
+    id: "how-dodopage-skyrockets-your-clicks-and-views",
+    date: "2025-04-08",
+  }
+};
