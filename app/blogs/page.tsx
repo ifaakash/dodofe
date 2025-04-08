@@ -1,13 +1,22 @@
 "use client"
+import MetaData from "@components/molecules/MetaData";
 import { BLOGS } from "@utils/constants";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import dodoLogo from "public/icons/dodo.svg";
 
 export default function Blogs() {
     const router = useRouter();
 
     return (
         <div className="w-full min-h-screen bg-white text-black font-sans">
+            <MetaData
+                title="Dodo — The Ultimate Link-in-Bio + Invoices + Media Kit Tool for Influencers"
+                description="Dodo helps influencers create stunning bio pages, manage brand invoices, generate scripts, and showcase a media kit — all in one flashy platform designed for Gen Z."
+                keywords="link in bio, influencer tools, Gen Z creator tools, social media toolkit, media kit generator, invoice creator, script generator, brand deals, bio page builder, creator landing page, custom themes, monetization, creator portfolio"
+                url="https://dodoclub.in/blogs"
+                image={dodoLogo}
+            />
 
             {/* Hero Section */}
             <section className="w-full bg-green-100 py-24 text-center px-6">
