@@ -51,7 +51,7 @@ const ContentDropdown = ({ contentNiche, setContentNiche }) => {
 
       <div>
         <div
-          className='bg-[#E2E4E9] py-[10px] px-3 rounded-lg flex justify-between items-center cursor-pointer'
+          className='border-[#E2E4E9] border-[2px] py-[10px] px-3 rounded-lg flex justify-between items-center cursor-pointer'
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className='text-sm font-medium capitalize flex gap-4 items-center'>
@@ -68,7 +68,7 @@ const ContentDropdown = ({ contentNiche, setContentNiche }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
               transition={{ duration: 0.2 }}
-              className='absolute mt-2 w-full bg-[#E2E4E9] rounded-lg shadow-md z-10 max-h-60 overflow-y-auto'
+              className='absolute mt-2 w-full bg-[#f1f2f4] rounded-lg z-10 max-h-60 overflow-y-auto'
             >
               {categories.map((category) => (
                 <div
@@ -80,7 +80,7 @@ const ContentDropdown = ({ contentNiche, setContentNiche }) => {
                   className={`px-3 py-2 text-sm font-medium cursor-pointer hover:bg-[#d4d6db] rounded-lg transition-colors duration-150 capitalize flex items-center gap-2 ${contentNiche === category.name ? 'bg-[#d4d6db]' : ''
                     }`}
                 >
-                  <span>{category.emoji}</span> {category.name}
+                  <span>{category.emoji}</span> <span className='text-xs'>{category.name}</span>
                 </div>
               ))}
             </motion.div>

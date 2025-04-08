@@ -29,20 +29,21 @@ const PriceStats = ({
 
     niche = niche?.toLowerCase()
 
-    if (premium.includes(niche)) return 1.5
-    if (highValue.includes(niche)) return 1.2
-    if (midValue.includes(niche)) return 1.0
-    if (lowValue.includes(niche)) return 0.8
+    if (premium.includes(niche)) return 3
+    if (highValue.includes(niche)) return 2.5
+    if (midValue.includes(niche)) return 2.0
+    if (lowValue.includes(niche)) return 1.6
 
     return 1.0 // default
   }
 
   const baseRates = {
-    reel: 50,
-    post: 40,
-    story: 25,
-    carousel: 45,
+    reel: 129,
+    post: 103,     // approx 80% of reel
+    story: 65,     // approx 50% of reel
+    carousel: 116, // approx 90% of reel
   }
+  
 
   const cards = useMemo(() => {
     const engagementMultiplier = getEngagementMultiplier(engagementRate)
