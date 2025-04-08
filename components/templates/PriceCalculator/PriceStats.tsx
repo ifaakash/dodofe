@@ -56,13 +56,6 @@ const PriceStats = ({
       )
     }
 
-    console.log({
-      engagementMultiplier,
-      nicheMultiplier,
-      baseRates,
-      totalFollowers,
-    })
-
     return [
       {
         src: Card1,
@@ -134,9 +127,12 @@ const PriceStats = ({
                 <div className='font-extralight text-xs text-[#395235]'>
                   {card.title}
                 </div>
-                <div className='text-2xl font-semibold'>
-                  {formatCurrency(card.value)}
+                <div className='text-xl font-semibold'>
+                  {card.value > 0
+                    ? `${formatCurrency(Math.round(card.value * 0.85))} - ${formatCurrency(Math.round(card.value * 1.15))}`
+                    : formatCurrency(Math.round(card.value))}
                 </div>
+
               </div>
             </div>
           ))}
@@ -149,11 +145,10 @@ const PriceStats = ({
           <div
             key={index}
             onClick={() => setCurrent(index)}
-            className={`cursor-pointer transition-all duration-300 ${
-              index === current
-                ? 'w-6 h-2 rounded-full bg-gray-500'
-                : 'w-2 h-2 rounded-full bg-gray-300'
-            }`}
+            className={`cursor-pointer transition-all duration-300 ${index === current
+              ? 'w-6 h-2 rounded-full bg-gray-500'
+              : 'w-2 h-2 rounded-full bg-gray-300'
+              }`}
           ></div>
         ))}
       </div>

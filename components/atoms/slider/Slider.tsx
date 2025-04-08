@@ -1,115 +1,68 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import './HorizontalSlider.css';
+'use client';
 
-export default function HorizontalSlider({
-  title,
-  total,
-  setTotal,
-  max = 200000,
-  step = 1000,
-}: {
+import React, { useState } from 'react';
+
+interface SliderProps {
   title: string;
   total: number;
   setTotal: (value: number) => void;
   max?: number;
   step?: number;
-}) {
-  const values = Array.from({ length: Math.floor(max / step) + 1 }, (_, i) => i * step);
+}
 
+const formatNumber = (value: number) => {
+  if (value >= 1_000_000) return `${value / 1_000_000}M`;
+  if (value >= 1_000) return `${value / 1_000}k`;
+  return value.toString();
+};
 
-  const [selectedValue, setSelectedValue] = useState(() => {
-    const closest = values.reduce((prev, curr) =>
-      Math.abs(curr - total) < Math.abs(prev - total) ? curr : prev
-    );
-    return closest;
-  });
-  const sliderRef = useRef(null);
+export default function Slider({
+  title,
+  total,
+  setTotal,
+  max = 2000000,
+  step = 1_000,
+}: SliderProps) {
+  const [showTooltip, setShowTooltip] = useState(false);
 
-  const barWidth = 8;
-  const gap = 16;
-  const itemWidth = barWidth + gap;
-
-  useEffect(() => {
-    setTotal(selectedValue);
-  }, [selectedValue]);
-
-
-  useEffect(() => {
-    if (!sliderRef.current) return;
-    const index = values.indexOf(selectedValue);
-    const scrollOffset = index * itemWidth;
-    sliderRef.current.scrollTo({
-      left: scrollOffset - sliderRef.current.clientWidth / 2,
-      behavior: 'smooth',
-    });
-  }, []);
-
-  const handleScroll = () => {
-    if (!sliderRef.current) return;
-
-    const scrollLeft = sliderRef.current.scrollLeft;
-    const center = scrollLeft + sliderRef.current.clientWidth / 2;
-    const index = Math.round(center / itemWidth);
-
-    if (values[index] !== undefined && values[index] !== selectedValue) {
-      setSelectedValue(values[index]);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTotal(Number(e.target.value));
   };
 
-  const selectedIndex = values.indexOf(selectedValue);
+  const handleMouseDown = () => setShowTooltip(true);
+  const handleMouseUp = () => setShowTooltip(false);
 
   return (
-    <div className="w-full px-4">
-      <div className="text-sm font-bold text-gray-700 text-center mb-4">
+    <div className="w-full px-4 flex flex-col gap-3">
+      <div className="text-sm font-bold text-gray-700 text-center">
         {title}
         <div className="text-xl text-black">
-          {title === 'Engagement'
-            ? `${Math.round(selectedValue)}%`
-            : Math.round(selectedValue).toLocaleString()}
+          {title === 'Engagement' ? `${total}%` : formatNumber(total)}
         </div>
-
-
       </div>
 
-      <div
-        ref={sliderRef}
-        onScroll={handleScroll}
-        className={`
-          slider-container
-          overflow-x-auto
-          overflow-y-hidden
-          flex
-          space-x-4
-          w-full
-          snap-x 
-          snap-mandatory 
-          touch-pan-x 
-          scrollbar-hide
-        `}
-        style={{ overscrollBehavior: 'contain' }} // prevents mouse wheel bounce on Mac
-      >
-        {values.map((val, i) => {
-          const distance = Math.abs(i - selectedIndex);
-          const maxBarHeight = 50;
-          const stepDown = 5;
-          const minBarHeight = 10;
-
-          let barHeight = maxBarHeight - distance * stepDown;
-          if (barHeight < minBarHeight) barHeight = minBarHeight;
-
-          return (
-            <div key={val} className="bar-wrapper snap-center flex items-center">
-              <motion.div
-                className={`bar ${val === selectedValue ? 'bg-[#9651ECE5]' : 'bg-[#9651EC99]/60'
-                  }`}
-                animate={{ height: barHeight }}
-                transition={{ duration: 0.2 }}
-                onClick={() => setSelectedValue(val)}
-              />
-            </div>
-          );
-        })}
+      <div className="relative w-full">
+        <input
+          type="range"
+          min={0}
+          max={max}
+          step={step}
+          value={total}
+          onChange={handleChange}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#9651EC]"
+        />
+        {showTooltip && (
+          <div
+            className="absolute -top-8 text-sm font-medium bg-[#9651EC] text-white px-3 py-1 rounded-md shadow-md whitespace-nowrap"
+            style={{ left: `${(total / max) * 100}%`, transform: 'translate(-50%, -100%)' }}
+          >
+            {title === 'Engagement' ? `${total}%` : formatNumber(total)}
+          </div>
+        )}
       </div>
     </div>
   );

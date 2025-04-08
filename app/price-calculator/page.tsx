@@ -6,12 +6,12 @@ import PriceStats from '@components/templates/PriceCalculator/PriceStats';
 import ContentDropdown from '@components/templates/PriceCalculator/ContentDropdown';
 import styles from './priceCalculator.module.css';
 import cx from 'classnames';
-import Slider from '@components/atoms/slider/Slider'
+import Slider from '@components/atoms/slider/Slider';
 
 const PriceCalculatorPage: React.FC = () => {
-    const [contentNiche, setContentNiche] = useState<string>('Fashion');
+    const [contentNiche, setContentNiche] = useState<string>('tech');
     const [totalFollowers, setTotalFollowers] = useState<number>(10000);
-    const [engagementRate, setEngagementRate] = useState<number>(50000);
+    const [engagementRate, setEngagementRate] = useState<number>(10);
     return (
         <div className={cx(styles.priceCalculator)}>
             <Header />
@@ -46,7 +46,7 @@ const PriceCalculatorPage: React.FC = () => {
                                             title="Engagement"
                                             total={engagementRate}
                                             setTotal={setEngagementRate}
-                                            max={100}
+                                            max={20}
                                             step={1}
                                         />
                                     </div>
