@@ -133,30 +133,26 @@ const EditBlock = () => {
 
       <div className="px-5">{renderBlock()}</div>
 
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+      <Modal showCloseIcon showOuterCloseIcon visible={showDeleteConfirm} onCloseIconClick={() => setShowDeleteConfirm(false)}>
+        <div className="rounded-lg">
+          <div className="bg-white p-2 rounded-lg">
             <p className="mb-4">Are you sure you want to delete this block?</p>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-              onClick={confirmDelete}
-            >
-              Delete
-            </button>
-            <button
-              className="bg-gray-300 text-black px-4 py-2 rounded"
-              onClick={() => setShowDeleteConfirm(false)}
-            >
-              Cancel
-            </button>
+
+            <div className="flex justify-center gap-2 w-full mt-6">
+              <button className="w-full rounded-full border-[1px] border-red-500 text-sm font-medium" onClick={confirmDelete}>
+                Delete
+              </button>
+              <button className="w-full rounded-full py-3 border-[1px] border-brandPrimary bg-brandPrimary text-white" onClick={() => setShowDeleteConfirm(false)}
+              > Cancel </button>
+            </div>
           </div>
         </div>
-      )}
+      </Modal>
 
       {(
         <Modal visible={showArchiveConfirm} onCloseIconClick={() => setShowArchiveConfirm(false)}>
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
               <p className="mb-4">Are you sure you want to archive this block?</p>
               <button
                 className="bg-brandPrimary text-white px-4 py-2 rounded mr-2"

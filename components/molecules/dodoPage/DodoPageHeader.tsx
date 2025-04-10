@@ -101,7 +101,7 @@ const DodoPageHeader = ({ mode, url }: { mode: string; url: string }) => {
             </div>
 
             <Modal showCloseIcon showOuterCloseIcon visible={showDeleteConfirm} onCloseIconClick={() => setShowDeleteConfirm(false)}>
-                <div className="rounded-lg shadow-lg text-center">
+                <div className="rounded-lg  text-center">
                     <p className="text-xl mt-2 mb-4 text-left font-bold clr-dark-text">Are you sure you want to discard your block changes? </p>
 
                     <div className="flex justify-center gap-2 w-full my-4 mt-6">
