@@ -29,7 +29,7 @@ const AnalyticsHeader = ({ url }: { url: string }) => {
             </div>
             <div className='absolute left-1/2 top-12 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 '>
                 <ChevronsDown size={16} />
-                <div className='text-[10px] font-semibold text-[#3D4966]'>Pull to refresh</div>
+                {/* <div className='text-[10px] font-semibold text-[#3D4966]'>Pull to refresh</div> */}
             </div>
         </div>
     )

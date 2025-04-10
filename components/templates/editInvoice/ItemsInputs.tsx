@@ -2,7 +2,7 @@
 import { addNote } from 'store/slice/invoiceSlice';
 
 import Input from '@components/atoms/Input';
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useState, useEffect } from 'react'
 import { Plus, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDiscount, addGst } from 'store/slice/invoiceSlice';
@@ -15,25 +15,69 @@ const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
+  const [currentItemId, setCurrentItemId] = useState<string | null>(null);
+  const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
   const dispatch = useDispatch();
   const subTotal = useSelector((state: RootState) => state.invoice.subTotal);
 
+  // Add utility functions for note character/word counting
+  const getWordCount = (text: string) => {
+    return text?.trim() ? text.trim().split(/\s+/).length : 0;
+  };
+
+  const getCharCount = (text: string) => {
+    return text ? text.length : 0;
+  };
+
+  // Update character and word counts when note changes
+  useEffect(() => {
+    setWordCount(getWordCount(invoiceDetails?.note || ''));
+    setCharCount(getCharCount(invoiceDetails?.note || ''));
+  }, [invoiceDetails?.note]);
+
+  // Auto-add or update item when all inputs are filled
+  useEffect(() => {
+    if (name && quantity && price) {
+      const newItem = {
+        id: currentItemId || `item-${Date.now()}`,
+        name,
+        quantity: Number(quantity),
+        price: Number(price),
+        isDeleted: false
+      };
+
+      if (currentItemId) {
+        // Update existing item
+        dispatch(updateItems({
+          id: currentItemId,
+          item: newItem
+        }));
+        // Reset form after update
+        setName('');
+        setQuantity('');
+        setPrice('');
+        setCurrentItemId(null);
+      }
+    }
+  }, [name, quantity, price, currentItemId, dispatch]);
+
   const calculateSubTotal = (items: any[]) => {
-      // Filter out deleted items and calculate subtotal
-      const activeItems = items?.filter((item: any) => !item.isDeleted);
-      const subtotal =
-          activeItems?.reduce(
-              (acc: number, item: any) => acc + item.quantity * item.price,
-              0
-          ) || 0;
+    // Filter out deleted items and calculate subtotal
+    const activeItems = items?.filter((item: any) => !item.isDeleted);
+    const subtotal =
+      activeItems?.reduce(
+        (acc: number, item: any) => acc + item.quantity * item.price,
+        0
+      ) || 0;
 
-      // Calculate all adjustments based on subtotal
-      const gstAmount = (subtotal * (invoiceDetails?.gst || 0)) / 100;
-      const tdsAmount = (subtotal * (invoiceDetails?.tds || 0)) / 100;
-      const discountAmount = (subtotal * (invoiceDetails?.discount || 0)) / 100;
+    // Calculate all adjustments based on subtotal
+    const gstAmount = (subtotal * (invoiceDetails?.gst || 0)) / 100;
+    const tdsAmount = (subtotal * (invoiceDetails?.tds || 0)) / 100;
+    const discountAmount = (subtotal * (invoiceDetails?.discount || 0)) / 100;
 
-      // Final amount = subtotal + gst - tds - discount
-      return subtotal + gstAmount - tdsAmount - discountAmount;
+    // Final amount = subtotal + gst - tds - discount
+    return subtotal + gstAmount - tdsAmount - discountAmount;
   };
 
   const calculateTotal = (items: any[]) => {
@@ -42,7 +86,7 @@ const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {
       return acc + item.quantity * item.price;
     }, 0);
   };
-  
+
 
   const handleAddItem = () => {
     if (!name || !quantity || !price) {
@@ -50,13 +94,20 @@ const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {
       return;
     }
 
-    const newItem = { name, quantity: Number(quantity), price: Number(price), isDeleted: false };
+    const newItem = {
+      id: `item-${Date.now()}`,
+      name,
+      quantity: Number(quantity),
+      price: Number(price),
+      isDeleted: false
+    };
     dispatch(addNewItem(newItem));
 
-    // Reset input fields
+    // Reset input fields and current item ID
     setName('');
     setQuantity('');
     setPrice('');
+    setCurrentItemId(null);
   }
 
   const handleRemoveItem = (index: number) => {
@@ -125,7 +176,10 @@ const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {
             {invoiceDetails.items
               .filter((item: any) => !item.isDeleted)
               .map((item: any, index: number) => (
-                <div key={index} className="flex flex-col">
+                <div
+                  key={item.id || index}
+                  className={`flex flex-col ${item.id === currentItemId ? "border border-dashed border-brandPrimary" : ""}`}
+                >
                   <div className="flex justify-between text-sm py-2">
                     <div className="flex flex-col gap-[6px]">
                       <div className="text-sm font-semibold">{item.name}</div>
@@ -240,13 +294,29 @@ const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {
       {/* Note Section */}
       <div className="flex flex-col gap-3 pb-5">
         <div className="text-[#5E6C84] text-xs font-semibold">NOTE</div>
-        <textarea
-          placeholder="Add a note(optional)"
-          className="p-[14px] rounded-lg"
-          rows={5}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => dispatch(updateNote(e.target.value))}
-          value={invoiceDetails?.note}
-        />
+        <div className="relative">
+          <textarea
+            placeholder="Add a note(optional)"
+            className="p-[14px] rounded-lg w-full"
+            rows={5}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+              const text = e.target.value;
+              if (text.length <= 60) {
+                dispatch(updateNote(text));
+              }
+            }}
+            value={invoiceDetails?.note}
+            style={{
+              resize: 'vertical',
+              maxHeight: '200px',
+              paddingBottom: '25px'
+            }}
+            maxLength={60}
+          />
+          <div className={`absolute bottom-2 right-3 text-xs ${charCount === 60 ? 'text-red-500' : 'text-gray-500'}`}>
+            {charCount}/60
+          </div>
+        </div>
       </div>
     </div>
   )

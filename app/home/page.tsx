@@ -167,7 +167,8 @@ export default function Home() {
     const getUserCard = () => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
 
-        if (isEmpty(dodoPageDetail) && !isLoading) {
+        // handles api failure gracefully
+        if (userId && isEmpty(userDetails) && !isLoading) {
             return <CtaSection title="Dodo user" description="Some issue in fetching your dodo pages" noImg onClick={() => router.push(ROUTE_CONSTANTS.LOGIN)} />;
         }
 
@@ -283,6 +284,9 @@ export default function Home() {
                     {isEmpty(userId) ? (
                         <div className="mx-4">
                             <CtaSection
+                                onClick={() =>
+                                    gotoLinksPage(dodoPageDetail?.url)
+                                }
                                 onButtonClick={() =>
                                     gotoLinksPage(dodoPageDetail?.url)
                                 }

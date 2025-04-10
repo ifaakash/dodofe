@@ -289,12 +289,14 @@ const CreateInvoice = () => {
 
 
   const handleBackNavigation = () => {
+    console.log(showInputFields)
     if (showInputFields) {
       dispatch(setShowInputFields(false));
 
       return;
     }
 
+    console.log(currentStage)
     switch (currentStage) {
       case "senderDetails":
         router.push("/invoice");
@@ -317,7 +319,7 @@ const CreateInvoice = () => {
   };
 
   if (error) {
-    return <GeneralErrorPage/>
+    return <GeneralErrorPage />
   }
 
   return (
