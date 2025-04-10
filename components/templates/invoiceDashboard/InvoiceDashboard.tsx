@@ -17,7 +17,7 @@ import { UserInvoicesData } from "types";
 import useLoaderVisibility from "hooks/useLoaderVisibility";
 
 interface DashboardProps {
-    userDetails: userDetailsProps;
+  userDetails: userDetailsProps;
 }
 
 const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
@@ -76,71 +76,71 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
   };
 
   return (
-      <div className="flex flex-col">
-          <div className="h-64 bg-[#D8D6DC] absolute top-0 left-0 right-0 -z-10"></div>
-          <div className="pt-20 w-full flex flex-col gap-6 h-full">
-              <Header onBackClick={onBackClick} title="Invoice Dashboard" />
+    <div className="flex flex-col">
+      <div className="h-64 bg-[#D8D6DC] absolute top-0 left-0 right-0 -z-10"></div>
+      <div className="pt-20 w-full flex flex-col gap-6 h-full">
+        <Header onBackClick={onBackClick} title="Invoice Dashboard" />
 
-              {userDetails && (
-                  <StatsCard
-                      userInvoicesData={userInvoicesData}
-                      setTimePeriod={setTimePeriod}
-                      timePeriod={timePeriod}
-                  />
-              )}
+        {userDetails && (
+          <StatsCard
+            userInvoicesData={userInvoicesData}
+            setTimePeriod={setTimePeriod}
+            timePeriod={timePeriod}
+          />
+        )}
 
-              <div className="px-5 flex flex-col gap-3">
-                  <div className="flex justify-between items-center">
-                      <div className="font-semibold">Last invoices</div>
-                      <Link
-                          href={"/invoice/history"}
-                          className="flex items-center gap-0.5 cursor-pointer"
-                      >
-                          <div className="text-xs font-semibold">View All</div>
-                          <Image
-                              src={RightArrow}
-                              width={16}
-                              alt="right arrow"
-                          />
-                      </Link>
-                  </div>
-
-                  {invoices.length > 0 ? (
-                      <div className="flex flex-col gap-2">
-                          {invoices.map((invoice) => (
-                              <LastInvoiceCard
-                                  key={invoice.id}
-                                  invoice={invoice}
-                                  setIsPaymentStatusChanged={
-                                      setIsPaymentStatusChanged
-                                  }
-                              />
-                          ))}
-                      </div>
-                  ) : isLoaderVisible ? (
-                      <div
-                          className="text-gray-500 text-center text-sm"
-                          style={{ minHeight: "480px" }}
-                      >
-                          No invoices available.
-                      </div>
-                  ) : null}
-              </div>
-
-              <div className="mt-[80px] px-5 flex flex-col gap-2 py-10 items-center">
-                  <Image
-                      src={InvoiceFootImg}
-                      width={150}
-                      height={150}
-                      alt="running"
-                  />
-                  <div className="text-2xl font-semibold text-gray-400">
-                      Create Track Get{" "}
-                      <span className="text-brandPrimary">Paid</span>
-                  </div>
-              </div>
+        <div className="px-5 flex flex-col gap-3">
+          <div className="flex justify-between items-center">
+            <div className="font-semibold">Last 2 invoices</div>
+            <Link
+              href={"/invoice/history"}
+              className="flex items-center gap-0.5 cursor-pointer"
+            >
+              <div className="text-xs font-semibold">View All</div>
+              <Image
+                src={RightArrow}
+                width={16}
+                alt="right arrow"
+              />
+            </Link>
           </div>
+
+          {invoices.length > 0 ? (
+            <div className="flex flex-col gap-2">
+              {invoices.map((invoice) => (
+                <LastInvoiceCard
+                  key={invoice.id}
+                  invoice={invoice}
+                  setIsPaymentStatusChanged={
+                    setIsPaymentStatusChanged
+                  }
+                />
+              ))}
+            </div>
+          ) : isLoaderVisible ? (
+            <div
+              className="text-gray-500 text-center text-sm"
+              style={{ minHeight: "480px" }}
+            >
+              No invoices available.
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mt-[80px] px-5 flex flex-col gap-2 py-10 items-center">
+          <Image
+            src={InvoiceFootImg}
+            width={150}
+            height={150}
+            alt="running"
+          />
+          <div className="text-2xl font-semibold text-gray-400">
+            Create Track Get{" "}
+            <span className="text-brandPrimary">Paid</span>
+          </div>
+        </div>
       </div>
+    </div>
   );
 };
 

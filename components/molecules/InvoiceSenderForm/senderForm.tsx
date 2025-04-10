@@ -23,7 +23,7 @@ interface SenderFormProps {
 
 const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
   const dispatch = useDispatch();
-  const [clientID, setClientID] = useState("");
+  const [clientID, setClientID] = useState(clientDetails[0]._id);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [disableNextButton, setDisableNextButton] = useState(true);
   const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
@@ -215,12 +215,12 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
               onChange={(e) => handleChange("city", e.target.value)}
             />
             <div className="relative">
-              <textarea 
-                className="border border-[#E5E7EB] rounded-lg p-2 h-fit w-full" 
-                placeholder="Address" 
-                value={currentClientDetails.address || ""} 
-                onChange={(e) => handleChange("address", e.target.value)} 
-                rows={2} 
+              <textarea
+                className="border border-[#E5E7EB] rounded-lg p-2 h-fit w-full"
+                placeholder="Address"
+                value={currentClientDetails.address || ""}
+                onChange={(e) => handleChange("address", e.target.value)}
+                rows={2}
                 maxLength={40}
                 style={{
                   resize: 'none',
@@ -228,10 +228,9 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
                   height: 'auto'
                 }}
               />
-              <span 
-                className={`absolute bottom-2 right-2 text-xs ${
-                  (currentClientDetails.address?.length || 0) >= 40 ? 'text-red-500' : 'text-gray-500'
-                }`}
+              <span
+                className={`absolute bottom-2 right-2 text-xs ${(currentClientDetails.address?.length || 0) >= 40 ? 'text-red-500' : 'text-gray-500'
+                  }`}
               >
                 {(currentClientDetails.address?.length || 0)}/40
               </span>
@@ -266,7 +265,7 @@ const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
               className="flex gap-2 items-center border border-brandPrimary py-2 px-4 w-fit rounded-full"
               onClick={() => dispatch(setShowInputFields(true))}
             >
-              <span className="text-sm font-semibold">Add New Sender</span>
+              <span className="text-sm font-semibold">Add New</span>
               <Plus
                 size={16}
                 className="text-white bg-brandPrimary rounded-full p-0.5"

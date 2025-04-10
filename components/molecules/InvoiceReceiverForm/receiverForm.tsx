@@ -26,7 +26,7 @@ const ReceiverForm = ({
   setCurrentStage,
 }: ReceiverFormProps) => {
   const dispatch = useDispatch();
-  const [receiveID, setReceiveID] = useState("");
+  const [receiveID, setReceiveID] = useState(receiverDetails[0]._id);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [disableNextButton, setDisableNextButton] = useState(true);
   const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
@@ -38,7 +38,7 @@ const ReceiverForm = ({
   const selectedReceiverID = useSelector(
     (state: RootState) => state.invoice.recipientDetailsID
   );
-  
+
   useEffect(() => {
     if (receiveID) {
       dispatch(addRecipientDetailsID(receiveID));
