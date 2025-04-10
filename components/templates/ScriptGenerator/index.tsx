@@ -2,10 +2,13 @@
 import React, { useState } from "react";
 import { generateScript } from "api/services";
 import { Header } from "@components/molecules/Header";
+import ReactMarkdown from "react-markdown";
 
 const ScriptGenerator = () => {
     const [prompt, setPrompt] = useState('');
-    const [script, setScript] = useState('');
+    const [script, setScript] = useState(`## Pawsome Pizza: Ad Script\n\n**Scene:** A bustling, slightly chaotic pizza kitchen. Cats in tiny chef hats are scrambling around, some expertly kneading dough, others batting at dangling pepperoni slices. Meows and hisses occasionally punctuate the background music.\n\n**Voiceover (Smooth, sophisticated, like James Earl Jones):** Tired of the same old dog-eared pizza? Then get ready for Pawsome Pizza, the only pizza crafted with the discerning palate of... well, cats.\n\n**(Cut to a fluffy Persian cat, SIR WHISKERSWORTH, wearing a pristine white chef's hat.He speaks with a surprisingly deep voice.)**\n\n ** Sir Whiskersworth:** At Pawsome Pizza, we believe in quality.We meticulously inspect every ingredient... with our noses.And occasionally, a light nibble.\n\n ** (Camera zooms in on Sir Whiskersworth delicately sniffing a basil leaf, then taking a surprisingly large bite.)**\n\n ** Voiceover:** From our Paw - roni perfection to our Meow - zarella magic, every Pawsome Pizza is a culinary purr - adise.\n\n ** (Cut to a montage of cats in action: a Siamese expertly flinging pizza dough(which almost lands on another cat's head), a tabby meticulously arranging anchovies in a perfect spiral, a kitten accidentally falling into a bowl of tomato sauce and emerging covered head-to-toe.)**\n\n**Voiceover:** Our commitment to excellence... is unwavering. Even when Mittens tries to eat the entire delivery box.\n\n**(Cut to MITTENS, a mischievous-looking calico, attempting to drag a pizza box twice her size across the floor.)**\n\n**Mittens (Muffled through cardboard):** Mine!\n\n**(Cut back to Sir Whiskersworth.)**\n\n**Sir Whiskersworth:** We use only the finest tuna-infused tomato sauce... because, well, we like it.\n\n**(He winks at the camera, a sly glint in his eye.)**\n\n**Voiceover:** Pawsome Pizza. So good, it's the cat's meow!\n\n**(Scene shifts to a happy family (presumably owned by a cat) enjoying Pawsome Pizza. The cat sits on the table, supervising their meal.)**\n\n**Child (Giggles):** This is the best pizza ever!\n\n**(The cat nods sagely and takes a tiny nibble off the child's slice.) **\n\n ** Voiceover:** Order Pawsome Pizza tonight! Available for purr - fectly convenient delivery.\n\n ** (On - screen text: PawsomePizza.com.Warning: May contain traces of cat hair.And tuna.)**\n\n ** (Final shot: Sir Whiskersworth smiles, holding a pizza with a single strategically placed catnip leaf.)**\n\n ** Sir Whiskersworth:** You'll be feline good!\n\n**(Fade to black. Sound of a satisfied purr.)**\n"
+
+    this is how the ai is returning data.I am using pre tags but how can I show it in a better way ?   `);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -26,32 +29,45 @@ const ScriptGenerator = () => {
 
     return (
         <>
-            <Header title="Script Generator" />
-            <div className="p-4 mt-16 max-w-lg mx-auto">
+            <Header title="Script Generator ✨" />
+            <div className="p-6 mt-16 max-w-xl mx-auto border-4 border-black bg-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
                 <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Enter your prompt here..."
+                    placeholder="e.g., Write a funny ad script for a pizza company run by cats..."
                     rows={5}
                     cols={50}
-                    className="w-full p-2 border border-gray-300 rounded mb-4"
+                    className="w-full p-4 border-2 border-black rounded-none font-mono bg-[#f5f5f5] shadow-[4px_4px_0_0_rgba(0,0,0,1)] focus:outline-none focus:ring-2 focus:ring-black"
                 />
                 <button
                     onClick={handleGenerateScript}
                     disabled={loading}
-                    className={`w-full p-2 text-white rounded ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+                    className={`w-full p-4 mt-4 border-2 border-black text-black font-bold rounded-none transition-all shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${loading
+                        ? 'bg-gray-300 cursor-not-allowed'
+                        : 'bg-yellow-300 hover:bg-yellow-400 active:translate-x-[2px] active:translate-y-[2px]'
+                        }`}
                 >
                     {loading ? 'Generating...' : 'Generate Script'}
                 </button>
-                {error && <div className="text-red-500 mt-2">{error}</div>}
-                {script && <div className="mt-4">
-                    <h3 className="font-semibold">Generated Script:</h3>
-                    <pre className="bg-gray-100 p-2 rounded whitespace-pre-wrap">
-                        <code style={{ fontFamily: 'Clash Display' }}>{script}</code>
-                    </pre>
-                </div>}
+                {error && (
+                    <div className="text-red-600 mt-4 font-bold border-2 border-black bg-red-100 p-2 shadow-[3px_3px_0_0_rgba(0,0,0,1)]">
+                        {error}
+                    </div>
+                )}
+                {script && (
+                    <div className="mt-6 whitespace-pre-wrap border-2 border-black bg-[#fefefe] p-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                        <h3 className="font-bold text-lg mb-2 border-b-2 border-black pb-1">
+                            Generated Script:
+                        </h3>
+
+                        <ReactMarkdown >
+                            {script}
+                        </ReactMarkdown>
+                    </div>
+                )}
             </div>
         </>
+
     );
 };
 
