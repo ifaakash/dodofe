@@ -84,7 +84,36 @@ const HeroSection = ({
     setCharacterCount(thought?.length);
   }, [thought]);
 
-  // Add click outside handler
+  // Add this function to handle closing the audio bio popup
+  const handleCloseAudioBioPopup = () => {
+    // Pause audio if it's playing
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+
+    // Pause wavesurfer if it exists
+    if (waveSurferRef.current && waveSurferRef.current.isPlaying()) {
+      waveSurferRef.current.pause();
+    }
+
+    // Destroy wavesurfer instance
+    if (waveSurferRef.current) {
+      waveSurferRef.current.destroy();
+      waveSurferRef.current = null;
+    }
+
+    // Reset audio element
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current = null;
+    }
+
+    setAddAudioBioPopup(false);
+  };
+
+  // Update the click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Handle thoughts popup click outside
@@ -111,7 +140,7 @@ const HeroSection = ({
         // Don't close when clicking the audio bio button
         const audioBioButton = document.getElementById('audio-bio-button');
         if (!audioBioButton?.contains(event.target as Node)) {
-          setAddAudioBioPopup(false);
+          handleCloseAudioBioPopup();
         }
       }
     };
@@ -123,7 +152,7 @@ const HeroSection = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showThoughtsPopup, addAudioBioPopup]);
+  }, [showThoughtsPopup, addAudioBioPopup, isPlaying]);
 
   const handleNameSave = () => {
     dispatch(setDodoPageName(pageName || ""));
@@ -333,8 +362,10 @@ const HeroSection = ({
     }
 
     return () => {
-      waveSurferRef.current?.destroy();
-      waveSurferRef.current = null;
+      if (waveSurferRef.current) {
+        waveSurferRef.current.destroy();
+        waveSurferRef.current = null;
+      }
     };
   };
 
@@ -456,8 +487,10 @@ const HeroSection = ({
       });
 
       return () => {
-        waveSurferRef.current.destroy();
-        waveSurferRef.current = null;
+        if (waveSurferRef.current) {
+          waveSurferRef.current.destroy();
+          waveSurferRef.current = null;
+        }
       };
     }
   }, [isRecording, audioBlob]);
@@ -483,29 +516,17 @@ const HeroSection = ({
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  // preview audio bio in case of edit mode
   useEffect(() => {
     if (addAudioBioPopup && dodoPageDetails.audioBio) {
       const audioUrl = dodoPageDetails.audioBio;
-      console.log("audioUrl", audioUrl);
 
       const fetchAndLoadAudio = async () => {
         try {
           const response = await fetch(audioUrl);
           const blob = await response.blob();
-          const blobUrl = URL.createObjectURL(blob);
 
-          waveSurferRef.current = WaveSurfer.create({
-            container: document.getElementById('waveform') as HTMLElement,
-            waveColor: '#E2E4E9',
-            progressColor: '#17CF62',
-            backend: 'MediaElement',
-          });
-
-          waveSurferRef.current.load(blobUrl);
-
-          waveSurferRef.current.on('ready', () => {
-            waveSurferRef.current?.playPause();
-          });
+          setAudioBlob(blob);
         } catch (err) {
           console.error('Error loading audio blob:', err);
         }
@@ -780,7 +801,7 @@ const HeroSection = ({
             <div className="flex justify-center">
               <div
                 className="w-fit bg-white rounded-full p-1 mb-4"
-                onClick={() => setAddAudioBioPopup(false)}
+                onClick={handleCloseAudioBioPopup}
               >
                 <X size={26} className="cursor-pointer text-brandPrimary" />
               </div>
@@ -799,7 +820,7 @@ const HeroSection = ({
                     Say anything for 20 sec
                   </div>
                 </div>
-                <input
+                {/* <input
                   type="file"
                   accept="audio/*"
                   onChange={handleAudioUpload}
@@ -812,13 +833,13 @@ const HeroSection = ({
                 >
                   <Image src={Upload2} width={16} height={16} alt="Upload" />
                   <span className="text-brandPrimary text-[8px]">upload</span>
-                </div>
+                </div> */}
               </div>
               <div className="h-16 w-full flex items-center justify-center">
                 {isRecording ? (
                   <Image src={Waves} alt="Audio Record" />
                 ) : (
-                  <div id="waveform" className="w-full"></div>
+                  <div id="waveform" className="w-full mt-8"></div>
                 )}
               </div>
               <div className="text-center mt-2" style={{ minHeight: '24px' }}>
@@ -843,8 +864,10 @@ const HeroSection = ({
                     />
                   </div>
                 </div>
-                <span className="text-[#3D4966] mt-2 text-xs font-medium">
-                  {isRecording ? "Tap to stop" : "Tap to record"}
+                <span className="text-[#3D4966] mt-2 text-xs font-medium text-center">
+                  {isRecording ? "Tap to stop" : "Tap to record new"}<br />
+                  {isRecording ? "" : "audio bio"}
+
                 </span>
               </div>
               <div className="flex gap-3">
