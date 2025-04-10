@@ -15,10 +15,11 @@ import DodoIconName from 'public/icons/dodoIconName.svg'
 import Image from "next/image";
 import { Download } from "lucide-react";
 import ShareIcon from 'public/icons/share.svg'
-import { formatDateLong } from '@utils/helperFunctions'
+import { formatCurrency, formatDateLong } from '@utils/helperFunctions'
 import { Header } from "@components/molecules/Header";
 import EditPen from "public/icons/EditPen.svg";
 import { useRouter } from "next/navigation";
+import { calculateGrandTotal } from "@utils/index";
 
 const ReviewInvoice = () => {
   const { invoiceId } = useParams();
@@ -95,7 +96,8 @@ const ReviewInvoice = () => {
         });
 
         if (!res.success) {
-          throw new Error("Failed to save changes");
+          toast.error("Failed to save changes");
+          console.error("Failed to save changes");
         }
 
         setOriginalSubHeading(subHeading);
@@ -105,10 +107,49 @@ const ReviewInvoice = () => {
       if (window) {
         // Share functionality
         const url = `${window.location.origin}/invoice/${invoiceId}`;
-        await navigator.clipboard.writeText(url);
 
-        // Show success message
-        toast.success("Invoice link copied to clipboard!");
+        const items = invoice?.items;
+        const discount = invoice?.discount;
+        const gst = invoice?.gst;
+        const tds = invoice?.tds;
+
+        try {
+          // Example: Fetch an image from your public folder
+          const response = await fetch('/public/assets/invoiceShareImg.png');
+          const blob = await response.blob();
+          const file = new File([blob], 'invoice-share.png', { type: blob.type });
+
+
+          navigator
+            .share({
+              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
+              text: "",
+              url: url,
+              files: [file]
+            })
+            .then(() => console.log("Shared successfully!"))
+            .catch((error) => {
+              if (error.name !== "AbortError") {
+                console.error("Error sharing:", error);
+                toast.error("Failed to share content.");
+              }
+            });
+        } catch (imageError) {
+          // Fallback to sharing without image if image fetch fails
+          navigator
+            .share({
+              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
+              text: "",
+              url: url
+            })
+            .then(() => console.log("Shared successfully!"))
+            .catch((error) => {
+              if (error.name !== "AbortError") {
+                console.error("Error sharing:", error);
+                toast.error("Failed to share content.");
+              }
+            });
+        }
       }
 
     } catch (err) {
@@ -139,7 +180,7 @@ const ReviewInvoice = () => {
       <div className={cx(styles.backgroundDots)}></div>
       <div className="pt-6 pb-16">
         {/* Header */}
-        <Header onBackClick={()=>router.push('/invoice')}/>
+        <Header onBackClick={() => router.push('/invoice')} />
         <div className="pb-7 pt-10 text-center flex flex-col items-center gap-1">
           {/* Heading */}
           <div className="text-xl font-semibold">INVOICE</div>

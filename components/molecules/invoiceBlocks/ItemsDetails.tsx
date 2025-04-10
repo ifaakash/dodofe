@@ -3,38 +3,16 @@ import React from 'react'
 import Image from 'next/image'
 import PenIcon from 'public/icons/EditPen.svg'
 import { InvoiceItem } from 'types'
+import { calculateGrandTotal } from '@utils/index'
 
 interface ItemsDetailsProps {
-  mode: 'edit' | 'view'
-  items: InvoiceItem[]
-  discount: number
-  gst: number
-  tds: number
-  handleEditNagigation?: any
-}
-
-const calculateGrandTotal = (
-    items: InvoiceItem[],
-    discount: number,
-    gst: number,
+    mode: 'edit' | 'view'
+    items: InvoiceItem[]
+    discount: number
+    gst: number
     tds: number
-): number => {
-    // Calculate subtotal first
-    const subtotal = items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-    );
-
-    // Calculate all adjustments based on subtotal
-    const discountAmount = (subtotal * (discount || 0)) / 100;
-    const gstAmount = (subtotal * (gst || 0)) / 100;
-    const tdsAmount = (subtotal * (tds || 0)) / 100;
-
-    // Final amount = subtotal + gst - tds - discount
-    const finalAmount = subtotal + gstAmount - tdsAmount - discountAmount;
-
-    return Math.floor(finalAmount);
-};
+    handleEditNagigation?: any
+}
 
 const ItemsDetails = ({
     mode,

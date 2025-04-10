@@ -68,7 +68,10 @@ const InvoiceDashboard = ({ userDetails }: DashboardProps) => {
       setIsPaymentStatusChanged(false);
       setLoading(false);
     };
-    fetchStatsData();
+
+    if (userDetails?.id) {
+      fetchStatsData();
+    }
   }, [timePeriod, userDetails, isPaymentStatusChanged]);
 
   const onBackClick = () => {

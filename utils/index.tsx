@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 
 import { STORAGE_CONSTANTS } from "./constants";
 import { loadState } from "./localStorage";
-import { MetaTagsData } from 'types';
+import { InvoiceItem, MetaTagsData } from 'types';
 import mixpanel from 'mixpanel-browser';
 
 export function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (this: ThisParameterType<T>, ...args: Parameters<T>) => void {
@@ -238,3 +238,25 @@ export const handleNativeBackButton = (event: MessageEvent, defaultBack: () => v
   }
 };
 
+export const calculateGrandTotal = (
+  items: InvoiceItem[],
+  discount: number,
+  gst: number,
+  tds: number
+): number => {
+  // Calculate subtotal first
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  // Calculate all adjustments based on subtotal
+  const discountAmount = (subtotal * (discount || 0)) / 100;
+  const gstAmount = (subtotal * (gst || 0)) / 100;
+  const tdsAmount = (subtotal * (tds || 0)) / 100;
+
+  // Final amount = subtotal + gst - tds - discount
+  const finalAmount = subtotal + gstAmount - tdsAmount - discountAmount;
+
+  return Math.floor(finalAmount);
+};

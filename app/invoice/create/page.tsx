@@ -29,6 +29,7 @@ import { Header } from "@components/molecules/Header";
 import ErrorPage from "@components/molecules/ErrorPage";
 import { setShowInputFields } from "store/slice/invoiceSlice";
 import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
+import { toast } from "react-toastify";
 
 
 const CreateInvoice = () => {
@@ -149,6 +150,7 @@ const CreateInvoice = () => {
 
       if (!bankDetailId || !clientDetailId || !recipientDetailId) {
         console.log("Failed to create required details.");
+        toast.error('Failed to create required details.')
         return;
       }
 
