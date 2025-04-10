@@ -4,12 +4,14 @@ type AutoTooltipProps = {
     children: ReactNode;
     tooltipText: string;
     tooltipDuration?: number; // in ms, default 3000
+    direction?: 'top' | 'bottom'; // tooltip direction, default 'bottom'
 };
 
 const AutoTooltip = ({
     children,
     tooltipText,
     tooltipDuration = 3000,
+    direction = 'bottom',
 }: AutoTooltipProps) => {
     const [showTooltip, setShowTooltip] = useState(false);
 
@@ -24,20 +26,20 @@ const AutoTooltip = ({
     }, [tooltipDuration]);
 
     return (
-        <div className=" flex items-center justify-center z-50">
+        <div className="flex items-center justify-center z-50">
             {children}
             {showTooltip && (
                 <div
-                    className="absolute right-0 top-full -mt-3 p-2 bg-black text-white text-xs rounded shadow transition-opacity duration-300 ease-in-out"
+                    className={`absolute ${direction === 'bottom' ? 'top-full -mt-3' : 'bottom-full -mb-3'} right-0 p-2 bg-black text-white text-xs rounded shadow transition-opacity duration-300 ease-in-out`}
                     style={{
                         opacity: showTooltip ? 1 : 0,
-                        transform: showTooltip ? 'translateY(0)' : 'translateY(-10px)',
+                        transform: showTooltip ? 'translateY(0)' : `translateY(${direction === 'bottom' ? '-10px' : '10px'})`,
                     }}
                 >
                     {tooltipText}
                     <div
                         style={{ right: '14px' }}
-                        className="absolute right-3 top-0 -mt-1 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-black"
+                        className={`absolute right-3 ${direction === 'bottom' ? 'top-0 -mt-1 border-b-4 border-b-black' : 'bottom-0 -mb-1 border-t-4 border-t-black'} w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent`}
                     ></div>
                 </div>
             )}

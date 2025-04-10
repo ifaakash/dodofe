@@ -75,11 +75,10 @@ const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
 
     return (
         <div
-            className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${
-                isOpen
-                    ? "translate-y-0 scale-100 opacity-100"
-                    : "translate-y-full scale-0 opacity-0 hidden"
-            }`}
+            className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${isOpen
+                ? "translate-y-0 scale-100 opacity-100"
+                : "translate-y-full scale-0 opacity-0 hidden"
+                }`}
         >
             <div className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>
             <div className="grid grid-cols-3 gap-2">
@@ -485,9 +484,8 @@ const FooterBar = ({
                 </button>
 
                 <div
-                    className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
-                        isOpened ? "rotate-45" : "rotate-0"
-                    }`}
+                    className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${isOpened ? "rotate-45" : "rotate-0 rotate-anim"
+                        }`}
                     onClick={() => setIsOpened(!isOpened)}
                 >
                     <Plus size={32} />
@@ -496,9 +494,8 @@ const FooterBar = ({
                 <button
                     onClick={handlePublish}
                     disabled={!enablePublish}
-                    className={`bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70 ${
-                        !enablePublish ? "bg-gray-200 clr-light-green" : ""
-                    }`}
+                    className={`bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70 ${!enablePublish ? "bg-gray-200 clr-light-green" : ""
+                        }`}
                 >
                     Publish
                 </button>

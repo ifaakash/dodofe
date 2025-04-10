@@ -327,7 +327,7 @@ const DodoPageDashboard = () => {
 
         return (
             <div style={{ position: "relative" }} key={block.id}>
-                <div style={{ position: "absolute", top: '10px', right: isGroupBlocks ? '10px' : '50%', zIndex: 10 }}>
+                <div style={{ position: "absolute", top: '10px', right: isGroupBlocks ? '10px' : '50%', zIndex: 1 }}>
                     {icon}
                 </div>
                 {content}
