@@ -136,7 +136,8 @@ const DodoPage = () => {
                                     handleBlockInteraction(block.id, "click")
                                 }
                             >
-                                <Link href={`${block.blockData.link}`}>
+                                <Link target="_blank"
+                                    rel="noopener noreferrer" href={`${block.blockData.link}`}>
                                     <ProductBlock block={block} mode={mode} />
                                 </Link>
                             </div>
@@ -148,7 +149,7 @@ const DodoPage = () => {
                                     )
                                 }
                             >
-                                <Link href={`${nextBlock.blockData.link}`}>
+                                <Link href={`${nextBlock.blockData.link}`} target="_blank" rel="noopener noreferrer">
                                     <ProductBlock
                                         block={nextBlock}
                                         mode={mode}
@@ -164,7 +165,7 @@ const DodoPage = () => {
                                 handleBlockInteraction(block.id, "click")
                             }
                         >
-                            <Link href={`${block.blockData.link}`}>
+                            <Link href={`${block.blockData.link}`} target="_blank" rel="noopener noreferrer">
                                 <ProductBlock block={block} mode={mode} />
                             </Link>
                         </div>
@@ -201,13 +202,13 @@ const DodoPage = () => {
                                 url={url as string}
                                 mode={"public"}
                             />
-                            <div className="flex flex-col gap-3 px-5">
+                            <div className={`flex flex-col gap-3 px-5 ${styles.blocksContainer}`}>
                                 {blocks?.map((block: any, index: number) =>
                                     renderBlock(block, index)
                                 )}
                             </div>
 
-                            <div className="flex flex-col gap-3 px-5 items-center my-20">
+                            <div className={`flex flex-col gap-3 px-5 items-center my-20 ${styles.footerContainer}`}>
                                 <div className="flex items-center gap-2">
                                     <div className="text-[#3D4966] text-xs">powered by:</div>
                                     <Image src={DodoIcon} alt="dodo icon" height={20} />
@@ -215,6 +216,7 @@ const DodoPage = () => {
                                 <Link
                                     href={`https://dodoclub.in/`}
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2"
                                 >
                                     <div className="font-semibold text-xs">

@@ -21,7 +21,7 @@ const Note = ({ mode, note, handleEditNagigation }: NoteProps) => {
           )
         }
       </div>
-      <div className='text-sm'>
+      <div className='text-sm break-words whitespace-pre-wrap overflow-hidden'>
         {note}
       </div>
     </div>
