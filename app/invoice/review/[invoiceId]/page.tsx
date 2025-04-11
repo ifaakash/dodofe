@@ -138,7 +138,7 @@ const ReviewInvoice = () => {
 
               window.ReactNativeWebView.postMessage(JSON.stringify({
                 action: 'shareContent',
-                content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`
+                content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`
               }));
             } else if (typeof navigator !== 'undefined' && navigator?.share) {
               // Web Share API with file
@@ -175,7 +175,7 @@ const ReviewInvoice = () => {
 
             window.ReactNativeWebView.postMessage(JSON.stringify({
               action: 'shareContent',
-              content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`
+              content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`
             }));
           } else if (typeof navigator !== 'undefined' && navigator?.share) {
             navigator
