@@ -114,31 +114,70 @@ const ReviewInvoice = () => {
         const tds = invoice?.tds;
 
         try {
-          // Example: Fetch an image from your public folder
+          // Fetch the image regardless of sharing method
           const response = await fetch('/public/assets/invoiceShareImg.png');
           const blob = await response.blob();
           const file = new File([blob], 'invoice-share.png', { type: blob.type });
 
-          if (typeof navigator !== 'undefined' && navigator?.share) {
-            navigator
-              .share({
-                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
+          // Convert image to base64 for ReactNativeWebView
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+
+          reader.onloadend = () => {
+            const base64data = reader.result;
+
+            // Check for ReactNativeWebView first
+            if (window.ReactNativeWebView) {
+              // Native sharing via postMessage with image
+              const shareContent = {
+                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
                 text: "",
                 url: url,
-                files: [file]
-              })
-              .then(() => console.log("Shared successfully!"))
-              .catch((error) => {
-                if (error.name !== "AbortError") {
-                  console.error("Error sharing:", error);
-                  toast.error("Failed to share content.");
-                }
-              });
-          }
-        } catch (imageError) {
-          // Fallback to sharing without image if image fetch fails
+                image: base64data
+              };
 
-          if (typeof navigator !== 'undefined' && navigator?.share) {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                action: 'shareContent',
+                content: shareContent
+              }));
+            } else if (typeof navigator !== 'undefined' && navigator?.share) {
+              // Web Share API with file
+              navigator
+                .share({
+                  title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
+                  text: "",
+                  url: url,
+                  files: [file]
+                })
+                .then(() => console.log("Shared successfully!"))
+                .catch((error) => {
+                  if (error.name !== "AbortError") {
+                    console.error("Error sharing:", error);
+                    toast.error("Failed to share content.");
+                  }
+                });
+            } else {
+              toast.error("Sharing is not supported on this platform.");
+            }
+          };
+
+        } catch (imageError) {
+          console.error("Error with image:", imageError);
+
+          // Fallback to sharing without image
+          if (window.ReactNativeWebView) {
+            // Native sharing via postMessage without image
+            const shareContent = {
+              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
+              text: "",
+              url: url
+            };
+
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              action: 'shareContent',
+              content: shareContent
+            }));
+          } else if (typeof navigator !== 'undefined' && navigator?.share) {
             navigator
               .share({
                 title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
@@ -152,6 +191,8 @@ const ReviewInvoice = () => {
                   toast.error("Failed to share content.");
                 }
               });
+          } else {
+            toast.error("Sharing is not supported on this platform.");
           }
         }
       }
