@@ -115,7 +115,7 @@ const ReviewInvoice = () => {
 
         try {
           // Fetch the image regardless of sharing method
-          const response = await fetch('/public/assets/invoiceShareImg.png');
+          const response = await fetch('/assets/invoiceShareImg.png');
           const blob = await response.blob();
           const file = new File([blob], 'invoice-share.png', { type: blob.type });
 
