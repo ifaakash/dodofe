@@ -146,7 +146,7 @@ const ReviewInvoice = () => {
                 .share({
                   title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
                   text: "",
-                  url: url,
+                  url: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`,
                   files: [file]
                 })
                 .then(() => console.log("Shared successfully!"))
@@ -168,21 +168,22 @@ const ReviewInvoice = () => {
           if (window.ReactNativeWebView) {
             // Native sharing via postMessage without image
             const shareContent = {
-              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
+              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))
+                } which has due date on ${formatDateLong(invoice.dueDate)} `,
               text: "",
               url: url
             };
 
             window.ReactNativeWebView.postMessage(JSON.stringify({
               action: 'shareContent',
-              content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`
+              content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url} `
             }));
           } else if (typeof navigator !== 'undefined' && navigator?.share) {
             navigator
               .share({
-                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
+                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)} `,
                 text: "",
-                url: url
+                url: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`
               })
               .then(() => console.log("Shared successfully!"))
               .catch((error) => {
@@ -212,7 +213,7 @@ const ReviewInvoice = () => {
   };
 
   const handleEditNagigation = ({ section }: { section: string }) => {
-    router.push(`/invoice/edit/${invoiceId}?section=${section}`);
+    router.push(`/ invoice / edit / ${invoiceId} ? section = ${section} `);
   }
 
   // Add type guard check
