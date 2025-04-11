@@ -119,36 +119,40 @@ const ReviewInvoice = () => {
           const blob = await response.blob();
           const file = new File([blob], 'invoice-share.png', { type: blob.type });
 
-
-          navigator
-            .share({
-              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
-              text: "",
-              url: url,
-              files: [file]
-            })
-            .then(() => console.log("Shared successfully!"))
-            .catch((error) => {
-              if (error.name !== "AbortError") {
-                console.error("Error sharing:", error);
-                toast.error("Failed to share content.");
-              }
-            });
+          if (typeof navigator !== 'undefined' && navigator?.share) {
+            navigator
+              .share({
+                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
+                text: "",
+                url: url,
+                files: [file]
+              })
+              .then(() => console.log("Shared successfully!"))
+              .catch((error) => {
+                if (error.name !== "AbortError") {
+                  console.error("Error sharing:", error);
+                  toast.error("Failed to share content.");
+                }
+              });
+          }
         } catch (imageError) {
           // Fallback to sharing without image if image fetch fails
-          navigator
-            .share({
-              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
-              text: "",
-              url: url
-            })
-            .then(() => console.log("Shared successfully!"))
-            .catch((error) => {
-              if (error.name !== "AbortError") {
-                console.error("Error sharing:", error);
-                toast.error("Failed to share content.");
-              }
-            });
+
+          if (typeof navigator !== 'undefined' && navigator?.share) {
+            navigator
+              .share({
+                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
+                text: "",
+                url: url
+              })
+              .then(() => console.log("Shared successfully!"))
+              .catch((error) => {
+                if (error.name !== "AbortError") {
+                  console.error("Error sharing:", error);
+                  toast.error("Failed to share content.");
+                }
+              });
+          }
         }
       }
 
