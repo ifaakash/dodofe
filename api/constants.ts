@@ -48,4 +48,5 @@ export default {
     updateCoins: '/coins/update',
     getCoins : '/coins/user',
     redeemCoins: '/coins/redeem',
+    getPollResponses: '/block/get-poll-responses'
 };
