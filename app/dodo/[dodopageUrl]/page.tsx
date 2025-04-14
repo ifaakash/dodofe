@@ -327,7 +327,7 @@ const DodoPageDashboard = () => {
 
         return (
             <div style={{ position: "relative" }} key={block.id}>
-                <div style={{ position: "absolute", top: '10px', right: isGroupBlocks ? '10px' : '50%', zIndex: 1 }}>
+                <div style={{ position: "absolute", top: '10px', right: isGroupBlocks ? '50%' : '10px', zIndex: 1 }}>
                     {icon}
                 </div>
                 {content}
@@ -386,6 +386,7 @@ const DodoPageDashboard = () => {
                             >
                                 {groupBlocks(blocks).map((item, index) => {
                                     if (Array.isArray(item)) {
+
                                         return (
                                             <div key={`group-${index}`} className="flex flex-row gap-3">
                                                 {item.map((block) => (
