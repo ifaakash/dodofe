@@ -2304,7 +2304,7 @@ textarea.w-input, textarea.w-select {
 }
 
 .global-headline-l {
-  color: var(--grey);
+  color: #4F4F4F;
   text-align: left;
   letter-spacing: -1px;
   margin-top: 0;
