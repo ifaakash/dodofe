@@ -23,7 +23,7 @@ interface SenderFormProps {
 
 const SenderForm = ({ clientDetails, setCurrentStage }: SenderFormProps) => {
   const dispatch = useDispatch();
-  const [clientID, setClientID] = useState(clientDetails[0]._id);
+  const [clientID, setClientID] = useState(clientDetails[0]?._id);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [disableNextButton, setDisableNextButton] = useState(true);
   const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);

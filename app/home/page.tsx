@@ -308,7 +308,7 @@ export default function Home() {
                                         src={dodoCoinIcon}
                                         alt="dodo coin"
                                     />
-                                    500 dodo coins
+                                    200 dodo coins
                                 </div>
 
                                 <Image

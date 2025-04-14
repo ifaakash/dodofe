@@ -41,10 +41,10 @@ const milestones = [
         completed: true,
     },
     {
-        coins: 100,
+        coins: 30,
         status: 'Pending',
-        title: 'Dodopage',
-        description: 'Add links, social and other in dodopage.',
+        title: 'Get 5 coins extra',
+        description: 'Get 30 coins after creating 5 invoices.',
         completed: false,
     },
     {
@@ -60,7 +60,7 @@ const milestones = [
         title: 'Hit 5,000 Views',
         description: 'Boost your visibility and watch the coins roll in.',
         completed: false,
-    },
+    },    
 ];
 
 interface ICoinTransaction {
@@ -216,19 +216,19 @@ export default function Coins() {
                             {activeTab === 'milestone' && (
                                 <div className="space-y-4">
                                     {milestones.map((milestone, index) => (
-                                        <Card key={index} className="p-4 flex items-center gap-4 bg-white rounded-xl shadow border-2 border-green-500">
-                                            <div className="flex flex-col items-center bg-green-100 p-2 rounded-lg">
+                                        <Card key={index} className={`p-4 flex items-center gap-4 bg-white rounded-xl shadow  ${milestone.completed ? 'border-brandPrimary border-2' : 'border-gray-300 border-[1px]'}`}>
+                                            <div className={`flex flex-col items-center min-w-24 ${milestone.completed ? 'bg-green-100' : 'bg-gray-100'} p-2 rounded-lg`}>
                                                 <div className="flex items-center gap-1">
                                                     <Image src={dodoCoinIcon} alt="coin" width={20} height={20} />
                                                     <span className="text-black font-bold text-xl">{milestone.coins}</span>
                                                 </div>
-                                                <span className={`px-2 py-1 text-xs rounded-full font-medium ${milestone.completed ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
+                                                <span className={`px-2 py-1 text-xs rounded-full w-full font-medium ${milestone.completed ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
                                                     {milestone.status}
                                                 </span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <h3 className="text-xl font-semibold text-black">{milestone.title}</h3>
-                                                <p className="text-gray-500 text-sm">{milestone.description}</p>
+                                                <h3 className="text-xl font-semibold text-black text-start">{milestone.title}</h3>
+                                                <p className="text-gray-500 text-sm text-start">{milestone.description}</p>
                                             </div>
                                         </Card>
                                     ))}
