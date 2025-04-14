@@ -292,9 +292,8 @@ const CreateInvoice = () => {
 
   const handleBackNavigation = () => {
     console.log(showInputFields)
-    if (showInputFields) {
+    if (showInputFields && currentStage !== "senderDetails" && currentStage !== "receiverDetails") {
       dispatch(setShowInputFields(false));
-
       return;
     }
 
