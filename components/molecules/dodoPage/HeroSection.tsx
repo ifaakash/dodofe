@@ -183,6 +183,13 @@ const HeroSection = ({
       return;
     }
 
+    // Check file size (10MB = 10 * 1024 * 1024 bytes)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > maxSize) {
+      toast.error("Image size should be less than 10MB");
+      return;
+    }
+
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
 
