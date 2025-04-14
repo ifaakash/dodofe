@@ -119,7 +119,7 @@ const AddPoll = ({
 
   return (
     <div className="mt-5 flex flex-col gap-6 items-center">
-      {mode === "edit" && <PollResponses pollData={block?.blockData} />}
+      {mode === "edit" && <PollResponses id={block.id} />}
 
       {mode === "edit" && (
         <div className="w-full">

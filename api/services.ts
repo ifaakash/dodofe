@@ -210,3 +210,6 @@ export const updateUserCoins = async (payload: any): Promise<any> =>
 
 export const redeemUserCoins = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.redeemCoins, payload);
+
+export const getPollResponses = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.getPollResponses, payload);
