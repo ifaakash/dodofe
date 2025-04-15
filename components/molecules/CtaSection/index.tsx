@@ -121,7 +121,7 @@ const CtaSection = ({
             padding: "0px 20px",
           }}
           onClick={(e) => {
-            e.stopPropagation();
+            // e.stopPropagation();
             onButtonClick();
           }}
         >
