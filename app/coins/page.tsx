@@ -31,6 +31,8 @@ import CtaSection from "@components/molecules/CtaSection";
 import Card from './Card';
 import CardContent from './CardContent';
 
+import PendingTick from 'public/icons/pendingTick.svg';
+import CompletedTick from 'public/icons/CompletedTick.svg'
 
 const milestones = [
     {
@@ -44,23 +46,23 @@ const milestones = [
         coins: 30,
         status: 'Pending',
         title: 'Get 5 coins extra',
-        description: 'Get 30 coins after creating 5 invoices.',
+        description: 'Get 30 coins after every 5 invoices',
         completed: false,
     },
-    {
-        coins: 100,
-        status: 'Pending',
-        title: '20 invoices',
-        description: 'Create and track your invoicing and earn coins.',
-        completed: false,
-    },
+    // {
+    //     coins: 100,
+    //     status: 'Pending',
+    //     title: '20 invoices',
+    //     description: 'Create and track your invoicing and earn coins.',
+    //     completed: false,
+    // },
     {
         coins: 100,
         status: 'Pending',
         title: 'Hit 5,000 Views',
         description: 'Boost your visibility and watch the coins roll in.',
         completed: false,
-    },    
+    },
 ];
 
 interface ICoinTransaction {
@@ -70,6 +72,7 @@ interface ICoinTransaction {
     description: string;
     milestoneType?: string;
     metadata?: Record<string, any>;
+    createdAt: string;
 }
 
 const dummyCoinHistory: ICoinTransaction[] = [
@@ -79,14 +82,17 @@ const dummyCoinHistory: ICoinTransaction[] = [
         transactionType: 'EARNED',
         description: 'Login',
         milestoneType: 'Sign Up',
-        metadata: { date: '10:00 | 5th Dec, 2024' }
+        metadata: { date: '10:00 | 5th Dec, 2024' },
+        createdAt: new Date().toISOString(),
     },
     {
         userId: 'user456',
         amount: 50,
         transactionType: 'SPENT',
         description: 'Calculator Tool',
-        metadata: { date: '10:00 | 2nd Dec, 2024' }
+        metadata: { date: '10:00 | 2nd Dec, 2024' },
+        createdAt: new Date().toISOString(),
+
     }
 ];
 
@@ -100,6 +106,7 @@ export default function Coins() {
     const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
     const dodoPageDetail = userDetails?.dodoPages?.[0];
     const [activeTab, setActiveTab] = useState('milestone');
+
 
     useEffect(() => {
         setIsMounted(true);
@@ -163,7 +170,32 @@ export default function Coins() {
         );
     };
 
+    const formatDateTime = (isoString) => {
+        const date = new Date(isoString);
 
+        const time = date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+
+        const day = date.getDate();
+        const ordinal = (n) => {
+            if (n > 3 && n < 21) return `${n}th`;
+            switch (n % 10) {
+                case 1: return `${n}st`;
+                case 2: return `${n}nd`;
+                case 3: return `${n}rd`;
+                default: return `${n}th`;
+            }
+        };
+
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+
+        return `${time} | ${ordinal(day)} ${month}, ${year}`;
+    }
+    
     return (
         <Screen>
             <div className="text-center">
@@ -190,7 +222,7 @@ export default function Coins() {
                     <div
                         style={{ position: 'relative', top: '-40px', minHeight: 'calc(100vh - 260px)' }}
                         className={cx(
-                            "w-full px-4 rounded-t-2xl bg-white",
+                            "w-full px-4 rounded-t-2xl bg-[#EAE9EC]",
                             styles.lowerDiv
                         )}
                     >
@@ -216,19 +248,22 @@ export default function Coins() {
                             {activeTab === 'milestone' && (
                                 <div className="space-y-4">
                                     {milestones.map((milestone, index) => (
-                                        <Card key={index} className={`p-4 flex items-center gap-4 bg-white rounded-xl shadow  ${milestone.completed ? 'border-brandPrimary border-2' : 'border-gray-300 border-[1px]'}`}>
-                                            <div className={`flex flex-col items-center min-w-24 ${milestone.completed ? 'bg-green-100' : 'bg-gray-100'} p-2 rounded-lg`}>
+                                        <Card key={index} className={`p-4 flex items-center gap-4 bg-[] rounded-[14px] shadow  ${milestone.completed ? 'border-brandPrimary border-2' : 'border-gray-300 border-[1px]'}`}>
+                                            <div className={`flex flex-col items-center min-w-24 ${milestone.completed ? 'bg-green-100' : 'bg-[#FDF1CE]'} p-2 rounded-xl`}>
                                                 <div className="flex items-center gap-1">
                                                     <Image src={dodoCoinIcon} alt="coin" width={20} height={20} />
-                                                    <span className="text-black font-bold text-xl">{milestone.coins}</span>
+                                                    <span className="text-black font-bold">{milestone.coins}</span>
                                                 </div>
-                                                <span className={`px-2 py-1 text-xs rounded-full w-full font-medium ${milestone.completed ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
+                                                <span className={`px-2 py-1 text-[8px] rounded-full flex items-center gap-1 font-medium ${milestone.completed ? 'bg-green-500 text-white' : 'bg-[#FED212] text-black'}`}>
+                                                    {
+                                                        milestone.completed ? <Image src={CompletedTick} alt='err' /> : <Image src={PendingTick} alt='err' />
+                                                    }  
                                                     {milestone.status}
                                                 </span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <h3 className="text-xl font-semibold text-black text-start">{milestone.title}</h3>
-                                                <p className="text-gray-500 text-sm text-start">{milestone.description}</p>
+                                                <h3 className="text-sm font-semibold text-black text-start">{milestone.title}</h3>
+                                                <p className="text-gray-500 text-xs text-start">{milestone.description}</p>
                                             </div>
                                         </Card>
                                     ))}
@@ -243,16 +278,24 @@ export default function Coins() {
                                     <div className="space-y-4">
                                         {coinHistory.map((transaction, index) => (
                                             <Card key={index} className="p-4 flex justify-between items-center bg-white rounded-xl shadow">
-                                                <div className="flex flex-col items-start">
-                                                    <p className="text-xl mb-1">{transaction.description}</p>
-                                                    <p className="text-gray-500 text-sm">{transaction.metadata?.date}</p>
-                                                </div>
-                                                <div className="flex flex-col items-end">
-                                                    <span className="text-2xl font-bold">{transaction.amount}</span>
-                                                    <div className="flex items-center gap-1">
-                                                        <span className="text-sm">{transaction.transactionType}</span>
-                                                        {transaction.transactionType === 'EARNED' && <Image width={24} height={24} src={coinCredit} alt="coin credit" />}
-                                                        {transaction.transactionType === 'SPENT' && <Image width={24} height={24} src={coinDebit} alt="coin debit" />}
+                                                <div className="flex justify-between w-full items-center">
+                                                    <div className="flex flex-col items-start gap-2">
+                                                        <div className="font-medium text-start leading-5">{transaction.description}</div>
+                                                        <div className="text-xs">{formatDateTime(transaction.createdAt)}</div>
+                                                    </div>
+
+                                                    <div className="flex flex-col items-end">
+                                                        <div className="font-semibold">{transaction.amount}</div>
+                                                        <div className="text-xs flex">
+                                                            <span>{transaction.transactionType === "EARNED" ? 'CREDITED' : 'Debited'}</span>
+                                                            {
+                                                                transaction.transactionType === "EARNED" ? (
+                                                                    <Image src={coinCredit} alt="coin" width={16} height={16} className="ml-1" />
+                                                                ) : (
+                                                                    <Image src={coinDebit} alt="coin" width={16} height={16} className="ml-1" />
+                                                                )
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </Card>
