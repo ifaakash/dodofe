@@ -31,7 +31,7 @@ import CtaSection from "@components/molecules/CtaSection";
 import Card from './Card';
 import CardContent from './CardContent';
 
-import PendingTick from 'public/icons/pendingTick.svg';
+import PendingTick from "public/icons/PendingTick.svg";
 import CompletedTick from 'public/icons/CompletedTick.svg'
 
 const milestones = [
