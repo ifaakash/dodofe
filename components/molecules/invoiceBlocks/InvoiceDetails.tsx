@@ -20,25 +20,25 @@ const InvoiceDetails = ({ mode, invoiceNumber, dueDate, handleEditNagigation }: 
   const router = useRouter();
 
 
-
+  
   return (
-    <div className={`bg-white rounded-[10px] py-3 px-4 flex justify-between ${mode === "view" && 'w-full'} `}>
+    <div className='bg-white rounded-[10px] py-3 px-4 flex justify-between'>
       <div>
         <div className='text-[#3D4966] text-sm'>
-          Invoice number
+        Invoice number
         </div>
         <div className='font-semibold'>
-          {invoiceNumber}
+        {invoiceNumber}
         </div>
       </div>
 
       <div className={`flex items-center ${mode === 'edit' && 'gap-6'}`}>
         <div>
           <div className='text-[#3D4966] text-sm text-end' >
-            Due Date
+          Due Date
           </div>
           <div className='font-semibold text-end'>
-            {formatDateLong(dueDate)}
+          {formatDateLong(dueDate)}
           </div>
         </div>
 
