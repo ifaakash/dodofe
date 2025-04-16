@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -20,6 +21,7 @@ import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
 
 
 const PreviewInvoice = () => {
+
   const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState<InvoiceProps | null>(null);
   const [error, setError] = useState<string | null>(null); // Add error state
@@ -73,7 +75,7 @@ const PreviewInvoice = () => {
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
 
-      <div className={cx("pt-6 pb-16", isDesktop && "max-w-3xl mx-auto bg-white shadow-lg rounded-lg my-8")}>
+      <div className={cx("pt-6 pb-16", isDesktop && "max-w-3xl mx-auto bg-white shadow-lg rounded-lg my-8 border-t-8 border-brandPrimary")}>
         {/* Header */}
         <div className="pb-7 text-center">
           <div className="text-xl font-semibold capitalize"> INVOICE</div>
