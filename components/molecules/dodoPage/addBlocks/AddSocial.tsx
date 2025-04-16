@@ -26,6 +26,7 @@ import {
   setSocialLinks,
 } from "store/slice/dodoPageSlice";
 import { useSelector } from "react-redux";
+
 const socialLinksData = [
   {
     title: "Website",
@@ -180,18 +181,19 @@ const AddSocial = ({
     });
   }, [socialLinks]);
 
-  const isValidUrl = (url: string) => {
+  const isValidUrl = (url) => {
     const urlPattern = new RegExp(
-      "^(https?:\\/\\/)?(www\\.)?" + // Protocol & "www."
-      "([a-zA-Z0-9.-]+)\\.(com|net|org|io|co|me|dev|tv|app)" + // Domain with common TLDs
-      "(\\/([a-zA-Z0-9._-]+))?" + // Standard profile paths (e.g., /elonmusk, /johndoe)
-      "(\\/@[a-zA-Z0-9._-]+)?" + // Handles with "@" (e.g., /@username)
-      "(\\/[a-zA-Z0-9._?=~-]*)?$", // Optional sub-paths or query strings
+      "^(https?:\\/\\/)?(www\\.)?" +
+      "([a-zA-Z0-9.-]+)\\.(com|net|org|io|co|me|dev|tv|app|in)" + // Added "in"
+      "(\\/([a-zA-Z0-9._-]+))?" +
+      "(\\/@[a-zA-Z0-9._-]+)?" +
+      "(\\/[a-zA-Z0-9._?=~-]*)?$",
       "i"
     );
-
+  
     return !!urlPattern.test(url);
   };
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
