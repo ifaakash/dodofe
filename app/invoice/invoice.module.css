@@ -6,8 +6,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(circle, black 2px, transparent 2px);
-  background-size: 28px 28px; /* 6px dot + 32px gap */
+  background-image: radial-gradient(circle, black 1px, transparent 2px);
+  background-size: 16px 16px; /* 6px dot + 32px gap */
   background-repeat: repeat;
   background-position: center;
   z-index: -1;

@@ -10,7 +10,7 @@ interface NoteProps {
 
 const Note = ({ mode, note, handleEditNagigation }: NoteProps) => {
   return (
-    <div className='px-4 py-3 bg-white rounded-[10px] flex flex-col gap-2'>
+    <div className={`px-4 py-3 bg-white rounded-[10px] flex flex-col gap-2 ${mode === 'view' ? 'border border-[#E2E4E9]' : ''}`}>
       <div className='flex justify-between'>
         <div className='text-sm font-semibold'> NOTE </div>
         {
