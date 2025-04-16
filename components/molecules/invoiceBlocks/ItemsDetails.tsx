@@ -25,7 +25,7 @@ const ItemsDetails = ({
     console.log("items", items);
     return (
         <div className="flex flex-col">
-            <div className="bg-white pt-3 pb-4 px-4 rounded-t-[10px] border border-[#FDFBFF]">
+            <div className="bg-white pt-3 pb-4 px-4 rounded-t-[10px]">
                 <div className="flex justify-between">
                     <div className="text-sm font-semibold">ITEMS</div>
                     <div>
@@ -141,13 +141,13 @@ const ItemsDetails = ({
                     <div className="text-white font-semibold">
                         {formatCurrency(
                             calculateGrandTotal(items, discount, gst, tds)
-                        )} /-
+                        )}
                     </div>
                 </div>
                 <div className="text-end font-medium text-xs">
                     {formatCurrencyInWords(
                         calculateGrandTotal(items, discount, gst, tds)
-                    )} Only
+                    )}
                 </div>
             </div>
         </div>
