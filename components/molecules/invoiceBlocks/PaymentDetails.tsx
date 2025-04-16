@@ -25,19 +25,19 @@ const PaymentDetails = ({ mode, bankDetails, handleEditNagigation }: PaymentDeta
       </div>
       <div className='flex flex-col gap-[10px]'>
         <div className='flex justify-between'>
-          <div className='text-sm text-[#3D4966]'> Bank Name </div>
+          <div className='text-sm'> Bank Name </div>
           <div className='text-sm font-medium'> {bankDetails.bankName} </div>
         </div>
         <div className='flex justify-between'>
-        <div className='text-sm text-[#3D4966]'> Account Number </div>
+          <div className='text-sm'> Account Number </div>
           <div className='text-sm font-medium'> {bankDetails.accountNumber} </div>
         </div>
         <div className='flex justify-between'>
-          <div className='text-sm text-[#3D4966]'> IFSC Code </div>
+          <div className='text-sm'> IFSC Code </div>
           <div className='text-sm font-medium'> {bankDetails.ifscCode} </div>
         </div>
         <div className='flex justify-between'>
-          <div className='text-sm text-[#3D4966]'> Account Holder Name </div>
+          <div className='text-sm'> Account Holder Name </div>
           <div className='text-sm font-medium'> {bankDetails.accountName} </div>
         </div>
       </div>
