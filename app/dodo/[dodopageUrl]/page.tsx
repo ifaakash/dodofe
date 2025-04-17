@@ -337,7 +337,7 @@ const DodoPageDashboard = () => {
 
     return (
         <div
-            className={`${styles.dodoBackground} ${styles.scrollableContainer}}`}
+            className={`${styles.bgGrid} ${styles.scrollableContainer}}`}
         >
             {isOpened && <div
                 className="absolute inset-0"

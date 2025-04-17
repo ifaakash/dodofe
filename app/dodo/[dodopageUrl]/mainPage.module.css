@@ -19,3 +19,13 @@
 .scrollableContainer {
   touch-action: auto; 
 }
+
+.bgGrid {
+  background-image:
+    linear-gradient(to right, #E0DEE3 0.5px, transparent 0.5px),
+    linear-gradient(to bottom, #E0DEE3 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+  background-repeat: repeat;
+  background-position: center;
+}
