@@ -221,6 +221,10 @@ const ReviewInvoice = () => {
     return <div>Loading client details...</div>;
   }
 
+  const handlePdfDownload = () => {
+    router.push(`/invoice/${invoiceId}/download`);
+  }
+
   return (
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
@@ -281,7 +285,7 @@ const ReviewInvoice = () => {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 w-full bg-white shadow-md z-50 py-4 px-6 flex gap-4">
-        <button className="flex items-center justify-center gap-2 w-28 border-2 border-brandPrimary text-brandPrimary rounded-xl py-3 px-6">
+        <button onClick={handlePdfDownload} className="flex items-center justify-center gap-2 w-28 border-2 border-brandPrimary text-brandPrimary rounded-xl py-3 px-6">
           <span className="font-semibold text-sm">Pdf</span> <Download className="w-5 h-5" strokeWidth={2.5} />
         </button>
 

@@ -79,11 +79,11 @@ const PreviewInvoice = () => {
         {/* Header */}
         <div className="pb-7 text-center">
           <div className="text-xl font-semibold capitalize"> INVOICE</div>
-          <div className="flex gap-2 justify-center items-center">
+          {/* <div className="flex gap-2 justify-center items-center">
             <span className="text-xs font-semibold">
               {invoice.subHeading || ""}
             </span>
-          </div>
+          </div> */}
 
           <div className="text-sm text-[#3D4966] font-medium">
             <span>{formatDateLong(invoice.invoiceDate)}</span>
@@ -110,13 +110,21 @@ const PreviewInvoice = () => {
           )}
 
           <ItemsDetails mode="view" items={invoice.items} discount={invoice.discount} gst={invoice.gst} tds={invoice.tds} />
-          <UserCard type="sender" mode="view" userDetails={invoice.clientDetails} />
+          {
+            !isDesktop && (
+              <UserCard type="sender" mode="view" userDetails={invoice.clientDetails} />
+            )
+          }
           <PaymentDetails mode="view" bankDetails={invoice.bankDetails} />
-          <Note mode="view" note={invoice.note} />
+          {
+            invoice.note && (
+              <Note mode="view" note={invoice.note} />
+            )
+          }
         </div>
 
         <div className="flex items-center justify-center gap-2 py-6">
-          <span> Made with ❤️ by </span>
+          <span className="text-sm"> Generated with ❤️ by </span>
           <Image src={DodoIconName} alt="dodo" width={80} height={80} />
         </div>
       </div>
