@@ -110,13 +110,21 @@ const PreviewInvoice = () => {
           )}
 
           <ItemsDetails mode="view" items={invoice.items} discount={invoice.discount} gst={invoice.gst} tds={invoice.tds} />
-          <UserCard type="sender" mode="view" userDetails={invoice.clientDetails} />
+          {
+            !isDesktop && (
+              <UserCard type="sender" mode="view" userDetails={invoice.clientDetails} />
+            )
+          }
           <PaymentDetails mode="view" bankDetails={invoice.bankDetails} />
-          <Note mode="view" note={invoice.note} />
+          {
+            invoice.note && (
+              <Note mode="view" note={invoice.note} />
+            )
+          }
         </div>
 
         <div className="flex items-center justify-center gap-2 py-6">
-          <span> Made with ❤️ by </span>
+          <span className="text-sm"> Generated with ❤️ by </span>
           <Image src={DodoIconName} alt="dodo" width={80} height={80} />
         </div>
       </div>
