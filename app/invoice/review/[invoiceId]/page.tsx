@@ -115,29 +115,39 @@ const ReviewInvoice = () => {
         )} which has due date on ${formatDateLong(invoice.dueDate)}.`;
   
         try {
+          // Fetch invoice image
           const response = await fetch("/assets/invoiceShareImg.png");
           const blob = await response.blob();
           const file = new File([blob], "invoice-share.png", { type: blob.type });
   
+          // Convert image to base64
           const reader = new FileReader();
           reader.readAsDataURL(blob);
   
           reader.onloadend = () => {
             const base64data = reader.result;
   
+            // ✅ For React Native WebView
             if (window.ReactNativeWebView) {
               window.ReactNativeWebView.postMessage(
                 JSON.stringify({
                   action: "shareContent",
-                  content: `${message}\n\nView invoice: ${url}`,
+                  content: {
+                    text: message,
+                    url,
+                    image: base64data,
+                  },
                 })
               );
-            } else if (navigator?.share) {
+            }
+  
+            // ✅ For browser Web Share API
+            else if (navigator?.share) {
               navigator
                 .share({
                   title: `Invoice from ${invoice.clientDetails.name}`,
                   text: message,
-                  url: url,
+                  url,
                   files: [file],
                 })
                 .then(() => console.log("Shared successfully!"))
@@ -147,19 +157,27 @@ const ReviewInvoice = () => {
                     toast.error("Failed to share content.");
                   }
                 });
-            } else {
+            }
+  
+            // ❌ Not supported
+            else {
               toast.error("Sharing is not supported on this platform.");
             }
           };
         } catch (imageError) {
           console.error("Error with image:", imageError);
   
-          // Fallback sharing without image
+          // 🔁 Fallback to no image
+          const fallbackContent = `${message}\n\nView invoice: ${url}`;
+  
           if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(
               JSON.stringify({
                 action: "shareContent",
-                content: `${message}\n\nView invoice: ${url}`,
+                content: {
+                  text: message,
+                  url,
+                },
               })
             );
           } else if (navigator?.share) {
@@ -167,7 +185,7 @@ const ReviewInvoice = () => {
               .share({
                 title: `Invoice from ${invoice.clientDetails.name}`,
                 text: message,
-                url: url,
+                url,
               })
               .then(() => console.log("Shared successfully!"))
               .catch((error) => {
@@ -188,6 +206,7 @@ const ReviewInvoice = () => {
       setIsLoading(false);
     }
   };
+  
   
   const handleSubHeadingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
