@@ -266,7 +266,9 @@ const FooterBar = ({
                 formData.append("id", dodoPageId);
                 formData.append("userId", userId);
                 formData.append("name", dodoPageName);
-                formData.append("thoughts", dodoPageThought);
+                if (dodoPageThought != null) {
+                    formData.append("thoughts", dodoPageThought);
+                }
 
                 if (dodoPageState.isSocialLinksChanged) {
                     console.log("Social Links", dodoPageState.socialLinks);
