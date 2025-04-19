@@ -80,7 +80,7 @@ const Sidebar = ({
             text: "Contact us",
             icon: contactUsIcon,
             action: () => {
-                router.push('https://mail.google.com/mail/?view=cm&fs=1&to=contact@dodoclub.in')
+                window.location.href = "mailto:contact@dodoclub.in";
                 toggleSidebar();
             },
             delay: 200,
