@@ -3,7 +3,9 @@ import { Html, Head, Main, NextScript } from "next/document";
 export default function Document() {
     return (
         <Html lang="en">
-            <Head />
+            <Head>
+                <link rel="icon" href="/landing/dodofavicon.png" type="image/png" />
+            </Head>
             <body>
                 <Main />
                 <NextScript />
