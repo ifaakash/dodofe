@@ -93,7 +93,6 @@ const DodoPage = () => {
                             }, 100);
                         }}
                     >
-                        Here
                         <LinkBlock key={block.id} mode={mode} block={block} />
                     </div>
                 );
