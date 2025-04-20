@@ -215,7 +215,7 @@ const ReviewInvoice = () => {
   };
 
   const handleEditNagigation = ({ section }: { section: string }) => {
-    router.push(`/ invoice / edit / ${invoiceId} ? section = ${section} `);
+    router.push(`/invoice/edit/${invoiceId}?section=${section}`);
   }
 
   // Add type guard check
