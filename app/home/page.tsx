@@ -134,6 +134,16 @@ export default function Home() {
         router.push(ROUTE_CONSTANTS.INVOICE);
     }, [router]);
 
+    const handleScriptGeneratorNavigation = useCallback(() => {
+        const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+
+        if (!userId) {
+            router.push(ROUTE_CONSTANTS.LOGIN);
+            return;
+        }
+        router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR);
+    }, [router]);
+
     const shareContent = useCallback(() => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
         const content = `Check out my Dodo Page: https://dodoclub.in/${dodoPageDetail?.url}`;
@@ -355,7 +365,7 @@ export default function Home() {
                                 title="Script Generator"
                                 description=""
                                 icon={engagementCalc}
-                                onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
+                                onClick={handleScriptGeneratorNavigation}
                                 bgColor="var(--light-orange)"
                                 bgColorGo="var(--orange)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"
