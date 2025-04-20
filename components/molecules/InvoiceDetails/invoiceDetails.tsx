@@ -263,7 +263,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
           <div className="bg-theme-2 px-4 py-1 h-12 text-sm text-[#414D55] rounded-lg w-full flex gap-[10px] items-center border border-[#C1C7D0]">
             <div className="w-full text-black">Sub Total</div>
             <div className="flex text-black text-sm font-semibold">
-              ₹{subTotal}
+              ₹{subTotal.toFixed(2)}
             </div>
           </div>
         </div>
