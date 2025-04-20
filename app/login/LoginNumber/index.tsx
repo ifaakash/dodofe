@@ -141,7 +141,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
                             onChange={handleMobileNumber}
                             type="number"
                             className="w-full outline-none bg-transparent placeholder:text-[#3D4966] placeholder:font-normal placeholder:text-xl leading-normal font-semibold text-[#000] text-2xl"
-                            placeholder="Enter here"
+                            placeholder="Enter phone number"
                             maxLength={10}
                         />
                         {/* <div className="bg-[#D0D0D0] w-full h-[1px]"></div> */}
