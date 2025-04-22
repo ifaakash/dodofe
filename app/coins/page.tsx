@@ -42,13 +42,13 @@ const milestones = [
         description: 'Sign up today',
         completed: true,
     },
-    {
-        coins: 30,
-        status: 'Pending',
-        title: 'Get 5 coins extra',
-        description: 'Get 30 coins after every 5 invoices',
-        completed: false,
-    },
+    // {
+    //     coins: 30,
+    //     status: 'Pending',
+    //     title: 'Get 5 coins extra',
+    //     description: 'Get 30 coins after every 5 invoices',
+    //     completed: false,
+    // },
     // {
     //     coins: 100,
     //     status: 'Pending',
@@ -56,13 +56,13 @@ const milestones = [
     //     description: 'Create and track your invoicing and earn coins.',
     //     completed: false,
     // },
-    {
-        coins: 100,
-        status: 'Pending',
-        title: 'Hit 5,000 Views',
-        description: 'Boost your visibility and watch the coins roll in.',
-        completed: false,
-    },
+    // {
+    //     coins: 100,
+    //     status: 'Pending',
+    //     title: 'Hit 5,000 Views',
+    //     description: 'Boost your visibility and watch the coins roll in.',
+    //     completed: false,
+    // },
 ];
 
 interface ICoinTransaction {
