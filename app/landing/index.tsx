@@ -1,23 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import dodoLogo from "public/icons/dodo.svg";
 import MetaData from '@components/molecules/MetaData';
-import { useRouter } from 'next/navigation';
-import { ROUTE_CONSTANTS } from '@utils/constants';
+import FloatingBar from '@components/templates/Landing/FloatingBar';
 
-const FloatingBar = () => {
-  const router = useRouter();
-
-  return (
-    <div className="floating-bar">
-      <div className='flex justify-between px-12 items-center w-80 floating-bar-content'>
-        <button onClick={() => router.push(ROUTE_CONSTANTS.BLOGS)}>Blogs</button>
-        <button onClick={() => router.push('#link2')}>Get Started</button>
-        <a href="#keyFeatures">Key Features</a>
-      </div>
-    </div>
-  );
-};
 
 const LandingPage = () => {
   const iframeRef = useRef(null);
