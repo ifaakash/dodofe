@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import dodoLogo from "public/icons/dodo.svg";
 import MetaData from '@components/molecules/MetaData';
 import { useRouter } from 'next/navigation';
@@ -89,6 +88,21 @@ const LandingPage = () => {
         url="https://dodoclub.in"
         image={dodoLogo}
       />
+
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Dodo",
+          "url": "https://dodoclub.in",
+          "description": "The Ultimate Link-in-Bio + Invoices + Media Kit Tool for Influencers",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://dodoclub.in/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        })}
+      </script>
 
       <div className='flex justify-center items-center'>
         <FloatingBar />
