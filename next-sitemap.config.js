@@ -4,6 +4,7 @@
 module.exports = {
     siteUrl: 'https://dodoclub.in',
     generateRobotsTxt: false,
+    generateIndexSitemap: true, // creates sitemap.xml pointing to sitemap-0.xml
     // Optional: if you already have a robots.txt, set this to false
     // since you already have one in your public directory
     exclude: ['/admin/*', '/dashboard/*'], // exclude admin routes
