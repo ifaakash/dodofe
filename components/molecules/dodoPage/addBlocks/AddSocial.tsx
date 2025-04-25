@@ -190,40 +190,46 @@ const AddSocial = ({
       "(\\/[a-zA-Z0-9._?=~-]*)?$",
       "i"
     );
-  
+
     return !!urlPattern.test(url);
   };
-  
+
+  const isValidEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewSocialLinks((prev) => ({ ...prev, [name as SocialLinkKeys]: value }));
+
+    const isValid = name === "email" ? isValidEmail(value) : isValidUrl(value);
+
     setLinkValidity((prev) => ({
       ...prev,
-      [name as SocialLinkKeys]: isValidUrl(value),
+      [name as SocialLinkKeys]: isValid,
     }));
   };
 
+
   const handleSubmit = async () => {
-    const filteredSocialLinks = (socialLinksData as any).reduce(
-      (acc: any, { value }: any) => {
-        const linkValue = newSocialLinks[value as SocialLinkKeys];
-        if (linkValue !== "" && isValidUrl(linkValue)) {
-          acc[value as SocialLinkKeys] = linkValue;
-        }
-        return acc;
-      },
-      {} as Record<SocialLinkKeys, string>
-    );
+    const filteredSocialLinks = socialLinksData.reduce((acc: any, { value }) => {
+      const linkValue = newSocialLinks[value as SocialLinkKeys];
+      if (
+        linkValue !== "" &&
+        (value === "email" ? isValidEmail(linkValue) : isValidUrl(linkValue))
+      ) {
+        acc[value as SocialLinkKeys] = linkValue;
+      }
+      return acc;
+    }, {} as Record<SocialLinkKeys, string>);
 
     dispatch(setSocialLinks(filteredSocialLinks));
     dispatch(setIsSocialLinksChanged(true));
     router.back();
-    // if (res?.success) {
-    //   console.log('Saved')
-    //   router.push(`/dodo/${dodopageUrl}`);
-    // }
   };
+
 
   console.log({
     newSocialLinks,
