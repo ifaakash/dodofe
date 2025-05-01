@@ -11,11 +11,11 @@ const nextConfig = {
             beforeFiles: [
                 {
                     source: '/sitemap.xml',
-                    destination: '/sitemap.xml',
+                    destination: '/api/sitemap',
                 },
                 {
                     source: '/robots.txt',
-                    destination: '/robots.txt',
+                    destination: '/api/robots',
                 },
             ],
         };
