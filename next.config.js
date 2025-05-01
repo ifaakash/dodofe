@@ -7,16 +7,18 @@ const nextConfig = {
     output: "standalone", // Supports dynamic pages
     trailingSlash: false, // ⬅ Avoids static export behavior
     async rewrites() {
-        return [
-            {
-                source: '/sitemap.xml',
-                destination: '/api/sitemap',
-            },
-            {
-                source: '/robots.txt',
-                destination: '/api/robots',
-            },
-        ];
+        return {
+            beforeFiles: [
+                {
+                    source: '/sitemap.xml',
+                    destination: '/sitemap.xml',
+                },
+                {
+                    source: '/robots.txt',
+                    destination: '/robots.txt',
+                },
+            ],
+        };
     },
 };
 
