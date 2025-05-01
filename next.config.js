@@ -6,6 +6,18 @@ const nextConfig = {
     reactStrictMode: true,
     output: "standalone", // Supports dynamic pages
     trailingSlash: false, // ⬅ Avoids static export behavior
+    async rewrites() {
+        return [
+            {
+                source: '/sitemap.xml',
+                destination: '/sitemap.xml',
+            },
+            {
+                source: '/robots.txt',
+                destination: '/robots.txt',
+            },
+        ];
+    },
 };
 
 module.exports = nextConfig;

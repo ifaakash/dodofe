@@ -177,14 +177,14 @@ export default function Home() {
                 {userDetails?.dodoPages?.map((page: any) => (
                     <CtaSection
                         key={page.id}
-                        title="Your dodopage"
+                        title="My dodopage"
                         description={dodoPageDetail?.url}
                         buttonBgColor="var(--pink)"
                         profileImageURL={dodoPageDetail?.profilePicture}
                         onClick={() => gotoLinksPage(page.url)}
                         copyText={'https://dodoclub.in/' + dodoPageDetail?.url}
                         onButtonClick={shareContent}
-                        buttonLabel=""
+                        buttonLabel="Share"
                         showProfileImage={true}
                         noImg={true}
                         clampDescription={true}
@@ -375,7 +375,7 @@ export default function Home() {
                     <CtaSection
                         bgColor="var(--warm-green)"
                         img={mediakitIcon}
-                        title="Your MediaKit"
+                        title="MediaKit"
                         description="A Digital & Dyanamic resume for you!"
                         buttonLabel="Know More"
                         onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
