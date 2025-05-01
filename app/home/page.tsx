@@ -177,7 +177,7 @@ export default function Home() {
                 {userDetails?.dodoPages?.map((page: any) => (
                     <CtaSection
                         key={page.id}
-                        title={dodoPageDetail?.name || "Dodo user"}
+                        title="Your dodopage"
                         description={dodoPageDetail?.url}
                         buttonBgColor="var(--pink)"
                         profileImageURL={dodoPageDetail?.profilePicture}
@@ -346,13 +346,13 @@ export default function Home() {
                             onClick={handleInvoiceNavigation}
                             bgColor="var(--yellow)"
                             img={invoiceIcon}
-                            title="Dodo  Invoice"
-                            description="Create stunning digital invoices in clicks."
+                            title="Dodo  Invoices"
+                            description="Create. Send. Track. Invoicing, finally sorted."
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
                             <Card
-                                title="Script Generator"
+                                title="AI Script Generator"
                                 description=""
                                 icon={engagementCalc}
                                 onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
