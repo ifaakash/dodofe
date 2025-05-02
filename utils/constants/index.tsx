@@ -59,6 +59,8 @@ export const ROUTE_CONSTANTS = {
   PRICE_CALCULATOR: "/price-calculator",
   MEDIA_KIT: "/media-kit",
   BLOGS: "/blogs",
+  FOR_BRANDS: "/for-brands",
+  FOR_CREATORS: "/",
 };
 
 export const BLOCKS = {

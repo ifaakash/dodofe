@@ -84,70 +84,71 @@ const ReviewInvoice = () => {
 
   const shareInvoice = async () => {
     if (isLoading) return;
-
     setIsLoading(true);
-
+  
     try {
       // Save changes if edited
       if (isEdited) {
         const res = await addSubHeading({
           invoiceId,
-          subHeading
+          subHeading,
         });
-
+  
         if (!res.success) {
           toast.error("Failed to save changes");
           console.error("Failed to save changes");
         }
-
+  
         setOriginalSubHeading(subHeading);
         setIsEdited(false);
       }
-
-      if (window) {
-        // Share functionality
+  
+      if (typeof window !== "undefined") {
         const url = `${window.location.origin}/invoice/${invoiceId}`;
-
         const items = invoice?.items;
         const discount = invoice?.discount;
         const gst = invoice?.gst;
         const tds = invoice?.tds;
-
+  
+        const message = `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(
+          calculateGrandTotal(items, discount, gst, tds)
+        )} which has due date on ${formatDateLong(invoice.dueDate)}.`;
+  
         try {
-          // Fetch the image regardless of sharing method
-          const response = await fetch('/assets/invoiceShareImg.png');
+          // Fetch invoice image
+          const response = await fetch("/assets/invoiceShareImg.png");
           const blob = await response.blob();
-          const file = new File([blob], 'invoice-share.png', { type: blob.type });
-
-          // Convert image to base64 for ReactNativeWebView
+          const file = new File([blob], "invoice-share.png", { type: blob.type });
+  
+          // Convert image to base64
           const reader = new FileReader();
           reader.readAsDataURL(blob);
-
+  
           reader.onloadend = () => {
             const base64data = reader.result;
-
-            // Check for ReactNativeWebView first
+  
+            // ✅ For React Native WebView
             if (window.ReactNativeWebView) {
-              // Native sharing via postMessage with image
-              const shareContent = {
-                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}`,
-                text: "",
-                url: url,
-                image: base64data
-              };
-
-              window.ReactNativeWebView.postMessage(JSON.stringify({
-                action: 'shareContent',
-                content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`
-              }));
-            } else if (typeof navigator !== 'undefined' && navigator?.share) {
-              // Web Share API with file
+              window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                  action: "shareContent",
+                  content: {
+                    text: message,
+                    url,
+                    image: base64data,
+                  },
+                })
+              );
+            }
+  
+            // ✅ For browser Web Share API
+            else if (navigator?.share) {
               navigator
                 .share({
-                  title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice?.dueDate)}`,
-                  text: "",
-                  url: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`,
-                  files: [file]
+                  title: `Invoice from ${invoice.clientDetails.name}`,
+                  text: message,
+                  url,
+                  files: [file],
                 })
                 .then(() => console.log("Shared successfully!"))
                 .catch((error) => {
@@ -156,34 +157,35 @@ const ReviewInvoice = () => {
                     toast.error("Failed to share content.");
                   }
                 });
-            } else {
+            }
+  
+            // ❌ Not supported
+            else {
               toast.error("Sharing is not supported on this platform.");
             }
           };
-
         } catch (imageError) {
           console.error("Error with image:", imageError);
-
-          // Fallback to sharing without image
+  
+          // 🔁 Fallback to no image
+          const fallbackContent = `${message}\n\nView invoice: ${url}`;
+  
           if (window.ReactNativeWebView) {
-            // Native sharing via postMessage without image
-            const shareContent = {
-              title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))
-                } which has due date on ${formatDateLong(invoice.dueDate)} `,
-              text: "",
-              url: url
-            };
-
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-              action: 'shareContent',
-              content: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url} `
-            }));
-          } else if (typeof navigator !== 'undefined' && navigator?.share) {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                action: "shareContent",
+                content: {
+                  text: message,
+                  url,
+                },
+              })
+            );
+          } else if (navigator?.share) {
             navigator
               .share({
-                title: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)} `,
-                text: "",
-                url: `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(calculateGrandTotal(items, discount, gst, tds))} which has due date on ${formatDateLong(invoice.dueDate)}. Check it out on ${url}`
+                title: `Invoice from ${invoice.clientDetails.name}`,
+                text: message,
+                url,
               })
               .then(() => console.log("Shared successfully!"))
               .catch((error) => {
@@ -197,7 +199,6 @@ const ReviewInvoice = () => {
           }
         }
       }
-
     } catch (err) {
       const error = err as Error;
       toast.error(error.message || "Failed to process your request. Please try again.");
@@ -205,7 +206,8 @@ const ReviewInvoice = () => {
       setIsLoading(false);
     }
   };
-
+  
+  
   const handleSubHeadingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setSubHeading(newValue);
@@ -213,12 +215,16 @@ const ReviewInvoice = () => {
   };
 
   const handleEditNagigation = ({ section }: { section: string }) => {
-    router.push(`/ invoice / edit / ${invoiceId} ? section = ${section} `);
+    router.push(`/invoice/edit/${invoiceId}?section=${section}`);
   }
 
   // Add type guard check
   if (!('clientDetails' in invoice)) {
     return <div>Loading client details...</div>;
+  }
+
+  const handlePdfDownload = () => {
+    router.push(`/invoice/${invoiceId}/download`);
   }
 
   return (
@@ -281,7 +287,7 @@ const ReviewInvoice = () => {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 w-full bg-white shadow-md z-50 py-4 px-6 flex gap-4">
-        <button className="flex items-center justify-center gap-2 w-28 border-2 border-brandPrimary text-brandPrimary rounded-xl py-3 px-6">
+        <button onClick={handlePdfDownload} className="flex items-center justify-center gap-2 w-28 border-2 border-brandPrimary text-brandPrimary rounded-xl py-3 px-6">
           <span className="font-semibold text-sm">Pdf</span> <Download className="w-5 h-5" strokeWidth={2.5} />
         </button>
 

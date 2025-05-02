@@ -69,14 +69,19 @@ const DodoPage = () => {
         }
     };
 
+
     const renderBlock = (block: any, index: number) => {
         let content;
         switch (block.blockType) {
             case "LINK":
+                const url = block.blockData.url.startsWith("http")
+                    ? block.blockData.url
+                    : `https://${block.blockData.url}`;
+
+                console.log("URL", url);
+
                 content = (
-                    <a
-                        href={block.blockData.url}
-                        target="_blank"
+                    <div
                         rel="noopener noreferrer"
                         onClick={(e) => {
                             handleBlockInteraction(block.id, "click");
@@ -84,12 +89,12 @@ const DodoPage = () => {
                             e.preventDefault();
                             // Navigate after a small delay to ensure analytics is sent
                             setTimeout(() => {
-                                window.open(block.blockData.url, "_blank");
+                                window.open(url, "_blank");
                             }, 100);
                         }}
                     >
                         <LinkBlock key={block.id} mode={mode} block={block} />
-                    </a>
+                    </div>
                 );
                 break;
             case "POLL":
@@ -128,49 +133,46 @@ const DodoPage = () => {
                 }
                 const nextBlock = blocks[index + 1];
 
-                if (nextBlock?.blockType === "PRODUCT") {
+                const formatLink = (url: string) =>
+                    url.startsWith("http") ? url : `https://${url}`;
+                  
+                  if (nextBlock?.blockType === "PRODUCT") {
                     content = (
-                        <div className="grid grid-cols-2 gap-[10px] w-full">
-                            <div
-                                onClick={() =>
-                                    handleBlockInteraction(block.id, "click")
-                                }
-                            >
-                                <Link target="_blank"
-                                    rel="noopener noreferrer" href={`${block.blockData.link}`}>
-                                    <ProductBlock block={block} mode={mode} />
-                                </Link>
-                            </div>
-                            <div
-                                onClick={() =>
-                                    handleBlockInteraction(
-                                        nextBlock.id,
-                                        "click"
-                                    )
-                                }
-                            >
-                                <Link href={`${nextBlock.blockData.link}`} target="_blank" rel="noopener noreferrer">
-                                    <ProductBlock
-                                        block={nextBlock}
-                                        mode={mode}
-                                    />
-                                </Link>
-                            </div>
+                      <div className="grid grid-cols-2 gap-[10px] w-full">
+                        <div onClick={() => handleBlockInteraction(block.id, "click")}>
+                          <Link
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={formatLink(block.blockData.link)}
+                          >
+                            <ProductBlock block={block} mode={mode} />
+                          </Link>
                         </div>
+                        <div onClick={() => handleBlockInteraction(nextBlock.id, "click")}>
+                          <Link
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={formatLink(nextBlock.blockData.link)}
+                          >
+                            <ProductBlock block={nextBlock} mode={mode} />
+                          </Link>
+                        </div>
+                      </div>
                     );
-                } else {
+                  } else {
                     content = (
-                        <div
-                            onClick={() =>
-                                handleBlockInteraction(block.id, "click")
-                            }
+                      <div onClick={() => handleBlockInteraction(block.id, "click")}>
+                        <Link
+                          href={formatLink(block.blockData.link)}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                            <Link href={`${block.blockData.link}`} target="_blank" rel="noopener noreferrer">
-                                <ProductBlock block={block} mode={mode} />
-                            </Link>
-                        </div>
+                          <ProductBlock block={block} mode={mode} />
+                        </Link>
+                      </div>
                     );
-                }
+                  }
+                  
                 break;
             default:
                 return null;
@@ -191,7 +193,7 @@ const DodoPage = () => {
                             url={`https://dodoclub.in/${url}`}
                             image={dodoPageDetails?.seoImage || dodoPageDetails?.image}
                         />
-                        <div className={`flex flex-col gap-3 pt-10 ${styles.dodoBackground}`}>
+                        <div className={`flex flex-col gap-3 pt-10 ${styles.bgGrid}`}>
                             <HeroSection
                                 mode={"public"}
                                 dodoPageId={dodoPageDetails?.id}

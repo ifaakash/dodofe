@@ -62,7 +62,7 @@ const Sidebar = ({
             text: "Your Feedback",
             icon: feedbackIcon,
             action: () => {
-                console.log("Navigate to Settings");
+                router.push('https://forms.gle/sRBijk9SuNvMZC6N9')
                 toggleSidebar();
             },
             delay: 100,
@@ -80,7 +80,7 @@ const Sidebar = ({
             text: "Contact us",
             icon: contactUsIcon,
             action: () => {
-                console.log("Navigate to Help");
+                window.location.href = "mailto:contact@dodoclub.in";
                 toggleSidebar();
             },
             delay: 200,

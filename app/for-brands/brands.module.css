@@ -1,0 +1,16 @@
+.backgroundDots {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle, black 2px, transparent 2px);
+  background-size: 28px 28px; /* 6px dot + 32px gap */
+  background-repeat: repeat;
+  background-position: center;
+  z-index: -1;
+  opacity: 0.1;
+  background-color: #EAE9EC;
+}
