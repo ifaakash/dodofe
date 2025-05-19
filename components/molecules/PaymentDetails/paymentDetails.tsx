@@ -20,7 +20,7 @@ interface PaymentDetailsProps {
 const PaymentDetails = ({ bankDetails, setCurrentStage }: PaymentDetailsProps) => {
   const dispatch = useDispatch();
   const [showInputFields, setShowInputFields] = useState(bankDetails.length === 0);
-  const [bankDetailsID, setBankDetailsID] = useState("");
+  const [bankDetailsID, setBankDetailsID] = useState(bankDetails[0]?._id);
   const [disableNextButton, setDisableNextButton] = useState(true);
 
   const { currentBankDetails } = useSelector((state: RootState) => state.invoice);

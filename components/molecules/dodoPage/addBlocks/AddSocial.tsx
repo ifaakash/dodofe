@@ -26,6 +26,7 @@ import {
   setSocialLinks,
 } from "store/slice/dodoPageSlice";
 import { useSelector } from "react-redux";
+
 const socialLinksData = [
   {
     title: "Website",
@@ -180,48 +181,55 @@ const AddSocial = ({
     });
   }, [socialLinks]);
 
-  const isValidUrl = (url: string) => {
+  const isValidUrl = (url) => {
     const urlPattern = new RegExp(
-      "^(https?:\\/\\/)?(www\\.)?" + // Protocol & "www."
-      "([a-zA-Z0-9.-]+)\\.(com|net|org|io|co|me|dev|tv|app)" + // Domain with common TLDs
-      "(\\/([a-zA-Z0-9._-]+))?" + // Standard profile paths (e.g., /elonmusk, /johndoe)
-      "(\\/@[a-zA-Z0-9._-]+)?" + // Handles with "@" (e.g., /@username)
-      "(\\/[a-zA-Z0-9._?=~-]*)?$", // Optional sub-paths or query strings
+      "^(https?:\\/\\/)?(www\\.)?" +
+      "([a-zA-Z0-9.-]+)\\.(com|net|org|io|co|me|dev|tv|app|in)" + // Added "in"
+      "(\\/([a-zA-Z0-9._-]+))?" +
+      "(\\/@[a-zA-Z0-9._-]+)?" +
+      "(\\/[a-zA-Z0-9._?=~-]*)?$",
       "i"
     );
 
     return !!urlPattern.test(url);
   };
 
+  const isValidEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewSocialLinks((prev) => ({ ...prev, [name as SocialLinkKeys]: value }));
+
+    const isValid = name === "email" ? isValidEmail(value) : isValidUrl(value);
+
     setLinkValidity((prev) => ({
       ...prev,
-      [name as SocialLinkKeys]: isValidUrl(value),
+      [name as SocialLinkKeys]: isValid,
     }));
   };
 
+
   const handleSubmit = async () => {
-    const filteredSocialLinks = (socialLinksData as any).reduce(
-      (acc: any, { value }: any) => {
-        const linkValue = newSocialLinks[value as SocialLinkKeys];
-        if (linkValue !== "" && isValidUrl(linkValue)) {
-          acc[value as SocialLinkKeys] = linkValue;
-        }
-        return acc;
-      },
-      {} as Record<SocialLinkKeys, string>
-    );
+    const filteredSocialLinks = socialLinksData.reduce((acc: any, { value }) => {
+      const linkValue = newSocialLinks[value as SocialLinkKeys];
+      if (
+        linkValue !== "" &&
+        (value === "email" ? isValidEmail(linkValue) : isValidUrl(linkValue))
+      ) {
+        acc[value as SocialLinkKeys] = linkValue;
+      }
+      return acc;
+    }, {} as Record<SocialLinkKeys, string>);
 
     dispatch(setSocialLinks(filteredSocialLinks));
     dispatch(setIsSocialLinksChanged(true));
     router.back();
-    // if (res?.success) {
-    //   console.log('Saved')
-    //   router.push(`/dodo/${dodopageUrl}`);
-    // }
   };
+
 
   console.log({
     newSocialLinks,

@@ -7,7 +7,11 @@ import Card3 from 'public/assets/PriceCalculatorCard3.png'
 import Card4 from 'public/assets/PriceCalculatorCard4.png'
 import { formatCurrency } from '@utils/helperFunctions'
 
-const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' }) => {
+const PriceStats = ({
+  totalFollowers = 0,
+  engagementRate = 0, // now in percentage: 0–100
+  contentNiche = '',
+}) => {
   const [current, setCurrent] = useState(0)
 
   const getEngagementMultiplier = (rate: number) => {
@@ -25,20 +29,21 @@ const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' 
 
     niche = niche?.toLowerCase()
 
-    if (premium.includes(niche)) return 1.5
-    if (highValue.includes(niche)) return 1.2
-    if (midValue.includes(niche)) return 1.0
-    if (lowValue.includes(niche)) return 0.8
+    if (premium.includes(niche)) return 3
+    if (highValue.includes(niche)) return 2.5
+    if (midValue.includes(niche)) return 2.0
+    if (lowValue.includes(niche)) return 1.6
 
     return 1.0 // default
   }
 
   const baseRates = {
-    reel: 50,
-    post: 40,
-    story: 25,
-    carousel: 45,
+    reel: 129,
+    post: 103,     // approx 80% of reel
+    story: 65,     // approx 50% of reel
+    carousel: 116, // approx 90% of reel
   }
+  
 
   const cards = useMemo(() => {
     const engagementMultiplier = getEngagementMultiplier(engagementRate)
@@ -53,13 +58,30 @@ const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' 
     }
 
     return [
-      { src: Card1, title: 'INSTAGRAM REEL', value: calculatePrice(baseRates.reel) },
-      { src: Card2, title: 'INSTAGRAM POST', value: calculatePrice(baseRates.post) },
-      { src: Card3, title: 'INSTAGRAM STORY', value: calculatePrice(baseRates.story) },
-      { src: Card4, title: 'INSTAGRAM CAROUSEL', value: calculatePrice(baseRates.carousel) },
+      {
+        src: Card1,
+        title: 'INSTAGRAM REEL',
+        value: calculatePrice(baseRates.reel),
+      },
+      {
+        src: Card2,
+        title: 'INSTAGRAM POST',
+        value: calculatePrice(baseRates.post),
+      },
+      {
+        src: Card3,
+        title: 'INSTAGRAM STORY',
+        value: calculatePrice(baseRates.story),
+      },
+      {
+        src: Card4,
+        title: 'INSTAGRAM CAROUSEL',
+        value: calculatePrice(baseRates.carousel),
+      },
     ]
   }, [totalFollowers, engagementRate, contentNiche])
 
+  // Mobile swipe
   let touchStartX = 0
   let touchEndX = 0
 
@@ -106,9 +128,12 @@ const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' 
                 <div className='font-extralight text-xs text-[#395235]'>
                   {card.title}
                 </div>
-                <div className='text-2xl font-semibold'>
-                  {formatCurrency(card.value)}
+                <div className='text-xl font-semibold'>
+                  {card.value > 0
+                    ? `${formatCurrency(Math.round(card.value * 0.85))} - ${formatCurrency(Math.round(card.value * 1.15))}`
+                    : formatCurrency(Math.round(card.value))}
                 </div>
+
               </div>
             </div>
           ))}
@@ -121,11 +146,10 @@ const PriceStats = ({ totalFollowers = 0, engagementRate = 0, contentNiche = '' 
           <div
             key={index}
             onClick={() => setCurrent(index)}
-            className={`cursor-pointer transition-all duration-300 ${
-              index === current
-                ? 'w-6 h-2 rounded-full bg-gray-500'
-                : 'w-2 h-2 rounded-full bg-gray-300'
-            }`}
+            className={`cursor-pointer transition-all duration-300 ${index === current
+              ? 'w-6 h-2 rounded-full bg-gray-500'
+              : 'w-2 h-2 rounded-full bg-gray-300'
+              }`}
           ></div>
         ))}
       </div>

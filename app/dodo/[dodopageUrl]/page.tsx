@@ -220,7 +220,7 @@ const DodoPageDashboard = () => {
     };
 
 
-    const renderBlock = (block: Block, index: number) => {
+    const renderBlock = (block: Block, index: number, isGroupBlocks: boolean = false) => {
         if (block.toRemove) {
             return null;
         }
@@ -308,6 +308,7 @@ const DodoPageDashboard = () => {
                     );
                 break;
             case "PRODUCT":
+                console.log('block', block)
                 content = (
                     <div key={block.id} className="w-full">
                         {mode === "edit" ? (
@@ -326,7 +327,7 @@ const DodoPageDashboard = () => {
 
         return (
             <div style={{ position: "relative" }} key={block.id}>
-                <div style={{ position: "absolute", top: '10px', right: '10px' }}>
+                <div style={{ position: "absolute", top: '10px', right: isGroupBlocks ? '50%' : '10px', zIndex: 1 }}>
                     {icon}
                 </div>
                 {content}
@@ -336,7 +337,7 @@ const DodoPageDashboard = () => {
 
     return (
         <div
-            className={`${styles.dodoBackground} ${styles.scrollableContainer}}`}
+            className={`${styles.bgGrid} ${styles.scrollableContainer}}`}
         >
             {isOpened && <div
                 className="absolute inset-0"
@@ -385,11 +386,12 @@ const DodoPageDashboard = () => {
                             >
                                 {groupBlocks(blocks).map((item, index) => {
                                     if (Array.isArray(item)) {
+
                                         return (
                                             <div key={`group-${index}`} className="flex flex-row gap-3">
                                                 {item.map((block) => (
                                                     <div className="flex-1" key={block.id}>
-                                                        {renderBlock(block, index)}
+                                                        {renderBlock(block, index, true)}
                                                     </div>
                                                 ))}
                                             </div>

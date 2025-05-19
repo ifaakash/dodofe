@@ -75,11 +75,10 @@ const BlockModal = ({ isOpen }: { isOpen: boolean }) => {
 
     return (
         <div
-            className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${
-                isOpen
-                    ? "translate-y-0 scale-100 opacity-100"
-                    : "translate-y-full scale-0 opacity-0 hidden"
-            }`}
+            className={`relative mb-4 bg-white p-4 rounded-[10px] transition-all duration-300 ease-in-out transform ${isOpen
+                ? "translate-y-0 scale-100 opacity-100"
+                : "translate-y-full scale-0 opacity-0 hidden"
+                }`}
         >
             <div className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>
             <div className="grid grid-cols-3 gap-2">
@@ -193,7 +192,7 @@ const FooterBar = ({
                                 if (createLink?.block?.id) {
                                     blockIdUpdates.push({
                                         tempId: block.id,
-                                        newId: createLink.data.id,
+                                        newId: createLink.block.id,
                                     });
                                 }
 
@@ -230,7 +229,7 @@ const FooterBar = ({
                                 if (createProduct?.block?.id) {
                                     blockIdUpdates.push({
                                         tempId: block.id,
-                                        newId: createProduct.data.id,
+                                        newId: createProduct.block.id,
                                     });
                                 }
 
@@ -262,41 +261,14 @@ const FooterBar = ({
                 await new Promise((resolve) => setTimeout(resolve, 0));
             }
 
-            if (blockState.isReordered) {
-                // Get the latest state from Redux store
-                const latestBlockState = store.getState().blocks;
-                const updatedBlocks = latestBlockState.blocks
-                    .filter((block) => !block.isDeleted)
-                    .map((block) => ({
-                        blockId: block.id as string,
-                        newIndex: block.blockPositionalIndex as number,
-                    }));
-
-                await reorderBlocks({
-                    dodoPageId: dodoPageId,
-                    blocks: updatedBlocks,
-                });
-            }
-
-            if (blockState.blocksToBeDeleted) {
-                const blocksToBeDeleted = blockState.blocks.filter(
-                    (block) => block.toRemove
-                );
-
-                for (const block of blocksToBeDeleted) {
-                    await deleteBlock({
-                        blockId: block.id as string,
-                        userId: userId,
-                    });
-                }
-            }
-
             if (dodoPageState.unsavedChanges) {
                 const formData = new FormData();
                 formData.append("id", dodoPageId);
                 formData.append("userId", userId);
                 formData.append("name", dodoPageName);
-                formData.append("thoughts", dodoPageThought);
+                if (dodoPageThought != null) {
+                    formData.append("thoughts", dodoPageThought);
+                }
 
                 if (dodoPageState.isSocialLinksChanged) {
                     console.log("Social Links", dodoPageState.socialLinks);
@@ -435,6 +407,35 @@ const FooterBar = ({
                 });
             }
 
+            if (blockState.isReordered) {
+                // Get the latest state from Redux store
+                const latestBlockState = store.getState().blocks;
+                const updatedBlocks = latestBlockState.blocks
+                    .filter((block) => !block.isDeleted)
+                    .map((block) => ({
+                        blockId: block.id as string,
+                        newIndex: block.blockPositionalIndex as number,
+                    }));
+
+                await reorderBlocks({
+                    dodoPageId: dodoPageId,
+                    blocks: updatedBlocks,
+                });
+            }
+
+            if (blockState.blocksToBeDeleted) {
+                const blocksToBeDeleted = blockState.blocks.filter(
+                    (block) => block.toRemove
+                );
+
+                for (const block of blocksToBeDeleted) {
+                    await deleteBlock({
+                        blockId: block.id as string,
+                        userId: userId,
+                    });
+                }
+            }
+
             // we are removing all the data from redux, if any api fails above, that
             // data will neither be in the backend nor in the redux store
 
@@ -485,9 +486,8 @@ const FooterBar = ({
                 </button>
 
                 <div
-                    className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${
-                        isOpened ? "rotate-45" : "rotate-0"
-                    }`}
+                    className={`p-3 bg-brandPrimary rounded-full text-white cursor-pointer transform transition-transform duration-300 ease-in-out ${isOpened ? "rotate-45" : "rotate-0 rotate-anim"
+                        }`}
                     onClick={() => setIsOpened(!isOpened)}
                 >
                     <Plus size={32} />
@@ -496,9 +496,8 @@ const FooterBar = ({
                 <button
                     onClick={handlePublish}
                     disabled={!enablePublish}
-                    className={`bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70 ${
-                        !enablePublish ? "bg-gray-200 clr-light-green" : ""
-                    }`}
+                    className={`bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70 ${!enablePublish ? "bg-gray-200 clr-light-green" : ""
+                        }`}
                 >
                     Publish
                 </button>

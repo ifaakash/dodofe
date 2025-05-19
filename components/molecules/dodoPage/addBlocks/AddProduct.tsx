@@ -54,11 +54,6 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
         if (!product.name.trim()) err.name = "Product name is required";
         if (!product.link.trim()) {
           err.link = "Product link is required";
-        } else if (
-          !product.link.startsWith("http://") &&
-          !product.link.startsWith("https://")
-        ) {
-          err.link = "Link must start with http:// or https://";
         }
         if (!product.imgUrl) err.img = "Product image is required";
       }
@@ -167,7 +162,7 @@ const AddProduct = ({ dodoPageId, userId, mode, block }: AddProductProps) => {
 
       <div className="flex gap-3 w-full">
         {(block ? [0] : [0, 1]).map((index) => (
-          <div className="p-2 bg-white w-1/2 rounded-2xl aspect-[3/4] flex flex-col gap-2">
+          <div key={index} className="p-2 bg-white w-1/2 rounded-2xl aspect-[3/4] flex flex-col gap-2">
             <div className=" bg-[#979EAD] rounded-2xl aspect-[3/4] relative group cursor-pointer">
               {displayImage(products[index].imgUrl) ? (
                 <img

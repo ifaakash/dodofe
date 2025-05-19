@@ -77,8 +77,8 @@ export const editInvoiceSlice = createSlice({
     deleteItem: (state, action) => {
       const indexToDelete = action.payload;
       console.log('indexToDelete', indexToDelete)
-      state.items = state.items.map((item, index) => 
-        index === indexToDelete 
+      state.items = state.items.map((item, index) =>
+        index === indexToDelete
           ? { ...item, isDeleted: true }
           : item
       );
@@ -109,7 +109,7 @@ export const editInvoiceSlice = createSlice({
       state.isUpdated = true;
     },
     updateTds: (state, action) => {
-      state.tds = action.payload; 
+      state.tds = action.payload;
       state.isUpdated = true;
     },
   },

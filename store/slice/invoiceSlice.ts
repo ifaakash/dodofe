@@ -105,16 +105,13 @@ export const invoiceSlice = createSlice({
       };
     },
 
-    addItem: (state, action: PayloadAction<InvoiceItem>) => {
+    addItem: (state, action) => {
       state.items.push(action.payload);
     },
-    updateItem: (
-      state,
-      action: PayloadAction<{ index: number; updatedItem: InvoiceItem }>
-    ) => {
-      const { index, updatedItem } = action.payload;
-      if (state.items[index]) {
-        state.items[index] = updatedItem;
+    updateItem: (state, action) => {
+      const index = state.items.findIndex((item: any) => item.id === action.payload.id);
+      if (index !== -1) {
+        state.items[index] = action.payload;
       }
     },
     removeItem: (state, action) => {

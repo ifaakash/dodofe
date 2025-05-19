@@ -4,15 +4,14 @@ import { Header } from '@components/molecules/Header';
 import './priceCalculator.module.css';
 import PriceStats from '@components/templates/PriceCalculator/PriceStats';
 import ContentDropdown from '@components/templates/PriceCalculator/ContentDropdown';
-import StatCard from '@components/templates/PriceCalculator/StatCard';
 import styles from './priceCalculator.module.css';
 import cx from 'classnames';
-import Slider from '@components/atoms/slider/Slider'
+import Slider from '@components/atoms/slider/Slider';
 
 const PriceCalculatorPage: React.FC = () => {
-    const [contentNiche, setContentNiche] = useState<string>('Fashion');
+    const [contentNiche, setContentNiche] = useState<string>('tech');
     const [totalFollowers, setTotalFollowers] = useState<number>(10000);
-    const [engagementRate, setEngagementRate] = useState<number>(50000);
+    const [engagementRate, setEngagementRate] = useState<number>(10);
     return (
         <div className={cx(styles.priceCalculator)}>
             <Header />
@@ -26,7 +25,7 @@ const PriceCalculatorPage: React.FC = () => {
                 <div className='flex gap-2 flex-col'>
                     <div className='bg-[#FDFBFF] min-h-[100px] rounded-2xl relative overflow-visible z-0 mb-10'>
 
-                        <PriceStats totalFollowers={totalFollowers} engagementRate={engagementRate} contentNiche={contentNiche}/>
+                        <PriceStats totalFollowers={totalFollowers} engagementRate={engagementRate} contentNiche={contentNiche} />
 
                         <div className='bg-white flex items-center relative my-3'>
                             <div className="w-5 h-3 bg-[#EAE9EC] rounded-b-xl z-10 rotate-90 absolute -right-1"></div>
@@ -43,7 +42,13 @@ const PriceCalculatorPage: React.FC = () => {
                                         <Slider title='Total followers' total={totalFollowers} setTotal={setTotalFollowers} />
                                     </div>
                                     <div className='border-[#E2E4E9] border-dashed border-2 py-5 rounded-[10px] '>
-                                        <Slider title='Engagement' total={engagementRate} setTotal={setEngagementRate} />
+                                        <Slider
+                                            title="Engagement"
+                                            total={engagementRate}
+                                            setTotal={setEngagementRate}
+                                            max={20}
+                                            step={1}
+                                        />
                                     </div>
                                 </div>
                             </div>

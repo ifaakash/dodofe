@@ -201,3 +201,15 @@ export const generateScript = async (payload: {
 }): Promise<any> =>
     Post<any>(API_CONSTANTS.contentGenerate, payload);
 
+
+export const getUserCoins = async (userId: string): Promise<any> =>
+    Get<any>(API_CONSTANTS.getCoins + API_CONSTANTS.slash + userId);
+
+export const updateUserCoins = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.updateCoins, payload);
+
+export const redeemUserCoins = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.redeemCoins, payload);
+
+export const getPollResponses = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.getPollResponses, payload);
