@@ -15,10 +15,11 @@ import DodoIconName from 'public/icons/dodoIconName.svg'
 import Image from "next/image";
 import { Download } from "lucide-react";
 import ShareIcon from 'public/icons/share.svg'
-import { formatDateLong } from '@utils/helperFunctions'
+import { formatCurrency, formatDateLong } from '@utils/helperFunctions'
 import { Header } from "@components/molecules/Header";
 import EditPen from "public/icons/EditPen.svg";
 import { useRouter } from "next/navigation";
+import { calculateGrandTotal } from "@utils/index";
 
 const ReviewInvoice = () => {
   const { invoiceId } = useParams();
@@ -83,34 +84,121 @@ const ReviewInvoice = () => {
 
   const shareInvoice = async () => {
     if (isLoading) return;
-
     setIsLoading(true);
-
+  
     try {
       // Save changes if edited
       if (isEdited) {
         const res = await addSubHeading({
           invoiceId,
-          subHeading
+          subHeading,
         });
-
+  
         if (!res.success) {
-          throw new Error("Failed to save changes");
+          toast.error("Failed to save changes");
+          console.error("Failed to save changes");
         }
-
+  
         setOriginalSubHeading(subHeading);
         setIsEdited(false);
       }
-
-      if (window) {
-        // Share functionality
+  
+      if (typeof window !== "undefined") {
         const url = `${window.location.origin}/invoice/${invoiceId}`;
-        await navigator.clipboard.writeText(url);
-
-        // Show success message
-        toast.success("Invoice link copied to clipboard!");
+        const items = invoice?.items;
+        const discount = invoice?.discount;
+        const gst = invoice?.gst;
+        const tds = invoice?.tds;
+  
+        const message = `${invoice.clientDetails.name} sent you an invoice of ${formatCurrency(
+          calculateGrandTotal(items, discount, gst, tds)
+        )} which has due date on ${formatDateLong(invoice.dueDate)}.`;
+  
+        try {
+          // Fetch invoice image
+          const response = await fetch("/assets/invoiceShareImg.png");
+          const blob = await response.blob();
+          const file = new File([blob], "invoice-share.png", { type: blob.type });
+  
+          // Convert image to base64
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+  
+          reader.onloadend = () => {
+            const base64data = reader.result;
+  
+            // ✅ For React Native WebView
+            if (window.ReactNativeWebView) {
+              window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                  action: "shareContent",
+                  content: {
+                    text: message,
+                    url,
+                    image: base64data,
+                  },
+                })
+              );
+            }
+  
+            // ✅ For browser Web Share API
+            else if (navigator?.share) {
+              navigator
+                .share({
+                  title: `Invoice from ${invoice.clientDetails.name}`,
+                  text: message,
+                  url,
+                  files: [file],
+                })
+                .then(() => console.log("Shared successfully!"))
+                .catch((error) => {
+                  if (error.name !== "AbortError") {
+                    console.error("Error sharing:", error);
+                    toast.error("Failed to share content.");
+                  }
+                });
+            }
+  
+            // ❌ Not supported
+            else {
+              toast.error("Sharing is not supported on this platform.");
+            }
+          };
+        } catch (imageError) {
+          console.error("Error with image:", imageError);
+  
+          // 🔁 Fallback to no image
+          const fallbackContent = `${message}\n\nView invoice: ${url}`;
+  
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                action: "shareContent",
+                content: {
+                  text: message,
+                  url,
+                },
+              })
+            );
+          } else if (navigator?.share) {
+            navigator
+              .share({
+                title: `Invoice from ${invoice.clientDetails.name}`,
+                text: message,
+                url,
+              })
+              .then(() => console.log("Shared successfully!"))
+              .catch((error) => {
+                if (error.name !== "AbortError") {
+                  console.error("Error sharing:", error);
+                  toast.error("Failed to share content.");
+                }
+              });
+          } else {
+            toast.error("Sharing is not supported on this platform.");
+          }
+        }
       }
-
     } catch (err) {
       const error = err as Error;
       toast.error(error.message || "Failed to process your request. Please try again.");
@@ -118,7 +206,8 @@ const ReviewInvoice = () => {
       setIsLoading(false);
     }
   };
-
+  
+  
   const handleSubHeadingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setSubHeading(newValue);
@@ -134,12 +223,16 @@ const ReviewInvoice = () => {
     return <div>Loading client details...</div>;
   }
 
+  const handlePdfDownload = () => {
+    router.push(`/invoice/${invoiceId}/download`);
+  }
+
   return (
     <div className="h-full">
       <div className={cx(styles.backgroundDots)}></div>
       <div className="pt-6 pb-16">
         {/* Header */}
-        <Header onBackClick={()=>router.push('/invoice')}/>
+        <Header onBackClick={() => router.push('/invoice')} />
         <div className="pb-7 pt-10 text-center flex flex-col items-center gap-1">
           {/* Heading */}
           <div className="text-xl font-semibold">INVOICE</div>
@@ -194,7 +287,7 @@ const ReviewInvoice = () => {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-0 right-0 w-full bg-white shadow-md z-50 py-4 px-6 flex gap-4">
-        <button className="flex items-center justify-center gap-2 w-28 border-2 border-brandPrimary text-brandPrimary rounded-xl py-3 px-6">
+        <button onClick={handlePdfDownload} className="flex items-center justify-center gap-2 w-28 border-2 border-brandPrimary text-brandPrimary rounded-xl py-3 px-6">
           <span className="font-semibold text-sm">Pdf</span> <Download className="w-5 h-5" strokeWidth={2.5} />
         </button>
 

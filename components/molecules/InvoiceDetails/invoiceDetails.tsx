@@ -9,7 +9,8 @@ import {
   addDiscount,
   addNote,
   addItem,
-  removeItem
+  removeItem,
+  updateItem
 } from "store/slice/invoiceSlice";
 import { RootState } from 'store/store';
 import { InvoiceItem } from "types";
@@ -35,6 +36,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
   const [disableNextButton, setDisableNextButton] = useState(true);
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
+  const [currentItemId, setCurrentItemId] = useState<string | null>(null);
 
   const state = useSelector((state: any) => state.invoice);
 
@@ -47,18 +49,19 @@ const InvoiceDetails = ({ setCurrentStage }) => {
     }
 
     const calculateTotals = () => {
-      // Calculate items total
-      const itemsTotal = state.items.reduce((sum: any, item: any) => {
-        return sum + item.price * item.quantity;
-      }, 0);
+      // Calculate subtotal first
+      const subtotal = state.items.reduce(
+        (sum: number, item: any) => sum + item.price * item.quantity,
+        0
+      );
 
-      // Calculate tax amounts
-      const gstAmount = itemsTotal * (state.gst / 100);
-      const tdsAmount = itemsTotal * (state.tds / 100);
-      const discountAmount = itemsTotal * (state.discount / 100);
+      // Calculate all adjustments based on subtotal
+      const gstAmount = (subtotal * (state.gst || 0)) / 100;
+      const tdsAmount = (subtotal * (state.tds || 0)) / 100;
+      const discountAmount = (subtotal * (state.discount || 0)) / 100;
 
-      // Calculate final subtotal
-      const finalSubTotal = itemsTotal + gstAmount - tdsAmount - discountAmount;
+      // Final amount = subtotal + gst - tds - discount
+      const finalSubTotal = subtotal + gstAmount - tdsAmount - discountAmount;
       setSubTotal(finalSubTotal);
     };
 
@@ -73,25 +76,35 @@ const InvoiceDetails = ({ setCurrentStage }) => {
     setCharCount(getCharCount(state.note));
   }, [state.note]);
 
-  const handleAddItem = () => {
+  // Auto-add or update item when all inputs are filled
+  useEffect(() => {
     if (name && quantity && price) {
-      const newItem: InvoiceItem = {
+      const newItem = {
+        id: currentItemId || `item-${Date.now()}`,
         name,
-        quantity: parseInt(quantity, 10),
-        price: parseFloat(price),
+        quantity: parseInt(quantity, 10) || 0,
+        price: parseFloat(price) || 0,
         description: name,
-        rate: parseFloat(price),
+        rate: parseFloat(price) || 0,
       };
 
-      dispatch(addItem(newItem));
-
-      // Clear the input fields
-      setName("");
-      setQuantity("");
-      setPrice("");
-    } else {
-      alert("Please fill out all fields before adding an item.");
+      if (currentItemId) {
+        // Update existing item
+        dispatch(updateItem(newItem));
+      } else {
+        // Add new item and track its ID
+        dispatch(addItem(newItem));
+        setCurrentItemId(newItem.id);
+      }
     }
+  }, [name, quantity, price, dispatch, currentItemId]);
+
+  const handleAddItem = () => {
+    // "Lock" the current item and clear inputs for a new one
+    setName("");
+    setQuantity("");
+    setPrice("");
+    setCurrentItemId(null);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -146,34 +159,31 @@ const InvoiceDetails = ({ setCurrentStage }) => {
 
       {/* Items List */}
       {state.items.length > 0 && (
-        <div className="flex flex-col gap-3 bg-white p-4 rounded-[10px]">
-          <div className="gap-1">
-            {state.items.map((item: any, index: number) => (
-              <div key={index} className="flex flex-col">
-                <div className="flex justify-between text-sm py-2">
-                  <div className="flex flex-col gap-[6px]">
-                    <div className="text-sm font-semibold">{item.name}</div>
-                    <div className="text-xs text-[#3D4966]">
-                      {item.quantity} x ₹{item.price}
+        <div className="flex flex-col gap-3">
+          <div className="text-[#5E6C84] text-xs font-semibold">INVOICE ITEMS</div>
+          <div className="flex flex-col gap-3">
+            {state.items.map((item, index) => (
+              <div
+                key={item.id || index}
+                className={`flex flex-col gap-3 bg-white p-4 rounded-[10px] ${item.id === currentItemId ? "border border-dashed border-brandPrimary" : ""
+                  }`}
+              >
+                <div className="gap-1">
+                  <div className="flex flex-col">
+                    <div className="flex justify-between text-sm py-2">
+                      <div className="flex flex-col gap-[6px]">
+                        <div className="text-sm font-semibold">{item.name}</div>
+                        <div className="text-xs text-[#3D4966]">
+                          {item.quantity} x ₹{item.price}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 items-end">
+                        {index !== state.items.length - 1 && <X size={20} className="text-red-600" onClick={() => handleRemoveItem(index)} />}
+                        <div className="text-sm font-medium">₹{item.quantity * item.price}</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1 items-end">
-                    <X size={20} className="text-red-600" onClick={() => handleRemoveItem(index)} />
-                    <div className="text-sm font-medium">₹{item.quantity * item.price}</div>
-                  </div>
                 </div>
-                {index < state.items.length - 1 && (
-                  <div
-                    style={{
-                      margin: "12px 0px",
-                      border: "1px solid #C1C7D0",
-                      borderStyle: "dashed",
-                      borderWidth: "0.5px",
-                      borderImage:
-                        "repeating-linear-gradient(to right, #C1C7D0 0, #C1C7D0 5px, transparent 5px, transparent 10px) 1",
-                    }}
-                  ></div>
-                )}
               </div>
             ))}
           </div>
@@ -226,7 +236,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
                 }}
                 max="100"
                 step="0.1"
-                placeholder="Add TDS here"  
+                placeholder="Add TDS here"
                 className="w-full bg-transparent font-semibold focus:outline-none text-end placeholder:text-right placeholder:text-gray-400 placeholder:font-light"
               />
               <span className="font-semibold pl-2">%</span>
@@ -253,7 +263,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
           <div className="bg-theme-2 px-4 py-1 h-12 text-sm text-[#414D55] rounded-lg w-full flex gap-[10px] items-center border border-[#C1C7D0]">
             <div className="w-full text-black">Sub Total</div>
             <div className="flex text-black text-sm font-semibold">
-              ₹{subTotal}
+              ₹{subTotal.toFixed(2)}
             </div>
           </div>
         </div>
@@ -264,7 +274,7 @@ const InvoiceDetails = ({ setCurrentStage }) => {
         <div className="text-[#5E6C84] text-xs font-semibold">NOTE</div>
         <div className="relative">
           <textarea
-            placeholder="Add a note(optional)"
+            placeholder="Add a note (optional)"
             className="p-[14px] rounded-lg w-full"
             rows={2}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {

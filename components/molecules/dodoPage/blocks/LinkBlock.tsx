@@ -101,7 +101,7 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
                   {...listeners}
                 />
               )}
-              <div>{block.blockData?.title}</div>
+              <div className="text-sm font-semibold">{block.blockData?.title}</div>
             </div>
 
             {block.blockData?.badge && (

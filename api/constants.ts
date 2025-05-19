@@ -45,4 +45,8 @@ export default {
     updateRecipientDetails: '/recipient/update',
     updateItemsNotes: '/invoice/updateItemsNotes',
     contentGenerate: '/content/generate',
+    updateCoins: '/coins/update',
+    getCoins : '/coins/user',
+    redeemCoins: '/coins/redeem',
+    getPollResponses: '/block/get-poll-responses'
 };

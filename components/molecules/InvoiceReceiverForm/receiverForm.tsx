@@ -26,7 +26,7 @@ const ReceiverForm = ({
   setCurrentStage,
 }: ReceiverFormProps) => {
   const dispatch = useDispatch();
-  const [receiveID, setReceiveID] = useState("");
+  const [receiveID, setReceiveID] = useState(receiverDetails[0]?._id);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [disableNextButton, setDisableNextButton] = useState(true);
   const showInputFields = useSelector((state: RootState) => state.invoice.showInputFields);
@@ -38,7 +38,7 @@ const ReceiverForm = ({
   const selectedReceiverID = useSelector(
     (state: RootState) => state.invoice.recipientDetailsID
   );
-  
+
   useEffect(() => {
     if (receiveID) {
       dispatch(addRecipientDetailsID(receiveID));
@@ -162,7 +162,7 @@ const ReceiverForm = ({
     <div className="py-4 px-5 overflow-scroll h-[calc(100vh-150px)]">
       {showInputFields ? (
         <div className="flex flex-col gap-6 pb-5">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             <div className="text-[#5E6C84] text-xs font-semibold">BASIC</div>
             <Input
               placeholder="Enter name"
@@ -178,7 +178,7 @@ const ReceiverForm = ({
             />
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             <div className="text-[#5E6C84] text-xs font-semibold">
               FULL ADDRESS
             </div>
@@ -187,6 +187,7 @@ const ReceiverForm = ({
               value={currentRecipientDetails.zipcode || ""}
               onChange={(e) => handleChange("zipcode", e.target.value)}
               error={errors.zipcode}
+              type="number"
             />
             {/* <select
               className="p-2 border rounded"
@@ -241,7 +242,7 @@ const ReceiverForm = ({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             <div className="text-[#5E6C84] text-xs font-semibold">OPTIONAL</div>
             <Input
               placeholder="GSTN number"

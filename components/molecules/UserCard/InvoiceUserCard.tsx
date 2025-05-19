@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import RajveerBhaiya from "public/assets/rajveer.png";
 import { InvoiceUserCardProps } from "types";
+import DodoCircle from 'public/icons/dodoIconCircle.svg'
 
 const InvoiceUserCard: React.FC<InvoiceUserCardProps> = ({ detail, userID, setUserID }) => {
   const isSelected = userID === detail?._id;
@@ -16,7 +16,7 @@ const InvoiceUserCard: React.FC<InvoiceUserCardProps> = ({ detail, userID, setUs
     >
       <div className="flex justify-between items-center">
         <Image
-          src={detail?.logo || RajveerBhaiya}
+          src={detail?.logo || DodoCircle}
           width={40}
           height={40}
           className="rounded-full"

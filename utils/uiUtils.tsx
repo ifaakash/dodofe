@@ -92,7 +92,7 @@ export function Card({ title, description, icon, bgColor, bgColorGo, className, 
                 <p className="text-xs text-left leading-[16px] mb-5">{description}</p>
 
             </div>
-            <div className="flex justify-between items-end">
+            <div className="flex justify-between items-end mt-8">
                 <Image
                     height={70}
                     width={70}

@@ -2,13 +2,12 @@ import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, CancelTok
 
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from 'utils/constants';
 
-import { loadState } from 'utils/localStorage';
+import { loadState } from "utils/localStorage";
 
-import Router from 'next/router';
+import Router from "next/router";
 
 export const BASE_URL = "https://api.dodoclub.in/api/v1";
-// export const BASE_URL = 'http://localhost:3002/api/v1/';
-
+// export const BASE_URL = "http://localhost:3002/api/v1/";
 
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
@@ -54,25 +53,69 @@ const tokenAndAppInfoHeaderInterceptor = (
     return config;
 };
 
-const onErrorInterceptor = (error: AxiosError): any => {
-    const Error = serializeError(error);
-    console.log("------API ERROR-----", Error);
-
-    const status = error?.response?.status;
-    console.log(error.response)
-    const isPageNotFound = status === 404 && typeof error?.response?.data === 'object' && 'message' in error.response.data && error.response.data.message === "Page not found";
-    if (status === 401 || status === 403 || isPageNotFound) {
-        // Clear all auth related data
+const handleLogout = async () => {
+    try {
+        console.log("Clearing localStorage and redirecting to login...");
         localStorage.clear();
-        // Redirect to login page
-        Router.push(ROUTE_CONSTANTS.LOGIN);
-        return Promise.reject(Error);
+
+        // Force reload to clear any cached state
+        if (window.location.pathname !== ROUTE_CONSTANTS.LOGIN) {
+            await Router.push(ROUTE_CONSTANTS.LOGIN);
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error("Error during logout:", error);
+        // Fallback to direct navigation if Router fails
+        window.location.href = ROUTE_CONSTANTS.LOGIN;
+    }
+};
+
+const MAX_FILE_SIZE_MB = 10; //10MB
+
+export const validateFileSize = (file: File): boolean => {
+    const fileSizeInMB = file.size / (1024 * 1024);
+    return fileSizeInMB <= MAX_FILE_SIZE_MB;
+};
+
+const onErrorInterceptor = (error: AxiosError): any => {
+    const status = error?.response?.status;
+    console.log("Error interceptor called with status:", status);
+
+    // Handle authentication errors (401) and forbidden (403)
+    if (status === 401 || status === 403) {
+        console.log("Auth error detected, initiating logout...");
+        handleLogout();
+        return Promise.reject(serializeError(error));
     }
 
-    throw Error;
+    // Handle file size too large error
+    if (status === 413) {
+        const errorObj = {
+            name: "FILE_SIZE_ERROR",
+            message: `File size too large. Maximum allowed size is ${MAX_FILE_SIZE_MB}MB.`,
+            code: status.toString(),
+            stack: JSON.stringify(error.toJSON()),
+        };
+        return Promise.reject(errorObj);
+    }
+
+    // Handle page not found errors
+    const isPageNotFound =
+        status === 404 &&
+        typeof error?.response?.data === "object" &&
+        "message" in error.response.data &&
+        error.response.data.message === "Page not found";
+
+    if (isPageNotFound) {
+        Router.push(ROUTE_CONSTANTS.ERROR);
+        return Promise.reject(serializeError(error));
+    }
+
+    throw serializeError(error);
 };
 
 Request.interceptors.request.use(tokenAndAppInfoHeaderInterceptor);
+Request.interceptors.response.use((response) => response, onErrorInterceptor);
 
 interface IAPIResponse<T> {
     success: boolean;

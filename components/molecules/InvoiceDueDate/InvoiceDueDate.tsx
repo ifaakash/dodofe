@@ -54,7 +54,7 @@ const InvoiceDueDate = ({ handleInvoiceSubmit }: any) => {
 
     // Set due date as today + 7 days
     const defaultDueDate = new Date();
-    defaultDueDate.setDate(defaultDueDate.getDate() + 7);
+    defaultDueDate.setDate(defaultDueDate.getDate() + 30);
     setDueDate(defaultDueDate);
     dispatch(addDueDate(defaultDueDate.toISOString()));
   }, [dispatch]);

@@ -1,12 +1,39 @@
 .lightBorder {
-    border: 1px solid var(--border-color-1);
+  border: 1px solid var(--border-color-1);
+}
+
+
+.dodoBackground {
+  background-image: url("/assets/bgGrid.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.bgGrid {
+  background-image:
+    linear-gradient(to right, #E0DEE3 0.5px, transparent 0.5px),
+    linear-gradient(to bottom, #E0DEE3 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+  background-repeat: repeat;
+  background-position: center;
+}
+
+/* Desktop styles */
+@media screen and (min-width: 768px) {
+  .blocksContainer {
+    max-width: 768px;
+    width: 620px;
+    margin: 0 auto;
+    padding: 0 20px;
+    font-size: 18px;
   }
-  
-  
-  .dodoBackground {
-    background-image: url("/assets/bgGrid.svg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
+
+  .footerContainer {
+    max-width: 768px;
+    margin: 40px auto;
+    padding: 0 20px;
   }
+}

@@ -134,6 +134,16 @@ export default function Home() {
         router.push(ROUTE_CONSTANTS.INVOICE);
     }, [router]);
 
+    const handleScriptGeneratorNavigation = useCallback(() => {
+        const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+
+        if (!userId) {
+            router.push(ROUTE_CONSTANTS.LOGIN);
+            return;
+        }
+        router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR);
+    }, [router]);
+
     const shareContent = useCallback(() => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
         const content = `Check out my Dodo Page: https://dodoclub.in/${dodoPageDetail?.url}`;
@@ -167,7 +177,8 @@ export default function Home() {
     const getUserCard = () => {
         const dodoPageDetail = userDetails?.dodoPages?.[0];
 
-        if (isEmpty(dodoPageDetail) && !isLoading) {
+        // handles api failure gracefully
+        if (userId && isEmpty(userDetails) && !isLoading) {
             return <CtaSection title="Dodo user" description="Some issue in fetching your dodo pages" noImg onClick={() => router.push(ROUTE_CONSTANTS.LOGIN)} />;
         }
 
@@ -186,6 +197,7 @@ export default function Home() {
                         buttonLabel=""
                         showProfileImage={true}
                         noImg={true}
+                        clampDescription={true}
                     />
                 ))}
             </div>
@@ -282,6 +294,9 @@ export default function Home() {
                     {isEmpty(userId) ? (
                         <div className="mx-4">
                             <CtaSection
+                                onClick={() =>
+                                    gotoLinksPage(dodoPageDetail?.url)
+                                }
                                 onButtonClick={() =>
                                     gotoLinksPage(dodoPageDetail?.url)
                                 }
@@ -303,7 +318,7 @@ export default function Home() {
                                         src={dodoCoinIcon}
                                         alt="dodo coin"
                                     />
-                                    500 dodo coins
+                                    200 dodo coins
                                 </div>
 
                                 <Image
@@ -350,7 +365,7 @@ export default function Home() {
                                 title="Script Generator"
                                 description=""
                                 icon={engagementCalc}
-                                onClick={() => router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR)}
+                                onClick={handleScriptGeneratorNavigation}
                                 bgColor="var(--light-orange)"
                                 bgColorGo="var(--orange)"
                                 className="flex-1 max-w-[calc(50%-0.5rem)]"

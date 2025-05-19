@@ -83,7 +83,7 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ block, mode }) => {
               height={20}
             />
           )}
-          <span className="text-gray-800 font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">
+          <span className="text-gray-800 font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px] text-sm">
             {block.blockData?.title}
           </span>
         </div>

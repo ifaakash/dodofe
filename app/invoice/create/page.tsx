@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Image from "next/image";
 import ReceiverForm from "@components/molecules/InvoiceReceiverForm/receiverForm";
 import PaymentDetails from "@components/molecules/PaymentDetails/paymentDetails";
@@ -15,18 +15,21 @@ import { showLoader, hideLoader } from "store/slice/loaderSlice";
 import { getUserDetails } from "api";
 import { RootState } from 'store/store';
 
-import { userDetailsProps } from "types";
+import { CoinAmount, CoinMilestoneType, TransactionType, userDetailsProps } from "types";
 import {
   createRecipient,
   createClient,
   addBankDetails,
   createInvoice,
+  updateUserCoins,
 } from "api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { Header } from "@components/molecules/Header";
 import ErrorPage from "@components/molecules/ErrorPage";
 import { setShowInputFields } from "store/slice/invoiceSlice";
+import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
+import { toast } from "react-toastify";
 
 
 const CreateInvoice = () => {
@@ -147,6 +150,7 @@ const CreateInvoice = () => {
 
       if (!bankDetailId || !clientDetailId || !recipientDetailId) {
         console.log("Failed to create required details.");
+        toast.error('Failed to create required details.')
         return;
       }
 
@@ -242,9 +246,9 @@ const CreateInvoice = () => {
     recipientDetailId: string;
   }) => {
     dispatch(showLoader(true));
-    try {
 
-      const res = await createInvoice({
+    try {
+      const invoicePayload = {
         userId: userDetails!.id,
         bankDetailId,
         clientDetailId,
@@ -256,27 +260,44 @@ const CreateInvoice = () => {
         dueDate: invoice.dueDate,
         gst: invoice.gst,
         tds: invoice.tds,
+      };
+
+      const { success, data, msg } = await createInvoice(invoicePayload);
+
+      if (!success) {
+        console.error("Invoice creation failed:", msg);
+        return;
+      }
+
+      const coinRes = await updateUserCoins({
+        userId: userDetails!.id,
+        amount: CoinAmount.CREATE_INVOICE,
+        transactionType: TransactionType.EARNED,
+        description: "Earned from creating invoice",
+        milestoneType: CoinMilestoneType.CREATE_INVOICE,
       });
 
-      if (res.success) {
-        router.push("/invoice/review/" + res.data._id);
-      } else {
-        console.error("Failed to create invoice:", res.message);
+      if (!coinRes.success) {
+        console.warn("Invoice created but coin update failed:", coinRes.message);
       }
-    } catch (error) {
-      console.error("Error submitting the invoice:", error);
+
+      router.push(`/invoice/review/${data._id}`);
+    } catch (err) {
+      console.error("Invoice submission error:", err);
     } finally {
       dispatch(hideLoader(false));
     }
   };
 
-  const handleBackNavigation = () => {
-    if (showInputFields) {
-      dispatch(setShowInputFields(false));
 
+  const handleBackNavigation = () => {
+    console.log(showInputFields)
+    if (showInputFields && currentStage !== "senderDetails" && currentStage !== "receiverDetails") {
+      dispatch(setShowInputFields(false));
       return;
     }
 
+    console.log(currentStage)
     switch (currentStage) {
       case "senderDetails":
         router.push("/invoice");
@@ -299,7 +320,7 @@ const CreateInvoice = () => {
   };
 
   if (error) {
-    return <ErrorPage message={error} />;
+    return <GeneralErrorPage />
   }
 
   return (
