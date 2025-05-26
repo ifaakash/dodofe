@@ -15,10 +15,10 @@ import CopyBox from "../CopyBox";
 
 const CtaSection = ({
   title = "DodoPage",
-  description = "Create dynamic page that stands out",
+  description = "Your content, products and vibe : all in just one link",
   buttonLabel = "Create now",
   onClick = () => { },
-  onButtonClick = () => { },
+  onButtonClick = null,
   onImageClick = (e: any) => { },
   img = profileIcon,
   imgSize = -1,
@@ -98,7 +98,7 @@ const CtaSection = ({
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-bold">{title}</h1>
-          <p className={`text-lg font-light leading-[20px] ${clampDescription ? "line-clamp-1" : ""}`}>
+          <p className={`text-lg font-light leading-[24px] ${clampDescription ? "line-clamp-1" : ""}`}>
             {description}
           </p>
 
@@ -121,8 +121,13 @@ const CtaSection = ({
             padding: "0px 20px",
           }}
           onClick={(e) => {
-            // e.stopPropagation();
-            onButtonClick();
+            e.stopPropagation();
+
+            if (onButtonClick) {
+              onButtonClick();
+            } else {
+              onDivClick()
+            }
           }}
         >
           <span className="text-xs font-normal whitespace-nowrap">{buttonLabel}</span>

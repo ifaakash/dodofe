@@ -187,14 +187,14 @@ export default function Home() {
                 {userDetails?.dodoPages?.map((page: any) => (
                     <CtaSection
                         key={page.id}
-                        title={dodoPageDetail?.name || "Dodo user"}
+                        title="My dodopage"
                         description={dodoPageDetail?.url}
                         buttonBgColor="var(--pink)"
                         profileImageURL={dodoPageDetail?.profilePicture}
                         onClick={() => gotoLinksPage(page.url)}
                         copyText={'https://dodoclub.in/' + dodoPageDetail?.url}
                         onButtonClick={shareContent}
-                        buttonLabel=""
+                        buttonLabel="Share"
                         showProfileImage={true}
                         noImg={true}
                         clampDescription={true}
@@ -356,13 +356,13 @@ export default function Home() {
                             onClick={handleInvoiceNavigation}
                             bgColor="var(--yellow)"
                             img={invoiceIcon}
-                            title="Dodo  Invoice"
-                            description="Create stunning digital invoices in clicks."
+                            title="Dodo  Invoices"
+                            description="Create. Send. Track. Invoicing, finally sorted."
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
                             <Card
-                                title="Script Generator"
+                                title="AI Script Generator"
                                 description=""
                                 icon={engagementCalc}
                                 onClick={handleScriptGeneratorNavigation}
@@ -385,7 +385,7 @@ export default function Home() {
                     <CtaSection
                         bgColor="var(--warm-green)"
                         img={mediakitIcon}
-                        title="Your MediaKit"
+                        title="MediaKit"
                         description="A Digital & Dyanamic resume for you!"
                         buttonLabel="Know More"
                         onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}

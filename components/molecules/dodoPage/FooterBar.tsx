@@ -126,14 +126,17 @@ const FooterBar = ({
         audioBio,
     } = useSelector((state: any) => state.dodoPage);
     const dispatch = useDispatch();
+    const [isPublishing, setIsPublishing] = useState(false);
     const router = useRouter();
     const blockState = useSelector((state: any) => state.blocks);
     const dodoPageState = useSelector((state: any) => state.dodoPage);
     const { unpublishedBlocks } = blockState;
-    const enablePublish = unpublishedBlocks || unsavedChanges;
+    const enablePublish = (unpublishedBlocks || unsavedChanges) && !isPublishing;
 
     const handlePublish = async () => {
         try {
+            setIsPublishing(true);
+
             if (blockState.newBlocksAdded) {
                 const newBlocks = blockState.blocks.filter(
                     (block) => block.isNew
@@ -444,6 +447,7 @@ const FooterBar = ({
             // window.location.href = `/dodo/${url}`;
 
             setIsPublishedModalOpened(true);
+            setIsPublishing(false);
 
             confetti({
                 particleCount: 60,

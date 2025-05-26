@@ -59,6 +59,18 @@ const Sidebar = ({
             delay: 50,
         },
         {
+            text: "Your profile",
+            icon: digiInvoiceIcon,
+            action: () => {
+                router.push(
+                    ROUTE_CONSTANTS.PROFILE
+                );
+
+                toggleSidebar();
+            },
+            delay: 50,
+        },
+        {
             text: "Your Feedback",
             icon: feedbackIcon,
             action: () => {

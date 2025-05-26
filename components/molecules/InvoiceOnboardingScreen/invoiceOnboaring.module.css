@@ -1,7 +1,18 @@
 .invoiceOnboardingScreen{
+    position: relative;
+    height: 100vh;
+}
+
+.invoiceOnboardingScreen::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('../../../public/assets//dotted_bg.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    height: 100vh;
+    filter: blur(1px);
 }

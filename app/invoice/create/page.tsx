@@ -273,7 +273,7 @@ const CreateInvoice = () => {
         userId: userDetails!.id,
         amount: CoinAmount.CREATE_INVOICE,
         transactionType: TransactionType.EARNED,
-        description: "Earned from creating invoice",
+        description: "Invoice",
         milestoneType: CoinMilestoneType.CREATE_INVOICE,
       });
 
