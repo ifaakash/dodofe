@@ -65,7 +65,7 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
             <div className="text-base font-semibold text-[#3D4966] mb-1">
               {block.blockData?.title}
             </div>
-            {block.blockData?.badge && (
+            {block.blockData?.badge?.text && (
               <div
                 className="px-3 py-1 text-xs font-medium flex items-center w-fit"
                 style={{
@@ -104,7 +104,7 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
               <div className="text-sm font-semibold">{block.blockData?.title}</div>
             </div>
 
-            {block.blockData?.badge && (
+            {block.blockData?.badge?.text && (
               <div
                 className="px-2 py-1 rounded-lg text-xs font-medium flex items-center w-fit"
                 style={{

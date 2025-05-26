@@ -376,7 +376,17 @@ const AddLink = ({
                   color: badge.color,
                 }}
                 className="flex items-center gap-1 py-[6px] px-2 rounded-full"
-                onClick={() => setSelectedBadgeCategory(badge.text)}
+                onClick={() => {
+                  if (selectedBadgeCategory === badge.text) {
+                    setSelectedBadgeCategory(null);
+                    // If badge text exists but category is removed, clear badge text too
+                    if (badgeText) {
+                      setBadgeText('');
+                    }
+                  } else {
+                    setSelectedBadgeCategory(badge.text);
+                  }
+                }}
               >
                 <input
                   type="radio"

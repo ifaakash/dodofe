@@ -9,12 +9,20 @@ import LineWithDot from 'public/assets/LineWithDot.svg'
 import { CheckCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti'
+import { ROUTE_CONSTANTS } from '@utils/constants';
 
 
 const MediaKit = () => {
   const router = useRouter();
 
   const handleJoinWaitlist = () => {
+
+    // if (1 === 1) { // send to verify insta if not verified
+    //   router.push(ROUTE_CONSTANTS.PROFILE);
+
+    //   return;
+    // }
+
     confetti({
       particleCount: 100,
       spread: 70,
@@ -60,7 +68,7 @@ const MediaKit = () => {
             <div className='flex flex-col gap-2'>
               <div className='flex items-center gap-2 text-xs text-[#3D4966]'>
                 <CheckCheck size={16} />
-                Auto-Generated Media Kits 
+                Auto-Generated Media Kits
               </div>
 
               <div className='flex items-center gap-2 text-xs text-[#3D4966]'>

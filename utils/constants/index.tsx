@@ -61,6 +61,7 @@ export const ROUTE_CONSTANTS = {
   BLOGS: "/blogs",
   FOR_BRANDS: "/for-brands",
   FOR_CREATORS: "/",
+  PROFILE: "/profile",
 };
 
 export const BLOCKS = {

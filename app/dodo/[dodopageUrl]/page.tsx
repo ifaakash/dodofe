@@ -80,6 +80,8 @@ const DodoPageDashboard = () => {
     const dodoPageFromStore = useSelector(
         (state: RootState & { dodoPage: any }) => state.dodoPage
     );
+    const blockState = useSelector((state: any) => state.blocks);
+
     const existingBlocks = useSelector((state: any) => state.blocks.blocks);
 
     // this useeffect ensures that the data is fetched from the server and the store is updated
