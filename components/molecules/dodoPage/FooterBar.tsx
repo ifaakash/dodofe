@@ -503,7 +503,7 @@ const FooterBar = ({
                     className={`bg-white py-[14px] shadow-md border-[1px] px-[10px] rounded-full w-full text-sm font-semibold flex items-center justify-center text-brandPrimary backdrop-filter backdrop-blur-sm bg-white/70 ${!enablePublish ? "bg-gray-200 clr-light-green" : ""
                         }`}
                 >
-                    Publish
+                    {isPublishing ? "Publishing..." : "Publish"}
                 </button>
             </div>
         </div>
