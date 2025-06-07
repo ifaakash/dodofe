@@ -8,6 +8,7 @@ import AgeDistributionSection from "./AgeDistributionSection";
 import GenderDistributionSection from "./GenderDistributionSection";
 import LocationDistributionSection from "./LocationDistributionSection";
 import InstagramPriceSection from "./InstagramPriceSection";
+import { Header } from "@components/molecules/Header";
 
 interface MediaKitPageProps {
     userData?: {
@@ -42,49 +43,33 @@ interface MediaKitPageProps {
     }>;
 }
 
-const MediaKitPage: React.FC<MediaKitPageProps> = ({
-    userData = {
-        name: "Rajveer Singh",
-        avatar: "/images/avatar-placeholder.png",
-        roles: ["freelance", "Designer", "Techie"],
-        email: "design.rajveer@gmail.com"
-    },
-    instaStats = {
-        followers: "1.2M",
-        grade: "B+",
-        contentSplit: {
-            reel: 55,
-            post: 35,
-            story: 10
-        },
-        mediaCount: 120,
-        engagement: 24,
-        avgLike: "20M",
-        avgComments: "150K",
-        uploadedFile: {
-            name: "filename.png",
-            date: "12 may 2025"
-        }
-    },
-    brandCollaborations = [
-        {
-            brandName: "Brand Name",
-            brandLogo: "/icons/coca-cola.png",
-            type: "Reel",
-            reach: "100K",
-            engagement: "10%"
-        },
-        {
-            brandName: "Brand Name 2",
-            brandLogo: "/icons/coca-cola.png",
-            type: "Reel",
-            reach: "100K",
-            engagement: "10%"
-        }
-    ]
+const MediaKitPage: React.FC<any> = ({
+    userData,
+    followers,
+    grade,
+    contentSplit,
+    mediaCount,
+    engagement,
+    avgLike,
+    avgComments,
+    uploadedFile,
+    brandCollaborations
 }) => {
+    const instaStats = {
+        followers,
+        grade,
+        contentSplit,
+        mediaCount,
+        engagement,
+        avgLike,
+        avgComments,
+        uploadedFile
+    };
+    console.log(instaStats)
     return (
         <div className="min-h-screen">
+            <Header />
+
             {/* Main container with max width and centered */}
             <div className="max-w-4xl mx-auto px-4 py-8">
                 {/* Bio Section */}
@@ -106,7 +91,15 @@ const MediaKitPage: React.FC<MediaKitPageProps> = ({
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-                    <BrandSection collaborations={brandCollaborations} />
+                    <BrandSection
+                        collaborations={brandCollaborations}
+                        onCollaborationAdded={() => {
+                            // Trigger a refetch of the media kit data
+                            if (typeof window !== 'undefined') {
+                                window.location.reload();
+                            }
+                        }}
+                    />
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">

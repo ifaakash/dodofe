@@ -5,6 +5,7 @@ import Modal from "@components/molecules/Modal/Modal";
 import Input from "@components/atoms/Input/Input";
 import NewButton from "@components/atoms/Button/NewButton";
 import instaIcon from "public/icons/insta.svg";
+import { addBrandCollaboration } from "../../../../api/services";
 
 interface BrandCollaboration {
     brandName: string;
@@ -16,6 +17,7 @@ interface BrandCollaboration {
 
 interface BrandSectionProps {
     collaborations?: BrandCollaboration[];
+    onCollaborationAdded?: () => void;
 }
 
 const BrandSection: React.FC<BrandSectionProps> = ({
@@ -34,9 +36,11 @@ const BrandSection: React.FC<BrandSectionProps> = ({
             reach: "100K",
             engagement: "10%"
         }
-    ]
+    ],
+    onCollaborationAdded
 }) => {
     const [showAddModal, setShowAddModal] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [newBrand, setNewBrand] = useState<BrandCollaboration>({
         brandName: "",
         brandLogo: "",
@@ -51,6 +55,34 @@ const BrandSection: React.FC<BrandSectionProps> = ({
             ...prev,
             [field]: value
         }));
+    };
+
+    const handleSave = async () => {
+        try {
+            setLoading(true);
+            await addBrandCollaboration({
+                ...newBrand,
+                type: selectedType
+            });
+
+            setShowAddModal(false);
+            setNewBrand({
+                brandName: "",
+                brandLogo: "",
+                type: "Reel",
+                reach: "",
+                engagement: ""
+            });
+
+            // Notify parent to refresh data
+            if (onCollaborationAdded) {
+                onCollaborationAdded();
+            }
+        } catch (error) {
+            console.error('Error adding brand collaboration:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -222,17 +254,23 @@ const BrandSection: React.FC<BrandSectionProps> = ({
                     </div>
 
                     {/* Add Button */}
-                    <NewButton
-                        variant="primary"
-                        size="large"
-                        className="w-full"
-                        onClick={() => {
-                            // Handle save here
-                            setShowAddModal(false);
-                        }}
-                    >
-                        Add now
-                    </NewButton>
+                    <div className="flex justify-end gap-2 mt-6">
+                        <NewButton
+                            variant="secondary"
+                            size="small"
+                            onClick={() => setShowAddModal(false)}
+                        >
+                            Cancel
+                        </NewButton>
+                        <NewButton
+                            variant="primary"
+                            size="small"
+                            onClick={handleSave}
+                            className={loading ? 'opacity-50 cursor-not-allowed' : ''}
+                        >
+                            {loading ? 'Saving...' : 'Save'}
+                        </NewButton>
+                    </div>
                 </div>
             </Modal>
 

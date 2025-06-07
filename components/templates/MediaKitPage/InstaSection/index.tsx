@@ -44,6 +44,7 @@ const InstaSection: React.FC<InstaSectionProps> = ({
         }
     }
 }) => {
+    console.log(stats)
     return (
         <div className="space-y-4">
 
@@ -68,8 +69,7 @@ const InstaSection: React.FC<InstaSectionProps> = ({
             </div>
 
             {/* Content Split Visualization */}
-            <div className="bg-white rounded-xl p-6 relative h-[200px]">
-                {/* Reel Circle */}
+            {stats.contentSplit && <div className="bg-white rounded-xl p-6 relative h-[200px]">
                 <div
                     className="absolute"
                     style={{
@@ -88,7 +88,6 @@ const InstaSection: React.FC<InstaSectionProps> = ({
                     </div>
                 </div>
 
-                {/* Post Circle */}
                 <div
                     className="absolute"
                     style={{
@@ -107,7 +106,6 @@ const InstaSection: React.FC<InstaSectionProps> = ({
                     </div>
                 </div>
 
-                {/* Story Circle */}
                 <div
                     className="absolute"
                     style={{
@@ -125,7 +123,7 @@ const InstaSection: React.FC<InstaSectionProps> = ({
                     </div>
                 </div>
             </div>
-
+            }
             <div className="border-2 border-dashed border-gray-200 rounded-xl p-2">
                 {/* File Upload Info */}
                 {stats.uploadedFile && (
