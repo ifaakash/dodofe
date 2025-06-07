@@ -1,5 +1,7 @@
-const MediaKitPage = () => {
-    return <div>MediaKitPage</div>;
+import MediaKitPage from "@components/templates/MediaKitPage";
+
+const MediaKit = () => {
+    return <MediaKitPage />;
 };
 
-export default MediaKitPage;
+export default MediaKit;
