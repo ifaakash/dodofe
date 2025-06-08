@@ -213,3 +213,9 @@ export const redeemUserCoins = async (payload: any): Promise<any> =>
 
 export const getPollResponses = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.getPollResponses, payload);
+
+export const getMediaKit = async (instaId?: string): Promise<any> =>
+    Get<any>(API_CONSTANTS.getMediaKit + (instaId ? `?instaId=${instaId}` : ''));
+
+export const addBrandCollaboration = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.addBrandCollaboration, payload);

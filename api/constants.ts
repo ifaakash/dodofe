@@ -46,7 +46,9 @@ export default {
     updateItemsNotes: '/invoice/updateItemsNotes',
     contentGenerate: '/content/generate',
     updateCoins: '/coins/update',
-    getCoins : '/coins/user',
+    getCoins: '/coins/user',
     redeemCoins: '/coins/redeem',
-    getPollResponses: '/block/get-poll-responses'
+    getPollResponses: '/block/get-poll-responses',
+    getMediaKit: '/mediakit/details',
+    addBrandCollaboration: '/mediakit/brand-collab'
 };
