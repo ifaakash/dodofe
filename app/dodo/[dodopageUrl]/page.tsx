@@ -46,6 +46,7 @@ import { dodoStoreInitialisation } from "store/slice/dodoPageSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import PublishedModal from "./PublishedModal";
+import BlockTemplates from "@components/molecules/dodoPage/blockTemplates/BlockTemplates";
 
 const DodoPageDashboard = () => {
     const searchParams = useSearchParams();
@@ -197,8 +198,6 @@ const DodoPageDashboard = () => {
             }
         }
     };
-
-    console.log('blocks', blocks)
 
     const groupBlocks = (blocks: Block[]) => {
         const grouped: (Block | Block[])[] = [];
@@ -365,94 +364,98 @@ const DodoPageDashboard = () => {
                     mode={mode}
                 />
 
-                <div className="flex flex-col gap-4 mb-24">
+
+                <div className="flex flex-col gap-4 mb-24 min-h-[50vh]">
                     {/* {mode !== "preview" && <ArchiveTab />} */}
 
-                    <div
-                        className="mx-5 flex flex-col gap-3"
-                        style={{ touchAction: "auto" }}
-                    >
-                        <DndContext
-                            sensors={sensors}
-                            collisionDetection={closestCenter}
-                            onDragEnd={handleDragEnd}
-                            onDragStart={handleDragStart}
+                    {blocks.length === 0 && mode === "edit" ? (
+                        <BlockTemplates dodoPageUrl={url}/>
+                    ) : (
+                        <div
+                            className="mx-5 flex flex-col gap-3"
+                            style={{ touchAction: "auto" }}
                         >
-                            <SortableContext
-                                items={blocks
-                                    .map((block) => block.id)
-                                    .filter(
-                                        (id): id is string => id !== undefined
-                                    )}
-                                strategy={verticalListSortingStrategy}
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                                onDragStart={handleDragStart}
                             >
-                                {groupBlocks(blocks).map((item, index) => {
-                                    if (Array.isArray(item)) {
-
-                                        return (
-                                            <div key={`group-${index}`} className="flex flex-row gap-3">
-                                                {item.map((block) => (
-                                                    <div className="flex-1" key={block.id}>
-                                                        {renderBlock(block, index, true)}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        );
-                                    } else {
-                                        return renderBlock(item, index);
-                                    }
-                                })}
-
-                            </SortableContext>
-                            <DragOverlay>
-                                {activeId
-                                    ? renderBlock(
-                                        blocks.find(
-                                            (block) => block.id === activeId
-                                        ),
-                                        0
-                                    )
-                                    : null}
-                            </DragOverlay>
-                        </DndContext>
-                    </div>
+                                <SortableContext
+                                    items={blocks
+                                        .map((block) => block.id)
+                                        .filter(
+                                            (id): id is string => id !== undefined
+                                        )}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {groupBlocks(blocks).map((item, index) => {
+                                        if (Array.isArray(item)) {
+                                            return (
+                                                <div key={`group-${index}`} className="flex flex-row gap-3">
+                                                    {item.map((block) => (
+                                                        <div className="flex-1" key={block.id}>
+                                                            {renderBlock(block, index, true)}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            );
+                                        } else {
+                                            return renderBlock(item, index);
+                                        }
+                                    })}
+                                </SortableContext>
+                                <DragOverlay>
+                                    {activeId
+                                        ? renderBlock(
+                                            blocks.find(
+                                                (block) => block.id === activeId
+                                            ),
+                                            0
+                                        )
+                                        : null}
+                                </DragOverlay>
+                            </DndContext>
+                        </div>
+                    )}
                 </div>
+
+                {mode === "edit" && (
+                    <div
+                        className={`bottom-0 fixed w-full p-4 z-10`}
+                    >
+                        <FooterBar
+                            mode={mode}
+                            url={url}
+                            dodoPageId={dodoPageDetails?.id}
+                            isOpened={isOpened}
+                            setIsOpened={setIsOpened}
+                            setIsPublishedModalOpened={setIsPublishedModalOpened}
+                        />
+                    </div>
+                )}
+
+                {mode === "preview" && (
+                    <div className="flex flex-col gap-3 px-5 items-center pb-20">
+                        <div className="flex items-center gap-2">
+                            <div className="text-[#3D4966] text-xs">
+                                powered by:
+                            </div>
+                            <Image src={DodoIcon} alt="dodo icon" height={20} />
+                        </div>
+                        <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
+                            <div className=" font-semibold text-xs">
+                                Create your DODOpage now
+                            </div>
+                            <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
+                                <ArrowUpRight className="w-4 h-4" />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <PublishedModal isOpened={isPublishedModalOpened} setIsOpened={setIsPublishedModalOpened} url={url} />
             </div>
-            {mode === "edit" && (
-                <div
-                    className={`bottom-0 fixed w-full p-4 z-10`}
-                >
-                    <FooterBar
-                        mode={mode}
-                        url={url}
-                        dodoPageId={dodoPageDetails?.id}
-                        isOpened={isOpened}
-                        setIsOpened={setIsOpened}
-                        setIsPublishedModalOpened={setIsPublishedModalOpened}
-                    />
-                </div>
-            )}
-
-            {mode === "preview" && (
-                <div className="flex flex-col gap-3 px-5 items-center pb-20">
-                    <div className="flex items-center gap-2">
-                        <div className="text-[#3D4966] text-xs">
-                            powered by:
-                        </div>
-                        <Image src={DodoIcon} alt="dodo icon" height={20} />
-                    </div>
-                    <div className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2">
-                        <div className=" font-semibold text-xs">
-                            Create your DODOpage now
-                        </div>
-                        <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
-                            <ArrowUpRight className="w-4 h-4" />
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <PublishedModal isOpened={isPublishedModalOpened} setIsOpened={setIsPublishedModalOpened} url={url} />
         </div>
     );
 };
