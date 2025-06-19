@@ -6,12 +6,21 @@ import DragIcon from '../../../public/icons/drag.svg'
 
 
 
-const LocationDistribution = () => {
+const LocationDistribution = ({
+    setBlocksToShow,
+    blocksToShow
+}: {
+    setBlocksToShow: (blocksToShow: any) => void,
+    blocksToShow: any
+}) => {
     return (
-        <div className="p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1">
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${!blocksToShow.locationDistribution ? 'opacity-50' : ''}`}>
         <div className="flex justify-between items-center">
             <Image className="w-5 h-5" src={DragIcon} alt="Drag" />
-            <Toggle checked={true} onCheckedChange={() => { }} />
+            <Toggle checked={blocksToShow.locationDistribution} onCheckedChange={() => setBlocksToShow({
+                ...blocksToShow,
+                locationDistribution: !blocksToShow.locationDistribution
+            })} />
         </div>
 
         <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">

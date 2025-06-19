@@ -11,7 +11,7 @@ import { useState, useMemo } from "react"
 
 
 
-const InstaRateCard = () => {
+const InstaRateCard = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (blocksToShow: any) => void, blocksToShow: any }) => {
     const [current, setCurrent] = useState(0)
     const totalFollowers = 100000
     const engagementRate = 10
@@ -107,10 +107,13 @@ const InstaRateCard = () => {
     }
 
     return (
-        <div className="p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1">
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${!blocksToShow.instaRateCard ? 'opacity-50' : ''}`}>
             <div className="flex justify-between items-center">
                 <Image className="w-5 h-5" src={DragIcon} alt="Drag" />
-                <Toggle checked={true} onCheckedChange={() => { }} />
+                <Toggle checked={blocksToShow.instaRateCard} onCheckedChange={() => setBlocksToShow({
+                    ...blocksToShow,
+                    instaRateCard: !blocksToShow.instaRateCard
+                })} />
             </div>
 
             <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
