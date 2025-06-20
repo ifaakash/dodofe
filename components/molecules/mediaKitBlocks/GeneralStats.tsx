@@ -1,3 +1,4 @@
+import BlobChart from "@components/atoms/Charts/BlobChart"
 import UploadIcon from "/public/icons/upload2.svg"
 import Image from "next/image"
 
@@ -24,9 +25,16 @@ const statsData = [
     }
 ]
 
+const data2 = {
+    "reels": 45,
+    "posts": 45,
+    "stories": 10
+}
+
 const GeneralStats = () => {
     return (
         <div className="p-3 bg-[#FDFBFF] rounded-[14px] flex flex-col gap-3">
+            <BlobChart data={data2}/>
             <div className="p-2 flex justify-between items-center border rounded-[10px]">
                 <div className="flex flex-col gap-0.5 text-[10px]">
                     <div className="font-semibold">Upload Content Type</div>

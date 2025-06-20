@@ -5,6 +5,11 @@ import MediaKitBlocks from "@components/molecules/mediaKitConsole/MediaKitBlocks
 import leftArrow from "public/icons/leftArrow.svg";
 import Image from "next/image";
 import EyeIcon from "../../../public/icons/greenEye.svg";
+import { getMediaKitByInstaId, getUserDetails } from "api/services";
+import { useEffect, useState } from "react";
+import { userDetailsProps } from "types";
+import { loadState } from "@utils/localStorage";
+import { STORAGE_CONSTANTS } from "@utils/constants";
 
 
 const headerData = {
@@ -14,6 +19,25 @@ const headerData = {
 }
 
 const MediaKitConsole = () => {
+    const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null)
+    const userId = loadState(STORAGE_CONSTANTS.userId)
+    const [mediaKitDetails, setMediaKitDetails] = useState<any>(null)
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            const response = await getUserDetails(userId as string)
+            setUserDetails(response.user)
+        }
+
+        const fetchMediaKitDetails = async () => {
+            const response = await getMediaKitByInstaId('_keshav_malik')
+            setMediaKitDetails(response.data)
+        }
+
+        fetchMediaKitDetails()
+        fetchUserDetails()
+    }, [])
+
     return (
         <div className='h-screen w-screen overflow-auto'>
             <div className="px-5 py-4 flex justify-between items-center border-b">
@@ -36,8 +60,8 @@ const MediaKitConsole = () => {
             </div>
 
             <div className="p-4 flex flex-col gap-6">
-                <MediaKitHeader data={headerData} />
-                <MediaKitBlocks />
+                <MediaKitHeader data={userDetails} />
+                <MediaKitBlocks mediaKitDetails={mediaKitDetails}/>
             </div>
         </div>
     )

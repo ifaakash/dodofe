@@ -3,10 +3,31 @@ import UploadIcon from "../../../public/icons/upload2.svg"
 import Image from "next/image"
 import AgeDistributionIcon from "../../../public/assets/AgeDistImg.svg"
 import DragIcon from '../../../public/icons/drag.svg'
+import MediaKitAgeChart from "@components/atoms/Charts/MediaKitAgeChart"
+import { useState } from "react"
 
 
 const AgeDistribution = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (blocksToShow: any) => void, blocksToShow: any }) => {
     const isDisabled = !blocksToShow || !blocksToShow.ageDistribution;
+
+    const [ageDistributionData, setAgeDistributionData] = useState([
+        {
+            age: "15-24",
+            percentage: 15
+        },
+        {
+            age: "25-34",
+            percentage: 55
+        },
+        {
+            age: "35-44",
+            percentage: 32
+        },
+        {
+            age: "45-54",
+            percentage: 20
+        }
+    ])
     
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${isDisabled ? 'opacity-50' : ''}`}>
@@ -27,6 +48,8 @@ const AgeDistribution = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (
                 </div>
                 <Image src={AgeDistributionIcon} alt="Gender Distribution" />
             </div>
+
+            <MediaKitAgeChart ageDistributionData={ageDistributionData} />
 
             <div className={`p-2 flex justify-between items-center border rounded-[10px] ${isDisabled ? 'pointer-events-none' : ''}`}>
                 <div className="flex flex-col gap-0.5 text-[10px]">

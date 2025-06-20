@@ -4,6 +4,13 @@ import Image from "next/image";
 import LineWithDot from 'public/assets/LineWithDot.svg'
 import cx from 'classnames'
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { loadState } from "@utils/localStorage";
+import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
+import Screen from "../Screen";
+import { linkMediaKit } from "api";
+import { toast } from "react-toastify";
+
 
 const keyFeatures = [
     {
@@ -23,15 +30,34 @@ const keyFeatures = [
     }
 ]
 
-const MediaKitReady = ({ instaIdInput, setInstaIdInput }: { instaIdInput: string, setInstaIdInput: (instaIdInput: string) => void }) => {
+const MediaKitReady = ({ instaIdInput, setInstaIdInput, mediakitRef }: { instaIdInput: string, setInstaIdInput: (instaIdInput: string) => void, mediakitRef: string }) => {
     const router = useRouter()
-    const instaUserName = '_keshav_malik'
+    const userId = loadState(STORAGE_CONSTANTS.userId)
 
-    const formattedInstaUserName = '******' + instaUserName.slice(-4)
+    const formattedInstaUserName = '******' + mediakitRef.slice(-4)
 
-    const handleNavigateToConsole = () => {
-        router.push(`/media-kit/console`)
-        console.log(instaIdInput)
+    const handleNavigateToConsole = async () => {
+        if (!userId) {
+            router.push(ROUTE_CONSTANTS.LOGIN + '?mediakitRef=' + mediakitRef)
+            return
+        }
+
+        if (!instaIdInput) {
+            toast.error('Please enter your Instagram username')
+            return
+        }
+
+        const response = await linkMediaKit({
+            userId,
+            instaId: instaIdInput
+        })
+
+        if (response.success) {
+            toast.success('Media kit linked successfully')
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE)
+        } else {
+            toast.error(response.message) // to be changed
+        }
     }
 
     return (

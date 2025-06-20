@@ -8,13 +8,18 @@ import LocationDistribution from "../mediaKitBlocks/LocationDistribution"
 import InstaRateCard from "../mediaKitBlocks/InstaRateCard"
 import { useState } from "react"
 
-const MediaKitBlocks = () => {
+const MediaKitBlocks = ({mediaKitDetails}: {mediaKitDetails: any}) => {
     const [blocksToShow, setBlocksToShow] = useState({
         genderDistribution: true,
         brandCollaboration: true,
         ageDistribution: true,
         locationDistribution: true,
         instaRateCard: true,
+    })
+
+    console.log({
+        from : 'mediaKitBlocks',
+        mediaKitDetails
     })
     return (
         <div className="flex flex-col gap-[10px] w-full pb-4">
@@ -23,7 +28,7 @@ const MediaKitBlocks = () => {
                 <GeneralStats />
             </div>
             <GenderDistribution setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
-            <BrandCollaboration setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
+            <BrandCollaboration setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow} brandData={mediaKitDetails?.brandCollabs}/>
             <AgeDistribution setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
             <LocationDistribution setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
             <InstaRateCard setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>

@@ -1,9 +1,14 @@
 import { Input } from '@components/atoms'
 import NewButton from '@components/atoms/Button/NewButton'
 import { X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import EditPenIcon from "public/icons/EditPen.svg";
 import Image from 'next/image'
+import AddImageIcon from "public/icons/addImage.svg";
+import { addBrandCollaboration } from 'api';
+import { toast } from 'react-toastify';
+
+
 
 
 const checkBoxList = [
@@ -26,6 +31,11 @@ const AddBrandModal = ({ setIsAddBrandModelOpen }: { setIsAddBrandModelOpen: (is
     const [link, setLink] = useState('')
     const [reach, setReach] = useState('')
     const [engagement, setEngagement] = useState('')
+    const [brandName, setBrandName] = useState('')
+    const [brandLogo, setBrandLogo] = useState('')
+    const [brandLogoFile, setBrandLogoFile] = useState<File | null>(null)
+    const [brandNameEditing, setBrandNameEditing] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         document.body.style.overflow = 'hidden'
@@ -50,6 +60,48 @@ const AddBrandModal = ({ setIsAddBrandModelOpen }: { setIsAddBrandModelOpen: (is
         return checkboxes.some(cb => cb.value) && link.trim() !== ''
     }
 
+    const handleAddBrand = async () => {
+        const formData = new FormData()
+
+        // Add text fields
+        formData.append('instaId', '_keshav_malik') // to be fixed
+        formData.append('brandName', brandName)
+        formData.append('contentType', checkboxes.filter(cb => cb.value).map(cb => cb.label).join(','))
+        formData.append('contentUrl', link)
+        formData.append('reach', reach)
+        formData.append('engagement', engagement)
+
+        // Add file if exists
+        if (brandLogoFile) {
+            formData.append('brandLogo', brandLogoFile)
+        }
+
+        const res = await addBrandCollaboration(formData)
+
+        if (res.success) {
+            setIsAddBrandModelOpen(false)
+            toast.success('Brand added successfully')
+        } else {
+            toast.error(res.message)
+        }
+    }
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (file) {
+            setBrandLogoFile(file)
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                setBrandLogo(e.target?.result as string)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const handleImageClick = () => {
+        fileInputRef.current?.click()
+    }
+
     return (
         <div
             className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-end justify-center animate-fadeIn p-[10px]"
@@ -70,11 +122,41 @@ const AddBrandModal = ({ setIsAddBrandModelOpen }: { setIsAddBrandModelOpen: (is
                 </div>
                 <div className='flex p-2 gap-3 border border-[E2E4E9] rounded-xl'>
                     <div className='flex items-center gap-2'>
-                      
-                        <div className='text-[#3D4966] font-medium'> Brand Name </div>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImageUpload}
+                            accept="image/*"
+                            className="hidden"
+                        />
+                        <div
+                            className='bg-[#979EAD] rounded-[10px] p-2 cursor-pointer hover:bg-[#8A919F] transition-colors'
+                            onClick={handleImageClick}
+                        >
+                            {brandLogo ? (
+                                <Image
+                                    src={brandLogo}
+                                    alt='brand-logo'
+                                    width={24}
+                                    height={24}
+                                    className="rounded-[6px] object-cover"
+                                />
+                            ) : (
+                                <Image src={AddImageIcon} alt='insta-icon' width={24} height={24} />
+                            )}
+                        </div>
                     </div>
-                    <div className='flex items-center gap-2'>
-                        <Image src={EditPenIcon} alt='edit-pen' width={24} height={24} className='cursor-pointer' />
+                    <div className='flex items-center' onClick={() => setBrandNameEditing(true)}>
+                        {
+                            brandNameEditing ? (
+                                <input type='text' value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder='Add Brand Name' className='text-[#3D4966] font-medium outline-none' />
+                            ) : (
+                                <div className='flex items-center gap-2'>
+                                    <div className='text-[#3D4966] font-medium'> Brand Name </div>
+                                    <Image src={EditPenIcon} alt='edit-pen' width={24} height={24} className='cursor-pointer' />
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
                 <div className='flex flex-col gap-2'>
@@ -121,12 +203,7 @@ const AddBrandModal = ({ setIsAddBrandModelOpen }: { setIsAddBrandModelOpen: (is
                     <NewButton
                         variant={isFormValid() ? "primary" : "disabled"}
                         size="large"
-                        onClick={() => {
-                            if (isFormValid()) {
-                                // Handle form submission
-                                setIsAddBrandModelOpen(false)
-                            }
-                        }}
+                        onClick={handleAddBrand}
                         className="w-full"
                     >
                         Add now
@@ -147,12 +224,12 @@ const CheckBox = ({
     onChange: (value: boolean) => void
 }) => {
     return (
-        <div className='flex items-center gap-1 justify-between px-[10px] py-2 border border-[#EAE9EB] rounded-[10px] w-full'>
+        <div className='flex items-center gap-1 justify-between px-[10px] py-2 border border-[#EAE9EB] rounded-[10px] w-full' onClick={() => onChange(!value)}>
             <div className='text-[#414D55] font-medium text-sm'> {label} </div>
             <input
                 type='checkbox'
                 checked={value}
-                onChange={() => onChange(!value)}
+
                 className="w-4 h-4 accent-[#8B39FF]"
             />
         </div>
