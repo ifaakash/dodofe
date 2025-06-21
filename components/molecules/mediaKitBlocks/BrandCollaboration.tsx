@@ -9,51 +9,59 @@ import { useState } from "react"
 import AddBrandModal from "@components/templates/mediaKit/AddBrandModal"
 import RajveerIcon from "../../../public/assets/rajveer.png"
 import Link from "next/link"
+import { updateMediaKit } from "api/services"
 
 
-const BrandCollaboration = ({ setBlocksToShow, blocksToShow, brandData }: { setBlocksToShow: (blocksToShow: any) => void, blocksToShow: any, brandData: any }) => {
+const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId }: { brandData: any, setUpdateMediaKit: (updateMediaKit: boolean) => void, instaId: string }) => {
     const [isAddBrandModelOpen, setIsAddBrandModelOpen] = useState(false)
 
-    console.log({
-        from : 'brandCollaboration',
-        brandData
-    })
+    const handleToggle = async () => {
+        setUpdateMediaKit(true)
+        const response = await updateMediaKit({
+            instaId: instaId,
+            updates: {
+                brandCollabs: {
+                    isActive: !brandData?.isActive,
+                }
+            }
+        })
+        console.log('response', response)
+    }
 
     return (
-        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-2 ${!blocksToShow.brandCollaboration ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${brandData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
             <div className="flex justify-between items-center">
-                <Image className="w-5 h-5" src={DragIcon} alt="Drag" />
+                <Image className={`w-5 h-5 ${brandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
                 <div className="pointer-events-auto">
-                    <Toggle checked={blocksToShow.brandCollaboration} onCheckedChange={() => setBlocksToShow({
-                        ...blocksToShow,
-                        brandCollaboration: !blocksToShow.brandCollaboration
-                    })} />
+                    <Toggle checked={brandData?.isActive} onCheckedChange={handleToggle} />
                 </div>
             </div>
 
-            <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
-                <div className="text-[#9747FF] w-full px-2 py-1 flex gap-1">
-                    <div className="text-xs font-semibold"> Brand </div>
-                    <div className="text-[10px]"> COLLABORATION </div>
+            <div className={`flex flex-col gap-2 ${brandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+                <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
+                    <div className="text-[#9747FF] w-full px-2 py-1 flex gap-1">
+                        <div className="text-xs font-semibold"> Brand </div>
+                        <div className="text-[10px]"> COLLABORATION </div>
+                    </div>
+                    <Image src={BrandCollaborationIcon} alt="Gender Distribution" />
                 </div>
-                <Image src={BrandCollaborationIcon} alt="Gender Distribution" />
-            </div>
 
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-                {
-                    brandData?.map((brand, index) => (
-                        <BrandCard key={index} brand={brand} />
-                    ))
-                }
-            </div>
-
-            <div className="flex justify-center">
-                <div className="px-2 py-1 flex gap-1 items-center border border-[#E2E4E9] rounded-full">
-                    <div className="text-[10px] font-semibold" onClick={() => setIsAddBrandModelOpen(true)}> Add New </div>
-                    <Plus size={16} className="text-brandPrimary" />
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                    {
+                        Array.isArray(brandData) && brandData?.map((brand, index) => (
+                            <BrandCard key={index} brand={brand} />
+                        ))
+                    }
                 </div>
-            </div>
 
+                <div className="flex justify-center">
+                    <div className="px-2 py-1 flex gap-1 items-center border border-[#E2E4E9] rounded-full">
+                        <div className="text-[10px] font-semibold" onClick={() => setIsAddBrandModelOpen(true)}> Add New </div>
+                        <Plus size={16} className="text-brandPrimary" />
+                    </div>
+                </div>
+
+            </div>
             {
                 isAddBrandModelOpen && <AddBrandModal setIsAddBrandModelOpen={setIsAddBrandModelOpen} />
             }

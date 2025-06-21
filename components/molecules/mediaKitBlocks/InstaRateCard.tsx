@@ -8,13 +8,26 @@ import Card3 from 'public/assets/PriceCalculatorCard3.png'
 import Card4 from 'public/assets/PriceCalculatorCard4.png'
 import { formatCurrency } from '@utils/helperFunctions'
 import { useState, useMemo } from "react"
+import { updateMediaKit } from "api/services"
 
 
 
-const InstaRateCard = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (blocksToShow: any) => void, blocksToShow: any }) => {
+const InstaRateCard = ({
+    rateCardData,
+    instaId,
+    setUpdateMediaKit,
+    engagementRate,
+    followers,
+    mode = 'edit'
+    }: {
+    rateCardData: any,
+    instaId: string,
+    setUpdateMediaKit?: (updateMediaKit: boolean) => void,
+    engagementRate: number,
+    followers: number,
+    mode: 'edit' | 'public' | 'preview'
+    }) => {
     const [current, setCurrent] = useState(0)
-    const totalFollowers = 100000
-    const engagementRate = 10
     const contentNiche = 'fashion'
 
 
@@ -55,7 +68,7 @@ const InstaRateCard = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (bl
 
         const calculatePrice = (baseRate: number) => {
             return (
-                (baseRate * totalFollowers / 1000) *
+                (baseRate * followers / 1000) *
                 engagementMultiplier *
                 nicheMultiplier
             )
@@ -83,7 +96,7 @@ const InstaRateCard = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (bl
                 value: calculatePrice(baseRates.carousel),
             },
         ]
-    }, [totalFollowers, engagementRate, contentNiche])
+    }, [followers, engagementRate, contentNiche])
 
     // Mobile swipe
     let touchStartX = 0
@@ -106,14 +119,25 @@ const InstaRateCard = ({ setBlocksToShow, blocksToShow }: { setBlocksToShow: (bl
         }
     }
 
+    const handleToggle = async () => {
+        setUpdateMediaKit(true)
+        const response = await updateMediaKit({
+            instaId: instaId,
+            updates: {
+                rateCard: {
+                    isActive: !rateCardData?.isActive,
+                    rateCardData: rateCardData?.rateCardData
+                }
+            }
+        })
+        console.log('response', response)
+    }
+
     return (
-        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${!blocksToShow.instaRateCard ? 'opacity-50' : ''}`}>
-            <div className="flex justify-between items-center">
-                <Image className="w-5 h-5" src={DragIcon} alt="Drag" />
-                <Toggle checked={blocksToShow.instaRateCard} onCheckedChange={() => setBlocksToShow({
-                    ...blocksToShow,
-                    instaRateCard: !blocksToShow.instaRateCard
-                })} />
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${rateCardData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
+            <div className={`flex justify-between items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                <Image className={`w-5 h-5 ${rateCardData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
+                <Toggle checked={rateCardData?.isActive} onCheckedChange={handleToggle} />
             </div>
 
             <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">

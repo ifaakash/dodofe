@@ -9,6 +9,12 @@ import GenderDistributionSection from "./GenderDistributionSection";
 import LocationDistributionSection from "./LocationDistributionSection";
 import InstagramPriceSection from "./InstagramPriceSection";
 import { Header } from "@components/molecules/Header";
+import FollowerCount from "@components/molecules/mediaKitBlocks/FollowerCount";
+import GeneralStats from "@components/molecules/mediaKitBlocks/GeneralStats";
+import GenderDistribution from "@components/molecules/mediaKitBlocks/GenderDistribution";
+import MediaKitHeader from "@components/molecules/mediaKitConsole/MediaKitHeader";
+import InstaRateCard from "@components/molecules/mediaKitBlocks/InstaRateCard";
+import AgeDistribution from "@components/molecules/mediaKitBlocks/AgeDistribution";
 
 interface MediaKitPageProps {
     userData?: {
@@ -43,81 +49,53 @@ interface MediaKitPageProps {
     }>;
 }
 
-const MediaKitPage: React.FC<any> = ({
-    userData,
-    followers,
-    grade,
-    contentSplit,
-    mediaCount,
-    engagement,
-    avgLike,
-    avgComments,
-    uploadedFile,
-    brandCollaborations
-}) => {
-    const instaStats = {
-        followers,
-        grade,
-        contentSplit,
-        mediaCount,
-        engagement,
-        avgLike,
-        avgComments,
-        uploadedFile
-    };
-    console.log(instaStats)
+const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
+
+    console.log({
+        from: 'MediaKitPage',
+        mediaKitData
+    })
+
     return (
         <div className="min-h-screen">
-            <Header />
+            {/* <Header /> */}
 
-            {/* Main container with max width and centered */}
-            <div className="max-w-4xl mx-auto px-4 py-8">
-                {/* Bio Section */}
-                <div className="mb-4">
-                    <BioSection {...userData} />
-                </div>
+            <div className="py-12 px-4 flex flex-col gap-5">
+                <MediaKitHeader data={mediaKitData} />
 
-                <div className="mb-4">
-                    <InstaFollowerSection
-                        followers={instaStats.followers}
-                        grade={instaStats.grade}
-                    />
-                </div>
 
-                <div className="mb-4">
-                    <div className="bg-white rounded-2xl shadow-sm p-6 pt-8">
-                        <InstaSection stats={instaStats} />
+                <div className="flex flex-col gap-[10px]">
+                    <div className="flex flex-col gap-1">
+                        <FollowerCount followerCount={mediaKitData?.followers} />
+                        <GeneralStats />
+                    </div>
+
+                    <div className="flex flex-col gap-[10px]">
+                        {
+                            mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
+                                <AgeDistribution 
+                                    ageDistributionData={mediaKitData?.ageAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )   
+                        }
+                        {
+                            mediaKitData?.rateCard?.isActive && (
+                                <InstaRateCard 
+                                    rateCardData={mediaKitData?.rateCard} 
+                                    instaId={mediaKitData?.instaId} 
+                                    engagementRate={mediaKitData?.engagementRate}
+                                    followers={mediaKitData?.followers}
+                                    mode={'public'}
+                                />
+                            )
+                        }
                     </div>
                 </div>
-
-                <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-                    <BrandSection
-                        collaborations={brandCollaborations}
-                        onCollaborationAdded={() => {
-                            // Trigger a refetch of the media kit data
-                            if (typeof window !== 'undefined') {
-                                window.location.reload();
-                            }
-                        }}
-                    />
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-                    <AgeDistributionSection />
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-                    <GenderDistributionSection />
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-                    <LocationDistributionSection />
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-                    <InstagramPriceSection />
-                </div>
             </div>
+
+
         </div>
     );
 };

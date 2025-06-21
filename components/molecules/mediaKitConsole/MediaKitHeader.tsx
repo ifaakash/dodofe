@@ -5,6 +5,8 @@ import Image from "next/image"
 
 const MediaKitHeader = ({ data }: any) => {
 
+    const mockCategories = ['fashion', 'travel', 'food']
+
     return (
         <div className="flex gap-3 flex-col items-center">
             <Image src={Rajveer} className="w-[100px] h-[100px] rounded-full" alt="Rajveer" />
@@ -13,12 +15,12 @@ const MediaKitHeader = ({ data }: any) => {
                 <div className="flex gap-1 flex-col text-xs font-medium text-[#3D4966]">
                     <div className="text-center gap-2">
                         <div className="flex gap-2 items-center justify-center">
-                            {data?.interestCategories
+                            {mockCategories && mockCategories.length > 0 && mockCategories
                                 .map((item, index) => (
-                                    <>
+                                    <div key={index}    >
                                         {index > 0 && <span>•</span>}
                                         <span>{item}</span>
-                                    </>
+                                    </div>
                                 ))}
                         </div>
                     </div>

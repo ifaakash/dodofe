@@ -8,7 +8,12 @@ import LocationDistribution from "../mediaKitBlocks/LocationDistribution"
 import InstaRateCard from "../mediaKitBlocks/InstaRateCard"
 import { useState } from "react"
 
-const MediaKitBlocks = ({mediaKitDetails}: {mediaKitDetails: any}) => {
+const MediaKitBlocks = ({mediaKitDetails, setUpdateMediaKit}: {mediaKitDetails: any, setUpdateMediaKit: (updateMediaKit: boolean) => void}) => {
+    console.log({
+        from : 'mediaKitBlocks',
+        mediaKitDetails
+    })
+    
     const [blocksToShow, setBlocksToShow] = useState({
         genderDistribution: true,
         brandCollaboration: true,
@@ -17,21 +22,40 @@ const MediaKitBlocks = ({mediaKitDetails}: {mediaKitDetails: any}) => {
         instaRateCard: true,
     })
 
-    console.log({
-        from : 'mediaKitBlocks',
-        mediaKitDetails
-    })
     return (
-        <div className="flex flex-col gap-[10px] w-full pb-4">
+        <div className="flex flex-col gap-1 w-full pb-4">
             <div className="flex flex-col gap-1">
-                <FollowerCount />
+                <FollowerCount followerCount={mediaKitDetails?.followers}/>
                 <GeneralStats />
             </div>
-            <GenderDistribution setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
-            <BrandCollaboration setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow} brandData={mediaKitDetails?.brandCollabs}/>
-            <AgeDistribution setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
-            <LocationDistribution setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
-            <InstaRateCard setBlocksToShow={setBlocksToShow} blocksToShow={blocksToShow}/>
+            
+            <GenderDistribution 
+                genderAnalytics={mediaKitDetails?.genderAnalytics} 
+                instaId={mediaKitDetails?.instaId} 
+                setUpdateMediaKit={setUpdateMediaKit}
+            />
+            <BrandCollaboration 
+                brandData={mediaKitDetails?.brandCollabs} 
+                instaId={mediaKitDetails?.instaId} 
+                setUpdateMediaKit={setUpdateMediaKit}
+            />
+            <AgeDistribution 
+                ageDistributionData={mediaKitDetails?.ageAnalytics} 
+                instaId={mediaKitDetails?.instaId} 
+                setUpdateMediaKit={setUpdateMediaKit}/>
+                
+            <LocationDistribution 
+                locationDistributionData={mediaKitDetails?.locationAnalytics} 
+                instaId={mediaKitDetails?.instaId} 
+                setUpdateMediaKit={setUpdateMediaKit}
+                />
+            <InstaRateCard 
+                rateCardData={mediaKitDetails?.rateCard} 
+                instaId={mediaKitDetails?.instaId} 
+                setUpdateMediaKit={setUpdateMediaKit}
+                engagementRate={mediaKitDetails?.engagementRate}
+                followers={mediaKitDetails?.followers}
+                />
         </div>
     )
 }

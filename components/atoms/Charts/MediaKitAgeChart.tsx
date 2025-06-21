@@ -3,7 +3,7 @@ import React from "react";
 const MediaKitAgeChart = ({ ageDistributionData }: { ageDistributionData: { age: string; percentage: number }[] }) => {
     return (
         <div className="flex flex-col gap-2 w-full py-2">
-            {ageDistributionData.map((data, index) => (
+            {ageDistributionData?.map((data: any, index: number) => (
                 <div key={index} className="flex items-center w-full">
                     <div className="relative flex-1 h-[18px] rounded-[4px] overflow-hidden flex items-center bg-[#F4F4F6]">
                         <div

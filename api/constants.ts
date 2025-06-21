@@ -51,5 +51,6 @@ export default {
     getPollResponses: '/block/get-poll-responses',
     linkMediaKit: '/mediakit/link-mediakit-to-user',
     getMediaKit: '/mediakit/get-by-instaid',
-    addBrandCollaboration: '/mediakit/add-brand-collab'
+    addBrandCollaboration: '/mediakit/add-brand-collab',
+    updateMediaKit: '/mediakit/update'
 };

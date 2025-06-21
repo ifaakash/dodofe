@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Toggle = ({
     checked = false,
@@ -10,6 +10,11 @@ const Toggle = ({
     ...props
 }) => {
     const [isChecked, setIsChecked] = useState(checked);
+
+    // Update local state when checked prop changes
+    useEffect(() => {
+        setIsChecked(checked);
+    }, [checked]);
 
     const handleToggle = () => {
         if (disabled) return;

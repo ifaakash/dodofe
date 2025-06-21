@@ -224,3 +224,6 @@ export const addBrandCollaboration = async (payload: any): Promise<any> =>
     
 export const linkMediaKit = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.linkMediaKit, payload);
+
+export const updateMediaKit = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.updateMediaKit, payload);
