@@ -28,6 +28,7 @@ const LocationDistribution = ({
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [locationDistData, setLocationDistData] = useState<any>(locationDistributionData || null)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         if (locationDistributionData) {
@@ -47,7 +48,7 @@ const LocationDistribution = ({
                 }
             }
         })
-        if(response.success){
+        if (response.success) {
             setLocationDistData(response.data.locationAnalytics)
             toast.success('Location Distribution updated successfully')
         }
@@ -70,11 +71,11 @@ const LocationDistribution = ({
                 if (response.success) {
                     setLocationDistData(response.data.locationAnalytics)
                 } else {
-                    toast.error(response.message)
+                    console.log('Upload failed', response.responseData)
                 }
             } catch (error) {
-                console.error('Upload error:', error)
-                toast.error(error.message)
+                console.error('Something went wrong', error)
+                setError(error.message)
             } finally {
                 setIsUploading(false)
             }
@@ -147,6 +148,14 @@ const LocationDistribution = ({
                         />
                     </label>
                 </div>
+
+                {
+                    error && (
+                        <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
+                            {error}
+                        </div>
+                    )
+                }
             </div>
         </div>
     )

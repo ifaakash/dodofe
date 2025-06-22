@@ -13,6 +13,7 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [genderDistributionData, setGenderDistributionData] = useState<any>(genderAnalytics || null)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         if (genderAnalytics) {
@@ -38,9 +39,11 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                 if (response.success) {
                     setGenderDistributionData(response.data.genderAnalytics)
                 } else {
-                    toast.error(response.message || 'Upload failed')
+                    console.log('Upload failed', response.responseData.error)
                 }
             } catch (error) {
+                console.log('Something went wrong', error)
+                setError(error.responseData.message)
                 toast.error('Upload failed')
             } finally {
                 setIsUploading(false)
@@ -60,7 +63,7 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                 }
             }
         })
-        if(response.success){
+        if (response.success) {
             toast.success('Gender Distribution updated successfully')
         }
     }
@@ -72,7 +75,7 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
             year: 'numeric'
         });
     };
-    
+
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${genderDistributionData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
             <div className={`flex justify-between items-center ${mode === 'public' ? 'hidden' : ''}`}>
@@ -156,6 +159,14 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                         />
                     </label>
                 </div>
+
+                {
+                    error && (
+                        <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
+                            {error}
+                        </div>
+                    )
+                }
             </div>
         </div>
     )

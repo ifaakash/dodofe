@@ -14,6 +14,7 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [ageDistData, setAgeDistData] = useState<any>(ageDistributionData || null)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         if (ageDistributionData) {
@@ -40,11 +41,11 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                 if (response.success) {
                     setAgeDistData(response.data.ageAnalytics)
                 } else {
-                    toast.error(response.message)
+                    setError(response.responseData.error)
                 }
             } catch (error) {
                 console.error('Upload error:', error)
-                toast.error(error.message)
+                setError(error.message)
             } finally {
                 setIsUploading(false)
             }
@@ -144,6 +145,14 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                     </label>
                 </div>
             </div>
+
+            {
+                error && (
+                    <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
+                        {error}
+                    </div>
+                )
+            }
         </div>
     )
 }
