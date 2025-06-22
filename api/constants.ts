@@ -52,5 +52,7 @@ export default {
     linkMediaKit: '/mediakit/link-mediakit-to-user',
     getMediaKit: '/mediakit/get-by-instaid',
     addBrandCollaboration: '/mediakit/add-brand-collab',
-    updateMediaKit: '/mediakit/update'
+    updateMediaKit: '/mediakit/update',
+    addMediaKitAnalytic: '/mediakit/analytics',
+    verifyMediaKit: '/mediakit/is-verified'
 };

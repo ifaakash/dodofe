@@ -4,52 +4,90 @@ import Image from "next/image"
 import AgeDistributionIcon from "../../../public/assets/AgeDistImg.svg"
 import DragIcon from '../../../public/icons/drag.svg'
 import MediaKitAgeChart from "@components/atoms/Charts/MediaKitAgeChart"
-import { useState } from "react"
-import { updateMediaKit } from "api/services"
+import { useEffect, useState } from "react"
+import { addMediaKitAnalytics, updateMediaKit } from "api/services"
 import { Loader2 } from "lucide-react"
+import { toast } from "react-toastify"
 
 const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode = 'edit' }: { ageDistributionData: any, instaId: string, setUpdateMediaKit?: (updateMediaKit: boolean) => void, mode: 'edit' | 'public' | 'preview' }) => {
 
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
+    const [ageDistData, setAgeDistData] = useState<any>(ageDistributionData || null)
+
+    useEffect(() => {
+        if (ageDistributionData) {
+            setAgeDistData(ageDistributionData)
+        }
+    }, [ageDistributionData])
 
 
-    const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('handleUploadImage called', e.target.files)
+    const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsUploading(true)
         const file = e.target.files?.[0]
         if (file) {
             setUploadedImage(URL.createObjectURL(file))
-        }
-        setIsUploading(false)
 
-      // backend call here
+            try {
+                const formData = new FormData()
+                formData.append('screenshot', file)
+                formData.append('instaId', instaId || '')
+                formData.append('type', 'age')
+
+                const response = await addMediaKitAnalytics(formData)
+                console.log('Upload response:', response)
+
+                if (response.success) {
+                    setAgeDistData(response.data.ageAnalytics)
+                } else {
+                    toast.error(response.message)
+                }
+            } catch (error) {
+                console.error('Upload error:', error)
+                toast.error(error.message)
+            } finally {
+                setIsUploading(false)
+            }
+        }
     }
 
     const handleToggle = async () => {
-        console.log('handleToggle called', { currentState: ageDistributionData?.isActive, newState: !ageDistributionData?.isActive })
         setUpdateMediaKit(true)
         const response = await updateMediaKit({
             instaId: instaId,
             updates: {
                 ageAnalytics: {
-                    isActive: !ageDistributionData?.isActive,   
+                    ageData: ageDistData.ageData,
+                    uploadedAt: ageDistData.uploadedAt,
+                    isActive: !ageDistData?.isActive,
                 }
             }
         })
-        console.log('response', response)
+        if (response.success) {
+            toast.success('Age Distribution updated successfully')
+        }
     }
 
+    const formatDate = (date: string) => {
+        return new Date(date).toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    };
+
+
+
     return (
-        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${ageDistributionData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${ageDistData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
             <div className={`flex justify-between items-center ${mode === 'public' ? 'hidden' : ''}`}>
-                <Image className={`w-5 h-5 ${ageDistributionData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
+                <Image className={`w-5 h-5 ${ageDistData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
                 <div className="pointer-events-auto">
-                    <Toggle checked={ageDistributionData?.isActive} onCheckedChange={handleToggle} />
+                    <Toggle checked={ageDistData?.isActive} onCheckedChange={handleToggle} />
                 </div>
             </div>
 
-            <div className={`flex flex-col gap-1 ${ageDistributionData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+            <div className={`flex flex-col gap-1 ${ageDistData?.isActive ? '' : ''}`}>
                 <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
                     <div className="text-[#FF4794] w-full px-2 py-1 flex gap-1">
                         <div className="text-xs font-semibold"> Age </div>
@@ -59,15 +97,26 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                 </div>
 
                 {
-                    ageDistributionData?.ageData && <MediaKitAgeChart ageDistributionData={ageDistributionData.ageData} />
+                    ageDistData?.ageData && <MediaKitAgeChart ageData={ageDistData.ageData} />
                 }
 
-                <div className="p-2 flex justify-between items-center border rounded-[10px]">
-                    <div className="flex flex-col gap-0.5 text-[10px]">
-                        <div className="font-semibold">Upload Age Distribution</div>
-                        <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
-                    </div>
-                    <label className="border-[1px] border-[#EAE9EC] flex gap-0.5 px-[10px] py-1 rounded-full cursor-pointer">
+                <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
+                    {
+                        ageDistData?.ageData ? (
+                            <div className="flex flex-col text-[10px]">
+                                <div className="font-semibold">Uploaded on</div>
+                                <div className="font-medium">{formatDate(ageDistData?.uploadedAt)}</div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-0.5 text-[10px]">
+                                <div className="font-semibold">Upload Gender Distribution</div>
+                                <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
+                            </div>
+                        )
+                    }
+
+
+                    <label className={`border-[1px] border-[#EAE9EC] flex gap-0.5 px-[10px] py-1 rounded-full cursor-pointer`}>
                         <div className="text-[10px] font-medium">
                             {
                                 isUploading ? (
@@ -78,7 +127,7 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                                 ) : (
                                     <div className="flex items-center gap-2">
                                         <div>
-                                            {ageDistributionData?.ageData ? 'Re-upload' : 'Upload'}
+                                            {ageDistData?.ageData ? 'Re-upload' : 'Upload'}
                                         </div>
                                         <Image src={UploadIcon} alt="Upload" />
                                     </div>

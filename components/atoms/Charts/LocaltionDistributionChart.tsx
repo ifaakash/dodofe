@@ -1,7 +1,16 @@
-const LocaltionDistributionChart = ({ locationDistributionData }: { locationDistributionData: { location: string; percentage: number }[] }) => {
+const LocaltionDistributionChart = ({ locationDistributionData }) => {
+    const chartData = Array.isArray(locationDistributionData) 
+        ? locationDistributionData.filter(data => data && data.location && data.percentage != null)
+        : Object.entries(locationDistributionData)
+            .filter(([location, percentage]) => location && percentage != null)
+            .map(([location, percentage]) => ({
+                location,
+                percentage
+            }));
+
     return (
         <div className="flex flex-col gap-[10px] w-full py-2">
-            {locationDistributionData.map((data, index) => (
+            {chartData.map((data, index) => (
                 <div key={index} className="w-full rounded-[4px]">
                     <div className="flex justify-between w-full text-[10px]">
                         <div className="font-medium text-[#5E6C84]">{data.location}</div>
@@ -16,7 +25,7 @@ const LocaltionDistributionChart = ({ locationDistributionData }: { locationDist
                 </div>
             ))}
         </div>
-    )
-}
+    );
+};
 
 export default LocaltionDistributionChart

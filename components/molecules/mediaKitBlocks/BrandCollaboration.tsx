@@ -1,19 +1,20 @@
 "use client"
 import Toggle from "@components/atoms/Toggle/Toggle"
-import UploadIcon from "../../../public/icons/upload2.svg"
 import Image from "next/image"
 import BrandCollaborationIcon from "../../../public/assets/BrandCollabImg.svg"
 import DragIcon from '../../../public/icons/drag.svg'
 import { ArrowUpRight, Plus } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AddBrandModal from "@components/templates/mediaKit/AddBrandModal"
-import RajveerIcon from "../../../public/assets/rajveer.png"
 import Link from "next/link"
 import { updateMediaKit } from "api/services"
+import { toast } from "react-toastify"
+import BrandCard from "./BrandCard"
 
 
-const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId }: { brandData: any, setUpdateMediaKit: (updateMediaKit: boolean) => void, instaId: string }) => {
+const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId, mode = 'edit' }: { brandData: any, setUpdateMediaKit?: (updateMediaKit: boolean) => void, instaId: string, mode: 'edit' | 'public' | 'preview' }) => {
     const [isAddBrandModelOpen, setIsAddBrandModelOpen] = useState(false)
+    const [allBrandData, setAllBrandData] = useState<any>(brandData)
 
     const handleToggle = async () => {
         setUpdateMediaKit(true)
@@ -21,24 +22,32 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId }: { brandDa
             instaId: instaId,
             updates: {
                 brandCollabs: {
+                    brands: [...allBrandData.brands],
                     isActive: !brandData?.isActive,
                 }
             }
         })
-        console.log('response', response)
+        if(response.success){
+            toast.success('Brand Collaboration updated successfully')
+        }
     }
 
+    useEffect(() => {
+        setAllBrandData(brandData)
+    }, [brandData])
+
     return (
-        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${brandData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
-            <div className="flex justify-between items-center">
-                <Image className={`w-5 h-5 ${brandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
+        <>
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${allBrandData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
+            <div className={`flex justify-between items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                <Image className={`w-5 h-5 ${allBrandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
                 <div className="pointer-events-auto">
-                    <Toggle checked={brandData?.isActive} onCheckedChange={handleToggle} />
+                    <Toggle checked={allBrandData?.isActive} onCheckedChange={handleToggle} />
                 </div>
             </div>
 
-            <div className={`flex flex-col gap-2 ${brandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
-                <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
+            <div className="flex flex-col gap-2">
+                <div className={`flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg`}>
                     <div className="text-[#9747FF] w-full px-2 py-1 flex gap-1">
                         <div className="text-xs font-semibold"> Brand </div>
                         <div className="text-[10px]"> COLLABORATION </div>
@@ -46,65 +55,28 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId }: { brandDa
                     <Image src={BrandCollaborationIcon} alt="Gender Distribution" />
                 </div>
 
-                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                <div className={`flex gap-2 overflow-x-auto scrollbar-hide ${allBrandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
                     {
-                        Array.isArray(brandData) && brandData?.map((brand, index) => (
+                        allBrandData?.brands?.map((brand: any, index: number) => (
                             <BrandCard key={index} brand={brand} />
                         ))
                     }
                 </div>
 
-                <div className="flex justify-center">
-                    <div className="px-2 py-1 flex gap-1 items-center border border-[#E2E4E9] rounded-full">
-                        <div className="text-[10px] font-semibold" onClick={() => setIsAddBrandModelOpen(true)}> Add New </div>
+                <div className={`flex justify-center ${mode === 'public' ? 'hidden' : ''}`}>
+                    <div className="px-2 py-1 flex gap-1 items-center border border-[#E2E4E9] rounded-full cursor-pointer" onClick={() => setIsAddBrandModelOpen(true)}>
+                        <div className="text-[10px] font-semibold"> Add New </div>
                         <Plus size={16} className="text-brandPrimary" />
                     </div>
                 </div>
 
             </div>
-            {
-                isAddBrandModelOpen && <AddBrandModal setIsAddBrandModelOpen={setIsAddBrandModelOpen} />
-            }
         </div>
+         {
+            isAddBrandModelOpen && <AddBrandModal setIsAddBrandModelOpen={setIsAddBrandModelOpen} setAllBrandData={setAllBrandData} allBrandData={allBrandData} />
+        }
+        </>
     )
 }
 
 export default BrandCollaboration
-
-
-const BrandCard = ({ brand }: { brand: any }) => {
-    return (
-        <div className="bg-[#F5F4F6] rounded-xl p-2 flex flex-col gap-2 min-w-48 flex-shrink-0">
-            <Link href={brand.contentUrl} target="_blank" className="flex items-center justify-between gap-2">
-                <Image src={brand.brandLogo} width={40} height={40} alt="Edit" />
-                <ArrowUpRight className="text-brandPrimary" />
-            </Link>
-            <div>
-                <div className="text-sm font-semibold">{brand.brandName}</div>
-            </div>
-            <div className=" border-[1px] border-dashed border-[#E2E4E9]"> </div>
-            <div className="text-[10px]">
-                <div className="flex justify-between items-center">
-                    <div className="text-[#3D4966]"> Type: </div>
-                    <div className="flex gap-1">
-                        {
-                            brand.contentType.split(',').map((type: string, index: number) => (
-                                <div key={index} className="text-[#3D4966] font-semibold">
-                                    {type.trim()}{index < brand.contentType.split(',').length - 1 ? ',' : ''}
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div className="flex justify-between items-center">
-                    <div className="text-[#3D4966]"> Reach: </div>
-                    <div className="text-[#3D4966] font-semibold"> {brand.reach ? brand.reach + 'K' : 'N/A'} </div>
-                </div>
-                <div className="flex justify-between items-center">
-                    <div className="text-[#3D4966]"> Engagement: </div>
-                    <div className="text-[#3D4966] font-semibold"> {brand.engagement ? brand.engagement + '%' : 'N/A'} </div>
-                </div>
-            </div>
-        </div>
-    )
-}

@@ -15,6 +15,9 @@ import GenderDistribution from "@components/molecules/mediaKitBlocks/GenderDistr
 import MediaKitHeader from "@components/molecules/mediaKitConsole/MediaKitHeader";
 import InstaRateCard from "@components/molecules/mediaKitBlocks/InstaRateCard";
 import AgeDistribution from "@components/molecules/mediaKitBlocks/AgeDistribution";
+import BrandCollaboration from "@components/molecules/mediaKitBlocks/BrandCollaboration";
+import BrandCard from "@components/molecules/mediaKitBlocks/BrandCard";
+import LocationDistribution from "@components/molecules/mediaKitBlocks/LocationDistribution";
 
 interface MediaKitPageProps {
     userData?: {
@@ -67,24 +70,53 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                 <div className="flex flex-col gap-[10px]">
                     <div className="flex flex-col gap-1">
                         <FollowerCount followerCount={mediaKitData?.followers} />
-                        <GeneralStats />
+                        <GeneralStats mode="public"/>
                     </div>
 
                     <div className="flex flex-col gap-[10px]">
                         {
                             mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
-                                <AgeDistribution 
+                                <AgeDistribution
                                     ageDistributionData={mediaKitData?.ageAnalytics}
                                     instaId={mediaKitData?.instaId}
                                     mode={'public'}
                                 />
-                            )   
+                            )
                         }
                         {
+                            mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
+                                <GenderDistribution
+                                    genderAnalytics={mediaKitData?.genderAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )
+                        }
+                        {
+                            mediaKitData?.brandCollabs?.isActive && (
+                                <BrandCollaboration
+                                    brandData={mediaKitData?.brandCollabs}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )
+                        }
+
+                        {
+                            mediaKitData?.locationAnalytics?.isActive && mediaKitData?.locationAnalytics?.locationData && (
+                                <LocationDistribution
+                                    locationDistributionData={mediaKitData?.locationAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )
+                        }
+
+                        {
                             mediaKitData?.rateCard?.isActive && (
-                                <InstaRateCard 
-                                    rateCardData={mediaKitData?.rateCard} 
-                                    instaId={mediaKitData?.instaId} 
+                                <InstaRateCard
+                                    rateCardData={mediaKitData?.rateCard}
+                                    instaId={mediaKitData?.instaId}
                                     engagementRate={mediaKitData?.engagementRate}
                                     followers={mediaKitData?.followers}
                                     mode={'public'}

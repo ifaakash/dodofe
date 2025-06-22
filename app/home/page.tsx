@@ -212,6 +212,15 @@ export default function Home() {
         return null;
     }
 
+    const handleMediaKitNavigation = () => {
+        console.log('userDetails', userDetails)
+        if (userDetails?.mediaKit) {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
+        } else {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT);
+        }
+    };
+
     return (
         <Screen>
 
@@ -359,7 +368,7 @@ export default function Home() {
                             title="MediaKit"
                             description="A Digital & Dyanamic resume for you!"
                             buttonLabel="Know More"
-                            onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
+                            onClick={handleMediaKitNavigation}
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">

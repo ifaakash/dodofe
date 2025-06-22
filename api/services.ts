@@ -227,3 +227,11 @@ export const linkMediaKit = async (payload: any): Promise<any> =>
 
 export const updateMediaKit = async (payload: any): Promise<any> =>
     Patch<any>(API_CONSTANTS.updateMediaKit, payload);
+
+export const addMediaKitAnalytics = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.addMediaKitAnalytic, payload, {
+        "Content-Type": "multipart/form-data",
+    }); 
+
+export const verifyMediaKit = async (instaId: string): Promise<any> =>
+    Get<any>(API_CONSTANTS.verifyMediaKit + API_CONSTANTS.slash + instaId);

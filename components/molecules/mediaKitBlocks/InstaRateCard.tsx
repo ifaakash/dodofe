@@ -18,14 +18,16 @@ const InstaRateCard = ({
     setUpdateMediaKit,
     engagementRate,
     followers,
-    mode = 'edit'
+    mode = 'edit',
+    showDisclaimer = false
     }: {
     rateCardData: any,
     instaId: string,
     setUpdateMediaKit?: (updateMediaKit: boolean) => void,
     engagementRate: number,
     followers: number,
-    mode: 'edit' | 'public' | 'preview'
+    mode: 'edit' | 'public' | 'preview',
+    showDisclaimer?: boolean
     }) => {
     const [current, setCurrent] = useState(0)
     const contentNiche = 'fashion'
@@ -37,7 +39,7 @@ const InstaRateCard = ({
         if (rate >= 2) return 1.0
         return 0.8
     }
-
+    
     const getNicheMultiplier = (niche: string) => {
         const highValue = ['fashion', 'beauty', 'tech', 'finance']
         const midValue = ['food', 'travel', 'fitness', 'lifestyle']
@@ -130,7 +132,6 @@ const InstaRateCard = ({
                 }
             }
         })
-        console.log('response', response)
     }
 
     return (
@@ -199,6 +200,14 @@ const InstaRateCard = ({
                     ))}
                 </div>
             </div>
+
+            {
+                showDisclaimer && (
+                    <div className="text-[10px] text-[#0092DB] bg-[#E5F6FF] px-[10px] py-[6px] rounded-lg font-medium">
+                        This instagram price is calculated based of your number of followers, engagement and your category.
+                    </div>
+                )
+            }
 
         </div>
     )

@@ -10,7 +10,8 @@ import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import Screen from "../Screen";
 import { linkMediaKit } from "api";
 import { toast } from "react-toastify";
-
+import { verifyMediaKit } from "api/services";
+import { useEffect } from "react";
 
 const keyFeatures = [
     {
@@ -34,6 +35,8 @@ const MediaKitReady = ({ instaIdInput, setInstaIdInput, mediakitRef }: { instaId
     const router = useRouter()
     const userId = loadState(STORAGE_CONSTANTS.userId)
 
+    console.log('mediakitRef', mediakitRef)
+
     const formattedInstaUserName = '******' + mediakitRef.slice(-4)
 
     const handleNavigateToConsole = async () => {
@@ -44,6 +47,17 @@ const MediaKitReady = ({ instaIdInput, setInstaIdInput, mediakitRef }: { instaId
 
         if (!instaIdInput) {
             toast.error('Please enter your Instagram username')
+            return
+        }
+
+        if(instaIdInput !== mediakitRef){
+            toast.error('Invalid Instagram username')
+            return
+        }
+
+        const isVerified = await verifyMediaKit(mediakitRef)
+        if(!isVerified){
+            toast.error('Invalid Instagram username')
             return
         }
 

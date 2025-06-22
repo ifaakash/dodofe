@@ -34,7 +34,7 @@ const data2 = {
     "stories": 10
 }
 
-const GeneralStats = () => {
+const GeneralStats = ({ mode }: { mode: 'edit' | 'public' | 'preview' }) => {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
 
@@ -50,43 +50,47 @@ const GeneralStats = () => {
         setTimeout(() => {
             setIsUploading(false)
         }, 2000)
-    }   
+    }
 
     return (
         <div className="p-3 bg-[#FDFBFF] rounded-[14px] flex flex-col gap-3">
-            <BlobChart data={data2}/>
-            <div className="p-2 flex justify-between items-center border rounded-[10px]">
-                <div className="flex flex-col gap-0.5 text-[10px]">
-                    <div className="font-semibold">Upload Content Type</div>
-                    <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
-                </div>
-                <label className="border-[1px] border-[#EAE9EC] flex gap-0.5 px-[10px] py-1 rounded-full cursor-pointer">
-                        <div className="text-[10px] font-medium">
-                            {
-                                isUploading ? (
-                                    <div className="flex items-center gap-2">
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        <div>Uploading...</div>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2">
-                                        <div>
-                                            {uploadedImage ? 'Re-upload' : 'Upload'}
-                                        </div>
-                                        <Image src={UploadIcon} alt="Upload" />
-                                    </div>
-                                )
-                            }
+            {/* <BlobChart data={data2}/> */}
+            {
+                mode === 'edit' && (
+                    <div className="p-2 flex justify-between items-center border rounded-[10px]">
+                        <div className="flex flex-col gap-0.5 text-[10px]">
+                            <div className="font-semibold">Upload Content Type</div>
+                            <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
                         </div>
+                        <label className="border-[1px] border-[#EAE9EC] flex gap-0.5 px-[10px] py-1 rounded-full cursor-pointer">
+                            <div className="text-[10px] font-medium">
+                                {
+                                    isUploading ? (
+                                        <div className="flex items-center gap-2">
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            <div>Uploading...</div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2">
+                                            <div>
+                                                {uploadedImage ? 'Re-upload' : 'Upload'}
+                                            </div>
+                                            <Image src={UploadIcon} alt="Upload" />
+                                        </div>
+                                    )
+                                }
+                            </div>
 
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleUploadImage}
-                            className="hidden"
-                        />
-                    </label>
-            </div>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleUploadImage}
+                                className="hidden"
+                            />
+                        </label>
+                    </div>
+                )
+            }
 
             <div className="grid grid-cols-2 gap-1">
                 {statsData.map((stat, index) => (

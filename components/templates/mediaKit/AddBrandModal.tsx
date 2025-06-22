@@ -26,7 +26,7 @@ const checkBoxList = [
     }
 ]
 
-const AddBrandModal = ({ setIsAddBrandModelOpen }: { setIsAddBrandModelOpen: (isOpen: boolean) => void }) => {
+const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }: { setIsAddBrandModelOpen: (isOpen: boolean) => void, setAllBrandData: (data: any) => void, allBrandData: any }) => {
     const [checkboxes, setCheckboxes] = useState(checkBoxList)
     const [link, setLink] = useState('')
     const [reach, setReach] = useState('')
@@ -80,6 +80,18 @@ const AddBrandModal = ({ setIsAddBrandModelOpen }: { setIsAddBrandModelOpen: (is
 
         if (res.success) {
             setIsAddBrandModelOpen(false)
+            setAllBrandData({
+                ...allBrandData,
+                isActive: true,
+                brands: [...allBrandData.brands, {
+                    brandName: brandName,
+                    brandLogo: brandLogo,
+                    contentUrl: link ,
+                    reach: reach,
+                    engagement: engagement,
+                    contentType: checkboxes.filter(cb => cb.value).map(cb => cb.label).join(',')
+                }]
+            })
             toast.success('Brand added successfully')
         } else {
             toast.error(res.message)
