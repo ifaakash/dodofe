@@ -38,7 +38,7 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId, mode = 'edi
 
     return (
         <>
-        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${allBrandData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
+        <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1`}>
             <div className={`flex justify-between items-center ${mode === 'public' ? 'hidden' : ''}`}>
                 <Image className={`w-5 h-5 ${allBrandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" />
                 <div className="pointer-events-auto">
