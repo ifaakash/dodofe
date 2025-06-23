@@ -1,10 +1,16 @@
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, X } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
-const BrandCard = ({ brand }: { brand: any }) => {
+const BrandCard = ({ brand, mode }: { brand: any, mode: 'edit' | 'public' | 'preview' }) => {
+    const handleDeleteBrand = () => {
+        console.log('delete brand')
+    }
     return (
-        <div className="bg-[#F5F4F6] rounded-xl p-2 flex flex-col gap-2 min-w-48 flex-shrink-0">
+        <div className="bg-[#F5F4F6] rounded-xl p-2 flex flex-col gap-2 min-w-48 flex-shrink-0 relative">
+            <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-400 rounded-full flex items-center justify-center cursor-pointer" onClick={handleDeleteBrand}>
+                <X size={12} className="text-white" />
+            </div>
             <Link href={brand.contentUrl} target="_blank" className="flex items-center justify-between gap-2">
                 <Image src={brand.brandLogo} width={40} height={40} alt="Edit" />
                 <ArrowUpRight className="text-brandPrimary" />
