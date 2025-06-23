@@ -19,8 +19,7 @@ import { useDodoPageAnalytics } from "hooks/useDodoPageAnalytics";
 import { Block } from "types";
 import MetaData from "@components/molecules/MetaData";
 import ProfileDontExist from "@components/templates/errorPages/ProfileDontExist";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import DodoPageSkeleton from "@components/atoms/Loaders/DodoPageSkeleton";
 
 const DodoPage = () => {
     const { url } = useParams();
@@ -140,44 +139,44 @@ const DodoPage = () => {
 
                 const formatLink = (url: string) =>
                     url.startsWith("http") ? url : `https://${url}`;
-                  
-                  if (nextBlock?.blockType === "PRODUCT") {
+
+                if (nextBlock?.blockType === "PRODUCT") {
                     content = (
-                      <div className="grid grid-cols-2 gap-[10px] w-full">
+                        <div className="grid grid-cols-2 gap-[10px] w-full">
+                            <div onClick={() => handleBlockInteraction(block.id, "click")}>
+                                <Link
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={formatLink(block.blockData.link)}
+                                >
+                                    <ProductBlock block={block} mode={mode} />
+                                </Link>
+                            </div>
+                            <div onClick={() => handleBlockInteraction(nextBlock.id, "click")}>
+                                <Link
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={formatLink(nextBlock.blockData.link)}
+                                >
+                                    <ProductBlock block={nextBlock} mode={mode} />
+                                </Link>
+                            </div>
+                        </div>
+                    );
+                } else {
+                    content = (
                         <div onClick={() => handleBlockInteraction(block.id, "click")}>
-                          <Link
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={formatLink(block.blockData.link)}
-                          >
-                            <ProductBlock block={block} mode={mode} />
-                          </Link>
+                            <Link
+                                href={formatLink(block.blockData.link)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <ProductBlock block={block} mode={mode} />
+                            </Link>
                         </div>
-                        <div onClick={() => handleBlockInteraction(nextBlock.id, "click")}>
-                          <Link
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={formatLink(nextBlock.blockData.link)}
-                          >
-                            <ProductBlock block={nextBlock} mode={mode} />
-                          </Link>
-                        </div>
-                      </div>
                     );
-                  } else {
-                    content = (
-                      <div onClick={() => handleBlockInteraction(block.id, "click")}>
-                        <Link
-                          href={formatLink(block.blockData.link)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ProductBlock block={block} mode={mode} />
-                        </Link>
-                      </div>
-                    );
-                  }
-                  
+                }
+
                 break;
             default:
                 return null;
@@ -188,72 +187,59 @@ const DodoPage = () => {
 
     return (
         <div>
-            {
-                dodoPageExists ? (
-                    <>
-                        <MetaData
-                            title={dodoPageDetails?.seoTitle || dodoPageDetails?.title || "DodoPage"}
-                            description={dodoPageDetails?.seoDescription || dodoPageDetails?.description || "Explore this DodoPage"}
-                            keywords={dodoPageDetails?.seoKeywords || "DodoPage, influencer tools"}
-                            url={`https://dodoclub.in/${url}`}
-                            image={dodoPageDetails?.seoImage || dodoPageDetails?.image}
+            {isLoading ? (
+                <DodoPageSkeleton />
+            ) : dodoPageExists ? (
+                <>
+                    <MetaData
+                        title={dodoPageDetails?.seoTitle || dodoPageDetails?.title || "DodoPage"}
+                        description={dodoPageDetails?.seoDescription || dodoPageDetails?.description || "Explore this DodoPage"}
+                        keywords={dodoPageDetails?.seoKeywords || "DodoPage, influencer tools"}
+                        url={`https://dodoclub.in/${url}`}
+                        image={dodoPageDetails?.seoImage || dodoPageDetails?.image}
+                    />
+                    <div className={`flex flex-col gap-3 pt-10 ${styles.bgGrid}`}>
+                        <HeroSection
+                            mode={"public"}
+                            dodoPageId={dodoPageDetails?.id}
+                            dodoPageDetails={dodoPageDetails}
+                            isLoading={isLoading}
                         />
-                        <div className={`flex flex-col gap-3 pt-10 ${styles.bgGrid}`}>
-                            <HeroSection
-                                mode={"public"}
-                                dodoPageId={dodoPageDetails?.id}
-                                dodoPageDetails={dodoPageDetails}
-                                isLoading={isLoading}
-                            />
-                            <SocialLinks
-                                socialLinks={dodoPageDetails?.socialLinks}
-                                url={url as string}
-                                mode={"public"}
-                                isLoading={isLoading}
-                            />
-                            {
-                                isLoading ? (
-                                    <div className="flex items-center justify-center flex-col gap-2">
-                                        <Skeleton baseColor="#c6c6c6" width={300} height={50} />
-                                        <Skeleton baseColor="#c6c6c6" width={300} height={50} />
-                                        <div className="flex gap-2">
-                                            <Skeleton baseColor="#c6c6c6" width={147} height={200} />
-                                            <Skeleton baseColor="#c6c6c6" width={147} height={200} />
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className={`flex flex-col gap-3 px-5 ${styles.blocksContainer}`}>
-                                        {blocks?.map((block: any, index: number) =>
-                                            renderBlock(block, index)
-                                        )}
-                                    </div>
-                                )
-                            }
-                            <div className={`flex flex-col gap-3 px-5 items-center my-20 ${styles.footerContainer}`}>
-                                <div className="flex items-center gap-2">
-                                    <div className="text-[#3D4966] text-xs">powered by:</div>
-                                    <Image src={DodoIcon} alt="dodo icon" height={20} />
-                                </div>
-                                <Link
-                                    href={`https://dodoclub.in/`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2"
-                                >
-                                    <div className="font-semibold text-xs">
-                                        Create your DODOpage now
-                                    </div>
-                                    <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
-                                        <ArrowUpRight className="w-4 h-4" />
-                                    </div>
-                                </Link>
-                            </div>
+                        <SocialLinks
+                            socialLinks={dodoPageDetails?.socialLinks}
+                            url={url as string}
+                            mode={"public"}
+                            isLoading={isLoading}
+                        />
+                        <div className={`flex flex-col gap-3 px-5 ${styles.blocksContainer}`}>
+                            {blocks?.map((block: any, index: number) =>
+                                renderBlock(block, index)
+                            )}
                         </div>
-                    </>
-                ) : (
-                    <ProfileDontExist />
-                )
-            }
+                        <div className={`flex flex-col gap-3 px-5 items-center my-20 ${styles.footerContainer}`}>
+                            <div className="flex items-center gap-2">
+                                <div className="text-[#3D4966] text-xs">powered by:</div>
+                                <Image src={DodoIcon} alt="dodo icon" height={20} />
+                            </div>
+                            <Link
+                                href={`https://dodoclub.in/`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] text-white rounded-full px-3 py-1 flex items-center gap-2"
+                            >
+                                <div className="font-semibold text-xs">
+                                    Create your DODOpage now
+                                </div>
+                                <div className="bg-[#7A208D] rounded-full p-1 text-white w-fit">
+                                    <ArrowUpRight className="w-4 h-4" />
+                                </div>
+                            </Link>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <ProfileDontExist />
+            )}
         </div>
     );
 };
