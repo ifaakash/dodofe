@@ -19,6 +19,8 @@ import { useDodoPageAnalytics } from "hooks/useDodoPageAnalytics";
 import { Block } from "types";
 import MetaData from "@components/molecules/MetaData";
 import ProfileDontExist from "@components/templates/errorPages/ProfileDontExist";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const DodoPage = () => {
     const { url } = useParams();
@@ -28,6 +30,7 @@ const DodoPage = () => {
     const [dodoPageExists, setDodoPageExists] = useState(null);
     const hasFetchedRef = useRef(false);
     const hasRecordedViewRef = useRef(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Add analytics hook
     const { trackBlockInteraction, recordPageView } = useDodoPageAnalytics(
@@ -37,6 +40,7 @@ const DodoPage = () => {
     useEffect(() => {
         if (url && !hasFetchedRef.current) {
             hasFetchedRef.current = true;
+            setIsLoading(true);
             getDodoPageByURL(url as string).then((res) => {
 
                 if (res.success) {
@@ -55,6 +59,7 @@ const DodoPage = () => {
                 if (!res.success) {
                     setDodoPageExists(false);
                 }
+                setIsLoading(false);
             });
         }
     }, [url, recordPageView]);
@@ -198,18 +203,32 @@ const DodoPage = () => {
                                 mode={"public"}
                                 dodoPageId={dodoPageDetails?.id}
                                 dodoPageDetails={dodoPageDetails}
+                                isLoading={isLoading}
                             />
                             <SocialLinks
                                 socialLinks={dodoPageDetails?.socialLinks}
                                 url={url as string}
                                 mode={"public"}
+                                isLoading={isLoading}
                             />
-                            <div className={`flex flex-col gap-3 px-5 ${styles.blocksContainer}`}>
-                                {blocks?.map((block: any, index: number) =>
-                                    renderBlock(block, index)
-                                )}
-                            </div>
-
+                            {
+                                isLoading ? (
+                                    <div className="flex items-center justify-center flex-col gap-2">
+                                        <Skeleton baseColor="#c6c6c6" width={300} height={50} />
+                                        <Skeleton baseColor="#c6c6c6" width={300} height={50} />
+                                        <div className="flex gap-2">
+                                            <Skeleton baseColor="#c6c6c6" width={147} height={200} />
+                                            <Skeleton baseColor="#c6c6c6" width={147} height={200} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={`flex flex-col gap-3 px-5 ${styles.blocksContainer}`}>
+                                        {blocks?.map((block: any, index: number) =>
+                                            renderBlock(block, index)
+                                        )}
+                                    </div>
+                                )
+                            }
                             <div className={`flex flex-col gap-3 px-5 items-center my-20 ${styles.footerContainer}`}>
                                 <div className="flex items-center gap-2">
                                     <div className="text-[#3D4966] text-xs">powered by:</div>

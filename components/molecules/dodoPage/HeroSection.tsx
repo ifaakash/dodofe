@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import WaveSurfer from 'wavesurfer.js'
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import Image from "next/image";
 import WhatsOnYourMind from "public/assets/thoughts.svg";
@@ -36,11 +38,13 @@ const HeroSection = ({
   dodoPageId,
   userId,
   dodoPageDetails,
+  isLoading
 }: {
   mode: string;
   dodoPageId: string;
   userId?: string;
   dodoPageDetails: any;
+  isLoading?: boolean;
 }) => {
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state.dodoPage);
@@ -691,100 +695,117 @@ const HeroSection = ({
       className={`flex flex-col items-center ${mode === "preview" ? "gap-[10px]" : "gap-3"
         } px-5 mt-8`}
     >
-      <div className="relative flex justify-center items-center w-fit">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="hidden"
-          ref={ImageInputRef}
-          disabled={mode === "public" || mode === "preview"}
-        />
-        <div>
-          {renderHeroImage()}
-          {
-            mode !== "edit" && dodoPageDetails?.audioBio && (
-              <div
-                className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
-                onClick={playProfileAudio}
-              >
-                <Image
-                  src={isProfileAudioPlaying ? Speaker : PlayIcon}
-                  alt={isProfileAudioPlaying ? "Stop" : "Play"}
-                  width={16}
-                  height={16}
-                />
-              </div>
-            )
-          }
-        </div>
-
-        {(mode === "edit" || thought !== '' || thought !== null) &&
-          (
-            <div className="absolute -top-10 -right-10">
-              <Image
-                height={70}
-                width={70}
-                src={mode === "edit" ? WhatsOnYourMind : ReadMyMind}
-                alt="thoughts icon"
-                className="cursor-pointer"
-                onClick={() => setShowThoughtsPopup(true)}
-                id="thoughts-icon"
-              />
-            </div>
-          )
-        }
-      </div>
-
-      <div
-        className={`flex flex-col ${(state.audioBio && dodoPageDetails?.audioBio && mode !== "edit") && "pt-5"} ${mode === "preview" ? "gap-5" : "gap-3"
-          } items-center`}
-      >
-        <div>
-          {editPageName ? (
+      {isLoading ? (
+        // Skeleton loading state
+        <>
+          <div className="relative flex justify-center items-center w-fit">
+            <Skeleton baseColor="#c6c6c6" circle width={88} height={88} />
+          </div>
+          
+          <div className="flex flex-col gap-3 items-center">
+            <Skeleton baseColor="#c6c6c6" width={120} height={24} />
+            <Skeleton baseColor="#c6c6c6" width={100} height={32} borderRadius={16} />
+          </div>
+        </>
+      ) : (
+        // Actual content
+        <>
+          <div className="relative flex justify-center items-center w-fit">
             <input
-              type="text"
-              value={editPageName ? pageName : state.dodoPageName}
-              onChange={(e) => setPageName(e.target.value)}
-              onBlur={handleNameSave}
-              onKeyDown={handleKeyDown}
-              className="bg-transparent text-xl min-w-36 w-fit outline-none text-black font-semibold text-center"
-              autoFocus
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+              ref={ImageInputRef}
               disabled={mode === "public" || mode === "preview"}
             />
-          ) : (
-            <div
-              className="text-xl font-semibold flex items-center gap-2 cursor-pointer w-fit"
-              onClick={() => mode !== "public" && setEditPageName(true)}
-            >
-              {pageName}
-              {mode === "edit" && (
-                <Image src={Pen} alt="Edit name" className="w-4 h-4" />
+            <div>
+              {renderHeroImage()}
+              {
+                mode !== "edit" && dodoPageDetails?.audioBio && (
+                  <div
+                    className="absolute -bottom-5 left-8 border-[1px] border-brandPrimary bg-white rounded-full p-1 cursor-pointer"
+                    onClick={playProfileAudio}
+                  >
+                    <Image
+                      src={isProfileAudioPlaying ? Speaker : PlayIcon}
+                      alt={isProfileAudioPlaying ? "Stop" : "Play"}
+                      width={16}
+                      height={16}
+                    />
+                  </div>
+                )
+              }
+            </div>
+
+            {(mode === "edit" || thought !== '' || thought !== null) &&
+              (
+                <div className="absolute -top-10 -right-10">
+                  <Image
+                    height={70}
+                    width={70}
+                    src={mode === "edit" ? WhatsOnYourMind : ReadMyMind}
+                    alt="thoughts icon"
+                    className="cursor-pointer"
+                    onClick={() => setShowThoughtsPopup(true)}
+                    id="thoughts-icon"
+                  />
+                </div>
+              )
+            }
+          </div>
+
+          <div
+            className={`flex flex-col ${(state.audioBio && dodoPageDetails?.audioBio && mode !== "edit") && "pt-5"} ${mode === "preview" ? "gap-5" : "gap-3"
+              } items-center`}
+          >
+            <div>
+              {editPageName ? (
+                <input
+                  type="text"
+                  value={editPageName ? pageName : state.dodoPageName}
+                  onChange={(e) => setPageName(e.target.value)}
+                  onBlur={handleNameSave}
+                  onKeyDown={handleKeyDown}
+                  className="bg-transparent text-xl min-w-36 w-fit outline-none text-black font-semibold text-center"
+                  autoFocus
+                  disabled={mode === "public" || mode === "preview"}
+                />
+              ) : (
+                <div
+                  className="text-xl font-semibold flex items-center gap-2 cursor-pointer w-fit"
+                  onClick={() => mode !== "public" && setEditPageName(true)}
+                >
+                  {pageName}
+                  {mode === "edit" && (
+                    <Image src={Pen} alt="Edit name" className="w-4 h-4" />
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
 
-        {mode === "edit" && (
-          <div
-            className="flex gap-0.5 items-center border-[1px] border-[#979EAD] rounded-full py-[6px] px-3 cursor-pointer"
-            onClick={() => {
-              setAddAudioBioPopup(true)
-            }
-            }
-            id="audio-bio-button"
-          >
-            <div className="text-xs font-medium text-[#414D55]">
-              {dodoPageDetails.audioBio ? "Edit" : "Add"} Audio Bio
-            </div>
-            <Image
-              src={PlusCircle}
-              alt="Add Audio Bio"
-              className="cursor-pointer"
-            />
+            {mode === "edit" && (
+              <div
+                className="flex gap-0.5 items-center border-[1px] border-[#979EAD] rounded-full py-[6px] px-3 cursor-pointer"
+                onClick={() => {
+                  setAddAudioBioPopup(true)
+                }
+                }
+                id="audio-bio-button"
+              >
+                <div className="text-xs font-medium text-[#414D55]">
+                  {dodoPageDetails.audioBio ? "Edit" : "Add"} Audio Bio
+                </div>
+                <Image
+                  src={PlusCircle}
+                  alt="Add Audio Bio"
+                  className="cursor-pointer"
+                />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       {showThoughtsPopup && (
         <>

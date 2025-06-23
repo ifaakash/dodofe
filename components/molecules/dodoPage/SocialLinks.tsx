@@ -13,6 +13,8 @@ import Behance from "public/icons/behance.svg";
 import Dribble from "public/icons/dribble.svg";
 import EmailId from "public/icons/email.svg";
 import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface SocialLink {
   name: string;
@@ -37,9 +39,10 @@ interface SocialLinksProps {
   };
   url: string;
   mode: string;
+  isLoading?: boolean;
 }
 
-const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode }) => {
+const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode, isLoading }) => {
     const [showAll, setShowAll] = useState(false);
 
     const socialIcons = [
@@ -64,6 +67,27 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode }
 
     const visibleIcons = showAll ? availableLinks : availableLinks.slice(0, 4);
     const remainingCount = availableLinks.length - 4;
+
+    // Show skeleton loading state
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center">
+                <div className="flex gap-4">
+                    <div className="flex gap-4">
+                        {[1, 2, 3, 4].map((index) => (
+                            <Skeleton
+                                key={index}
+                                circle
+                                width={44}
+                                height={44}
+                                baseColor="#c6c6c6"
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex items-center justify-center">

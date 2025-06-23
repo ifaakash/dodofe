@@ -1,100 +1,49 @@
 'use client'
 import { Header } from '@components/molecules/Header'
-import React from 'react'
-import NewButton from '@components/atoms/Button/NewButton'
-import cx from 'classnames';
-import Image from 'next/image';
-import MediaKitOnboarding from 'public/assets/MediaKitWaiting.png'
-import LineWithDot from 'public/assets/LineWithDot.svg'
-import { CheckCheck } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import confetti from 'canvas-confetti'
-import { ROUTE_CONSTANTS } from '@utils/constants';
-
+import MediaKitComingSoon from '@components/molecules/mediakit/MediaKitComingSoon'
+import MediaKitReady from '@components/molecules/mediakit/MediaKitReady'
+import { STORAGE_CONSTANTS, ROUTE_CONSTANTS } from '@utils/constants'
+import { loadState } from '@utils/localStorage'
+import { getUserDetails, updateMediaKit } from 'api/services'
+import React, { useEffect, useState } from 'react'
+import Screen from "@components/molecules/Screen";
+import { useSearchParams, useRouter } from 'next/navigation'
+import { userDetailsProps } from 'types'
 
 const MediaKit = () => {
-  const router = useRouter();
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const mediakitRef = searchParams.get('mediakitRef')
+  const userId = loadState(STORAGE_CONSTANTS.userId)
+  const [instaIdInput, setInstaIdInput] = useState('')
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null)
 
-  const handleJoinWaitlist = () => {
 
-    // if (1 === 1) { // send to verify insta if not verified
-    //   router.push(ROUTE_CONSTANTS.PROFILE);
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      setIsLoading(true)
+      const response = await getUserDetails(userId as string)
+      setUserDetails(response.user)
+      setIsLoading(false)
+    }
+    fetchUserDetails()
 
-    //   return;
-    // }
+  }, [])
 
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: {
-        y: 0.7
-      }
-    })
-    router.push('/media-kit/waitlist')
-  }
+  useEffect(() => {
+    if (!isLoading && userDetails?.mediaKit) {
+      router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE)
+    }
+  }, [isLoading, userDetails?.mediaKit, router])
+
   return (
     <div className='bg-[#EAE9EC] min-h-screen'>
       <Header />
 
-      <div className='pt-20 px-5 pb-24 flex justify-center'>
-        <div className='flex flex-col gap-20 items-center'>
-          <div className='relative flex items-center justify-center flex-col'>
-            <Image src={MediaKitOnboarding} className='w-[350px]' alt='media-kit' />
-            <div className='flex flex-col items-center text-center gap-2 absolute -bottom-12'>
-              <div className='text-2xl font-bold flex flex-col gap-1'>
-                <span className='leading-none'>Dodo Media Kit is</span>
-                <span className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] bg-clip-text text-transparent leading-none" >
-                  Coming Soon!
-                </span>
-
-              </div>
-
-
-              <div className='text-xs px-2 max-w-sm'>
-                A powerful way for creators to showcase their stats, audience insights, and brand collaborations—all in one place.
-              </div>
-            </div>
-          </div>
-
-          <div className='flex flex-col gap-[10px]'>
-            <div className='flex items-center gap-2'>
-              <Image src={LineWithDot} alt='line-with-dot' />
-              <span className='font-semibold text-[#3D4966]'>
-                What's Coming?
-              </span>
-              <Image src={LineWithDot} alt='line-with-dot' className='rotate-180' />
-            </div>
-
-            <div className='flex flex-col gap-2'>
-              <div className='flex items-center gap-2 text-xs text-[#3D4966]'>
-                <CheckCheck size={16} />
-                Auto-Generated Media Kits
-              </div>
-
-              <div className='flex items-center gap-2 text-xs text-[#3D4966]'>
-                <CheckCheck size={16} />
-                Real-Time Analytics
-              </div>
-
-              <div className='flex items-center gap-2 text-xs text-[#3D4966]'>
-                <CheckCheck size={16} />
-                Professional & Customizable
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={cx("fixed bottom-0 py-4 w-[90%] bg-[#EAE9EC]")}>
-          <NewButton
-            size="large"
-            variant="primary"
-            className="w-full"
-            onClick={handleJoinWaitlist}
-          >
-            Join the Waitlist
-          </NewButton>
-        </div>
-      </div>
+      {
+        mediakitRef ? <MediaKitReady instaIdInput={instaIdInput} setInstaIdInput={setInstaIdInput} mediakitRef={mediakitRef} /> : <MediaKitComingSoon />
+      }
     </div>
   )
 }

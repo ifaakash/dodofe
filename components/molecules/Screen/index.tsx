@@ -51,7 +51,6 @@ const Screen: React.FC<ScreenProps> = ({
 
     useEffect(() => {
         setIsMounted(true);
-
         if (isUserLoggedIn() && routeGuardDetail === ROUTE_TYPE.RESTRICTED) {
             router.push(ROUTE_CONSTANTS.HOME);
 

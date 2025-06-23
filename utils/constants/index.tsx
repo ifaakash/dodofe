@@ -62,6 +62,7 @@ export const ROUTE_CONSTANTS = {
   FOR_BRANDS: "/for-brands",
   FOR_CREATORS: "/",
   PROFILE: "/profile",
+  MEDIA_KIT_CONSOLE: "/media-kit/console",
 };
 
 export const BLOCKS = {

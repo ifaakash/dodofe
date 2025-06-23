@@ -1,0 +1,78 @@
+'use client'
+import { Header } from "@components/molecules/Header";
+import MediaKitHeader from "@components/molecules/mediaKitConsole/MediaKitHeader";
+import MediaKitBlocks from "@components/molecules/mediaKitConsole/MediaKitBlocks";
+import MediaKitPage from "@components/templates/MediaKitPage";
+import leftArrow from "public/icons/leftArrow.svg";
+import Image from "next/image";
+import EyeIcon from "../../../public/icons/greenEye.svg";
+import { getMediaKitByInstaId, getUserDetails } from "api/services";
+import { useEffect, useState } from "react";
+import { userDetailsProps } from "types";
+import { loadState } from "@utils/localStorage";
+import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { Share2Icon } from "lucide-react";
+import { toast } from "react-toastify";
+
+const MediaKitConsole = () => {
+    const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null)
+    const userId = loadState(STORAGE_CONSTANTS.userId)
+    const [updateMediaKit, setUpdateMediaKit] = useState<boolean>(false)
+    const searchParams = useSearchParams()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const router = useRouter()
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            setIsLoading(true)
+            const response = await getUserDetails(userId as string)
+            setUserDetails(response.user)
+            setUpdateMediaKit(false)
+            setIsLoading(false)
+        }
+        fetchUserDetails()
+
+    }, [updateMediaKit])
+
+    useEffect(() => {
+        if (!isLoading && !userDetails?.mediaKit) {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT)
+        }
+    }, [isLoading, userDetails?.mediaKit, router])
+
+    const handleShare = () => {
+        const url = `${window.location.origin}/media-kit/${userDetails?.mediaKit?.instaId}`
+        navigator.clipboard.writeText(url)
+        toast.success('Link copied to clipboard')
+    }
+
+
+    return (
+        <div className='h-screen w-screen overflow-auto'>
+            <div className="px-5 py-4 flex justify-between items-center border-b">
+                <div className="flex items-center gap-2">
+                    <Image src={leftArrow} className="w-5 h-5" alt="left arrow" />
+                    <div className="font-semibold">Mediakit</div>
+                </div>
+
+                <div className="flex items-center py-2 px-3 rounded-md bg-white gap-1" onClick={handleShare}>
+                    <div className="text-[#3D4966] text-xs font-semibold ">
+                        Share
+                    </div>
+                    <Share2Icon size={14} className="text-brandPrimary" strokeWidth={2} />
+                </div>
+            </div>
+
+            <div className="p-4 flex flex-col gap-6">
+                <MediaKitHeader data={userDetails} />
+                <MediaKitBlocks mediaKitDetails={userDetails?.mediaKit} setUpdateMediaKit={setUpdateMediaKit} />
+            </div>
+
+
+        </div>
+    )
+}
+
+export default MediaKitConsole;

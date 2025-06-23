@@ -67,4 +67,8 @@ export const routeArray = {
         type: ROUTE_TYPE.PRIVATE,
         restricted: true,
     },
+    [ROUTE_CONSTANTS.MEDIA_KIT]: {
+        type: ROUTE_TYPE.PRIVATE,
+        restricted: true,
+    },
 };

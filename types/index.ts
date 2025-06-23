@@ -144,6 +144,9 @@ export interface userDetailsProps {
   invoices: string[];
   clientDetails: ClientDetailsProps[];
   recipientDetails: RecipientDetails[];
+  mediaKit: {
+    instaId: string;
+  };
 }
 
 export interface InvoiceUserCardProps {

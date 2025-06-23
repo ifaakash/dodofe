@@ -214,8 +214,24 @@ export const redeemUserCoins = async (payload: any): Promise<any> =>
 export const getPollResponses = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.getPollResponses, payload);
 
-export const getMediaKit = async (instaId?: string): Promise<any> =>
-    Get<any>(API_CONSTANTS.getMediaKit + (instaId ? `?instaId=${instaId}` : ''));
+export const getMediaKitByInstaId = async (instaId?: string): Promise<any> =>
+    Get<any>(API_CONSTANTS.getMediaKit + API_CONSTANTS.slash + instaId);
 
 export const addBrandCollaboration = async (payload: any): Promise<any> =>
-    Post<any>(API_CONSTANTS.addBrandCollaboration, payload);
+    Post<any>(API_CONSTANTS.addBrandCollaboration, payload, {
+        "Content-Type": "multipart/form-data",
+    });
+    
+export const linkMediaKit = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.linkMediaKit, payload);
+
+export const updateMediaKit = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.updateMediaKit, payload);
+
+export const addMediaKitAnalytics = async (payload: any): Promise<any> =>
+    Post<any>(API_CONSTANTS.addMediaKitAnalytic, payload, {
+        "Content-Type": "multipart/form-data",
+    }); 
+
+export const verifyMediaKit = async (instaId: string): Promise<any> =>
+    Get<any>(API_CONSTANTS.verifyMediaKit + API_CONSTANTS.slash + instaId);

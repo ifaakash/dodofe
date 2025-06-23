@@ -15,6 +15,7 @@ import { RotateCcw } from "lucide-react";
 import { auth } from "config/firebase";
 import { signInWithPhoneNumber } from "firebase/auth";
 import { RecaptchaVerifier } from "firebase/auth";
+import { useSearchParams } from "next/navigation";
 
 
 
@@ -33,6 +34,8 @@ export const LoginOtp = ({ setLoginState }: any) => {
     const [isTermsChecked, setIsTermsChecked] = useState(true);
     const [timer, setTimer] = useState(20); // to be set to 60 seconds
     const [isResendDisabled, setIsResendDisabled] = useState(true);
+    const searchParams = useSearchParams()
+    const mediakitRef = searchParams.get('mediakitRef')
 
     const handleOnChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -118,7 +121,9 @@ export const LoginOtp = ({ setLoginState }: any) => {
             saveState(STORAGE_CONSTANTS.userId, response?.userId);
             saveState(STORAGE_CONSTANTS.MOBILE, mobileNumber);
 
-            if (response?.isNewUser) {
+            if (response?.isNewUser && mediakitRef) {
+                router.push(ROUTE_CONSTANTS.USER_CATEGORY + '?mediakitRef=' + mediakitRef)
+            } else if (response?.isNewUser) {
                 router.push(ROUTE_CONSTANTS.USER_CATEGORY);
             } else {
                 router.push(ROUTE_CONSTANTS.HOME);
@@ -283,3 +288,5 @@ export const LoginOtp = ({ setLoginState }: any) => {
 
     );
 };
+
+

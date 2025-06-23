@@ -212,6 +212,15 @@ export default function Home() {
         return null;
     }
 
+    const handleMediaKitNavigation = () => {
+        console.log('userDetails', userDetails)
+        if (userDetails?.mediaKit) {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
+        } else {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT);
+        }
+    };
+
     return (
         <Screen>
 
@@ -352,12 +361,14 @@ export default function Home() {
                     />
 
                     <div className="absolute-center flex-col">
+
                         <CtaSection
-                            onClick={handleInvoiceNavigation}
-                            bgColor="var(--yellow)"
-                            img={invoiceIcon}
-                            title="Dodo  Invoices"
-                            description="Create. Send. Track. Invoicing, finally sorted."
+                            bgColor="var(--warm-green)"
+                            img={mediakitIcon}
+                            title="MediaKit"
+                            description="A Digital & Dyanamic resume for you!"
+                            buttonLabel="Know More"
+                            onClick={handleMediaKitNavigation}
                         />
 
                         <div className="flex flex-row justify-between w-full gap-x-4 my-6">
@@ -382,14 +393,16 @@ export default function Home() {
                         </div>
                     </div>
 
+
+
                     <CtaSection
-                        bgColor="var(--warm-green)"
-                        img={mediakitIcon}
-                        title="MediaKit"
-                        description="A Digital & Dyanamic resume for you!"
-                        buttonLabel="Know More"
-                        onClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
+                        onClick={handleInvoiceNavigation}
+                        bgColor="var(--yellow)"
+                        img={invoiceIcon}
+                        title="Dodo  Invoices"
+                        description="Create. Send. Track. Invoicing, finally sorted."
                     />
+
 
                     <span className="absolute-center text-sm mt-4">
                         more coming soon.
