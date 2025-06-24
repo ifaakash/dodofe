@@ -1,11 +1,11 @@
 import { Input } from '@components/atoms'
 import NewButton from '@components/atoms/Button/NewButton'
-import { X } from 'lucide-react'
+import { Trash2, X } from 'lucide-react'
 import { useEffect, useState, useRef } from 'react'
 import EditPenIcon from "public/icons/EditPen.svg";
 import Image from 'next/image'
 import AddImageIcon from "public/icons/addImage.svg";
-import { addBrandCollaboration } from 'api';
+import { addBrandCollaboration, updateMediaKitBrand, deleteBrandCollaboration } from 'api';
 import { toast } from 'react-toastify';
 
 const checkBoxList = [
@@ -27,37 +27,61 @@ const BrandModal = ({
     setIsAddBrandModelOpen,
     setAllBrandData,
     allBrandData,
-    variant
+    variant,
+    instaId
 }: {
     setIsAddBrandModelOpen: (isOpen: boolean) => void,
     setAllBrandData?: (data: any) => void,
     allBrandData?: any,
-    variant: 'add' | 'edit'
+    variant: 'add' | 'edit',
+    instaId?: string
 }) => {
-    const [brandFormData, setBrandFormData] = useState<{
-        brandName: string,
-        brandLogo: string,
-        brandLogoFile: File | null,
-        brandNameEditing: boolean,
-        checkboxes: { label: string, value: boolean }[],
-        link: string,
-        reach: string,
-        engagement: string,
-    }>({
-        brandName: '',
-        brandLogo: '',
-        brandLogoFile: null,
-        brandNameEditing: false,
-        checkboxes: checkBoxList,
-        link: '',
-        reach: '',
-        engagement: '',
-    })
+    // Initialize form data based on variant
+    const getInitialFormData = () => {
+        if (variant === 'edit' && allBrandData) {
+            // Parse content types from existing data
+            const existingContentTypes = allBrandData.contentType?.split(',') || []
+            const checkboxes = checkBoxList.map(item => ({
+                ...item,
+                value: existingContentTypes.includes(item.label)
+            }))
+
+            return {
+                brandName: allBrandData.brandName || '',
+                brandLogo: allBrandData.brandLogo || '',
+                brandLogoFile: null,
+                checkboxes: checkboxes,
+                link: allBrandData.contentUrl || '',
+                reach: allBrandData.reach || '',
+                engagement: allBrandData.engagement || '',
+            }
+        }
+
+        return {
+            brandName: '',
+            brandLogo: '',
+            brandLogoFile: null,
+            checkboxes: checkBoxList,
+            link: '',
+            reach: '',
+            engagement: '',
+        }
+    }
+
+    const [brandFormData, setBrandFormData] = useState(getInitialFormData())
     const [brandLogoFile, setBrandLogoFile] = useState<File | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const [brandNameEditing, setBrandNameEditing] = useState(false)
+
+    // Store original data for comparison when editing
+    const [originalData, setOriginalData] = useState(allBrandData)
 
     useEffect(() => {
         document.body.style.overflow = 'hidden'
+        if (variant === 'edit') {
+            setBrandNameEditing(true)
+            setOriginalData(allBrandData)
+        }
         return () => {
             document.body.style.overflow = 'unset'
         }
@@ -76,7 +100,11 @@ const BrandModal = ({
     }
 
     const isFormValid = () => {
-        return brandFormData.checkboxes.some(cb => cb.value) && brandFormData.link.trim() !== ''
+        if (variant === 'add') {
+            return brandFormData.checkboxes.some(cb => cb.value) && brandFormData.link.trim() !== ''
+        } else {
+            return brandFormData.brandName.trim() !== '' && brandFormData.link.trim() !== ''
+        }
     }
 
     const handleAddBrand = async () => {
@@ -112,6 +140,7 @@ const BrandModal = ({
                     contentType: brandFormData.checkboxes.filter(cb => cb.value).map(cb => cb.label).join(',')
                 }]
             })
+            window.location.reload()
             toast.success('Brand added successfully')
         } else {
             toast.error(res.message)
@@ -124,7 +153,7 @@ const BrandModal = ({
             setBrandLogoFile(file)
             const reader = new FileReader()
             reader.onload = (e) => {
-                setBrandFormData({ ...brandFormData, brandLogo: e.target?.result as string })
+                setBrandFormData({ ...brandFormData, brandLogo: e.target?.result as string, brandLogoFile: file })
             }
             reader.readAsDataURL(file)
         }
@@ -133,7 +162,85 @@ const BrandModal = ({
 
     const handleImageClick = () => {
         fileInputRef.current?.click()
-    }    
+    }
+
+    const handleEditBrand = async () => {
+        // Compare current form data with original data to find changes
+        if (!instaId || !allBrandData) {
+            console.log({
+                instaId,
+                allBrandData
+            })
+            toast.error('Something went wrong')
+            console.log('Insta ID or allBrandData is not defined')
+            return
+        }
+
+        const changes: any = {}
+
+        if (brandFormData.brandName !== originalData.brandName) {
+            changes.brandName = brandFormData.brandName
+        }
+
+        if (brandFormData.link !== originalData.contentUrl) {
+            changes.contentUrl = brandFormData.link
+        }
+
+        if (brandFormData.reach !== originalData.reach) {
+            changes.reach = parseFloat(brandFormData.reach) || 0
+        }
+
+        if (brandFormData.engagement !== originalData.engagement) {
+            changes.engagement = parseFloat(brandFormData.engagement) || 0
+        }
+
+        const originalContentTypes = originalData.contentType?.split(',') || []
+        const newContentTypes = brandFormData.checkboxes.filter(cb => cb.value).map(cb => cb.label)
+
+        if (JSON.stringify(originalContentTypes.sort()) !== JSON.stringify(newContentTypes.sort())) {
+            changes.contentType = newContentTypes.join(',')
+        }
+
+        if (brandFormData.brandLogoFile) {
+            changes.brandLogo = brandFormData.brandLogoFile
+        }
+
+        if (Object.keys(changes).length === 0) {
+            console.log('No changes detected')
+            toast.info('No changes to update')
+            return
+        }
+
+        const res = await updateMediaKitBrand({
+            instaId: instaId,
+            brandId: allBrandData._id,
+            updates: {
+                ...changes
+            }
+        })
+        if (res.success) {
+            toast.success('Brand updated successfully')
+            setIsAddBrandModelOpen(false)
+            window.location.reload()
+        } else {
+            toast.error(res.message)
+        }
+    }
+
+    const handleDeleteBrand = async () => {
+        const res = await deleteBrandCollaboration({
+            instaId: instaId,
+            brandId: allBrandData._id
+        })
+
+        if (res.success) {
+            toast.success('Brand deleted successfully')
+            setIsAddBrandModelOpen(false)
+            window.location.reload()
+        } else {
+            toast.error(res.message)
+        }
+    }
 
     return (
         <div
@@ -148,7 +255,16 @@ const BrandModal = ({
                             Brand
                         </div>
                     </div>
-                    <X size={16} className='cursor-pointer' onClick={() => setIsAddBrandModelOpen(false)} />
+                    {
+                        variant === 'edit' ? (
+                            <div className='flex items-center gap-2 text-xs border-[1px] border-red-500 rounded-[10px] px-[10px] py-[6px] cursor-pointer' onClick={handleDeleteBrand}>
+                                <div className='text-[#3D4966] font-medium'> Delete </div>
+                                <Trash2 size={14} className='cursor-pointer' onClick={handleDeleteBrand} />
+                            </div>
+                        ) : (
+                            <X size={16} className='cursor-pointer' onClick={() => setIsAddBrandModelOpen(false)} />
+                        )
+                    }
                 </div>
                 <div className='text-[#0092DB] text-[10px] font-medium bg-[#E5F6FF] px-[10px] py-[6px] rounded-[10px]'>
                     Your Past Brand colloboration details, helps you to statnd out and get more Brands.
@@ -166,9 +282,9 @@ const BrandModal = ({
                             className='bg-[#979EAD] rounded-[10px] p-2 cursor-pointer hover:bg-[#8A919F] transition-colors'
                             onClick={handleImageClick}
                         >
-                            {brandFormData.brandLogoFile ? (
+                            {brandFormData.brandLogo || brandFormData.brandLogoFile ? (
                                 <Image
-                                    src={brandLogoFile ? URL.createObjectURL(brandLogoFile) : brandFormData.brandLogo}
+                                    src={brandFormData.brandLogoFile ? URL.createObjectURL(brandFormData.brandLogoFile) : brandFormData.brandLogo}
                                     alt='brand-logo'
                                     width={24}
                                     height={24}
@@ -179,13 +295,21 @@ const BrandModal = ({
                             )}
                         </div>
                     </div>
-                    <div className='flex items-center' onClick={() => setBrandFormData({ ...brandFormData, brandNameEditing: true })}>
+                    <div className='flex items-center' onClick={() => setBrandNameEditing(true)}>
                         {
-                            brandFormData.brandNameEditing ? (
-                                <input type='text' value={brandFormData.brandName} onChange={(e) => setBrandFormData({ ...brandFormData, brandName: e.target.value })} placeholder='Add Brand Name' className='text-[#3D4966] font-medium outline-none' />
+                            brandNameEditing ? (
+                                <input
+                                    type='text'
+                                    value={brandFormData.brandName}
+                                    onChange={(e) => setBrandFormData({ ...brandFormData, brandName: e.target.value })}
+                                    placeholder='Add Brand Name'
+                                    className='text-[#3D4966] font-medium outline-none'
+                                    onBlur={() => setBrandNameEditing(false)}
+                                    autoFocus
+                                />
                             ) : (
                                 <div className='flex items-center gap-2'>
-                                    <div className='text-[#3D4966] font-medium'> Brand Name </div>
+                                    <div className='text-[#3D4966] font-medium'> {brandFormData.brandName || 'Brand Name'} </div>
                                     <Image src={EditPenIcon} alt='edit-pen' width={24} height={24} className='cursor-pointer' />
                                 </div>
                             )
@@ -236,10 +360,10 @@ const BrandModal = ({
                     <NewButton
                         variant={isFormValid() ? "primary" : "disabled"}
                         size="large"
-                        onClick={handleAddBrand}
+                        onClick={variant === 'add' ? handleAddBrand : handleEditBrand}
                         className="w-full"
                     >
-                        Add now
+                        {variant === 'add' ? 'Add now' : 'Update now'}
                     </NewButton>
                 </div>
             </div>

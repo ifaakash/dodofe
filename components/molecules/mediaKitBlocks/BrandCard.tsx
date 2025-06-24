@@ -5,14 +5,13 @@ import Image from "next/image"
 import { useState } from "react"
 import BrandModal from "@components/templates/mediaKit/BrandModal"
 
-const BrandCard = ({ brand, mode }: { brand: any, mode: 'edit' | 'public' | 'preview' }) => {
+const BrandCard = ({ brand, mode, instaId }: { brand: any, mode: 'edit' | 'public' | 'preview', instaId?: string }) => {
     const [openEditModal, setOpenEditModal] = useState(false)
 
     const handleEditModalOpen = () => {
         if (mode === 'public') return
         setOpenEditModal(true)
     }
-
 
     return (
         <>
@@ -38,7 +37,7 @@ const BrandCard = ({ brand, mode }: { brand: any, mode: 'edit' | 'public' | 'pre
                             }
                         </div>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-`center">
                         <div className="text-[#3D4966]"> Reach: </div>
                         <div className="text-[#3D4966] font-semibold"> {brand.reach ? brand.reach + 'K' : 'N/A'} </div>
                     </div>
@@ -49,7 +48,7 @@ const BrandCard = ({ brand, mode }: { brand: any, mode: 'edit' | 'public' | 'pre
                 </div>
             </div>
             {
-                openEditModal && <BrandModal setIsAddBrandModelOpen={setOpenEditModal} setAllBrandData={() => { }} allBrandData={brand} variant="edit" />
+                openEditModal && <BrandModal setIsAddBrandModelOpen={setOpenEditModal} setAllBrandData={() => { }} allBrandData={brand} variant="edit" instaId={instaId} />
             }
         </>
     )

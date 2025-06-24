@@ -55,5 +55,6 @@ export default {
     updateMediaKit: '/mediakit/update',
     addMediaKitAnalytic: '/mediakit/analytics',
     verifyMediaKit: '/mediakit/is-verified',
-    updateMediaKitBrand: '/mediakit/update-brand'
+    updateMediaKitBrand: '/mediakit/update-brand-collab',
+    deleteBrandCollaboration: '/mediakit/delete-brand-collab'
 };

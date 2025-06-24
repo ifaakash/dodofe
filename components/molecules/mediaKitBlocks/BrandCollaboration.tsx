@@ -58,7 +58,7 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId, mode = 'edi
                     <div className={`flex gap-2 overflow-x-auto scrollbar-hide py-2 ${allBrandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
                         {
                             allBrandData?.brands?.map((brand: any, index: number) => (
-                                <BrandCard key={index} brand={brand} mode={mode} />
+                                <BrandCard key={index} brand={brand} mode={mode} instaId={instaId} />
                             ))
                         }
                     </div>
