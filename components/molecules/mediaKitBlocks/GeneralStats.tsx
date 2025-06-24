@@ -39,7 +39,7 @@ const GeneralStats = ({ mode }: { mode: 'edit' | 'public' | 'preview' }) => {
     const [isUploading, setIsUploading] = useState(false)
 
     const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('handleUploadImage called', e.target.files)
+        console.log('ss', e.target.files)
         setIsUploading(true)
         const file = e.target.files?.[0]
         if (file) {

@@ -8,9 +8,6 @@ import AddImageIcon from "public/icons/addImage.svg";
 import { addBrandCollaboration } from 'api';
 import { toast } from 'react-toastify';
 
-
-
-
 const checkBoxList = [
     {
         label: 'Reel',
@@ -26,15 +23,37 @@ const checkBoxList = [
     }
 ]
 
-const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }: { setIsAddBrandModelOpen: (isOpen: boolean) => void, setAllBrandData: (data: any) => void, allBrandData: any }) => {
-    const [checkboxes, setCheckboxes] = useState(checkBoxList)
-    const [link, setLink] = useState('')
-    const [reach, setReach] = useState('')
-    const [engagement, setEngagement] = useState('')
-    const [brandName, setBrandName] = useState('')
-    const [brandLogo, setBrandLogo] = useState('')
+const BrandModal = ({
+    setIsAddBrandModelOpen,
+    setAllBrandData,
+    allBrandData,
+    variant
+}: {
+    setIsAddBrandModelOpen: (isOpen: boolean) => void,
+    setAllBrandData?: (data: any) => void,
+    allBrandData?: any,
+    variant: 'add' | 'edit'
+}) => {
+    const [brandFormData, setBrandFormData] = useState<{
+        brandName: string,
+        brandLogo: string,
+        brandLogoFile: File | null,
+        brandNameEditing: boolean,
+        checkboxes: { label: string, value: boolean }[],
+        link: string,
+        reach: string,
+        engagement: string,
+    }>({
+        brandName: '',
+        brandLogo: '',
+        brandLogoFile: null,
+        brandNameEditing: false,
+        checkboxes: checkBoxList,
+        link: '',
+        reach: '',
+        engagement: '',
+    })
     const [brandLogoFile, setBrandLogoFile] = useState<File | null>(null)
-    const [brandNameEditing, setBrandNameEditing] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
@@ -51,13 +70,13 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
     }
 
     const handleCheckboxChange = (index: number) => {
-        const newCheckboxes = [...checkboxes]
+        const newCheckboxes = [...brandFormData.checkboxes]
         newCheckboxes[index].value = !newCheckboxes[index].value
-        setCheckboxes(newCheckboxes)
+        setBrandFormData({ ...brandFormData, checkboxes: newCheckboxes })
     }
 
     const isFormValid = () => {
-        return checkboxes.some(cb => cb.value) && link.trim() !== ''
+        return brandFormData.checkboxes.some(cb => cb.value) && brandFormData.link.trim() !== ''
     }
 
     const handleAddBrand = async () => {
@@ -65,15 +84,16 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
 
         // Add text fields
         formData.append('instaId', '_keshav_malik') // to be fixed
-        formData.append('brandName', brandName)
-        formData.append('contentType', checkboxes.filter(cb => cb.value).map(cb => cb.label).join(','))
-        formData.append('contentUrl', link)
-        formData.append('reach', reach)
-        formData.append('engagement', engagement)
+        formData.append('brandName', brandFormData.brandName)
+        formData.append('contentType', brandFormData.checkboxes.filter(cb => cb.value).map(cb => cb.label).join(','))
+        formData.append('contentUrl', brandFormData.link)
+        formData.append('reach', brandFormData.reach)
+        formData.append('engagement', brandFormData.engagement)
 
-        // Add file if exists
-        if (brandLogoFile) {
-            formData.append('brandLogo', brandLogoFile)
+        console.log('formData', formData)
+
+        if (brandFormData.brandLogoFile) {
+            formData.append('brandLogo', brandFormData.brandLogoFile)
         }
 
         const res = await addBrandCollaboration(formData)
@@ -84,12 +104,12 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                 ...allBrandData,
                 isActive: true,
                 brands: [...allBrandData.brands, {
-                    brandName: brandName,
-                    brandLogo: brandLogo,
-                    contentUrl: link ,
-                    reach: reach,
-                    engagement: engagement,
-                    contentType: checkboxes.filter(cb => cb.value).map(cb => cb.label).join(',')
+                    brandName: brandFormData.brandName,
+                    brandLogo: brandFormData.brandLogoFile,
+                    contentUrl: brandFormData.link,
+                    reach: brandFormData.reach,
+                    engagement: brandFormData.engagement,
+                    contentType: brandFormData.checkboxes.filter(cb => cb.value).map(cb => cb.label).join(',')
                 }]
             })
             toast.success('Brand added successfully')
@@ -104,15 +124,16 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
             setBrandLogoFile(file)
             const reader = new FileReader()
             reader.onload = (e) => {
-                setBrandLogo(e.target?.result as string)
+                setBrandFormData({ ...brandFormData, brandLogo: e.target?.result as string })
             }
             reader.readAsDataURL(file)
         }
+        console.log('brandFormData', brandFormData)
     }
 
     const handleImageClick = () => {
         fileInputRef.current?.click()
-    }
+    }    
 
     return (
         <div
@@ -122,7 +143,7 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
             <div className='bg-[#FDFBFF] p-5 rounded-lg w-full flex flex-col gap-4 ease-in-out animate-slideUp transform transition-transform duration-300 '>
                 <div className='flex justify-between items-center'>
                     <div className='flex items-center gap-1 text-2xl font-bold'>
-                        <div> Add </div>
+                        <div> {variant === 'add' ? 'Add' : 'Edit'} </div>
                         <div className=' bg-gradient-to-r from-[#F37E57] to-[#EF3576] bg-clip-text text-transparent'>
                             Brand
                         </div>
@@ -135,8 +156,8 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                 <div className='flex p-2 gap-3 border border-[E2E4E9] rounded-xl'>
                     <div className='flex items-center gap-2'>
                         <input
-                            type="file"
                             ref={fileInputRef}
+                            type="file"
                             onChange={handleImageUpload}
                             accept="image/*"
                             className="hidden"
@@ -145,9 +166,9 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                             className='bg-[#979EAD] rounded-[10px] p-2 cursor-pointer hover:bg-[#8A919F] transition-colors'
                             onClick={handleImageClick}
                         >
-                            {brandLogo ? (
+                            {brandFormData.brandLogoFile ? (
                                 <Image
-                                    src={brandLogo}
+                                    src={brandLogoFile ? URL.createObjectURL(brandLogoFile) : brandFormData.brandLogo}
                                     alt='brand-logo'
                                     width={24}
                                     height={24}
@@ -158,10 +179,10 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                             )}
                         </div>
                     </div>
-                    <div className='flex items-center' onClick={() => setBrandNameEditing(true)}>
+                    <div className='flex items-center' onClick={() => setBrandFormData({ ...brandFormData, brandNameEditing: true })}>
                         {
-                            brandNameEditing ? (
-                                <input type='text' value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder='Add Brand Name' className='text-[#3D4966] font-medium outline-none' />
+                            brandFormData.brandNameEditing ? (
+                                <input type='text' value={brandFormData.brandName} onChange={(e) => setBrandFormData({ ...brandFormData, brandName: e.target.value })} placeholder='Add Brand Name' className='text-[#3D4966] font-medium outline-none' />
                             ) : (
                                 <div className='flex items-center gap-2'>
                                     <div className='text-[#3D4966] font-medium'> Brand Name </div>
@@ -174,7 +195,7 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                 <div className='flex flex-col gap-2'>
                     <div className='font-bold'>Content type</div>
                     <div className='flex gap-2'>
-                        {checkboxes.map((item, index) => (
+                        {brandFormData.checkboxes.map((item, index) => (
                             <CheckBox
                                 key={index}
                                 label={item.label}
@@ -186,8 +207,8 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                     <input
                         type='text'
                         placeholder='Link'
-                        value={link}
-                        onChange={(e) => setLink(e.target.value)}
+                        value={brandFormData.link}
+                        onChange={(e) => setBrandFormData({ ...brandFormData, link: e.target.value })}
                         className='placeholder:text-xs placeholder:text-[#8994A9] text-xs w-full border border-[#EAE9EC] rounded-[10px] p-[14px] outline-none'
                     />
                 </div>
@@ -197,15 +218,15 @@ const AddBrandModal = ({ setIsAddBrandModelOpen, setAllBrandData, allBrandData }
                         <input
                             type='text'
                             placeholder='Reach'
-                            value={reach}
-                            onChange={(e) => setReach(e.target.value)}
+                            value={brandFormData.reach}
+                            onChange={(e) => setBrandFormData({ ...brandFormData, reach: e.target.value })}
                             className='placeholder:text-xs placeholder:text-[#8994A9] text-xs w-full border border-[#EAE9EC] rounded-[10px] p-[14px] outline-none'
                         />
                         <input
                             type='text'
                             placeholder='Engagement'
-                            value={engagement}
-                            onChange={(e) => setEngagement(e.target.value)}
+                            value={brandFormData.engagement}
+                            onChange={(e) => setBrandFormData({ ...brandFormData, engagement: e.target.value })}
                             className='placeholder:text-xs placeholder:text-[#8994A9] text-xs w-full border border-[#EAE9EC] rounded-[10px] p-[14px] outline-none'
                         />
                     </div>
@@ -248,4 +269,4 @@ const CheckBox = ({
     )
 }
 
-export default AddBrandModal
+export default BrandModal
