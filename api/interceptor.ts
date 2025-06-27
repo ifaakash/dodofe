@@ -6,9 +6,11 @@ import { loadState } from "utils/localStorage";
 
 import Router from "next/router";
 
-// export const BASE_URL = "https://dodobe.onrender.com/api/v1/";
-export const BASE_URL = "http://localhost:3002/api/v1/";
-
+export const BASE_URL =
+    process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+    "https://api.dodoclub.in/api/v1/";
+// export const BASE_URL = "http://localhost:3002/api/v1/";
+console.log("BACKEND_BASE_URL", BASE_URL);
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
 // http://localhost:3000
