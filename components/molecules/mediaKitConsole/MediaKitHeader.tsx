@@ -23,7 +23,7 @@ const MediaKitHeader = ({ data, variant }: MediaKitHeaderInterface) => {
         }
 
         setUserProfileImage(data?.user?.profilePicture)
-        setUserInterestCategories(data?.user?.intrestCategories)
+        setUserInterestCategories(data?.user?.interestCategories)
         setUserName(data?.user?.name)
     }, [data])
 
