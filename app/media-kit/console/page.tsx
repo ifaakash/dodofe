@@ -66,7 +66,7 @@ const MediaKitConsole = () => {
             </div>
 
             <div className="p-4 flex flex-col gap-6">
-                <MediaKitHeader data={userDetails} />
+                <MediaKitHeader data={userDetails} variant="edit" />
                 <MediaKitBlocks mediaKitDetails={userDetails?.mediaKit} setUpdateMediaKit={setUpdateMediaKit} />
             </div>
 
