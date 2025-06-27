@@ -64,7 +64,7 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
             {/* <Header /> */}
 
             <div className="py-12 px-4 flex flex-col gap-5">
-                <MediaKitHeader data={mediaKitData} />
+                <MediaKitHeader data={mediaKitData} variant="public" />
 
 
                 <div className="flex flex-col gap-[10px]">

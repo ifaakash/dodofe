@@ -101,9 +101,9 @@ const BrandModal = ({
 
     const isFormValid = () => {
         if (variant === 'add') {
-            return brandFormData.checkboxes.some(cb => cb.value) && brandFormData.link.trim() !== ''
+            return brandFormData.checkboxes.some(cb => cb.value)
         } else {
-            return brandFormData.brandName.trim() !== '' && brandFormData.link.trim() !== ''
+            return brandFormData.brandName.trim() !== ''
         }
     }
 

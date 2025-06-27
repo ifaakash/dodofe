@@ -85,8 +85,8 @@ const   LocationDistribution = ({
 
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1`}>
-            <div className={`flex justify-between items-center ${mode === 'public' ? 'hidden' : ''}`}>
-                <Image className={`w-5 h-5 ${locationDistData?.isActive ? '' : ''}`} src={DragIcon} alt="Drag" />
+            <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                {/* <Image className={`w-5 h-5 ${locationDistData?.isActive ? '' : ''}`} src={DragIcon} alt="Drag" /> */}
                 <div className="pointer-events-auto">
                     <Toggle checked={locationDistributionData?.isActive} onCheckedChange={handleToggle} />
                 </div>
