@@ -2,7 +2,7 @@
 import { Footer, UserInput } from "@components/atoms";
 import { useState } from "react";
 import cx from "classnames";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./userCategory.module.css";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import { completeProfile } from "api";
@@ -36,6 +36,8 @@ export const UserCategory = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState<string[]>([]); // Changed from string to array
   const router = useRouter();
+  const searchParams = useSearchParams()
+  const mediakitRef = searchParams.get('mediakitRef')
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -59,7 +61,11 @@ export const UserCategory = () => {
 
     completeProfile({ userId, name, mobileNumber, interests: category, socialLinks: [] })
       .then(() => {
-        router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
+        if (mediakitRef) {
+          router.push(ROUTE_CONSTANTS.MEDIA_KIT + '?mediakitRef=' + mediakitRef)
+        } else {
+          router.push(ROUTE_CONSTANTS.HOME, { scroll: false });
+        }
       })
       .catch(() => {
         console.log('error');

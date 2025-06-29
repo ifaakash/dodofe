@@ -114,7 +114,7 @@ export const useDodoPageAnalytics = (dodoPageId: string) => {
             const response = await recordAnalyticsPageView(payload);
             console.log("response from record page view", response);
             if (!response.ok) {
-                console.error("Failed to record page view");
+                console.log("Failed to record page view");
             }
         } catch (err) {
             console.error("Error recording page view:", err);

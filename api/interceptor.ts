@@ -6,9 +6,11 @@ import { loadState } from "utils/localStorage";
 
 import Router from "next/router";
 
-export const BASE_URL = "https://dodobe.onrender.com/api/v1/";
+export const BASE_URL =
+    process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+    "https://api.dodoclub.in/api/v1/";
 // export const BASE_URL = "http://localhost:3002/api/v1/";
-
+console.log("BACKEND_BASE_URL", BASE_URL);
 // 'http://13.202.63.227:3001/';
 // 'https://dodoclub.in';
 // http://localhost:3000
@@ -22,18 +24,32 @@ const serializeError = (error: AxiosError): any => {
     const { response } = error;
     if (!response) throw error;
     const { status, statusText, data } = response;
-    // const { message } = data;
+    
     let errorMsg = "";
-    // try {
-    //     errorMsg = JSON.parse(message).error.debug_msg;
-    // } catch (e) {
-    //     errorMsg = message;
-    // }
+    
+    // Try to extract error message from response data
+    if (data) {
+        if (typeof data === 'object') {
+            // Check for common error message fields
+            if ('message' in data && typeof data.message === 'string') {
+                errorMsg = data.message;
+            } else if ('error' in data && typeof data.error === 'string') {
+                errorMsg = data.error;
+            } else if ('msg' in data && typeof data.msg === 'string') {
+                errorMsg = data.msg;
+            }
+        } else if (typeof data === 'string') {
+            errorMsg = data;
+        }
+    }
+    
     const errorObj = {
         name: "API ERROR",
         message: errorMsg || statusText || `API FAILED (${status})`,
         code: status.toString(),
         stack: JSON.stringify(error.toJSON()),
+        originalError: error,
+        responseData: data
     };
     return errorObj;
 };

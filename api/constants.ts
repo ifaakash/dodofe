@@ -49,6 +49,12 @@ export default {
     getCoins: '/coins/user',
     redeemCoins: '/coins/redeem',
     getPollResponses: '/block/get-poll-responses',
-    getMediaKit: '/mediakit/details',
-    addBrandCollaboration: '/mediakit/brand-collab'
+    linkMediaKit: '/mediakit/link-mediakit-to-user',
+    getMediaKit: '/mediakit/get-by-instaid',
+    addBrandCollaboration: '/mediakit/add-brand-collab',
+    updateMediaKit: '/mediakit/update',
+    addMediaKitAnalytic: '/mediakit/analytics',
+    verifyMediaKit: '/mediakit/is-verified',
+    updateMediaKitBrand: '/mediakit/update-brand-collab',
+    deleteBrandCollaboration: '/mediakit/delete-brand-collab'
 };

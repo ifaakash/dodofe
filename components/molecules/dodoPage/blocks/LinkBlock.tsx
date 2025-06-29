@@ -62,7 +62,7 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
             />
           )}
           <div>
-            <div className="text-base font-semibold text-[#3D4966] mb-1">
+            <div className="text-sm font-semibold text-[#3D4966] mb-1">
               {block.blockData?.title}
             </div>
             {block.blockData?.badge?.text && (
@@ -101,7 +101,7 @@ const LinkBlock = ({ mode, block, inPreview = false }: { mode: string; block: an
                   {...listeners}
                 />
               )}
-              <div className="text-sm font-semibold">{block.blockData?.title}</div>
+              <div className="text-sm font-semibold text-[#3D4966]">{block.blockData?.title}</div>
             </div>
 
             {block.blockData?.badge?.text && (

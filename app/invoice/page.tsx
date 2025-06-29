@@ -18,7 +18,6 @@ const Invoice = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      dispatch(showLoader(true));
 
       try {
         const res = await getUserDetails(userId);

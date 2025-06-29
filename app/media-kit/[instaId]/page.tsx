@@ -1,20 +1,19 @@
 "use client";
 import MediaKitPage from "@components/templates/MediaKitPage";
-import { getMediaKit } from "../../../api/services";
+import { getMediaKitByInstaId } from "api/services";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const MediaKit = () => {
     const params = useParams();
-    const searchParams = useSearchParams();
     const [mediaKitData, setMediaKitData] = useState<any>(null);
+    const instaId = params.instaId;
 
     useEffect(() => {
         const fetchMediaKitData = async () => {
             try {
-                const kitId = params.kitId as string;
-                const instaId = searchParams.get('instaId') || 'nutritionwithpalaknagpal';
-                const data = await getMediaKit(instaId || undefined);
+
+                const data = await getMediaKitByInstaId(instaId as string);
 
                 setMediaKitData(data?.data);
             } catch (error) {
@@ -23,10 +22,13 @@ const MediaKit = () => {
         };
 
         fetchMediaKitData();
-    }, [params.kitId, searchParams]);
+    }, [params.instaId]);
 
+    if(!mediaKitData || !instaId) {
+        return <div>Loading...</div>
+    }
 
-    return <MediaKitPage {...mediaKitData} />;
+    return <MediaKitPage mediaKitData={mediaKitData} />;
 };
 
 export default MediaKit;
