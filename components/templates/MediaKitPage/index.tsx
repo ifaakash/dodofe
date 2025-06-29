@@ -70,19 +70,10 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                 <div className="flex flex-col gap-[10px]">
                     <div className="flex flex-col gap-1">
                         <FollowerCount followerCount={mediaKitData?.followers} />
-                        <GeneralStats mode="public"/>
+                        <GeneralStats mode="public" instaId={mediaKitData?.instaId} contentAnalytics={mediaKitData?.contentAnalytics} />
                     </div>
 
                     <div className="flex flex-col gap-[10px]">
-                        {
-                            mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
-                                <AgeDistribution
-                                    ageDistributionData={mediaKitData?.ageAnalytics}
-                                    instaId={mediaKitData?.instaId}
-                                    mode={'public'}
-                                />
-                            )
-                        }
                         {
                             mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
                                 <GenderDistribution
@@ -92,6 +83,16 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                                 />
                             )
                         }
+                        {
+                            mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
+                                <AgeDistribution
+                                    ageDistributionData={mediaKitData?.ageAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )
+                        }
+
                         {
                             mediaKitData?.brandCollabs?.isActive && (
                                 <BrandCollaboration

@@ -13,7 +13,7 @@ import { formatDate } from "@utils/helperFunctions"
 
 
 
-const   LocationDistribution = ({
+const LocationDistribution = ({
     locationDistributionData,
     instaId,
     setUpdateMediaKit,
@@ -94,9 +94,9 @@ const   LocationDistribution = ({
 
             <div className={`flex flex-col gap-1 ${locationDistData?.isActive ? '' : ''}`}>
                 <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
-                    <div className="text-[#1167F1] w-full px-2 py-1 flex gap-1">
-                        <div className="text-xs font-semibold"> Location </div>
-                        <div className="text-[10px]"> DISTRIBUTION </div>
+                    <div className="text-[#1167F1] w-full px-2 py-1 flex gap-1 text-xs">
+                        <div className="font-semibold"> Location </div>
+                        <div className=""> DISTRIBUTION </div>
                     </div>
                     <Image src={LocationDistributionIcon} alt="Gender Distribution" />
                 </div>

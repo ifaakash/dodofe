@@ -142,9 +142,9 @@ const InstaRateCard = ({
             </div>
 
             <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
-                <div className="text-[#1F9D73] w-full px-2 py-1 flex gap-1">
-                    <div className="text-xs font-semibold"> Instagram </div>
-                    <div className="text-[10px]"> RATE CARD </div>
+                <div className="text-[#1F9D73] w-full px-2 py-1 flex gap-1 text-xs">
+                    <div className="font-semibold"> Instagram </div>
+                    <div className=""> RATE CARD </div>
                 </div>
                 <Image src={InstaRateCardIcon} alt="Gender Distribution" />
             </div>
