@@ -90,9 +90,9 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
 
             <div className={`flex flex-col gap-1 ${ageDistData?.isActive ? '' : ''}`}>
                 <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
-                    <div className="text-[#FF4794] w-full px-2 py-1 flex gap-1">
-                        <div className="text-xs font-semibold"> Age </div>
-                        <div className="text-[10px]"> DISTRIBUTION </div>
+                    <div className="text-[#FF4794] w-full px-2 py-1 flex gap-1 text-xs">
+                        <div className="font-semibold"> Age </div>
+                        <div className=""> DISTRIBUTION </div>
                     </div>
                     <Image src={AgeDistributionIcon} alt="Gender Distribution" />
                 </div>

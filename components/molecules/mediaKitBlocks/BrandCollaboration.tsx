@@ -48,9 +48,9 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId, mode = 'edi
 
                 <div className="flex flex-col gap-2">
                     <div className={`flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg`}>
-                        <div className="text-[#9747FF] w-full px-2 py-1 flex gap-1">
-                            <div className="text-xs font-semibold"> Brand </div>
-                            <div className="text-[10px]"> COLLABORATION </div>
+                        <div className="text-[#9747FF] w-full px-2 py-1 flex gap-1 text-xs">
+                            <div className="font-semibold"> Brand </div>
+                            <div className=""> COLLABORATION </div>
                         </div>
                         <Image src={BrandCollaborationIcon} alt="Gender Distribution" />
                     </div>

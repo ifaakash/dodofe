@@ -87,9 +87,9 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
 
             <div className="flex flex-col gap-1">
                 <div className={`flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg ${genderDistributionData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
-                    <div className="text-[#FB7128] w-full px-2 py-1 flex gap-1">
-                        <div className="text-xs font-semibold">Gender</div>
-                        <div className="text-[10px]">Distribution</div>
+                    <div className="text-[#FB7128] w-full px-2 py-1 flex gap-1 text-xs">
+                        <div className="font-semibold">Gender</div>
+                        <div className="">Distribution</div>
                     </div>
                     <Image src={GenderDistributionIcon} alt="Gender Distribution" />
                 </div>
