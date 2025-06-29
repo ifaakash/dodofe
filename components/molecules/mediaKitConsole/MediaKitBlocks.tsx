@@ -11,12 +11,14 @@ import GeneratedByDodo from "public/images/generatedByDodo.png"
 import Image from "next/image"
 
 const MediaKitBlocks = ({ mediaKitDetails, setUpdateMediaKit }: { mediaKitDetails: any, setUpdateMediaKit: (updateMediaKit: boolean) => void }) => {
+
+    console.log('mediaKitDetails', mediaKitDetails)
     
     return (
         <div className="flex flex-col gap-1 w-full pb-4">
             <div className="flex flex-col gap-1">
                 <FollowerCount followerCount={mediaKitDetails?.followers} />
-                <GeneralStats mode='edit' instaId={mediaKitDetails?.instaId} contentAnalytics={mediaKitDetails?.contentAnalytics}/>
+                <GeneralStats mode='edit' instaId={mediaKitDetails?.instaId} contentAnalytics={mediaKitDetails?.contentAnalytics} avgLike={mediaKitDetails?.avgLikes} avgComments={mediaKitDetails?.avgComments} mediaCount={mediaKitDetails?.mediaCount} engagement={mediaKitDetails?.engagement}/>
             </div>
 
             <GenderDistribution
