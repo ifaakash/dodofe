@@ -7,40 +7,34 @@ import { Loader2 } from "lucide-react"
 import { toast } from "react-toastify"
 import { addMediaKitAnalytics } from "api"
 
-const statsData = [
-    {
-        value: "120",
-        label: "Media Count",
-        gradient: "from-[#EBF6F2]"
-    },
-    {
-        value: "24%",
-        label: "Engagement",
-        gradient: "from-[#FEF2EA]"
-    },
-    {
-        value: "20M",
-        label: "Avg. Like",
-        gradient: "from-[#F0ECFB]"
-    },
-    {
-        value: "150K",
-        label: "Avg. Comments",
-        gradient: "from-[#E3ECFF]"
-    }
-]
-
-const data2 = {
-    "reels": 45,
-    "posts": 45,
-    "stories": 10
-}
-
-const GeneralStats = ({ mode, instaId, contentAnalytics }: { mode: 'edit' | 'public' | 'preview', instaId: string, contentAnalytics: any }) => {
+const GeneralStats = ({ mode, instaId, contentAnalytics, avgLike, avgComments, mediaCount, engagement }: { mode: 'edit' | 'public' | 'preview', instaId: string, contentAnalytics: any, avgLike: any, avgComments: any, mediaCount: any, engagement: any }) => {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [generalStats, setGeneralStats] = useState<any>(null)
+
+    const statsData = [
+        {
+            value: mediaCount,
+            label: "Media Count",
+            gradient: "from-[#EBF6F2]"
+        },
+        {
+            value: `${engagement?.toFixed(2) || 0}%`,
+            label: "Engagement",
+            gradient: "from-[#FEF2EA]"
+        },
+        {
+            value: avgLike,
+            label: "Avg. Like",
+            gradient: "from-[#F0ECFB]"
+        },
+        {
+            value: avgComments,
+            label: "Avg. Comments",
+            gradient: "from-[#E3ECFF]"
+        }
+    ]
 
     useEffect(() => {
         if (contentAnalytics) {
@@ -89,7 +83,11 @@ const GeneralStats = ({ mode, instaId, contentAnalytics }: { mode: 'edit' | 'pub
 
     return (
         <div className="p-3 bg-[#FDFBFF] rounded-[14px] flex flex-col gap-3">
-            <BlobChart contentAnalytics={generalStats?.contentData} />
+            {
+                generalStats?.contentData && (
+                    <BlobChart contentAnalytics={generalStats?.contentData} />
+                )
+            }
             {
                 mode === 'edit' && (
                     <div className="p-2 flex justify-between items-center border rounded-[10px]">

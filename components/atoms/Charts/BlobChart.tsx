@@ -71,7 +71,7 @@ const BlobChart = ({ contentAnalytics }: { contentAnalytics: any }) => {
     // Map sorted data to pre-defined configurations
     const chartData = sortedEntries.map(([type, value], index) => ({
         name: type.charAt(0).toUpperCase() + type.slice(1),
-        value: Math.round((value / (contentValues.posts + contentValues.stories + contentValues.reels)) * 100) || 0,
+        value: Number(((value / (contentValues.posts + contentValues.stories + contentValues.reels)) * 100).toFixed(2)) || 0,
         ...circleConfigs[index]
     }));
 

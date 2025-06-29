@@ -5,12 +5,14 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
 
 const MediaKit = () => {
     const params = useParams();
     const [mediaKitData, setMediaKitData] = useState<any>(null);
     const instaId = params.instaId;
     const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         const fetchMediaKitData = async () => {
@@ -21,6 +23,7 @@ const MediaKit = () => {
                 setMediaKitData(data?.data);
             } catch (error) {
                 console.error('Error fetching media kit data:', error);
+                setIsError(true);
             } finally {
                 setIsLoading(false);
             }
@@ -29,7 +32,18 @@ const MediaKit = () => {
         fetchMediaKitData();
     }, [params.instaId]);
 
-    if(!mediaKitData || !instaId || isLoading) {
+    console.log({
+        from: 'MediaKit',
+        isError,
+        isLoading,
+        instaId
+    })
+
+    if(isError) {
+        return <GeneralErrorPage />;
+    }
+
+    if(isLoading) {
         return (
             <div className="p-4 max-w-3xl mx-auto">
                 {/* Profile Section */}
@@ -49,6 +63,10 @@ const MediaKit = () => {
                 </div>
             </div>
         );
+    }
+
+    if(!mediaKitData || !instaId) {
+        return <GeneralErrorPage />;
     }
 
     return <MediaKitPage mediaKitData={mediaKitData} />;

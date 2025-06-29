@@ -18,6 +18,9 @@ import AgeDistribution from "@components/molecules/mediaKitBlocks/AgeDistributio
 import BrandCollaboration from "@components/molecules/mediaKitBlocks/BrandCollaboration";
 import BrandCard from "@components/molecules/mediaKitBlocks/BrandCard";
 import LocationDistribution from "@components/molecules/mediaKitBlocks/LocationDistribution";
+import Link from "next/link";
+import DodoIcon from "public/icons/dodoIconName.svg";
+import Image from "next/image";
 
 interface MediaKitPageProps {
     userData?: {
@@ -54,11 +57,6 @@ interface MediaKitPageProps {
 
 const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
 
-    console.log({
-        from: 'MediaKitPage',
-        mediaKitData
-    })
-
     return (
         <div className="min-h-screen">
             {/* <Header /> */}
@@ -70,7 +68,7 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                 <div className="flex flex-col gap-[10px]">
                     <div className="flex flex-col gap-1">
                         <FollowerCount followerCount={mediaKitData?.followers} />
-                        <GeneralStats mode="public" instaId={mediaKitData?.instaId} contentAnalytics={mediaKitData?.contentAnalytics} />
+                        <GeneralStats mode="public" instaId={mediaKitData?.instaId} contentAnalytics={mediaKitData?.contentAnalytics} avgLike={mediaKitData?.avgLikes} avgComments={mediaKitData?.avgComments} mediaCount={mediaKitData?.mediaCount} engagement={mediaKitData?.engagement} />
                     </div>
 
                     <div className="flex flex-col gap-[10px]">
@@ -124,6 +122,10 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                                 />
                             )
                         }
+                        <Link href={'http://dodoclub.in/'} className="flex items-center gap-2 absolute bottom-6 justify-center w-full">
+                            <div className="text-[#3D4966] text-xs">powered by:</div>
+                            <Image src={DodoIcon} alt="dodo icon" height={20} />
+                        </Link>
                     </div>
                 </div>
             </div>
