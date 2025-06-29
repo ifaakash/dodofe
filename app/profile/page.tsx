@@ -41,7 +41,7 @@ const ProfilePage = () => {
             const category = response.interestCategories || "";
 
             // Get instagram from socialLinks if exists
-            const instagramHandle = response?.mediaKit?.instagram || "";
+            const instagramHandle = response?.mediaKit?.instaId || "";
 
             setProfileData({
                 name: response.name || "",
