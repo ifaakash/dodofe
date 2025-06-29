@@ -101,11 +101,11 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                                 <div className="text-[#F25A99] text-sm font-bold leading-none"> {genderDistributionData.genderData.malePercentage}% </div>
                             </div>
                             <div className="flex gap-1">
-                                {[...Array(Math.floor(genderDistributionData.genderData.malePercentage / 3))].map((_, i) => (
-                                    <div key={`male-${i}`} className="w-1 h-5 rounded-[30px]" style={{ background: '#F25A99' }}></div>
+                                {[...Array(Math.floor(genderDistributionData.genderData.malePercentage / 4))].map((_, i) => (
+                                    <div key={`male-${i}`} className="w-[5px] h-5 rounded-[30px]" style={{ background: '#F25A99' }}></div>
                                 ))}
-                                {[...Array(Math.floor(genderDistributionData.genderData.femalePercentage / 3))].map((_, i) => (
-                                    <div key={`female-${i}`} className="w-1 h-5 rounded-[30px]" style={{ background: '#8153DF' }}></div>
+                                {[...Array(Math.floor(genderDistributionData.genderData.femalePercentage / 4))].map((_, i) => (
+                                    <div key={`female-${i}`} className="w-[5px] h-5 rounded-[30px]" style={{ background: '#8153DF' }}></div>
                                 ))}
                             </div>
                             <div className="flex flex-col ">

@@ -16,10 +16,11 @@ const MediaKitAgeChart = ({ ageData }: { ageData: { [key: string]: number } }) =
                             className="bg-slate-700 flex items-center h-[18px] rounded-[4px] transition-all duration-300 justify-end min-w-[24px]"
                             style={{ width: `${data.percentage}%` }}
                         >
-                            <span className="text-white h-[18px] flex items-center text-[10px] font-medium p-2 whitespace-nowrap truncate">
+                           
+                        </div>
+                        <span className="text-slate-700 h-[18px] flex items-center text-[10px] font-bold p-2 whitespace-nowrap truncate">
                                 {data.percentage}%
                             </span>
-                        </div>
                     </div>
                     <div className="ml-3 min-w-[48px] text-slate-500 text-xs font-medium text-right">
                         {data.age}
