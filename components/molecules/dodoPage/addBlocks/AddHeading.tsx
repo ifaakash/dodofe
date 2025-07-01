@@ -8,7 +8,7 @@ import { ROUTE_CONSTANTS } from "@utils/constants";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addBlock } from "store/slice/blocksSlice";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import { TriangleAlert } from "lucide-react";
 import { updateBlock } from "store/slice/blocksSlice";

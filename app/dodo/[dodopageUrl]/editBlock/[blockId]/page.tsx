@@ -11,7 +11,7 @@ import { ArchiveRestore, ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"
 import AddBlock from "../../addBlock/page";
 import AddHeading from "@components/molecules/dodoPage/addBlocks/AddHeading";
 import BlockHeader from "@components/atoms/Header/BlockHeader";

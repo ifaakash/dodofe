@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addDiscount, addGst } from 'store/slice/invoiceSlice';
 import { RootState } from 'store/store';
 import { updateItems, updateNote, addNewItem, deleteItem, updateTds, updateDiscount, updateGst } from 'store/slice/editInvoiceSlice';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast"
 
 
 const ItemsInputs = ({ invoiceDetails }: { invoiceDetails: any }) => {

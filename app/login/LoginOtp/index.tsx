@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { registerUser, sendOtp } from "api";
 import OTPscreenBg from "public/assets/OTPscreen.png";
 import NewButton from "@components/atoms/Button/NewButton";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { RotateCcw } from "lucide-react";
 import { auth } from "config/firebase";
 import { signInWithPhoneNumber } from "firebase/auth";

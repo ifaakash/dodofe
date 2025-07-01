@@ -4,7 +4,7 @@ import { ArrowLeft, TriangleAlert } from "lucide-react";
 import NewButton from "@components/atoms/Button/NewButton";
 import { createBlock } from "api";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { addBlock, updateBlock } from "store/slice/blocksSlice";
 import { v4 as uuidv4 } from "uuid";

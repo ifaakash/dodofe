@@ -3,7 +3,7 @@ import { ChevronsRight, Check, ChevronsLeft } from "lucide-react";
 import { toggleInvoicePaymentStatus } from "../../../api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import confetti from 'canvas-confetti'
 
 

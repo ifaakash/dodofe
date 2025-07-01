@@ -7,14 +7,18 @@ import DragIcon from '../../../public/icons/drag.svg'
 import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 import { updateMediaKit, addMediaKitAnalytics } from "api/services"
-import { toast } from "react-toastify"
+import { toast } from "react-hot-toast"
+import HowToUpload from "../mediakit/HowToUpload"
+import Step1 from 'public/images/ExportStep1.png'
+import Step2 from 'public/images/ExportStep2.png'
+import GenderStep3 from 'public/images/GenderStep3.png'
 
 const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode = 'edit' }: { genderAnalytics: any, instaId?: string, setUpdateMediaKit?: (updateMediaKit: boolean) => void, mode: 'edit' | 'public' | 'preview' }) => {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [genderDistributionData, setGenderDistributionData] = useState<any>(genderAnalytics || null)
     const [error, setError] = useState<string | null>(null)
-
+    const [openHowToUpload, setOpenHowToUpload] = useState(false)
     useEffect(() => {
         if (genderAnalytics) {
             setGenderDistributionData(genderAnalytics)
@@ -89,7 +93,7 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                 <div className={`flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg ${genderDistributionData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
                     <div className="text-[#FB7128] w-full px-2 py-1 flex gap-1 text-xs">
                         <div className="font-semibold">Gender</div>
-                        <div className="">Distribution</div>
+                        <div className="uppercase">Distribution</div>
                     </div>
                     <Image src={GenderDistributionIcon} alt="Gender Distribution" />
                 </div>
@@ -126,7 +130,7 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                         ) : (
                             <div className="flex flex-col gap-0.5 text-[10px]">
                                 <div className="font-semibold">Upload Gender Distribution</div>
-                                <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
+                                <div className="font-medium text-[#8B39FF] underline cursor-pointer" onClick={() => setOpenHowToUpload(true)}>How to upload?</div>
                             </div>
                         )
                     }
@@ -165,6 +169,12 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                         <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
                             {error}
                         </div>
+                    )
+                }
+
+                {
+                    openHowToUpload && (
+                        <HowToUpload title={'Gender Distribution?'} step1={Step1 as any} step2={Step2 as any} step3={GenderStep3 as any} isOpen={openHowToUpload} onClose={() => setOpenHowToUpload(false)} />
                     )
                 }
             </div>

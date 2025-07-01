@@ -3,7 +3,7 @@ import Modal from '@components/molecules/Modal'; // Assuming you have a Modal co
 import { updateUserDetails } from 'api';
 import { loadState } from '@utils/localStorage';
 import { STORAGE_CONSTANTS } from '@utils/constants';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast"
 
 export default function ThoughtsModal({ isOpen, onClose, thoughts, editMode }: any) {
     const [thought, setThought] = useState(thoughts || '');

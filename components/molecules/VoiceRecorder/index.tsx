@@ -8,7 +8,7 @@ import micIcon from "public/icons/mic.svg";
 import { updateUserDetails } from 'api';
 import { loadState } from '@utils/localStorage';
 import { PLAYER_STATUS, STORAGE_CONSTANTS } from '@utils/constants';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast"
 
 const VoiceRecorder = (props: any) => {
     const { audioUrl, uploadAudio, editMode } = props;

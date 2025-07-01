@@ -9,7 +9,7 @@ import { loadState } from "@utils/localStorage";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import Screen from "../Screen";
 import { linkMediaKit } from "api";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { verifyMediaKit } from "api/services";
 import { useEffect } from "react";
 

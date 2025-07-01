@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { addSubHeading, getInvoiceById } from "api";
 import { InvoiceProps } from "../../../../types";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"
 import cx from "classnames";
 import styles from "../../invoice.module.css";
 import InvoiceDetails from "@components/molecules/invoiceBlocks/InvoiceDetails";

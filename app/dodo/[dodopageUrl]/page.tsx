@@ -43,7 +43,7 @@ import { RootState } from "store/store";
 // import { reorderBlocks } from "api";
 import { reorderBlocks } from "store/slice/blocksSlice";
 import { dodoStoreInitialisation } from "store/slice/dodoPageSlice";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation";
 import PublishedModal from "./PublishedModal";
 import BlockTemplates from "@components/molecules/dodoPage/blockTemplates/BlockTemplates";

@@ -29,7 +29,7 @@ const InvoiceOnboardingScreen = () => {
                 styles.invoiceOnboardingScreen
             )}
         >
-            <div className="p-5" onClick={handleBackButton}>
+            <div className="p-5 z-50 relative" onClick={handleBackButton}>
                 <div className="p-2 rounded-[10px] border-[1px] w-fit border-[#EAE9EC]">
                     <Image
                         src={LeftArrow}
@@ -73,7 +73,7 @@ const InvoiceOnboardingScreen = () => {
                         <div className="flex items-center gap-[10px]">
                             <Image src={DoubleTick} alt="double tick" />
                             <div className="text-sm">
-                                Track what’s paid and what’s pending
+                                Track what's paid and what's pending
                             </div>
                         </div>
                         <div className="flex items-center gap-[10px]">

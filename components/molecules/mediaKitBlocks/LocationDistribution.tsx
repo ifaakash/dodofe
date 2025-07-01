@@ -8,8 +8,12 @@ import { useEffect, useState } from "react"
 import LocaltionDistributionChart from "@components/atoms/Charts/LocaltionDistributionChart"
 import { addMediaKitAnalytics, updateMediaKit } from "api/services"
 import { Loader2 } from "lucide-react"
-import { toast } from "react-toastify"
+import { toast } from "react-hot-toast"
 import { formatDate } from "@utils/helperFunctions"
+import HowToUpload from "../mediakit/HowToUpload"
+import Step1 from 'public/images/ExportStep1.png'
+import Step2 from 'public/images/ExportStep2.png'
+import LocationStep3 from 'public/images/LocationStep3.png'
 
 
 
@@ -29,6 +33,7 @@ const LocationDistribution = ({
     const [isUploading, setIsUploading] = useState(false)
     const [locationDistData, setLocationDistData] = useState<any>(locationDistributionData || null)
     const [error, setError] = useState<string | null>(null)
+    const [openHowToUpload, setOpenHowToUpload] = useState(false)
 
     useEffect(() => {
         if (locationDistributionData) {
@@ -88,7 +93,7 @@ const LocationDistribution = ({
             <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
                 {/* <Image className={`w-5 h-5 ${locationDistData?.isActive ? '' : ''}`} src={DragIcon} alt="Drag" /> */}
                 <div className="pointer-events-auto">
-                    <Toggle checked={locationDistributionData?.isActive} onCheckedChange={handleToggle} />
+                    <Toggle checked={locationDistData?.isActive} onCheckedChange={handleToggle} />
                 </div>
             </div>
 
@@ -115,7 +120,7 @@ const LocationDistribution = ({
                         ) : (
                             <div className="flex flex-col gap-0.5 text-[10px]">
                                 <div className="font-semibold">Upload Location Distribution</div>
-                                <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
+                                <div className="font-medium text-[#8B39FF] underline cursor-pointer" onClick={() => setOpenHowToUpload(true)}>How to upload?</div>
                             </div>
                         )
                     }
@@ -154,6 +159,12 @@ const LocationDistribution = ({
                         <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
                             {error}
                         </div>
+                    )
+                }
+
+                {
+                    openHowToUpload && (
+                        <HowToUpload title={'Location?'} step1={Step1 as any} step2={Step2 as any} step3={LocationStep3 as any} isOpen={openHowToUpload} onClose={() => setOpenHowToUpload(false)} />
                     )
                 }
             </div>

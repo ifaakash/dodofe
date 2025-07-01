@@ -25,7 +25,7 @@ import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
 import { handleNativeBackButton, isEmpty, isWebview } from "@utils/index";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"
 import Sidebar from "@components/molecules/Sidebar";
 import CtaSection from "@components/molecules/CtaSection";
 import Card from './Card';

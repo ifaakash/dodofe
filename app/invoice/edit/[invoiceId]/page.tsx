@@ -14,7 +14,7 @@ import cx from 'classnames'
 import ItemsInputs from '@components/templates/editInvoice/ItemsInputs'
 import ReceiverInputs from '@components/templates/editInvoice/ReceiverInputs'
 import PaymentInputs from '@components/templates/editInvoice/PaymentInputs'
-import { toast } from 'react-toastify'
+import { toast } from "react-hot-toast"
 import DueDateInputs from '@components/templates/editInvoice/DueDateInputs'
 import { loadState } from '@utils/localStorage'
 import { STORAGE_CONSTANTS } from '@utils/constants'
