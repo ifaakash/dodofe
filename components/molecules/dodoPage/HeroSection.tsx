@@ -31,7 +31,7 @@ import {
 } from "store/slice/dodoPageSlice";
 import { isEmpty, isWebview, sendToNative } from "@utils/index";
 import { WEBVIEW_ACTIONS } from "@utils/constants";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const HeroSection = ({
   mode = "public",
@@ -221,7 +221,7 @@ const HeroSection = ({
                 }
               }, 20000);
             } else if (status === 'blocked') {
-              toast.info("Microphone permission is blocked. Please enable it from settings.");
+              toast.error("Microphone permission is blocked. Please enable it from settings.");
             } else {
               toast.error("Microphone permission denied.");
             }

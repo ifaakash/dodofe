@@ -163,7 +163,7 @@ const InstaRateCard = ({
                         {cards.map((card, index) => (
                             <div
                                 key={index}
-                                className='min-w-full relative flex items-center justify-center px-3'
+                                className='min-w-full relative flex items-center justify-center'
                             >
                                 <Image
                                     src={card.src}

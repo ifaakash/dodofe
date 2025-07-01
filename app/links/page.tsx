@@ -51,7 +51,7 @@ import {
 import { loadState } from "@utils/localStorage";
 import Screen from "@components/molecules/Screen";
 import { debounce, handleNativeBackButton, isEmpty, isWebview } from "@utils/index";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"
 import VoiceRecorder from "../../components/molecules/VoiceRecorder";
 import ThoughtsModal from "./ThoughtModal";
 import {

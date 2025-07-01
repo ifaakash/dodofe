@@ -4,15 +4,19 @@ import UploadIcon from "/public/icons/upload2.svg"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
-import { toast } from "react-toastify"
+import { toast } from "react-hot-toast"
 import { addMediaKitAnalytics } from "api"
+import Step1 from 'public/images/ExportStep1.png'
+import Step2 from 'public/images/ExportStep2.png'
+import Step3 from 'public/images/ExportStep3.png'
+import HowToUpload from "../mediakit/HowToUpload"
 
 const GeneralStats = ({ mode, instaId, contentAnalytics, avgLike, avgComments, mediaCount, engagement }: { mode: 'edit' | 'public' | 'preview', instaId: string, contentAnalytics: any, avgLike: any, avgComments: any, mediaCount: any, engagement: any }) => {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [generalStats, setGeneralStats] = useState<any>(null)
-
+    const [openHowToUpload, setOpenHowToUpload] = useState(false)
     const statsData = [
         {
             value: mediaCount,
@@ -99,8 +103,8 @@ const GeneralStats = ({ mode, instaId, contentAnalytics, avgLike, avgComments, m
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-0.5 text-[10px]">
-                                    <div className="font-semibold">Upload Gender Distribution</div>
-                                    <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
+                                    <div className="font-semibold">Upload Content Type</div>
+                                    <div className="font-medium text-[#8B39FF] underline cursor-pointer" onClick={() => setOpenHowToUpload(true)}>How to upload?</div>
                                 </div>
                             )
                         }
@@ -137,11 +141,17 @@ const GeneralStats = ({ mode, instaId, contentAnalytics, avgLike, avgComments, m
             <div className="grid grid-cols-2 gap-1">
                 {statsData.map((stat, index) => (
                     <div key={index} className={`w-full px-4 py-2 bg-gradient-to-r ${stat.gradient} to-[#FDFBFF] rounded-[10px]`}>
-                        <div className="text-[#3D4966] font-extrabold">{stat.value}</div>
-                        <div className="text-[#3D4966] font-medium text-[10px]">{stat.label}</div>
+                        <div className="text-[#3D4966] font-black text-lg">{stat.value}</div>
+                        <div className="text-[#3D4966] font-medium text-xs">{stat.label}</div>
                     </div>
                 ))}
             </div>
+
+            {
+                openHowToUpload && (
+                    <HowToUpload title={'Content Type?'} step1={Step1 as any} step2={Step2 as any} step3={Step3 as any} isOpen={openHowToUpload} onClose={() => setOpenHowToUpload(false)} />
+                )
+            }
         </div>
     )
 }

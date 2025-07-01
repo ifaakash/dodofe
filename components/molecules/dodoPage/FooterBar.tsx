@@ -31,7 +31,7 @@ import {
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { resetDodoPage } from "store/slice/dodoPageSlice";
 import { useParams, useRouter } from "next/navigation";
 import { Block } from "types";

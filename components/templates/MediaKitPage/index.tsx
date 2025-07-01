@@ -58,12 +58,11 @@ interface MediaKitPageProps {
 const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen flex flex-col">
             {/* <Header /> */}
 
-            <div className="py-12 px-4 flex flex-col gap-5">
+            <div className="py-12 px-4 flex flex-col gap-5 flex-grow">
                 <MediaKitHeader data={mediaKitData} variant="public" />
-
 
                 <div className="flex flex-col gap-[10px]">
                     <div className="flex flex-col gap-1">
@@ -122,15 +121,14 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                                 />
                             )
                         }
-                        <Link href={'http://dodoclub.in/'} className="flex items-center gap-2 absolute bottom-6 justify-center w-full">
-                            <div className="text-[#3D4966] text-xs">powered by:</div>
-                            <Image src={DodoIcon} alt="dodo icon" height={20} />
-                        </Link>
                     </div>
                 </div>
             </div>
 
-
+            <Link href={'http://dodoclub.in/'} className="flex items-center gap-2 justify-center w-full py-6">
+                <div className="text-[#3D4966] text-xs">powered by:</div>
+                <Image src={DodoIcon} alt="dodo icon" height={20} />
+            </Link>
         </div>
     );
 };

@@ -8,7 +8,7 @@ import {
     signInWithPhoneNumber,
 } from "firebase/auth";
 import { auth } from "config/firebase";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"
 import PhoneNumberInputBg from "public/assets/phoneNumberScreen.png";
 import Image from "next/image";
 import NewButton from "@components/atoms/Button/NewButton";

@@ -3,7 +3,7 @@ import SampleImage from "/public/images/defaultMediaKitImg.jpg"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react";
 import { updateMediaKit } from "api/services";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 interface MediaKitHeaderInterface {
     data: any;

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import BrandModal from "@components/templates/mediaKit/BrandModal"
 import Link from "next/link"
 import { updateMediaKit } from "api/services"
-import { toast } from "react-toastify"
+import { toast } from "react-hot-toast"
 import BrandCard from "./BrandCard"
 
 

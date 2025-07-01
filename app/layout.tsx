@@ -1,12 +1,11 @@
 "use client";
 import "./styles/globals.css";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import mixpanel from "mixpanel-browser";
 import { trackEvent } from "@utils/index";
 import { ReduxProvider } from "store/StoreProvider";
 import CircleLoader from "components/atoms/Loaders/CircleLoader";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -32,7 +31,7 @@ export default function RootLayout({
         <ReduxProvider>
           <CircleLoader />
           {children}
-          <ToastContainer
+          {/* <ToastContainer
             position="top-right"
             autoClose={5000}
             hideProgressBar={false}
@@ -43,6 +42,9 @@ export default function RootLayout({
             draggable
             pauseOnHover
             theme="light"
+          /> */}
+          <Toaster
+            position="top-center"
           />
         </ReduxProvider>
       </body>

@@ -11,7 +11,7 @@ const FollowerCount = ({ followerCount }: { followerCount: number }) => {
 
             <div className="flex flex-col">
                 <div className="text-[#5E6C84] text-xs font-medium">Instagram followers</div>
-                <div className="font-extrabold text-[#3D4966]">{followerCount}</div>
+                <div className="font-black text-lg text-[#3D4966]">{followerCount}</div>
             </div>
         </div>
     )

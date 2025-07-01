@@ -7,7 +7,11 @@ import MediaKitAgeChart from "@components/atoms/Charts/MediaKitAgeChart"
 import { useEffect, useState } from "react"
 import { addMediaKitAnalytics, updateMediaKit } from "api/services"
 import { Loader2 } from "lucide-react"
-import { toast } from "react-toastify"
+import { toast } from "react-hot-toast"
+import HowToUpload from "../mediakit/HowToUpload"
+import Step1 from 'public/images/ExportStep1.png'
+import Step2 from 'public/images/ExportStep2.png'
+import AgeStep3 from 'public/images/AgeStep3.png'
 
 const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode = 'edit' }: { ageDistributionData: any, instaId: string, setUpdateMediaKit?: (updateMediaKit: boolean) => void, mode: 'edit' | 'public' | 'preview' }) => {
 
@@ -15,6 +19,7 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
     const [isUploading, setIsUploading] = useState(false)
     const [ageDistData, setAgeDistData] = useState<any>(ageDistributionData || null)
     const [error, setError] = useState<string | null>(null)
+    const [openHowToUpload, setOpenHowToUpload] = useState(false)
 
     useEffect(() => {
         if (ageDistributionData) {
@@ -78,7 +83,6 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
     };
 
 
-
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1`}>
             <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
@@ -110,8 +114,8 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                             </div>
                         ) : (
                             <div className="flex flex-col gap-0.5 text-[10px]">
-                                <div className="font-semibold">Upload Gender Distribution</div>
-                                <div className="font-medium text-[#8B39FF] underline">How to upload?</div>
+                                <div className="font-semibold">Upload Age Distribution</div>
+                                <div className="font-medium text-[#8B39FF] underline" onClick={() => setOpenHowToUpload(true)}>How to upload?</div>
                             </div>
                         )
                     }
@@ -151,6 +155,12 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                     <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
                         {error}
                     </div>
+                )
+            }
+
+            {
+                openHowToUpload && (
+                    <HowToUpload title={'Age Range?'} step1={Step1 as any} step2={Step2 as any} step3={AgeStep3 as any} isOpen={openHowToUpload} onClose={() => setOpenHowToUpload(false)} />
                 )
             }
         </div>

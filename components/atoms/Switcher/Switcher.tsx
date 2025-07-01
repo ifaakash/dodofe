@@ -1,5 +1,5 @@
 import React from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const Switcher = ({
   uploadedImage,
@@ -17,7 +17,7 @@ const Switcher = ({
       return true;
     }
 
-    toast.info("Please upload an image before switching to large view");
+    toast.error("Please upload an image before switching to large view");
     return false;
   };
 

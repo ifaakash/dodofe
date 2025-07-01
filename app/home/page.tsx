@@ -27,7 +27,7 @@ import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
 import { isEmpty } from "@utils/index";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { Card } from "@utils/uiUtils";
 import CtaSection from "@components/molecules/CtaSection";
 const HomeFooter = lazy(() => import("./homeFooter"));
@@ -35,6 +35,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import LogoutModal from "@components/templates/LogoutModal";
 import { useSelector } from "react-redux";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // Dynamically import the Sidebar component with SSR disabled
 const Sidebar = dynamic(() => import("@components/molecules/Sidebar"), { ssr: false });
@@ -221,6 +223,10 @@ export default function Home() {
         }
     };
 
+    const openToast = () => {
+        toast.success("Hello");
+    }
+
     return (
         <Screen>
 
@@ -275,9 +281,13 @@ export default function Home() {
                             <div className="flex row justify-between w-full ml-1">
                                 <p>
                                     Hi,{" "}
-                                    <span className="font-bold">
-                                        {dodoPageDetail?.name?.split(" ")[0]}
-                                    </span>
+                                    {isLoading ? (
+                                        <Skeleton width={50} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
+                                    ) : (
+                                        <span className="font-bold">
+                                            {dodoPageDetail?.name?.split(" ")[0]}
+                                        </span>
+                                    )}
                                 </p>
 
                                 <div
@@ -339,7 +349,14 @@ export default function Home() {
                             </div>
                         </div>
                     ) : (
-                        <div className="mx-4 py-4">{getUserCard()}</div>
+                        <div className="mx-4 py-4">
+                            {isLoading ? (
+                                <Skeleton width={'100%'} height={100} baseColor="#c4c4c4" highlightColor="#dbdbdb" borderRadius={10} />
+
+                            ) : (
+                                getUserCard()
+                            )}
+                        </div>
                     )}
                 </div>
 

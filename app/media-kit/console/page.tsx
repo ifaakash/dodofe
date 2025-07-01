@@ -14,7 +14,7 @@ import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Share2Icon } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const MediaKitConsole = () => {
     const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null)
@@ -48,11 +48,14 @@ const MediaKitConsole = () => {
         toast.success('Link copied to clipboard')
     }
 
+    const navigateToHome = () => {
+        router.push(ROUTE_CONSTANTS.HOME)
+    }
 
     return (
         <div className='h-screen w-screen overflow-auto'>
             <div className="px-5 py-4 flex justify-between items-center border-b">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={navigateToHome}>
                     <Image src={leftArrow} className="w-5 h-5" alt="left arrow" />
                     <div className="font-semibold">Mediakit</div>
                 </div>

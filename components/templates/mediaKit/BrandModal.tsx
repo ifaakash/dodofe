@@ -6,7 +6,7 @@ import EditPenIcon from "public/icons/EditPen.svg";
 import Image from 'next/image'
 import AddImageIcon from "public/icons/addImage.svg";
 import { addBrandCollaboration, updateMediaKitBrand, deleteBrandCollaboration } from 'api';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast"
 
 const checkBoxList = [
     {
@@ -207,7 +207,7 @@ const BrandModal = ({
 
         if (Object.keys(changes).length === 0) {
             console.log('No changes detected')
-            toast.info('No changes to update')
+            toast.error('No changes to update')
             return
         }
 

@@ -61,8 +61,8 @@ const BlobChart = ({ contentAnalytics }: { contentAnalytics: any }) => {
             angle: 120,
             color: '#458CFF',
             bgColor: '#EBF2FF',
-            width: 48,
-            height: 48,
+            width: 56,
+            height: 56,
             top: '40%',
             left: '63%'
         }
@@ -98,7 +98,7 @@ const BlobChart = ({ contentAnalytics }: { contentAnalytics: any }) => {
                         >
                             <div className="flex flex-col items-center justify-center " style={{ color: item.color }}>
                                 <div className="leading-none font-semibold text-xs">{item.value}%</div>
-                                <div className="leading-none text-[8px]">{item.name}</div>
+                                <div className="leading-none text-[10px]">{item.name}</div>
 
                             </div>
                         </div>
