@@ -70,7 +70,15 @@ const ProfilePage = () => {
     const modifyData = async () => {
         try {
             const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
-            const response = await modifyUserDetails({ userId, ...profileData });
+
+            const payload = {
+                userId,
+                whatsappNumber: profileData.whatsapp,
+                alternatePhoneNumber: profileData.phone,
+                email: profileData.email,
+            }
+
+            const response = await modifyUserDetails(payload);
             console.log(response);
         } catch (error) {
             console.error('Error modifying data:', error);
