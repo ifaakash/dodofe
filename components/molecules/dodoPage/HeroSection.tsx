@@ -180,25 +180,58 @@ const HeroSection = ({
   };
 
   const handleImageUpload = async () => {
-    const file = ImageInputRef.current?.files?.[0];
+      const file = ImageInputRef.current?.files?.[0];
 
-    if (!file) {
-      console.error("No file selected.");
-      return;
-    }
+      if (!file) {
+          console.error("No file selected.");
+          return;
+      }
 
-    // Check file size (10MB = 10 * 1024 * 1024 bytes)
-    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-    if (file.size > maxSize) {
-      toast.error("Image size should be less than 10MB");
-      return;
-    }
+      // Check file size (10MB = 10 * 1024 * 1024 bytes)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+          toast.error("Image size should be less than 10MB");
+          return;
+      }
 
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+      try {
+          let processedFile = file;
 
-    dispatch(updateDodoPageProfilePicture(file));
-    dispatch(setIsImageChanged(true));
+          // Check if the file is HEIC/HEIF format
+          if (file.type === "image/heic" || file.type === "image/heif") {
+              const heic2any = (await import("heic2any")).default;
+              const convertedBlob = await heic2any({
+                  blob: file,
+                  toType: "image/jpeg",
+                  quality: 0.8,
+              });
+
+              // Handle both single Blob and Blob array cases
+              const finalBlob = Array.isArray(convertedBlob)
+                  ? convertedBlob[0]
+                  : convertedBlob;
+
+              // Convert blob to File
+              processedFile = new File(
+                  [finalBlob],
+                  file.name.replace(/\.(heic|heif)$/i, ".jpg"),
+                  {
+                      type: "image/jpeg",
+                  }
+              );
+          }
+
+          const previewUrl = URL.createObjectURL(processedFile);
+          setImagePreview(previewUrl);
+
+          dispatch(updateDodoPageProfilePicture(processedFile));
+          dispatch(setIsImageChanged(true));
+      } catch (error) {
+          console.error("Error processing image:", error);
+          toast.error("Please try a different image format!");
+      }
   };
 
   useEffect(() => {
