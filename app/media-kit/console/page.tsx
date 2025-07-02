@@ -51,11 +51,12 @@ const MediaKitConsole = () => {
         const blob = await response.blob();
         const file = new File([blob], "mediakit-share.png", { type: blob.type });
 
+        const shareText = "👋 Hey! You've seen my content, now see the numbers behind it. From audience insights to brand collabs, pricing to reach… It's all here in my media kit.👇";
+
         navigator
             .share({
                 title: "Check out my Media Kit",
-                text: `👋 Hey! You’ve seen my content, now see the numbers behind it. From audience insights to brand collabs, pricing to reach… 
-                        It’s all here in my media kit.👇`,
+                text: shareText,
                 url: url,
                 files: [file],
             })
