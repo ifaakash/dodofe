@@ -6,11 +6,12 @@ import NewButton from "@components/atoms/Button/NewButton";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import HelpIcon from 'public/icons/whatsapp.svg';
+import phoneIcon from 'public/icons/phone-call.svg';
 import contactUsIcon from 'public/icons/EnvelopeSimple.svg';
 import Image from "next/image";
 import Modal from "@components/molecules/Modal/Modal";
 import { Header } from "@components/molecules/Header";
-import { getUserDetails } from "../../api/services";
+import { getUserDetails, modifyUserDetails } from "../../api/services";
 import { loadState } from "@utils/localStorage";
 import { STORAGE_CONSTANTS } from "@utils/constants";
 
@@ -36,19 +37,20 @@ const ProfilePage = () => {
             // TODO: Replace with actual userId from auth context/storage
             const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
             const response = await getUserDetails(userId);
+            const userResponse = response?.user;
 
             // Get the first interest category if exists
-            const category = response.interestCategories || "";
+            const category = userResponse.interestCategories || "";
 
             // Get instagram from socialLinks if exists
-            const instagramHandle = response?.mediaKit?.instaId || "";
-
+            const instagramHandle = userResponse?.mediaKit?.instaId || "";
+            console.log(userResponse, instagramHandle)
             setProfileData({
-                name: response.name || "",
+                name: userResponse.name || "",
                 category: Array.isArray(category) ? category.join(' ') : category,
-                whatsapp: response.whatsappNumber || "",
-                phone: response.alternatePhoneNumber || response.mobileNumber || "",
-                email: response.email || "",
+                whatsapp: userResponse.whatsappNumber || "",
+                phone: userResponse.alternatePhoneNumber || userResponse.mobileNumber || "",
+                email: userResponse.email || "",
                 instagram: instagramHandle
             });
         } catch (error) {
@@ -64,6 +66,24 @@ const ProfilePage = () => {
             [field]: value
         }));
     };
+
+    const modifyData = async () => {
+        try {
+            const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+
+            const payload = {
+                userId,
+                whatsappNumber: profileData.whatsapp,
+                alternatePhoneNumber: profileData.phone,
+                email: profileData.email,
+            }
+
+            const response = await modifyUserDetails(payload);
+            console.log(response);
+        } catch (error) {
+            console.error('Error modifying data:', error);
+        }
+    }
 
     const VerifyInstagramModal = () => (
         <div className="p-4 pb-6">
@@ -145,12 +165,16 @@ const ProfilePage = () => {
                             <Input
                                 placeholder="Enter name"
                                 value={profileData.name}
+                                disabled={true}
                                 onChange={(e) => handleChange("name", e.target.value)}
+                                showClearButton={false}
                             />
                             <Input
                                 placeholder="Tech, Entertainment"
                                 value={profileData.category}
+                                disabled={true}
                                 onChange={(e) => handleChange("category", e.target.value)}
+                                showClearButton={false}
                             />
                         </div>
 
@@ -167,7 +191,7 @@ const ProfilePage = () => {
                                 />
                             </div>
                             <div className="flex items-center gap-2 bg-white rounded-lg border border-[#E5E7EB] p-3">
-                                <Image src={HelpIcon} alt="Phone" className="w-6 h-6" />
+                                <Image src={phoneIcon} alt="Phone" className="w-6 h-6" />
                                 <input
                                     className="flex-1 outline-none bg-transparent"
                                     placeholder="Phone Number"
@@ -196,6 +220,7 @@ const ProfilePage = () => {
                                         className="flex-1 outline-none bg-transparent"
                                         placeholder="Instagram ID"
                                         value={profileData.instagram}
+                                        disabled={true}
                                         onChange={(e) => handleChange("instagram", e.target.value)}
                                     />
                                 </div>
@@ -226,7 +251,7 @@ const ProfilePage = () => {
                             variant="primary"
                             size="large"
                             className="w-full"
-                            onClick={() => console.log("Save changes")}
+                            onClick={modifyData}
                         >
                             Save changes
                         </NewButton>
