@@ -111,7 +111,7 @@ const BrandModal = ({
         const formData = new FormData()
 
         // Add text fields
-        formData.append('instaId', '_keshav_malik') // to be fixed
+        formData.append("instaId", instaId || "");
         formData.append('brandName', brandFormData.brandName)
         formData.append('contentType', brandFormData.checkboxes.filter(cb => cb.value).map(cb => cb.label).join(','))
         formData.append('contentUrl', brandFormData.link)
