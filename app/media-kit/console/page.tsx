@@ -42,10 +42,30 @@ const MediaKitConsole = () => {
         }
     }, [isLoading, userDetails?.mediaKit, router])
 
-    const handleShare = () => {
+    const handleShare = async () => {
         const url = `${window.location.origin}/media-kit/${userDetails?.mediaKit?.instaId}`
         navigator.clipboard.writeText(url)
         toast.success('Link copied to clipboard')
+
+        const response = await fetch("/assets/mediakitShare.png");
+        const blob = await response.blob();
+        const file = new File([blob], "mediakit-share.png", { type: blob.type });
+
+        navigator
+            .share({
+                title: "Check out my Media Kit",
+                text: `👋 Hey! You’ve seen my content, now see the numbers behind it. From audience insights to brand collabs, pricing to reach… 
+                        It’s all here in my media kit.👇`,
+                url: url,
+                files: [file],
+            })
+            .then(() => toast.success("Shared successfully!"))
+            .catch((error) => {
+                if (error.name !== "AbortError") {
+                    console.error("Error sharing:", error);
+                    toast.error("Failed to share content.");
+                }
+            });
     }
 
     const navigateToHome = () => {

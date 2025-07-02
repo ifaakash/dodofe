@@ -14,6 +14,9 @@ export const completeProfile = async (payload: any): Promise<any> =>
 export const getUserDetails = async (userId: string): Promise<any> =>
     Get<any>(API_CONSTANTS.getUserDetails + API_CONSTANTS.slash + userId);
 
+export const modifyUserDetails = async (payload: any): Promise<any> =>
+    Patch<any>(API_CONSTANTS.modifyUserDetails + API_CONSTANTS.slash + payload.userId, payload);
+
 export const updateUserDetails = async (
     userId: string,
     payload: any
@@ -221,7 +224,7 @@ export const addBrandCollaboration = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.addBrandCollaboration, payload, {
         "Content-Type": "multipart/form-data",
     });
-    
+
 export const linkMediaKit = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.linkMediaKit, payload);
 
@@ -233,7 +236,7 @@ export const updateMediaKit = async (payload: any): Promise<any> =>
 export const addMediaKitAnalytics = async (payload: any): Promise<any> =>
     Post<any>(API_CONSTANTS.addMediaKitAnalytic, payload, {
         "Content-Type": "multipart/form-data",
-    }); 
+    });
 
 export const verifyMediaKit = async (instaId: string): Promise<any> =>
     Get<any>(API_CONSTANTS.verifyMediaKit + API_CONSTANTS.slash + instaId);

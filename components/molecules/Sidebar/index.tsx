@@ -35,6 +35,18 @@ const Sidebar = ({
 
     const menuItems = [
         {
+            text: "Your profile",
+            icon: digiInvoiceIcon,
+            action: () => {
+                router.push(
+                    ROUTE_CONSTANTS.PROFILE
+                );
+
+                toggleSidebar();
+            },
+            delay: 50,
+        },
+        {
             text: "DodoPage",
             icon: DodoPageIcon,
             action: () => {
@@ -52,18 +64,6 @@ const Sidebar = ({
             action: () => {
                 router.push(
                     ROUTE_CONSTANTS.INVOICE
-                );
-
-                toggleSidebar();
-            },
-            delay: 50,
-        },
-        {
-            text: "Your profile",
-            icon: digiInvoiceIcon,
-            action: () => {
-                router.push(
-                    ROUTE_CONSTANTS.PROFILE
                 );
 
                 toggleSidebar();

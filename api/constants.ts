@@ -4,6 +4,7 @@ export default {
     registerUser: "/auth/register",
     completeProfile: "/auth/complete-profile",
     getUserDetails: "/auth/user",
+    modifyUserDetails: "/auth/update",
     updateUserDetails: "/update-user-details",
     createUserBlocks: "/create-block",
     getUserBlocks: "/user-blocks",
