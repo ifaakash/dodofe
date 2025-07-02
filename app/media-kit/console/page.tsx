@@ -43,7 +43,10 @@ const MediaKitConsole = () => {
     }, [isLoading, userDetails?.mediaKit, router])
 
     const handleShare = async () => {
-        const url = `${window.location.origin}/media-kit/${userDetails?.mediaKit?.instaId}`
+        const messageText = "👋 Hey! You've seen my content, now see the numbers behind it. From audience insights to brand collabs, pricing to reach… It's all here in my media kit.👇\n\n";
+        const baseUrl = `${window.location.origin}/media-kit/${userDetails?.mediaKit?.instaId}`;
+        const url = `${messageText}${baseUrl}`;
+
         navigator.clipboard.writeText(url)
         toast.success('Link copied to clipboard')
 
@@ -51,12 +54,10 @@ const MediaKitConsole = () => {
         const blob = await response.blob();
         const file = new File([blob], "mediakit-share.png", { type: blob.type });
 
-        const shareText = "👋 Hey! You've seen my content, now see the numbers behind it. From audience insights to brand collabs, pricing to reach… It's all here in my media kit.👇";
-
         navigator
             .share({
                 title: "Check out my Media Kit",
-                text: shareText,
+                text: messageText,
                 url: url,
                 files: [file],
             })

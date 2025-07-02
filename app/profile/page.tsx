@@ -224,13 +224,13 @@ const ProfilePage = () => {
                                         onChange={(e) => handleChange("instagram", e.target.value)}
                                     />
                                 </div>
-                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-gray-100 px-2 py-1 rounded">
+                                {/* <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-gray-100 px-2 py-1 rounded">
                                     Unverified
-                                </span>
+                                </span> */}
                             </div>
 
                             {/* Note Section */}
-                            <div className="bg-red-50 border border-red-100 rounded-lg p-3">
+                            {/* <div className="bg-red-50 border border-red-100 rounded-lg p-3">
                                 <div className="text-xs font-semibold mb-1">NOTE</div>
                                 <p className="text-sm">
                                     Your instagram account should be verified by dodo with minimum 10K followers{" "}
@@ -241,7 +241,7 @@ const ProfilePage = () => {
                                         VERIFY NOW
                                     </button>
                                 </p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 

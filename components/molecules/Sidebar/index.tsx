@@ -7,6 +7,7 @@ import packageJson from 'package.json';
 // Import icons
 import DodoPageIcon from 'public/assets/file.svg';
 import digiInvoiceIcon from 'public/assets/file-text-edit.svg';
+import profileIcon from 'public/assets/profile.svg';
 import feedbackIcon from 'public/assets/note-list-check.svg';
 import starIcon from 'public/icons/star.svg';
 import contactUsIcon from 'public/icons/EnvelopeSimple.svg';
@@ -36,7 +37,7 @@ const Sidebar = ({
     const menuItems = [
         {
             text: "Your profile",
-            icon: digiInvoiceIcon,
+            icon: profileIcon,
             action: () => {
                 router.push(
                     ROUTE_CONSTANTS.PROFILE
