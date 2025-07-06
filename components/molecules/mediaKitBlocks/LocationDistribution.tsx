@@ -90,27 +90,28 @@ const LocationDistribution = ({
 
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1`}>
-            <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
-                {/* <Image className={`w-5 h-5 ${locationDistData?.isActive ? '' : ''}`} src={DragIcon} alt="Drag" /> */}
-                <div className="pointer-events-auto">
-                    <Toggle checked={locationDistData?.isActive} onCheckedChange={handleToggle} />
-                </div>
-            </div>
+
 
             <div className={`flex flex-col gap-1 ${locationDistData?.isActive ? '' : ''}`}>
                 <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
+                    <Image className="ml-1" src={LocationDistributionIcon} alt="Gender Distribution" />
                     <div className="text-[#1167F1] w-full px-2 py-1 flex gap-1 text-xs">
                         <div className="font-semibold"> Location </div>
                         <div className=""> DISTRIBUTION </div>
                     </div>
-                    <Image src={LocationDistributionIcon} alt="Gender Distribution" />
+                    <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                        {/* <Image className={`w-5 h-5 ${locationDistData?.isActive ? '' : ''}`} src={DragIcon} alt="Drag" /> */}
+                        <div className="pointer-events-auto">
+                            <Toggle checked={locationDistData?.isActive} onCheckedChange={handleToggle} />
+                        </div>
+                    </div>
                 </div>
 
                 {
-                    locationDistData?.locationData && <LocaltionDistributionChart locationDistributionData={locationDistData.locationData.locations} />
+                    locationDistData?.locationData ? <LocaltionDistributionChart locationDistributionData={locationDistData.locationData.locations} /> : <div className="text-[10px] text-[#5E6C84]">No data available, this won't be shown in your media kit</div>
                 }
 
-                <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
+                {/* <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
                     {
                         locationDistData?.locationData ? (
                             <div className="flex flex-col text-[10px]">
@@ -152,9 +153,9 @@ const LocationDistribution = ({
                             className="hidden"
                         />
                     </label>
-                </div>
+                </div> */}
 
-                {
+                {/* {
                     error && (
                         <div className="text-[10px] text-[#FF0000] bg-[#ffcece] p-2 mt-1 rounded-lg font-medium">
                             {error}
@@ -166,7 +167,7 @@ const LocationDistribution = ({
                     openHowToUpload && (
                         <HowToUpload title={'Location?'} step1={Step1 as any} step2={Step2 as any} step3={LocationStep3 as any} isOpen={openHowToUpload} onClose={() => setOpenHowToUpload(false)} />
                     )
-                }
+                } */}
             </div>
         </div>
     )

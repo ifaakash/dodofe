@@ -41,40 +41,39 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId, mode = 'edi
             <div
                 className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1`}
             >
-                <div
-                    className={`flex justify-end items-center ${
-                        mode === "public" ? "hidden" : ""
-                    }`}
-                >
-                    {/* <Image className={`w-5 h-5 ${allBrandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
-                    <div className="pointer-events-auto">
-                        <Toggle
-                            checked={allBrandData?.isActive}
-                            onCheckedChange={handleToggle}
-                        />
-                    </div>
-                </div>
-
                 <div className="flex flex-col gap-2">
                     <div
                         className={`flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg`}
                     >
+                        <Image
+                            className="ml-1"
+                            src={BrandCollaborationIcon}
+                            alt="Gender Distribution"
+                        />
                         <div className="text-[#9747FF] w-full px-2 py-1 flex gap-1 text-xs">
                             <div className="font-semibold"> Brand </div>
                             <div className=""> COLLABORATION </div>
                         </div>
-                        <Image
-                            src={BrandCollaborationIcon}
-                            alt="Gender Distribution"
-                        />
+
+                        <div
+                            className={`flex justify-end items-center ${mode === "public" ? "hidden" : ""
+                                }`}
+                        >
+                            {/* <Image className={`w-5 h-5 ${allBrandData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
+                            <div className="pointer-events-auto">
+                                <Toggle
+                                    checked={allBrandData?.isActive}
+                                    onCheckedChange={handleToggle}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div
-                        className={`flex gap-2 overflow-x-auto scrollbar-hide py-2 ${
-                            allBrandData?.isActive
-                                ? "pointer-events-auto"
-                                : "pointer-events-none"
-                        }`}
+                        className={`flex gap-2 overflow-x-auto scrollbar-hide py-2 ${allBrandData?.isActive
+                            ? "pointer-events-auto"
+                            : "pointer-events-none"
+                            }`}
                     >
                         {allBrandData?.brands?.map(
                             (brand: any, index: number) => (
@@ -89,9 +88,8 @@ const BrandCollaboration = ({ brandData, setUpdateMediaKit, instaId, mode = 'edi
                     </div>
 
                     <div
-                        className={`flex justify-center ${
-                            mode === "public" ? "hidden" : ""
-                        }`}
+                        className={`flex justify-center ${mode === "public" ? "hidden" : ""
+                            }`}
                     >
                         <div
                             className="px-2 py-1 flex gap-1 items-center border border-[#E2E4E9] rounded-full cursor-pointer"

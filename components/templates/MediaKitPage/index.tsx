@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BioSection from "./BioSection";
 import InstaSection from "./InstaSection";
 import InstaFollowerSection from "./InstaFollowerSection";
