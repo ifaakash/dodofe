@@ -144,9 +144,7 @@ export interface userDetailsProps {
   invoices: string[];
   clientDetails: ClientDetailsProps[];
   recipientDetails: RecipientDetails[];
-  mediaKit: {
-    instaId: string;
-  };
+  mediaKit: any;
 }
 
 export interface InvoiceUserCardProps {
@@ -184,18 +182,18 @@ export interface UserInvoicesData {
 }
 
 export interface AnalyticsData {
-    totalViews: number;
-    uniqueVisitors: number;
-    averageDuration: number;
-    totalClicks: number;
-    topReferrers: Array<{ source: string; count: number }>;
-    blockInteractions: Array<{
-        blockId: string;
-        blockType: string;
-        interactionCount: number;
-    }>;
-    viewsByDate: Array<{ date: string; count: number }>;
-    deviceBreakdown: Array<{ device: string; percentage: number }>;
+  totalViews: number;
+  uniqueVisitors: number;
+  averageDuration: number;
+  totalClicks: number;
+  topReferrers: Array<{ source: string; count: number }>;
+  blockInteractions: Array<{
+    blockId: string;
+    blockType: string;
+    interactionCount: number;
+  }>;
+  viewsByDate: Array<{ date: string; count: number }>;
+  deviceBreakdown: Array<{ device: string; percentage: number }>;
 }
 
 export type Timeframe = "day" | "week" | "month" | "overall" | "year";

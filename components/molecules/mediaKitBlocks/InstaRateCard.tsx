@@ -20,7 +20,7 @@ const InstaRateCard = ({
     followers,
     mode = 'edit',
     showDisclaimer = false
-    }: {
+}: {
     rateCardData: any,
     instaId: string,
     setUpdateMediaKit?: (updateMediaKit: boolean) => void,
@@ -28,7 +28,7 @@ const InstaRateCard = ({
     followers: number,
     mode: 'edit' | 'public' | 'preview',
     showDisclaimer?: boolean
-    }) => {
+}) => {
     const [current, setCurrent] = useState(0)
     const contentNiche = 'fashion'
 
@@ -39,7 +39,7 @@ const InstaRateCard = ({
         if (rate >= 2) return 1.0
         return 0.8
     }
-    
+
     const getNicheMultiplier = (niche: string) => {
         const highValue = ['fashion', 'beauty', 'tech', 'finance']
         const midValue = ['food', 'travel', 'fitness', 'lifestyle']
@@ -136,17 +136,17 @@ const InstaRateCard = ({
 
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${rateCardData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
-            <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
-                {/* <Image className={`w-5 h-5 ${rateCardData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
-                <Toggle checked={rateCardData?.isActive} onCheckedChange={handleToggle} />
-            </div>
 
             <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
+                <Image className="ml-1" src={InstaRateCardIcon} alt="Gender Distribution" />
                 <div className="text-[#1F9D73] w-full px-2 py-1 flex gap-1 text-xs">
                     <div className="font-semibold"> Instagram </div>
                     <div className=""> RATE CARD </div>
                 </div>
-                <Image src={InstaRateCardIcon} alt="Gender Distribution" />
+                <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                    {/* <Image className={`w-5 h-5 ${rateCardData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
+                    <Toggle checked={rateCardData?.isActive} onCheckedChange={handleToggle} />
+                </div>
             </div>
 
             <div className='py-3'>

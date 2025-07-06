@@ -82,23 +82,23 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
 
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1`}>
-            <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
-                {/* <Image className={`w-5 h-5 ${genderAnalytics?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
-                <div className="pointer-events-auto">
-                    <Toggle checked={genderDistributionData?.isActive} onCheckedChange={handleToggle} />
-                </div>
-            </div>
 
             <div className="flex flex-col gap-1">
                 <div className={`flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg ${genderDistributionData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+                    <Image className="ml-1" src={GenderDistributionIcon} alt="Gender Distribution" />
                     <div className="text-[#FB7128] w-full px-2 py-1 flex gap-1 text-xs">
                         <div className="font-semibold">Gender</div>
                         <div className="uppercase">Distribution</div>
                     </div>
-                    <Image src={GenderDistributionIcon} alt="Gender Distribution" />
+                    <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                        {/* <Image className={`w-5 h-5 ${genderAnalytics?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
+                        <div className="pointer-events-auto">
+                            <Toggle checked={genderDistributionData?.isActive} onCheckedChange={handleToggle} />
+                        </div>
+                    </div>
                 </div>
                 {
-                    genderDistributionData?.genderData && (
+                    genderDistributionData?.genderData ? (
                         <div className={`py-3 px-0.5 flex justify-between items-center gap-2 ${genderDistributionData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`}>
                             <div className="flex flex-col">
                                 <div className="text-[#5E6C84] text-[10px] leading-none"> Male </div>
@@ -117,10 +117,10 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                                 <div className="text-[#8153DF] text-sm font-bold leading-none text-end"> {genderDistributionData.genderData.femalePercentage}% </div>
                             </div>
                         </div>
-                    )
+                    ) : <div className="text-[10px] text-[#5E6C84]">No data available, this won't be shown in your media kit</div>
                 }
 
-                <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
+                {/* <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
                     {
                         genderDistributionData?.genderData ? (
                             <div className="flex flex-col text-[10px]">
@@ -176,7 +176,7 @@ const GenderDistribution = ({ genderAnalytics, instaId, setUpdateMediaKit, mode 
                     openHowToUpload && (
                         <HowToUpload title={'Gender Distribution?'} step1={Step1 as any} step2={Step2 as any} step3={GenderStep3 as any} isOpen={openHowToUpload} onClose={() => setOpenHowToUpload(false)} />
                     )
-                }
+                } */}
             </div>
         </div>
     )
