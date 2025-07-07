@@ -14,6 +14,7 @@ import HowToUpload from "../mediakit/HowToUpload"
 import Step1 from 'public/images/ExportStep1.png'
 import Step2 from 'public/images/ExportStep2.png'
 import LocationStep3 from 'public/images/LocationStep3.png'
+import { useRouter } from "next/navigation"
 
 
 
@@ -34,6 +35,7 @@ const LocationDistribution = ({
     const [locationDistData, setLocationDistData] = useState<any>(locationDistributionData || null)
     const [error, setError] = useState<string | null>(null)
     const [openHowToUpload, setOpenHowToUpload] = useState(false)
+    const router = useRouter()
 
     useEffect(() => {
         if (locationDistributionData) {
@@ -108,8 +110,27 @@ const LocationDistribution = ({
                 </div>
 
                 {
-                    locationDistData?.locationData ? <LocaltionDistributionChart locationDistributionData={locationDistData.locationData.locations} /> : <div className="text-[10px] text-[#5E6C84]">No data available, this won't be shown in your media kit</div>
-                }
+                    locationDistData?.locationData ? <LocaltionDistributionChart locationDistributionData={locationDistData.locationData.locations} /> :
+                        <div className="flex flex-col items-center justify-center py-8 px-4">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-3 text-gray-400">
+                                <path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M24 16V24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M24 32H24.02" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            <div className="text-center">
+                                <p className="text-sm font-medium text-gray-700 mb-1">No Location Distribution Data</p>
+                                <p className="text-xs text-gray-500">Upload your location distribution screenshot from your instagram professional dashboard</p>
+                                <div className="shimmer-container relative overflow-hidden mt-4 inline-block">
+                                    <button
+                                        className="text-xs font-medium bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
+                                        onClick={() => { router.push('/media-kit/console/complete') }}
+                                    >
+                                        Update Age Data
+                                    </button>
+                                    <div className="shimmer-effect"></div>
+                                </div>
+                            </div>
+                        </div>}
 
                 {/* <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
                     {

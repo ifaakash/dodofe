@@ -5,7 +5,6 @@ import MediaKitBlocks from "@components/molecules/mediaKitConsole/MediaKitBlocks
 import MediaKitPage from "@components/templates/MediaKitPage";
 import leftArrow from "public/icons/leftArrow.svg";
 import Image from "next/image";
-import EyeIcon from "../../../public/icons/greenEye.svg";
 import { getMediaKitByInstaId, getUserDetails } from "api/services";
 import { useEffect, useState } from "react";
 import { userDetailsProps } from "types";
@@ -15,6 +14,44 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Share2Icon } from "lucide-react";
 import { toast } from "react-hot-toast";
+
+const shimmerStyles = `
+.pending-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.pending-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 70%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: pendingShimmer 4s infinite ease-in-out;
+    transform: skewX(-15deg);
+}
+
+@keyframes pendingShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 200%;
+    }
+}
+`;
+
+if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.textContent = shimmerStyles;
+    document.head.appendChild(style);
+}
 
 const MediaKitConsole = () => {
     const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null)
@@ -144,10 +181,10 @@ const MediaKitConsole = () => {
                 <MediaKitHeader data={userDetails} variant="edit" isLoading={isLoading} />
 
                 {/* Pending Items Section */}
-                {pendingItems > 0 && (
-                    <div className="bg-black text-white px-4 py-2 flex justify-between items-center rounded-xl">
+                {isLoading ? null : pendingItems > 0 && (
+                    <div className="bg-black text-white px-4 py-2 flex justify-between items-center rounded-xl pending-bar">
                         <div>
-                            <div className="text-lg font-semibold">{pendingItems} {pendingItems === 1 ? 'item' : 'items'} pending</div>
+                            <div className="text-md font-semibold">{pendingItems} {pendingItems === 1 ? 'item' : 'items'} pending</div>
                             <div className="text-sm text-gray-400">takes less than {pendingItems > 2 ? 2 : 1} min</div>
                         </div>
                         <button
@@ -160,6 +197,7 @@ const MediaKitConsole = () => {
                                 <path d="M8 3.33337L12.6667 8.00004L8 12.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </button>
+                        <div className="pending-shimmer"></div>
                     </div>
                 )}
 

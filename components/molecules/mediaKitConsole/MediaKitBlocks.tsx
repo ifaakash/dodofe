@@ -97,7 +97,7 @@ const MediaKitBlocks = ({ mediaKitDetails, setUpdateMediaKit, isLoading = false 
     }
 
     return (
-        <div className="flex flex-col gap-1 w-full pb-4 min-h-screen">
+        <div className="flex flex-col gap-2 w-full pb-4 min-h-screen">
             <div className="flex flex-col gap-1">
                 <FollowerCount followerCount={mediaKitDetails?.followers} />
                 <GeneralStats

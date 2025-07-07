@@ -12,6 +12,7 @@ import HowToUpload from "../mediakit/HowToUpload"
 import Step1 from 'public/images/ExportStep1.png'
 import Step2 from 'public/images/ExportStep2.png'
 import AgeStep3 from 'public/images/AgeStep3.png'
+import { useRouter } from "next/navigation"
 
 const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode = 'edit' }: { ageDistributionData: any, instaId: string, setUpdateMediaKit?: (updateMediaKit: boolean) => void, mode: 'edit' | 'public' | 'preview' }) => {
 
@@ -20,6 +21,8 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
     const [ageDistData, setAgeDistData] = useState<any>(ageDistributionData || null)
     const [error, setError] = useState<string | null>(null)
     const [openHowToUpload, setOpenHowToUpload] = useState(false)
+
+    const router = useRouter()
 
     useEffect(() => {
         if (ageDistributionData) {
@@ -103,7 +106,28 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                 </div>
 
                 {
-                    ageDistData?.ageData ? <MediaKitAgeChart ageData={ageDistData.ageData} /> : <div className="text-[10px] text-[#5E6C84]">No data available, this won't be shown in your media kit</div>
+                    ageDistData?.ageData ? <MediaKitAgeChart ageData={ageDistData.ageData} /> : (
+                        <div className="flex flex-col items-center justify-center py-8 px-4">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-3 text-gray-400">
+                                <path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M24 16V24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M24 32H24.02" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            <div className="text-center">
+                                <p className="text-sm font-medium text-gray-700 mb-1">No Age Distribution Data</p>
+                                <p className="text-xs text-gray-500">Upload your age distribution screenshot from your instagram professional dashboard</p>
+                                <div className="shimmer-container relative overflow-hidden mt-4 inline-block">
+                                    <button
+                                        className="text-xs font-medium bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
+                                        onClick={() => { router.push('/media-kit/console/complete') }}
+                                    >
+                                        Update Age Data
+                                    </button>
+                                    <div className="shimmer-effect"></div>
+                                </div>
+                            </div>
+                        </div>
+                    )
                 }
                 {/* <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
                     {
@@ -168,3 +192,41 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
 }
 
 export default AgeDistribution
+
+const emptyStateStyles = `
+.shimmer-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shimmerButton 4s infinite ease-in-out;
+    transform: skewX(-15deg);
+}
+
+@keyframes shimmerButton {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 200%;
+    }
+}
+`;
+
+if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.textContent = emptyStateStyles;
+    document.head.appendChild(style);
+}
