@@ -5,13 +5,29 @@ import { useEffect, useRef, useState } from "react";
 import { updateMediaKit } from "api/services";
 import { toast } from "react-hot-toast";
 import { processImage } from "@utils/imageUtils";
+import { CATEGORIES } from "@utils/index";
 
 interface MediaKitHeaderInterface {
     data: any;
     variant: "public" | "edit";
+    isLoading?: boolean;
 }
 
-const MediaKitHeader = ({ data, variant }: MediaKitHeaderInterface) => {
+const MediaKitHeaderSkeleton = () => {
+    return (
+        <div className="flex gap-3 flex-col items-center animate-pulse">
+            <div className="w-[100px] h-[100px] rounded-full bg-white" />
+            <div className="flex flex-col gap-2 items-center">
+                <div className="h-5 w-32 bg-white rounded-md" />
+                <div className="flex gap-1 flex-col items-center">
+                    <div className="h-4 w-48 bg-white rounded-md" />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const MediaKitHeader = ({ data, variant, isLoading = false }: MediaKitHeaderInterface) => {
     const [userProfileImage, setUserProfileImage] = useState<
         string | undefined
     >();
@@ -79,6 +95,10 @@ const MediaKitHeader = ({ data, variant }: MediaKitHeaderInterface) => {
         }
     };
 
+    if (isLoading) {
+        return <MediaKitHeaderSkeleton />;
+    }
+
     return (
         <div className="flex gap-3 flex-col items-center">
             <div
@@ -129,10 +149,13 @@ const MediaKitHeader = ({ data, variant }: MediaKitHeaderInterface) => {
                                         key={index}
                                         className="flex items-center gap-1"
                                     >
-                                        <span>{item}</span>
+                                        <span className="px-2 py-1 bg-white text-black rounded">
+                                            {CATEGORIES.find((category) => category.name === item)?.emoji}&nbsp;&nbsp;&nbsp;
+                                            {item}
+                                        </span>
                                         {index <
                                             userInterestCategories?.length -
-                                                1 && <span>•</span>}
+                                            1 && <span>•</span>}
                                     </div>
                                 ))}
                         </div>

@@ -260,3 +260,26 @@ export const calculateGrandTotal = (
 
   return Math.floor(finalAmount);
 };
+
+export const CATEGORIES = [
+  { name: "tech", code: "#ffffff", emoji: "💻" },
+  { name: "entertainment", code: "#d83248", emoji: "🎥" },
+  { name: "food", code: "#d83248", emoji: "🍔" },
+  { name: "finance", code: "#d83248", emoji: "💰" },
+  { name: "comedy", code: "#d83248", emoji: "🤣" },
+  { name: "beauty", code: "#d83248", emoji: "💄" },
+  { name: "travel", code: "#d83248", emoji: "🌍" },
+  { name: "sports", code: "#d83248", emoji: "🏃‍♂️" },
+  { name: "gaming", code: "#d83248", emoji: "🎮" },
+  { name: "diy", code: "#d83248", emoji: "🔨" },
+  { name: "vlogger", code: "#d83248", emoji: "📸" },
+  { name: "gym & fitness", code: "#d83248", emoji: "🏋️‍♂️" },
+  { name: "educator", code: "#d83248", emoji: "🎓" },
+  { name: "dancer", code: "#d83248", emoji: "💃" },
+  { name: "singer", code: "#d83248", emoji: "🎤" },
+  { name: "doctor", code: "#d83248", emoji: "🩺" },
+  { name: "motivational", code: "#d83248", emoji: "💪" },
+  { name: "real estate", code: "#d83248", emoji: "🏠" },
+  { name: "home design", code: "#d83248", emoji: "🏠" },
+  { name: "Other", code: "#d83248", emoji: "👀" },
+];
