@@ -22,6 +22,7 @@ const MediaKitConsole = () => {
     const [updateMediaKit, setUpdateMediaKit] = useState<boolean>(false)
     const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true)
     const router = useRouter()
 
     const [pendingItems, setPendingItems] = useState(0);
@@ -30,19 +31,19 @@ const MediaKitConsole = () => {
     useEffect(() => {
         let pendingItems = 0;
 
-        if (userDetails?.mediaKit?.genderAnalytics?.isActive && !userDetails?.mediaKit?.genderAnalytics?.genderData) {
+        if (!userDetails?.mediaKit?.genderAnalytics?.genderData) {
             pendingItems++;
         }
 
-        if (userDetails?.mediaKit?.ageAnalytics?.isActive && !userDetails?.mediaKit?.ageAnalytics?.ageData) {
+        if (!userDetails?.mediaKit?.ageAnalytics?.ageData) {
             pendingItems++;
         }
 
-        if (userDetails?.mediaKit?.contentAnalytics?.isActive && !userDetails?.mediaKit?.brandCollabs?.contentData) {
+        if (!userDetails?.mediaKit?.contentAnalytics?.contentData) {
             pendingItems++;
         }
 
-        if (userDetails?.mediaKit?.locationAnalytics?.isActive && !userDetails?.mediaKit?.locationAnalytics?.locationData) {
+        if (!userDetails?.mediaKit?.locationAnalytics?.locationData) {
             pendingItems++;
         }
 
@@ -51,15 +52,20 @@ const MediaKitConsole = () => {
 
     useEffect(() => {
         const fetchUserDetails = async () => {
-            setIsLoading(true)
-            const response = await getUserDetails(userId as string)
-            setUserDetails(response.user)
-            setUpdateMediaKit(false)
-            setIsLoading(false)
-        }
-        fetchUserDetails()
+            if (isFirstLoad) {
+                setIsLoading(true);
+            }
+            const response = await getUserDetails(userId as string);
+            setUserDetails(response.user);
+            setUpdateMediaKit(false);
+            if (isFirstLoad) {
+                setIsLoading(false);
+                setIsFirstLoad(false);
+            }
+        };
+        fetchUserDetails();
 
-    }, [updateMediaKit])
+    }, [updateMediaKit, isFirstLoad]);
 
     useEffect(() => {
         if (!isLoading && !userDetails?.mediaKit) {
@@ -117,6 +123,7 @@ const MediaKitConsole = () => {
         router.push('/media-kit/console/complete');
     };
 
+    console.log(pendingItems)
     return (
         <div className='h-screen w-screen overflow-auto'>
             <div className="px-5 py-4 flex justify-between items-center border-b">
@@ -134,7 +141,7 @@ const MediaKitConsole = () => {
             </div>
 
             <div className="p-4 flex flex-col gap-6">
-                <MediaKitHeader data={userDetails} variant="edit" />
+                <MediaKitHeader data={userDetails} variant="edit" isLoading={isLoading} />
 
                 {/* Pending Items Section */}
                 {pendingItems > 0 && (
@@ -156,7 +163,7 @@ const MediaKitConsole = () => {
                     </div>
                 )}
 
-                <MediaKitBlocks mediaKitDetails={userDetails?.mediaKit} setUpdateMediaKit={setUpdateMediaKit} />
+                <MediaKitBlocks mediaKitDetails={userDetails?.mediaKit} setUpdateMediaKit={setUpdateMediaKit} isLoading={isLoading} />
             </div>
         </div>
     );

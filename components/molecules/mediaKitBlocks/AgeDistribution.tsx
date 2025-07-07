@@ -105,7 +105,6 @@ const AgeDistribution = ({ ageDistributionData, instaId, setUpdateMediaKit, mode
                 {
                     ageDistData?.ageData ? <MediaKitAgeChart ageData={ageDistData.ageData} /> : <div className="text-[10px] text-[#5E6C84]">No data available, this won't be shown in your media kit</div>
                 }
-
                 {/* <div className={`p-2 flex justify-between items-center border rounded-[10px] ${mode === 'public' ? 'hidden' : ''}`}>
                     {
                         ageDistData?.ageData ? (

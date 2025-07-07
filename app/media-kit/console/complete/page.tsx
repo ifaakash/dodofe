@@ -119,13 +119,20 @@ const CompleteMediaKit = () => {
     );
 
     if (isLoading || !userDetails) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
+                    <span className="text-sm text-gray-500">Loading, please wait...</span>
+                </div>
+            </div>
+        );
     }
 
-    const showContentType = userDetails?.mediaKit?.brandCollabs?.isActive && !userDetails?.mediaKit?.contentAnalytics?.contentData;
-    const showGender = userDetails?.mediaKit?.genderAnalytics?.isActive && !userDetails?.mediaKit?.genderAnalytics?.genderData;
-    const showAge = userDetails?.mediaKit?.ageAnalytics?.isActive && !userDetails?.mediaKit?.ageAnalytics?.ageData;
-    const showLocation = userDetails?.mediaKit?.locationAnalytics?.isActive && !userDetails?.mediaKit?.locationAnalytics?.locationData;
+    const showContentType = !userDetails?.mediaKit?.contentAnalytics?.contentData;
+    const showGender = !userDetails?.mediaKit?.genderAnalytics?.genderData;
+    const showAge = !userDetails?.mediaKit?.ageAnalytics?.ageData;
+    const showLocation = !userDetails?.mediaKit?.locationAnalytics?.locationData;
 
     const hasAnySectionToShow = showContentType || showGender || showAge || showLocation;
 
