@@ -1,5 +1,5 @@
 import { MailIcon, Loader2 } from "lucide-react"
-import SampleImage from "/public/images/defaultMediaKitImg.jpg"
+import mediaKitImage from "/public/assets/mediaKitUser.png"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react";
 import { updateMediaKit } from "api/services";
@@ -26,6 +26,44 @@ const MediaKitHeaderSkeleton = () => {
         </div>
     );
 };
+
+const shimmerStyles = `
+.shimmer-tag {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: shimmer 3s infinite;
+    transform: skewX(-20deg);
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 200%;
+    }
+}
+`;
+
+if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.textContent = shimmerStyles;
+    document.head.appendChild(style);
+}
 
 const MediaKitHeader = ({ data, variant, isLoading = false }: MediaKitHeaderInterface) => {
     const [userProfileImage, setUserProfileImage] = useState<
@@ -121,7 +159,7 @@ const MediaKitHeader = ({ data, variant, isLoading = false }: MediaKitHeaderInte
                 ) : (
                     <div className="w-[100px] h-[100px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
                         <Image
-                            src={SampleImage}
+                            src={mediaKitImage}
                             alt="Empty Image"
                             width={100}
                             height={100}
@@ -149,13 +187,11 @@ const MediaKitHeader = ({ data, variant, isLoading = false }: MediaKitHeaderInte
                                         key={index}
                                         className="flex items-center gap-1"
                                     >
-                                        <span className="px-2 py-1 bg-white text-black rounded">
-                                            {CATEGORIES.find((category) => category.name === item)?.emoji}&nbsp;&nbsp;&nbsp;
+                                        <span className="pr-4 pl-3 py-2 bg-white text-black rounded-2xl relative overflow-hidden shimmer-tag" style={{ borderColor: `hsl(${Math.random() * 360}, 100%, 80%)`, borderWidth: '1px', borderStyle: 'solid' }}>
+                                            {CATEGORIES.find((category) => category.name === item)?.emoji}&nbsp;&nbsp;
                                             {item}
+                                            <div className="shimmer-effect"></div>
                                         </span>
-                                        {index <
-                                            userInterestCategories?.length -
-                                            1 && <span>•</span>}
                                     </div>
                                 ))}
                         </div>
