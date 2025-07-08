@@ -65,8 +65,8 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                 <div className="max-w-[1200px] mx-auto w-full">
                     <MediaKitHeader data={mediaKitData} variant="public" />
 
-                    <div className="flex flex-col gap-[10px] mt-8">
-                        <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex flex-col gap-[10px] mt-4">
+                        <div className="flex flex-col md:flex-row gap-2">
                             <div className="w-full md:w-1/3">
                                 <FollowerCount followerCount={mediaKitData?.followers} />
                             </div>
@@ -75,7 +75,7 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                                     mode="public"
                                     instaId={mediaKitData?.instaId}
                                     contentAnalytics={mediaKitData?.contentAnalytics}
-                                    avgLike={mediaKitData?.avgLike}
+                                    avgLike={mediaKitData?.avgLikes}
                                     avgComments={mediaKitData?.avgComments}
                                     mediaCount={mediaKitData?.mediaCount}
                                     engagement={mediaKitData?.engagement}
@@ -83,7 +83,7 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div className="grid md:grid-cols-2 gap-2">
                             {
                                 mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
                                     <div className="w-full">
