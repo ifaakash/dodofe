@@ -148,24 +148,26 @@ const MediaKitHeader = ({ data, variant, isLoading = false }: MediaKitHeaderInte
                         <Loader2 className="w-6 h-6 animate-spin text-white" />
                     </div>
                 )}
-                {userProfileImage ? (
-                    <Image
-                        src={userProfileImage}
-                        width={100}
-                        height={100}
-                        className="w-full h-full object-cover"
-                        alt="Sample Image"
-                    />
-                ) : (
-                    <div className="w-[100px] h-[100px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                <div className="w-[100px] h-[100px] rounded-full flex items-center justify-center cursor-pointer">
+                    {userProfileImage ? (
                         <Image
-                            src={mediaKitImage}
-                            alt="Empty Image"
+                            src={userProfileImage}
                             width={100}
                             height={100}
+                            className="w-full h-full object-cover"
+                            alt="Sample Image"
                         />
-                    </div>
-                )}
+                    ) : (
+                        <div className="w-[100px] h-[100px] rounded-full bg-[#C7C6CB] border-[1px] border-white flex items-center justify-center cursor-pointer">
+                            <Image
+                                src={mediaKitImage}
+                                alt="Empty Image"
+                                width={100}
+                                height={100}
+                            />
+                        </div>
+                    )}
+                </div>
                 <input
                     type="file"
                     accept="image/*"
