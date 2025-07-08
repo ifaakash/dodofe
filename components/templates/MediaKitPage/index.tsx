@@ -108,7 +108,7 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                             }
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div className="grid md:grid-cols-2 gap-2">
                             {
                                 mediaKitData?.locationAnalytics?.isActive && mediaKitData?.locationAnalytics?.locationData && (
                                     <div className="w-full">
@@ -121,7 +121,7 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
                                 )
                             }
                             {
-                                mediaKitData?.brandCollabs?.isActive && (
+                                mediaKitData?.brandCollabs?.isActive && mediaKitData?.brandCollabs?.brands && (
                                     <div className="w-full">
                                         <BrandCollaboration
                                             brandData={mediaKitData?.brandCollabs}
