@@ -61,71 +61,96 @@ const MediaKitPage: React.FC<any> = ({ mediaKitData }) => {
         <div className="min-h-screen flex flex-col">
             {/* <Header /> */}
 
-            <div className="py-12 px-4 flex flex-col gap-5 flex-grow">
-                <MediaKitHeader data={mediaKitData} variant="public" />
+            <div className="py-12 px-4 md:px-6 lg:px-8 flex flex-col gap-5 flex-grow">
+                <div className="max-w-[1200px] mx-auto w-full">
+                    <MediaKitHeader data={mediaKitData} variant="public" />
 
-                <div className="flex flex-col gap-[10px]">
-                    <div className="flex flex-col gap-1">
-                        <FollowerCount followerCount={mediaKitData?.followers} />
-                        <GeneralStats mode="public" instaId={mediaKitData?.instaId} contentAnalytics={mediaKitData?.contentAnalytics} avgLike={mediaKitData?.avgLikes} avgComments={mediaKitData?.avgComments} mediaCount={mediaKitData?.mediaCount} engagement={mediaKitData?.engagement} />
-                    </div>
+                    <div className="flex flex-col gap-[10px] mt-8">
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="w-full md:w-1/3">
+                                <FollowerCount followerCount={mediaKitData?.followers} />
+                            </div>
+                            <div className="w-full md:w-2/3">
+                                <GeneralStats
+                                    mode="public"
+                                    instaId={mediaKitData?.instaId}
+                                    contentAnalytics={mediaKitData?.contentAnalytics}
+                                    avgLike={mediaKitData?.avgLike}
+                                    avgComments={mediaKitData?.avgComments}
+                                    mediaCount={mediaKitData?.mediaCount}
+                                    engagement={mediaKitData?.engagement}
+                                />
+                            </div>
+                        </div>
 
-                    <div className="flex flex-col gap-[10px]">
-                        {
-                            mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
-                                <GenderDistribution
-                                    genderAnalytics={mediaKitData?.genderAnalytics}
-                                    instaId={mediaKitData?.instaId}
-                                    mode={'public'}
-                                />
-                            )
-                        }
-                        {
-                            mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
-                                <AgeDistribution
-                                    ageDistributionData={mediaKitData?.ageAnalytics}
-                                    instaId={mediaKitData?.instaId}
-                                    mode={'public'}
-                                />
-                            )
-                        }
+                        <div className="grid md:grid-cols-2 gap-4">
+                            {
+                                mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
+                                    <div className="w-full">
+                                        <GenderDistribution
+                                            genderAnalytics={mediaKitData?.genderAnalytics}
+                                            instaId={mediaKitData?.instaId}
+                                            mode={'public'}
+                                        />
+                                    </div>
+                                )
+                            }
+                            {
+                                mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
+                                    <div className="w-full">
+                                        <AgeDistribution
+                                            ageDistributionData={mediaKitData?.ageAnalytics}
+                                            instaId={mediaKitData?.instaId}
+                                            mode={'public'}
+                                        />
+                                    </div>
+                                )
+                            }
+                        </div>
 
-                        {
-                            mediaKitData?.brandCollabs?.isActive && (
-                                <BrandCollaboration
-                                    brandData={mediaKitData?.brandCollabs}
-                                    instaId={mediaKitData?.instaId}
-                                    mode={'public'}
-                                />
-                            )
-                        }
-
-                        {
-                            mediaKitData?.locationAnalytics?.isActive && mediaKitData?.locationAnalytics?.locationData && (
-                                <LocationDistribution
-                                    locationDistributionData={mediaKitData?.locationAnalytics}
-                                    instaId={mediaKitData?.instaId}
-                                    mode={'public'}
-                                />
-                            )
-                        }
+                        <div className="grid md:grid-cols-2 gap-4">
+                            {
+                                mediaKitData?.locationAnalytics?.isActive && mediaKitData?.locationAnalytics?.locationData && (
+                                    <div className="w-full">
+                                        <LocationDistribution
+                                            locationDistributionData={mediaKitData?.locationAnalytics}
+                                            instaId={mediaKitData?.instaId}
+                                            mode={'public'}
+                                        />
+                                    </div>
+                                )
+                            }
+                            {
+                                mediaKitData?.brandCollabs?.isActive && (
+                                    <div className="w-full">
+                                        <BrandCollaboration
+                                            brandData={mediaKitData?.brandCollabs}
+                                            instaId={mediaKitData?.instaId}
+                                            mode={'public'}
+                                        />
+                                    </div>
+                                )
+                            }
+                        </div>
 
                         {
                             mediaKitData?.rateCard?.isActive && (
-                                <InstaRateCard
-                                    rateCardData={mediaKitData?.rateCard}
-                                    instaId={mediaKitData?.instaId}
-                                    engagementRate={mediaKitData?.engagementRate}
-                                    followers={mediaKitData?.followers}
-                                    mode={'public'}
-                                />
+                                <div className="w-full">
+                                    <InstaRateCard
+                                        rateCardData={mediaKitData?.rateCard}
+                                        instaId={mediaKitData?.instaId}
+                                        engagementRate={mediaKitData?.engagementRate}
+                                        followers={mediaKitData?.followers}
+                                        mode={'public'}
+                                    />
+                                </div>
                             )
                         }
                     </div>
                 </div>
             </div>
 
-            <Link href={'http://dodoclub.in/'} className="flex items-center gap-2 justify-center w-full py-6">
+            <Link href={'http://dodoclub.in/'} className="flex items-center gap-2 justify-center w-full py-6 bg-white">
                 <div className="text-[#3D4966] text-xs">powered by:</div>
                 <Image src={DodoIcon} alt="dodo icon" height={20} />
             </Link>

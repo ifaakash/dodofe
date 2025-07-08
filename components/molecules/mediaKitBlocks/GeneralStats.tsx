@@ -86,63 +86,20 @@ const GeneralStats = ({ mode, instaId, contentAnalytics, avgLike, avgComments, m
 
 
     return (
-        <div className="p-3 bg-[#FDFBFF] rounded-[14px] flex flex-col gap-3">
+        <div className="p-3 md:p-5 bg-[#FDFBFF] rounded-[14px] flex flex-col gap-3 md:gap-5 h-full">
             {
                 generalStats?.contentData && (
-                    <BlobChart contentAnalytics={generalStats?.contentData} />
+                    <div className="w-full md:max-w-[80%] mx-auto">
+                        <BlobChart contentAnalytics={generalStats?.contentData} />
+                    </div>
                 )
             }
-            {
-                // mode === 'edit' && (
-                //     <div className="p-2 flex justify-between items-center border rounded-[10px]">
-                //         {
-                //             generalStats?.contentData ? (
-                //                 <div className="flex flex-col text-[10px]">
-                //                     <div className="font-semibold">Uploaded on</div>
-                //                     <div className="font-medium">{formatDate(generalStats?.uploadedAt)}</div>
-                //                 </div>
-                //             ) : (
-                //                 <div className="flex flex-col gap-0.5 text-[10px]">
-                //                     <div className="font-semibold">Upload Content Type</div>
-                //                     <div className="font-medium text-[#8B39FF] underline cursor-pointer" onClick={() => setOpenHowToUpload(true)}>How to upload?</div>
-                //                 </div>
-                //             )
-                //         }
-                //         <label className="border-[1px] border-[#EAE9EC] flex gap-0.5 px-[10px] py-1 rounded-full cursor-pointer">
-                //             <div className="text-[10px] font-medium">
-                //                 {
-                //                     isUploading ? (
-                //                         <div className="flex items-center gap-2">
-                //                             <Loader2 className="w-4 h-4 animate-spin" />
-                //                             <div>Uploading...</div>
-                //                         </div>
-                //                     ) : (
-                //                         <div className="flex items-center gap-2">
-                //                             <div>
-                //                                 {uploadedImage ? 'Re-upload' : 'Upload'}
-                //                             </div>
-                //                             <Image src={UploadIcon} alt="Upload" />
-                //                         </div>
-                //                     )
-                //                 }
-                //             </div>
 
-                //             <input
-                //                 type="file"
-                //                 accept="image/*"
-                //                 onChange={handleUploadImage}
-                //                 className="hidden"
-                //             />
-                //         </label>
-                //     </div>
-                // )
-            }
-
-            <div className="grid grid-cols-2 gap-1">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                 {statsData.map((stat, index) => (
-                    <div key={index} className={`w-full px-4 py-2 bg-gradient-to-r ${stat.gradient} to-[#FDFBFF] rounded-[10px]`}>
-                        <div className="text-[#3D4966] font-black text-lg">{stat.value}</div>
-                        <div className="text-[#3D4966] font-medium text-xs">{stat.label}</div>
+                    <div key={index} className={`w-full px-4 py-3 md:py-4 bg-gradient-to-r ${stat.gradient} to-[#FDFBFF] rounded-[10px] transition-all duration-300 hover:shadow-sm`}>
+                        <div className="text-[#3D4966] font-black text-lg md:text-xl">{stat.value}</div>
+                        <div className="text-[#3D4966] font-medium text-xs md:text-sm">{stat.label}</div>
                     </div>
                 ))}
             </div>

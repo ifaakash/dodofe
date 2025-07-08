@@ -136,7 +136,6 @@ const InstaRateCard = ({
 
     return (
         <div className={`p-[10px] bg-[#FDFBFF] rounded-xl flex flex-col gap-1 ${rateCardData?.isActive ? 'opacity-100' : 'opacity-40'}`}>
-
             <div className="flex justify-between items-center bg-gradient-to-r from-[#F2F1F3] to-[#FDFBFF] rounded-lg">
                 <Image className="ml-1" src={InstaRateCardIcon} alt="Gender Distribution" />
                 <div className="text-[#1F9D73] w-full px-2 py-1 flex gap-1 text-xs">
@@ -144,12 +143,12 @@ const InstaRateCard = ({
                     <div className=""> RATE CARD </div>
                 </div>
                 <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
-                    {/* <Image className={`w-5 h-5 ${rateCardData?.isActive ? 'pointer-events-auto' : 'pointer-events-none'}`} src={DragIcon} alt="Drag" /> */}
                     <Toggle checked={rateCardData?.isActive} onCheckedChange={handleToggle} />
                 </div>
             </div>
 
-            <div className='py-3'>
+            {/* Mobile View - Unchanged */}
+            <div className='md:hidden py-3'>
                 <div
                     className='overflow-hidden relative'
                     onTouchStart={handleTouchStart}
@@ -179,14 +178,12 @@ const InstaRateCard = ({
                                             ? `${formatCurrency(Math.round(card.value * 0.85))} - ${formatCurrency(Math.round(card.value * 1.15))}`
                                             : formatCurrency(Math.round(card.value))}
                                     </div>
-
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Dot Indicators */}
                 <div className='flex justify-center mt-4 gap-2'>
                     {cards.map((_, index) => (
                         <div
@@ -201,14 +198,37 @@ const InstaRateCard = ({
                 </div>
             </div>
 
-            {
-                showDisclaimer && (
-                    <div className="text-[10px] text-[#0092DB] bg-[#E5F6FF] px-[10px] py-[6px] rounded-lg font-medium">
-                        This instagram price is calculated based of your number of followers, engagement and your category.
+            {/* Desktop View - Grid with content inside images */}
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 py-3">
+                {cards.map((card, index) => (
+                    <div key={index} className="relative group overflow-hidden">
+                        <Image
+                            src={card.src}
+                            alt={`Card ${index + 1}`}
+                            className="w-full h-auto object-contain rounded-lg transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="relative z-10 flex flex-col gap-2 items-center text-center px-4">
+                                <div className="font-medium text-sm text-[#395235] px-3 py-1 rounded-full">
+                                    {card.title}
+                                </div>
+                                <div className="text-xl font-bold text-black drop-shadow-lg">
+                                    {card.value > 0
+                                        ? `${formatCurrency(Math.round(card.value * 0.85))} - ${formatCurrency(Math.round(card.value * 1.15))}`
+                                        : formatCurrency(Math.round(card.value))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                )
-            }
+                ))}
+            </div>
 
+            {showDisclaimer && (
+                <div className="text-[10px] text-[#5E6C84] text-center mt-2">
+                    *These rates are AI generated based on your niche and engagement rate
+                </div>
+            )}
         </div>
     )
 }
