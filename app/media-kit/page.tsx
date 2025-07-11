@@ -41,7 +41,7 @@ const MediaKit = () => {
   }, [isLoading, userDetails?.mediaKit, router])
 
   // Show landing page for non-logged in users
-  if (!userId && !isLoading) {
+  if (!userId && !isLoading && window.innerWidth > 1024) {
     return <MediaKitLanding />
   }
 

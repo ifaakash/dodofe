@@ -20,9 +20,7 @@ export default function MediaKitLayout({
 }) {
     return (
         <>
-            <Header />
             {children}
-            <Footer />
         </>
     )
 } 

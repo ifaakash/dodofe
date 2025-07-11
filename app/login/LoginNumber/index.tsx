@@ -121,10 +121,10 @@ export const LoginNumber = ({ setLoginState }: any) => {
             <Image
                 src={PhoneNumberInputBg}
                 alt="Phone Number Input Background"
-                className="object-cover w-full h-[47vh]"
+                className="object-cover w-full"
             />
 
-            <div className="absolute bottom-0 h-[60vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
+            <div className="absolute bottom-0 h-[64vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
                 <div className="flex flex-col gap-6">
                     <div>
                         <div className="text-[#3D4966] font-bold text-[28px] leading-normal">

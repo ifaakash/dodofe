@@ -8,7 +8,7 @@ import { loadState, saveState } from "@utils/localStorage";
 import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from "@utils/constants";
 import { useRouter } from "next/navigation";
 import { registerUser, sendOtp } from "api";
-import OTPscreenBg from "public/assets/OTPscreen.png";
+import PhoneNumberInputBg from "public/assets/phoneNumberScreen.png";
 import NewButton from "@components/atoms/Button/NewButton";
 import { toast } from "react-hot-toast";
 import { RotateCcw } from "lucide-react";
@@ -207,12 +207,12 @@ export const LoginOtp = ({ setLoginState }: any) => {
     return (
         <div>
             <Image
-                src={OTPscreenBg}
+                src={PhoneNumberInputBg}
                 alt="Phone Number Input Background"
-                className="object-cover w-full h-[47vh]"
+                className="object-cover w-full"
             />
 
-            <div className="absolute bottom-0 h-[60vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
+            <div className="absolute bottom-0 h-[64vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
                 <div className="flex flex-col gap-4">
                     <div>
                         <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
