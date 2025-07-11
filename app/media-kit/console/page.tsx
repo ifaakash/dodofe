@@ -169,8 +169,11 @@ const MediaKitConsole = () => {
                 </div>
 
                 <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-white px-4 py-2 rounded-full text-md font-bold hover:shadow-xl hover:shadow-purple-500/20 transition-all shimmer-tag"
+                    onClick={handleShare}
                 >
-                    Share with Brands
+                    <span className="flex items-center gap-2">
+                        Share with Brands
+                        <Share2Icon className="w-4 h-4" /></span>
                     <div className="shimmer-effect"></div>
                 </div>
             </div>
