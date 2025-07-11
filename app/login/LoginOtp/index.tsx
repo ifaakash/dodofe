@@ -202,17 +202,36 @@ export const LoginOtp = ({ setLoginState }: any) => {
         setLoginState(1);
     };
 
+    const handleSubmit = async () => {
+        const codeToVerify = otp.join("");
+        if (codeToVerify.length !== otpLength) {
+            toast.error("Please enter complete OTP");
+            return;
+        }
+
+        if (!isTermsChecked) {
+            toast.error("Please agree to the terms and conditions.");
+            return;
+        }
+
+        await verifyOTP(codeToVerify);
+    };
+
     const isButtonDisabled = !isTermsChecked || otp.some((digit) => digit === "");
 
     return (
-        <div>
-            <Image
-                src={PhoneNumberInputBg}
-                alt="Phone Number Input Background"
-                className="object-cover w-full"
-            />
+        <div className="min-h-screen relative">
+            <div className="h-[40vh]">
+                <Image
+                    src={PhoneNumberInputBg}
+                    alt="Phone Number Input Background"
+                    className="object-cover w-full h-full"
+                    priority
+                />
+            </div>
 
-            <div className="absolute bottom-0 h-[64vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
+            <div className="absolute bottom-0 min-h-[60vh] bg-white w-full rounded-t-[32px] py-[30px] px-6 flex flex-col justify-between">
+                {/* Keep all existing content exactly as is, just wrapped in the new container structure */}
                 <div className="flex flex-col gap-4">
                     <div>
                         <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
@@ -285,7 +304,6 @@ export const LoginOtp = ({ setLoginState }: any) => {
                 </NewButton>
             </div>
         </div>
-
     );
 };
 

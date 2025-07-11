@@ -58,7 +58,7 @@ export const LoginNumber = ({ setLoginState }: any) => {
         setMobileNumber(value);
     };
 
-    const gotoOtpScreen = async () => {
+    const handleSubmit = async () => {
         if (mobileNumber.length !== 10) {
             toast.error("Please enter a valid 10-digit mobile number");
             return;
@@ -117,14 +117,17 @@ export const LoginNumber = ({ setLoginState }: any) => {
     };
 
     return (
-        <div>
-            <Image
-                src={PhoneNumberInputBg}
-                alt="Phone Number Input Background"
-                className="object-cover w-full"
-            />
+        <div className="min-h-screen relative">
+            <div className="h-[40vh]">
+                <Image
+                    src={PhoneNumberInputBg}
+                    alt="Phone Number Input Background"
+                    className="object-cover w-full h-full"
+                    priority
+                />
+            </div>
 
-            <div className="absolute bottom-0 h-[64vh] bg-white w-full rounded-[32px] py-[30px] px-6 flex flex-col justify-between">
+            <div className="absolute bottom-0 min-h-[60vh] bg-white w-full rounded-t-[32px] py-[30px] px-6 flex flex-col justify-between">
                 <div className="flex flex-col gap-6">
                     <div>
                         <div className="text-[#3D4966] font-bold text-[28px] leading-normal">
@@ -144,20 +147,20 @@ export const LoginNumber = ({ setLoginState }: any) => {
                             placeholder="Enter phone number"
                             maxLength={10}
                         />
-                        {/* <div className="bg-[#D0D0D0] w-full h-[1px]"></div> */}
                     </div>
                 </div>
 
-                <div id="recaptcha-container" className="invisible"></div>
-
-                <NewButton
-                    variant={mobileNumber.length === 10 ? "primary" : "disabled"}
-                    size="large"
-                    onClick={gotoOtpScreen}
-                    className="w-full"
-                >
-                    Continue
-                </NewButton>
+                <div>
+                    <div id="recaptcha-container" className="invisible"></div>
+                    <NewButton
+                        size="large"
+                        variant={mobileNumber.length === 10 ? "primary" : "disabled"}
+                        className="w-full"
+                        onClick={handleSubmit}
+                    >
+                        Continue
+                    </NewButton>
+                </div>
             </div>
         </div>
     );
