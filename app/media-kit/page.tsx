@@ -2,6 +2,7 @@
 import { Header } from '@components/molecules/Header'
 import MediaKitComingSoon from '@components/molecules/mediakit/MediaKitComingSoon'
 import MediaKitReady from '@components/molecules/mediakit/MediaKitReady'
+import MediaKitLanding from '@components/templates/MediaKitLanding'
 import { STORAGE_CONSTANTS, ROUTE_CONSTANTS } from '@utils/constants'
 import { loadState } from '@utils/localStorage'
 import { getUserDetails, updateMediaKit } from 'api/services'
@@ -19,7 +20,6 @@ const MediaKit = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [userDetails, setUserDetails] = useState<userDetailsProps | null>(null)
 
-
   useEffect(() => {
     const fetchUserDetails = async () => {
       setIsLoading(true)
@@ -27,9 +27,12 @@ const MediaKit = () => {
       setUserDetails(response.user)
       setIsLoading(false)
     }
-    fetchUserDetails()
-
-  }, [])
+    if (userId) {
+      fetchUserDetails()
+    } else {
+      setIsLoading(false)
+    }
+  }, [userId])
 
   useEffect(() => {
     if (!isLoading && userDetails?.mediaKit) {
@@ -37,12 +40,22 @@ const MediaKit = () => {
     }
   }, [isLoading, userDetails?.mediaKit, router])
 
+  // Show landing page for non-logged in users
+  if (!userId && !isLoading && window.innerWidth > 1024) {
+    return <MediaKitLanding />
+  }
+
+  // Show existing media kit functionality for logged in users
   return (
     <div className='bg-[#EAE9EC] min-h-screen'>
       <Header />
-
-      {
-        mediakitRef ? <MediaKitReady instaIdInput={instaIdInput} setInstaIdInput={setInstaIdInput} mediakitRef={mediakitRef} /> : <MediaKitComingSoon />
+      {mediakitRef ?
+        <MediaKitReady
+          instaIdInput={instaIdInput}
+          setInstaIdInput={setInstaIdInput}
+          mediakitRef={mediakitRef}
+        /> :
+        <MediaKitComingSoon />
       }
     </div>
   )

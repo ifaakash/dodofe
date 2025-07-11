@@ -26,7 +26,7 @@ import { lazy, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Screen from "@components/molecules/Screen";
 import { createUserBlock, getUserBlocks, getUserDetails } from "api";
 import { loadState } from "@utils/localStorage";
-import { isEmpty } from "@utils/index";
+import { isEmpty, isUserLoggedIn } from "@utils/index";
 import { toast } from "react-hot-toast";
 import { Card } from "@utils/uiUtils";
 import CtaSection from "@components/molecules/CtaSection";
@@ -215,7 +215,11 @@ export default function Home() {
     }
 
     const handleMediaKitNavigation = () => {
-        console.log('userDetails', userDetails)
+        if (!isUserLoggedIn()) {
+            router.push(ROUTE_CONSTANTS.LOGIN);
+            return;
+        }
+
         if (userDetails?.mediaKit) {
             router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
         } else {

@@ -160,7 +160,6 @@ const MediaKitConsole = () => {
         router.push('/media-kit/console/complete');
     };
 
-    console.log(pendingItems)
     return (
         <div className='h-screen w-screen overflow-auto'>
             <div className="px-5 py-4 flex justify-between items-center border-b">
@@ -169,11 +168,10 @@ const MediaKitConsole = () => {
                     <div className="font-semibold">Mediakit</div>
                 </div>
 
-                <div className="flex items-center py-2 px-3 rounded-md bg-white gap-1" onClick={handleShare}>
-                    <div className="text-[#3D4966] text-xs font-semibold ">
-                        Share
-                    </div>
-                    <Share2Icon size={14} className="text-brandPrimary" strokeWidth={2} />
+                <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-white px-4 py-2 rounded-full text-md font-bold hover:shadow-xl hover:shadow-purple-500/20 transition-all shimmer-tag"
+                >
+                    Share with Brands
+                    <div className="shimmer-effect"></div>
                 </div>
             </div>
 
@@ -182,7 +180,8 @@ const MediaKitConsole = () => {
 
                 {/* Pending Items Section */}
                 {isLoading ? null : pendingItems > 0 && (
-                    <div className="bg-black text-white px-4 py-2 flex justify-between items-center rounded-xl pending-bar">
+                    <div className="bg-black text-white px-4 py-2 flex justify-between items-center rounded-xl pending-bar" onClick={handleComplete}
+                    >
                         <div>
                             <div className="text-md font-semibold">{pendingItems} {pendingItems === 1 ? 'item' : 'items'} pending</div>
                             <div className="text-sm text-gray-400">takes less than {pendingItems > 2 ? 2 : 1} min</div>
