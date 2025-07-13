@@ -4,13 +4,12 @@ import styles from "./home.module.css";
 import cx from "classnames";
 import Image from "next/image";
 import Button from "@components/atoms/Button";
+import profileIcon from 'public/assets/profile.svg';
 
 import userProfileImg from "public/assets/userProfile.png";
 import crossBg from "public/icons/crossBg.svg";
 import noUserDp from "public/assets/noUserDp.png";
 // import footerImg from "public/assets/footerImg.png";
-import engagementCalc from "public/assets/content.png";
-import priceCalc from "public/assets/priceEstimate.png";
 import copy from "public/icons/copy.svg";
 import sideBarIcon from "public/icons/sideBarIcon.svg";
 import dodoCoinIcon from "public/icons/dodoCoin.svg";
@@ -134,16 +133,6 @@ export default function Home() {
         }
 
         router.push(ROUTE_CONSTANTS.INVOICE);
-    }, [router]);
-
-    const handleScriptGeneratorNavigation = useCallback(() => {
-        const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
-
-        if (!userId) {
-            router.push(ROUTE_CONSTANTS.LOGIN);
-            return;
-        }
-        router.push(ROUTE_CONSTANTS.SCRIPT_GENERATOR);
     }, [router]);
 
     const shareContent = useCallback(() => {
@@ -294,7 +283,7 @@ export default function Home() {
                                     )}
                                 </p>
 
-                                <div
+                                {/* <div
                                     className="flex rounded-xl bg-white mr-4 items-center justify-between px-2"
                                     style={{ height: 30, width: 80 }}
                                     onClick={handleCoinsNavigation}
@@ -309,6 +298,25 @@ export default function Home() {
                                     <span className="flex-1 text-center font-bold">
                                         {userDetails?.dodoCoins ?? 0}
                                     </span>
+                                </div> */}
+
+                                <div style={{ position: 'relative', bottom: '10px', height: '40px' }} className="flex rounded-full bg-white mr-4 items-center justify-between px-2"
+                                >
+                                    <Image
+                                        className="flex-shrink-0"
+                                        height={18}
+                                        width={22}
+                                        src={profileIcon}
+                                        alt="profile icon"
+                                    />
+                                    <span
+                                        className="text-sm font-bold py-1 px-2"
+                                        onClick={() => router.push(`/profile/${userId}`)}
+                                    >
+                                        Profile
+                                    </span>
+
+
                                 </div>
                             </div>
                         )}
@@ -333,15 +341,15 @@ export default function Home() {
                                 onClick={() => gotoLinksPage(dodoPageDetail?.url)}
                             >
                                 <div className="flex text-sm">
-                                    Login to get free
-                                    <Image
+                                    Login to get started
+                                    {/* <Image
                                         className="mx-1"
                                         height={18}
                                         width={22}
                                         src={dodoCoinIcon}
                                         alt="dodo coin"
                                     />
-                                    200 dodo coins
+                                    200 dodo coins */}
                                 </div>
 
                                 <Image
@@ -381,8 +389,7 @@ export default function Home() {
                         priority
                     />
 
-                    <div className="absolute-center flex-col">
-
+                    <div className="absolute-center flex-col mb-8">
                         <CtaSection
                             bgColor="var(--warm-green)"
                             img={mediakitIcon}
@@ -391,27 +398,6 @@ export default function Home() {
                             buttonLabel="Know More"
                             onClick={handleMediaKitNavigation}
                         />
-
-                        <div className="flex flex-row justify-between w-full gap-x-4 my-6">
-                            <Card
-                                title="AI Script Generator"
-                                description=""
-                                icon={engagementCalc}
-                                onClick={handleScriptGeneratorNavigation}
-                                bgColor="var(--light-orange)"
-                                bgColorGo="var(--orange)"
-                                className="flex-1 max-w-[calc(50%-0.5rem)]"
-                            />
-                            <Card
-                                title="IG Price Estimator"
-                                description=""
-                                icon={priceCalc}
-                                bgColor="var(--neon-purple)"
-                                onClick={() => router.push(ROUTE_CONSTANTS.PRICE_CALCULATOR)}
-                                bgColorGo="var(--purple)"
-                                className="flex-1 max-w-[calc(50%-0.5rem)]"
-                            />
-                        </div>
                     </div>
 
 

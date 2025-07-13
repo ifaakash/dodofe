@@ -1,13 +1,22 @@
 "use client";
-import MediaKitPage from "@components/templates/MediaKitPage";
-import { getMediaKitByInstaId } from "api/services";
-import { useParams, useSearchParams } from "next/navigation";
+import MediaKitHeader from "@components/molecules/mediaKitConsole/MediaKitHeader";
+import FollowerCount from "@components/molecules/mediaKitBlocks/FollowerCount";
+import GeneralStats from "@components/molecules/mediaKitBlocks/GeneralStats";
+import GenderDistribution from "@components/molecules/mediaKitBlocks/GenderDistribution";
+import AgeDistribution from "@components/molecules/mediaKitBlocks/AgeDistribution";
+import LocationDistribution from "@components/molecules/mediaKitBlocks/LocationDistribution";
+import BrandCollaboration from "@components/molecules/mediaKitBlocks/BrandCollaboration";
+import InstaRateCard from "@components/molecules/mediaKitBlocks/InstaRateCard";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getMediaKitByInstaId } from "api/services";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import GeneralErrorPage from "@components/templates/errorPages/GeneralError";
+import Image from "next/image";
+import Link from "next/link";
+import DodoIcon from "public/icons/dodoIconName.svg";
 
-const MediaKit = () => {
+export default function MediaKit() {
     const params = useParams();
     const [mediaKitData, setMediaKitData] = useState<any>(null);
     const instaId = params.instaId;
@@ -19,141 +28,132 @@ const MediaKit = () => {
             try {
                 setIsLoading(true);
                 const data = await getMediaKitByInstaId(instaId as string);
-
                 setMediaKitData(data?.data);
             } catch (error) {
-                console.error('Error fetching media kit data:', error);
                 setIsError(true);
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchMediaKitData();
     }, [params.instaId]);
 
-    console.log({
-        from: 'MediaKit',
-        isError,
-        isLoading,
-        instaId
-    })
-
-    if (isError) {
-        return <GeneralErrorPage />;
+    if (isError) return <GeneralErrorPage />;
+    if (isLoading || !mediaKitData || !instaId) {
+        return <div className="min-h-screen flex flex-col items-center justify-center"><Skeleton width={300} height={400} /></div>;
     }
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex flex-col">
-                <div className="py-12 px-4 flex flex-col gap-5 flex-grow">
-                    {/* MediaKitHeader Skeleton */}
-                    <div className="flex flex-col items-center text-center">
-                        <Skeleton circle width={100} height={100} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                        <Skeleton width={200} height={20} className="mt-4" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                        <div className="flex flex-wrap justify-center gap-2 mt-1">
-                            {[1, 2, 3].map((i) => (
-                                <Skeleton key={i} width={100} height={32} className="rounded-2xl" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                            ))}
+    return (
+        <div className="min-h-screen flex flex-col bg-[#F5F6FA]">
+            <div className="py-12 px-4 md:px-6 lg:px-8 flex flex-col gap-5 flex-grow">
+                <div className="max-w-[1100px] mx-auto w-full">
+                    <MediaKitHeader data={mediaKitData} variant="public" />
+
+                    {/* Desktop 2-column layout */}
+                    <div className="hidden md:grid grid-cols-2 gap-6 mt-8">
+                        {/* Left column: FollowerCount + GeneralStats (tall) */}
+                        <div className="flex flex-col gap-6 h-full">
+                            <FollowerCount followerCount={mediaKitData?.followers} />
+                            <div className="flex-1">
+                                <GeneralStats
+                                    mode="public"
+                                    instaId={mediaKitData?.instaId}
+                                    contentAnalytics={mediaKitData?.contentAnalytics}
+                                    avgLike={mediaKitData?.avgLikes}
+                                    avgComments={mediaKitData?.avgComments}
+                                    mediaCount={mediaKitData?.mediaCount}
+                                    engagement={mediaKitData?.engagement}
+                                />
+                            </div>
+                        </div>
+                        {/* Right column: Gender, Age, Location stacked */}
+                        <div className="flex flex-col gap-6 h-full">
+                            {mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
+                                <GenderDistribution
+                                    genderAnalytics={mediaKitData?.genderAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )}
+                            {mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
+                                <AgeDistribution
+                                    ageDistributionData={mediaKitData?.ageAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )}
+                            {mediaKitData?.locationAnalytics?.isActive && mediaKitData?.locationAnalytics?.locationData && (
+                                <LocationDistribution
+                                    locationDistributionData={mediaKitData?.locationAnalytics}
+                                    instaId={mediaKitData?.instaId}
+                                    mode={'public'}
+                                />
+                            )}
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-[10px]">
-                        {/* Follower Count Skeleton */}
-                        <div className="bg-white rounded-[10px] p-4">
-                            <Skeleton width={150} height={24} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                        </div>
-
-                        {/* General Stats Skeleton */}
-                        <div className="bg-white rounded-[10px] p-4">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="flex flex-col gap-2">
-                                        <Skeleton width={80} height={16} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                        <Skeleton width={60} height={24} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Distribution Sections Skeleton */}
-                        <div className="flex flex-col gap-[10px]">
-                            {/* Gender Distribution */}
-                            <div className="bg-white rounded-[10px] p-4">
-                                <Skeleton width={200} height={24} className="mb-4" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                <div className="flex justify-between items-center">
-                                    <Skeleton width={150} height={150} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                    <div className="flex flex-col gap-2">
-                                        {[1, 2].map((i) => (
-                                            <Skeleton key={i} width={100} height={24} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Age Distribution */}
-                            <div className="bg-white rounded-[10px] p-4">
-                                <Skeleton width={200} height={24} className="mb-4" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                <Skeleton height={200} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                            </div>
-
-                            {/* Brand Collaboration */}
-                            <div className="bg-white rounded-[10px] p-4">
-                                <Skeleton width={200} height={24} className="mb-4" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="flex flex-col gap-2">
-                                            <Skeleton circle width={60} height={60} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                            <Skeleton width={100} height={16} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                            <Skeleton width={80} height={16} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Location Distribution */}
-                            <div className="bg-white rounded-[10px] p-4">
-                                <Skeleton width={200} height={24} className="mb-4" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                <div className="flex justify-between">
-                                    <Skeleton width={200} height={200} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                    <div className="flex flex-col gap-2">
-                                        {[1, 2, 3].map((i) => (
-                                            <Skeleton key={i} width={120} height={24} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Instagram Rate Card */}
-                            <div className="bg-white rounded-[10px] p-4">
-                                <Skeleton width={200} height={24} className="mb-4" baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="flex flex-col gap-2 p-3 border rounded-lg">
-                                            <Skeleton width={80} height={16} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                            <Skeleton width={100} height={24} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                    {/* Mobile: stack all sections as before */}
+                    <div className="md:hidden flex flex-col gap-4 mt-4">
+                        <FollowerCount followerCount={mediaKitData?.followers} />
+                        <GeneralStats
+                            mode="public"
+                            instaId={mediaKitData?.instaId}
+                            contentAnalytics={mediaKitData?.contentAnalytics}
+                            avgLike={mediaKitData?.avgLikes}
+                            avgComments={mediaKitData?.avgComments}
+                            mediaCount={mediaKitData?.mediaCount}
+                            engagement={mediaKitData?.engagement}
+                        />
+                        {mediaKitData?.genderAnalytics?.isActive && mediaKitData?.genderAnalytics?.genderData && (
+                            <GenderDistribution
+                                genderAnalytics={mediaKitData?.genderAnalytics}
+                                instaId={mediaKitData?.instaId}
+                                mode={'public'}
+                            />
+                        )}
+                        {mediaKitData?.ageAnalytics?.isActive && mediaKitData?.ageAnalytics?.ageData && (
+                            <AgeDistribution
+                                ageDistributionData={mediaKitData?.ageAnalytics}
+                                instaId={mediaKitData?.instaId}
+                                mode={'public'}
+                            />
+                        )}
+                        {mediaKitData?.locationAnalytics?.isActive && mediaKitData?.locationAnalytics?.locationData && (
+                            <LocationDistribution
+                                locationDistributionData={mediaKitData?.locationAnalytics}
+                                instaId={mediaKitData?.instaId}
+                                mode={'public'}
+                            />
+                        )}
                     </div>
-                </div>
 
-                {/* Powered by Footer */}
-                <div className="flex items-center gap-2 justify-center w-full py-6">
-                    <Skeleton width={60} height={16} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
-                    <Skeleton width={80} height={20} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
+                    {/* Full-width rows for brands and pricing */}
+                    {mediaKitData?.brandCollabs?.isActive && mediaKitData?.brandCollabs?.brands && (
+                        <div className="mt-8">
+                            <BrandCollaboration
+                                brandData={mediaKitData?.brandCollabs}
+                                instaId={mediaKitData?.instaId}
+                                mode={'public'}
+                            />
+                        </div>
+                    )}
+                    {mediaKitData?.rateCard?.isActive && (
+                        <div className="mt-6">
+                            <InstaRateCard
+                                rateCardData={mediaKitData?.rateCard}
+                                instaId={mediaKitData?.instaId}
+                                engagementRate={mediaKitData?.engagementRate}
+                                followers={mediaKitData?.followers}
+                                mode={'public'}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
-        );
-    }
-
-    if (!mediaKitData || !instaId) {
-        return <GeneralErrorPage />;
-    }
-
-    return <MediaKitPage mediaKitData={mediaKitData} />;
-};
-
-export default MediaKit;
+            <Link href={'http://dodoclub.in/'} className="flex items-center gap-2 justify-center w-full py-6 bg-white mt-8">
+                <div className="text-[#3D4966] text-xs">powered by:</div>
+                <Image src={DodoIcon} alt="dodo icon" height={20} />
+            </Link>
+        </div>
+    );
+}
