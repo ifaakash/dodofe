@@ -9,6 +9,8 @@ import Card4 from 'public/assets/PriceCalculatorCard4.png'
 import { formatCurrency } from '@utils/helperFunctions'
 import { useState, useMemo } from "react"
 import { updateMediaKit } from "api/services"
+import PricingEditModal from './PricingEditModal'
+import { Settings } from 'lucide-react'
 
 
 
@@ -30,6 +32,7 @@ const InstaRateCard = ({
     showDisclaimer?: boolean
 }) => {
     const [current, setCurrent] = useState(0)
+    const [isPricingModalOpen, setIsPricingModalOpen] = useState(false)
     const contentNiche = 'fashion'
 
 
@@ -57,12 +60,11 @@ const InstaRateCard = ({
     }
 
     const baseRates = {
-        reel: 129,
-        post: 103,     // approx 80% of reel
-        story: 65,     // approx 50% of reel
-        carousel: 116, // approx 90% of reel
+        reel: rateCardData?.rateCardData?.reel || 129,
+        post: rateCardData?.rateCardData?.post || 103,     // approx 80% of reel
+        story: rateCardData?.rateCardData?.story || 65,     // approx 50% of reel
+        carousel: rateCardData?.rateCardData?.carousel || 116, // approx 90% of reel
     }
-
 
     const cards = useMemo(() => {
         const engagementMultiplier = getEngagementMultiplier(engagementRate)
@@ -98,7 +100,7 @@ const InstaRateCard = ({
                 value: calculatePrice(baseRates.carousel),
             },
         ]
-    }, [followers, engagementRate, contentNiche])
+    }, [followers, engagementRate, contentNiche, baseRates])
 
     // Mobile swipe
     let touchStartX = 0
@@ -142,7 +144,14 @@ const InstaRateCard = ({
                     <div className="font-semibold"> Instagram </div>
                     <div className=""> RATE CARD </div>
                 </div>
-                <div className={`flex justify-end items-center ${mode === 'public' ? 'hidden' : ''}`}>
+                <div className={`flex justify-end items-center gap-2 ${mode === 'public' ? 'hidden' : ''}`}>
+                    <button
+                        onClick={() => setIsPricingModalOpen(true)}
+                        className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                        title="Edit Pricing"
+                    >
+                        <Settings size={16} className="text-gray-600" />
+                    </button>
                     <Toggle checked={rateCardData?.isActive} onCheckedChange={handleToggle} />
                 </div>
             </div>
@@ -228,6 +237,18 @@ const InstaRateCard = ({
                 <div className="text-[10px] text-[#5E6C84] text-center mt-2">
                     *These rates are AI generated based on your niche and engagement rate
                 </div>
+            )}
+
+            {isPricingModalOpen && (
+                <PricingEditModal
+                    setIsPricingModalOpen={setIsPricingModalOpen}
+                    rateCardData={rateCardData}
+                    instaId={instaId}
+                    setUpdateMediaKit={setUpdateMediaKit}
+                    engagementRate={engagementRate}
+                    contentNiche={contentNiche}
+                    followers={followers}
+                />
             )}
         </div>
     )
