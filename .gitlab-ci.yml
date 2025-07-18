@@ -7,7 +7,7 @@ stages:
 deploy-to-vercel:
   stage: deploy
   script:
-    - npm install --global vercel
+    - npm install --global vercel pnpm
     - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
     - vercel build --prod --token=$VERCEL_TOKEN
     - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
