@@ -1,0 +1,15 @@
+image: node:20-slim
+
+stages:
+  - deploy
+
+# This stage build and deploy the frontend over vercel
+deploy-to-vercel:
+  stage: deploy
+  script:
+    - npm install --global vercel
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  only:
+    - production
