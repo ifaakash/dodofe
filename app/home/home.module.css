@@ -7,8 +7,9 @@
   position: relative;
   border-top: 3px solid #979EAD;
   overflow: hidden;
-  top: 190px;
+  top: 250px;
   padding-bottom: 190px;
+  min-height: 750px;
 }
 
 /* Shimmer animation using an animated background */

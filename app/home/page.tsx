@@ -36,6 +36,13 @@ import LogoutModal from "@components/templates/LogoutModal";
 import { useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import CTABanner from "@components/molecules/Banners/CTABanner";
+import MoreFromDodo from "public/images/MoreFromDodo.png";
+import DigiInovoiceBanner from "public/banner/DigiInvoiceBanner.png";
+import MediaKitBanner from "public/banner/MediaKitBanner.png";
+import LinkInBioBanner from "public/banner/LinkInPageBanner.png";
+import HeyIcon from "public/images/Hey.png";
+
 
 // Dynamically import the Sidebar component with SSR disabled
 const Sidebar = dynamic(() => import("@components/molecules/Sidebar"), { ssr: false });
@@ -272,8 +279,14 @@ export default function Home() {
 
                         {userId && (
                             <div className="flex row justify-between w-full ml-1">
-                                <p>
-                                    Hi,{" "}
+                                <p className="flex items-start gap-2">
+                                    <Image
+                                        src={HeyIcon}
+                                        alt="user profile"
+                                        priority
+                                        width={42}
+                                        className="pt-1"
+                                    />
                                     {isLoading ? (
                                         <Skeleton width={50} baseColor="#c4c4c4" highlightColor="#dbdbdb" />
                                     ) : (
@@ -300,7 +313,7 @@ export default function Home() {
                                     </span>
                                 </div> */}
 
-                                <div style={{ position: 'relative', bottom: '10px', height: '40px' }} className="flex rounded-full bg-white mr-4 items-center justify-between px-2"
+                                {/* <div style={{ position: 'relative', bottom: '10px', height: '40px' }} className="flex rounded-full bg-white mr-4 items-center justify-between px-2"
                                 >
                                     <Image
                                         className="flex-shrink-0"
@@ -317,7 +330,7 @@ export default function Home() {
                                     </span>
 
 
-                                </div>
+                                </div> */}
                             </div>
                         )}
                     </div>
@@ -362,12 +375,22 @@ export default function Home() {
                         </div>
                     ) : (
                         <div className="mx-4 py-4">
-                            {isLoading ? (
+                            {/* {isLoading ? (
                                 <Skeleton width={'100%'} height={100} baseColor="#c4c4c4" highlightColor="#dbdbdb" borderRadius={10} />
 
                             ) : (
                                 getUserCard()
-                            )}
+                            )} */}
+
+
+
+                            <CTABanner
+                                titleHtml={'A Better, Smarter Way to Pitch Brands'}
+                                highlightedTitle={'Pitch Brands'}
+                                description="Showcase your value with a sleek MediaKit that brands actually want to open."
+                                ctaText="Know More"
+                                maxWidth={310}
+                            />
                         </div>
                     )}
                 </div>
@@ -382,14 +405,40 @@ export default function Home() {
                 >
                     <Image
                         height={53}
-                        width={251}
-                        src={otherFeatures}
+                        width={150}
+                        src={MoreFromDodo}
                         alt="user profile"
                         className="mx-auto mb-6 mt-3"
                         priority
                     />
 
-                    <div className="absolute-center flex-col mb-8">
+                    <div className="flex justify-center items-center gap-4 min-h-80 flex-col">
+
+                        <Link href={ROUTE_CONSTANTS.MEDIA_KIT}>
+                            <Image
+                                src={MediaKitBanner}
+                                alt="user profile"
+                                priority
+                            />
+                        </Link>
+                        <Link href={`${ROUTE_CONSTANTS.DODOPAGE}/${dodoPageDetail?.url}`}>
+                            <Image
+                                src={LinkInBioBanner}
+                                alt="user profile"
+                                priority
+                            />
+                        </Link>
+                        <Link href={ROUTE_CONSTANTS.INVOICE}>
+                            <Image
+                                src={DigiInovoiceBanner}
+                                alt="user profile"
+                                priority
+                            />
+                        </Link>
+
+                    </div>
+
+                    {/* <div className="absolute-center flex-col mb-8">
                         <CtaSection
                             bgColor="var(--warm-green)"
                             img={mediakitIcon}
@@ -413,7 +462,7 @@ export default function Home() {
 
                     <span className="absolute-center text-sm mt-4">
                         more coming soon.
-                    </span>
+                    </span> */}
 
                 </div>
                 <HomeFooter />
