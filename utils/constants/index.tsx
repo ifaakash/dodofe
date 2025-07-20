@@ -58,6 +58,7 @@ export const ROUTE_CONSTANTS = {
   SCRIPT_GENERATOR: "/script-generator",
   PRICE_CALCULATOR: "/price-calculator",
   MEDIA_KIT: "/media-kit",
+  MEDIA_KIT_WAITLIST: "/media-kit/waitlist",
   BLOGS: "/blogs",
   FOR_BRANDS: "/for-brands",
   FOR_CREATORS: "/",

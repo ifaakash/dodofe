@@ -246,3 +246,9 @@ export const updateMediaKitBrand = async (payload: any): Promise<any> =>
 
 export const deleteBrandCollaboration = async (payload: any): Promise<any> =>
     Delete<any>(API_CONSTANTS.deleteBrandCollaboration, payload);
+
+export const joinMediaKitWaitlist = async (payload: {
+    instaId: string;
+    userId: string;
+}): Promise<any> =>
+    Post<any>(API_CONSTANTS.joinMediaKitWaitlist, payload);

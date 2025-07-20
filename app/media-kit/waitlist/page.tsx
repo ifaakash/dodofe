@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import cx from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ROUTE_CONSTANTS } from '@utils/constants';
+import { ROUTE_CONSTANTS, STORAGE_CONSTANTS } from '@utils/constants';
 import CtaSection from '@components/molecules/CtaSection';
 import { Card } from '@utils/uiUtils';
 import styles from '../mediakit.module.css';
@@ -22,6 +22,8 @@ import HomeFooter from '@app/home/homeFooter';
 import dodoCoinIcon from "public/icons/dodoCoin.svg";
 import gotoIcon from "public/icons/goto.svg";
 import sideBarIcon from "public/icons/sideBarIcon.svg";
+import { getMediaKitByInstaId, getUserDetails } from 'api/services';
+import { loadState } from '@utils/localStorage';
 
 
 const MediaKitWaitlist = () => {
@@ -30,8 +32,85 @@ const MediaKitWaitlist = () => {
     const [blurAmount, setBlurAmount] = useState(0);
     const scrollAnimationFrame = useRef<number | null>(null);
     const [isMounted, setIsMounted] = useState(false);
+    const [instaId, setInstaId] = useState("");
+    const [waitlist, setWaitlist] = useState(500);
+    const [initialWaitlist, setInitialWaitlist] = useState(500);
+    const [waitlistCreatedAt, setWaitlistCreatedAt] = useState(new Date().getTime());
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const userId = loadState(STORAGE_CONSTANTS.userId)
 
+    const calculateQueueDecay = (
+        initialValue: number,  // Random starting number (N0)
+        startTime: number,     // Start timestamp (e.g., Date.now())
+        currentTime: number    // Current timestamp
+    ): number => {
+        if (initialValue <= 0) {
+            return 0;
+        }
 
+        const decayRate = 0.0001;  // Constant lambda (λ) per second for moderate decay
+        const elapsedTime = (currentTime - startTime) / 1000;  // Convert ms to seconds
+
+        const result = Math.round(initialValue * Math.exp(-decayRate * elapsedTime));
+        return Math.max(result, 0); // Ensure it doesn't go below 0
+    }
+
+    useEffect(() => {
+        const getuserdetails = async () => {
+            try {
+                const response = await getUserDetails(userId as string);
+                const queueNumber = response?.user?.mediaKit?.queueNumber || 500;
+                const createdAt = new Date(response?.user?.mediaKit?.waitlistCreatedAt || new Date()).getTime();
+
+                setInitialWaitlist(queueNumber);
+                setWaitlist(queueNumber);
+                setWaitlistCreatedAt(createdAt);
+                setInstaId(response?.user?.mediaKit?.instaId);
+
+                console.log('API data loaded:', { queueNumber, createdAt });
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+                // Fallback to default values
+                const fallbackQueue = 500;
+                const fallbackCreatedAt = new Date().getTime();
+
+                setInitialWaitlist(fallbackQueue);
+                setWaitlist(fallbackQueue);
+                setWaitlistCreatedAt(fallbackCreatedAt);
+
+                console.log('Using fallback data:', { fallbackQueue, fallbackCreatedAt });
+            }
+        }
+
+        getuserdetails();
+    }, [userId]);
+
+    // Set up interval for waitlist decay
+    useEffect(() => {
+        console.log('Interval useEffect triggered:', { initialWaitlist, waitlistCreatedAt });
+
+        if (initialWaitlist > 0 && waitlistCreatedAt > 0) {
+            console.log('Starting interval with:', { initialWaitlist, waitlistCreatedAt });
+
+            intervalRef.current = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const newWaitlistValue = calculateQueueDecay(
+                    initialWaitlist,
+                    waitlistCreatedAt,
+                    currentTime
+                );
+                console.log('Waitlist update:', newWaitlistValue, 'at', new Date().toLocaleTimeString());
+                setWaitlist(newWaitlistValue);
+            }, 2000);
+
+            return () => {
+                console.log('Cleaning up interval');
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                }
+            };
+        }
+    }, [initialWaitlist, waitlistCreatedAt]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -63,13 +142,9 @@ const MediaKitWaitlist = () => {
         };
     }, []);
 
-
     const handleBackToHomepage = () => {
         router.push(ROUTE_CONSTANTS.HOME);
     }
-
-
-
 
     return (
         <Screen>
@@ -92,14 +167,45 @@ const MediaKitWaitlist = () => {
                 >
                     <div className="mx-4 flex flex-col items-center gap-5">
                         <div className='flex flex-col items-center gap-2 text-2xl font-bold'>
-                            <span className='leading-none'>🎉You’re on the</span>
+                            <span className='leading-none'>🎉You're on the</span>
                             <span className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] bg-clip-text text-transparent leading-none" >
                                 Waitlist!</span>
                         </div>
 
-                        <div className='text-sm text-center max-w-[310px]'>
-                            🚀 You’re now one step closer to accessing Dodo Media Kit before anyone else.
+                        <div className="bg-white shadow-lg rounded-lg p-6 max-w-xs mx-auto">
+                            <h2 className="text-xl font-bold mb-2">Your Waitlist Position</h2>
+                            <div className="text-4xl font-extrabold text-gradient bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent animate-slide-in">
+                                #{waitlist}
+                            </div>
+                            <style jsx>{`
+                                @keyframes slide-in {
+                                    0% {
+                                        transform: translateY(-100%);
+                                        opacity: 0;
+                                    }
+                                    100% {
+                                        transform: translateY(0);
+                                        opacity: 1;
+                                    }
+                                }
+                                @keyframes fade-in {
+                                    0% {
+                                        opacity: 0;
+                                    }
+                                    100% {
+                                        opacity: 1;
+                                    }
+                                }
+                                .animate-slide-in {
+                                    animation: slide-in 0.5s ease-out;
+                                }
+                                .animate-fade-in {
+                                    animation: fade-in 1s ease-in-out;
+                                }
+                            `}</style>
+                            <p className="mt-2 text-gray-600">You're in line to access the Dodo Media Kit early. Stay tuned!</p>
                         </div>
+
 
                         <div>
                             <Image src={ManOnSofa} alt='man-on-sofa' height={240} width={240} />

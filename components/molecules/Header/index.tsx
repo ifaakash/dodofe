@@ -10,6 +10,7 @@ interface HeaderProps {
     subtitle?: string;
     onBackClick?: () => void;
     initialBackgroundColor?: string;
+    onScrollColor?: string;
 }
 
 export const Header = ({
@@ -17,6 +18,7 @@ export const Header = ({
     subtitle,
     onBackClick,
     initialBackgroundColor = "transparent",
+    onScrollColor = "white",
 }: HeaderProps) => {
     const router = useRouter();
     const [isScrolling, setIsScrolling] = useState(true);
@@ -61,7 +63,7 @@ export const Header = ({
             className={`h-16 flex pt-10 pb-10 mb-10 fixed top-0 left-0 flex-row items-center w-full z-50 transition-transform duration-300 ${isScrolling ? "translate-y-0" : "-translate-y-full"
                 }`}
             style={{
-                backgroundColor: scrollY === 0 ? initialBackgroundColor : "white",
+                backgroundColor: scrollY === 0 ? initialBackgroundColor : onScrollColor,
             }}
         >
             <div
