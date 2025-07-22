@@ -5,7 +5,7 @@ import MediaKitReady from '@components/molecules/mediakit/MediaKitReady'
 import MediaKitLanding from '@components/templates/MediaKitLanding'
 import { STORAGE_CONSTANTS, ROUTE_CONSTANTS } from '@utils/constants'
 import { loadState } from '@utils/localStorage'
-import { getUserDetails, updateMediaKit } from 'api/services'
+import { getMediaKitByInstaId, getUserDetails, updateMediaKit } from 'api/services'
 import React, { useEffect, useState } from 'react'
 import Screen from "@components/molecules/Screen";
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -26,12 +26,21 @@ const MediaKit = () => {
       const response = await getUserDetails(userId as string)
       setUserDetails(response.user)
       setIsLoading(false)
+
+      if (response.user.mediaKit.instaId && !response.user.mediaKit.isVerfieid) {
+        router.push(ROUTE_CONSTANTS.MEDIA_KIT_WAITLIST)
+
+        return;
+      }
     }
     if (userId) {
       fetchUserDetails()
     } else {
       setIsLoading(false)
     }
+
+
+
   }, [userId])
 
   useEffect(() => {
@@ -48,7 +57,7 @@ const MediaKit = () => {
   // Show existing media kit functionality for logged in users
   return (
     <div className='bg-[#EAE9EC] min-h-screen'>
-      <Header />
+      <Header onScrollColor='#EAE9EC' />
       {mediakitRef ?
         <MediaKitReady
           instaIdInput={instaIdInput}

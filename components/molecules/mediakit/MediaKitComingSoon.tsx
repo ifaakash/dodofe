@@ -6,28 +6,56 @@ import LineWithDot from 'public/assets/LineWithDot.svg'
 import confetti from 'canvas-confetti'
 import MediaKitOnboarding from 'public/assets/MediaKitWaiting.png'
 import cx from 'classnames'
-
+import { useEffect, useState } from "react";
+import { getMediaKitByInstaId, joinMediaKitWaitlist } from "api/services";
+import { loadState } from "@utils/localStorage";
+import { STORAGE_CONSTANTS } from "@utils/constants";
+import toast from "react-hot-toast";
 
 const MediaKitComingSoon = () => {
     const router = useRouter();
+    const [instaId, setInstaId] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleJoinWaitlist = () => {
 
-        // if (1 === 1) { // send to verify insta if not verified
-        //   router.push(ROUTE_CONSTANTS.PROFILE);
+    const handleJoinWaitlist = async () => {
+        if (!instaId.trim()) {
+            setError("Please enter your Instagram ID");
+            return;
+        }
 
-        //   return;
-        // }
+        setIsLoading(true);
+        setError("");
 
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: {
-                y: 0.7
-            }
-        })
-        router.push('/media-kit/waitlist')
+        try {
+            // You'll need to get the actual userId from your auth context or localStorage
+            const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
+
+            await joinMediaKitWaitlist({
+                instaId: instaId.trim(),
+                userId: userId
+            });
+
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: {
+                    y: 0.7
+                }
+            });
+
+            router.push('/media-kit/waitlist');
+        } catch (error) {
+            console.error('Error joining waitlist:', error);
+
+            toast.error(error.message || "Failed to join waitlist. Please try again.");
+            setError("Failed to join waitlist. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     }
+
     return (
         <div className='pt-20 px-5 pb-24 flex justify-center'>
             <div className='flex flex-col gap-20 items-center'>
@@ -75,16 +103,43 @@ const MediaKitComingSoon = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Instagram ID Input */}
+                <div className='flex flex-col gap-3 w-full max-w-sm'>
+                    <div className='text-center'>
+                        <label htmlFor="instaId" className='text-sm font-medium text-[#3D4966]'>
+                            Enter your Instagram ID
+                        </label>
+                    </div>
+                    <input
+                        id="instaId"
+                        type="text"
+                        value={instaId}
+                        onChange={(e) => {
+                            setInstaId(e.target.value);
+                            setError(""); // Clear error when user types
+                        }}
+                        placeholder="e.g., your_username"
+                        className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6228D7] focus:border-transparent text-sm'
+                        disabled={isLoading}
+                    />
+
+                    {error && (
+                        <div className='text-red-500 text-xs text-center'>
+                            {error}
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className={cx("fixed bottom-0 py-4 w-[90%] bg-[#EAE9EC]")}>
                 <NewButton
                     size="large"
-                    variant="primary"
+                    variant={isLoading || !instaId ? "disabled" : "primary"}
                     className="w-full"
                     onClick={handleJoinWaitlist}
                 >
-                    Join the Waitlist
+                    {isLoading ? "Joining..." : "Join the Waitlist"}
                 </NewButton>
             </div>
         </div>

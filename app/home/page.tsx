@@ -217,6 +217,12 @@ export default function Home() {
         }
 
         if (userDetails?.mediaKit) {
+            console.log(userDetails.mediaKit.isVerified)
+            if (!userDetails?.mediaKit?.isVerified) {
+                router.push(ROUTE_CONSTANTS.MEDIA_KIT_WAITLIST)
+                return;
+            }
+
             router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
         } else {
             router.push(ROUTE_CONSTANTS.MEDIA_KIT);

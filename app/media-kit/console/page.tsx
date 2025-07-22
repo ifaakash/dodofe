@@ -64,6 +64,16 @@ const MediaKitConsole = () => {
 
     const [pendingItems, setPendingItems] = useState(0);
 
+    useEffect(() => {
+        if (!userDetails?.mediaKit?.isVerified) {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT_WAITLIST)
+            return;
+        }
+
+        if (!userDetails?.mediaKit) {
+            router.push(ROUTE_CONSTANTS.MEDIA_KIT)
+        }
+    }, [userDetails?.mediaKit?.isVerified, router])
 
     useEffect(() => {
         let pendingItems = 0;
