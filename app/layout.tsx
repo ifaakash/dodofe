@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link
-          href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600&display=swap"
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700,800,900&display=swap"
           rel="stylesheet"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
