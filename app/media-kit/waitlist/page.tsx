@@ -39,24 +39,44 @@ const MediaKitWaitlist = () => {
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const userId = loadState(STORAGE_CONSTANTS.userId)
 
-    const calculateQueueDecay = (
-        initialValue: number,  // Random starting number (N0)
-        startTime: number,     // Start timestamp (e.g., Date.now())
-        currentTime: number    // Current timestamp
-    ): number => {
-        if (initialValue <= 0) {
-            return 0;
-        }
-
-        const decayRate = 0.0001;  // Constant lambda (λ) per second for moderate decay
-        const elapsedTime = (currentTime - startTime) / 1000;  // Convert ms to seconds
-
-        const result = Math.round(initialValue * Math.exp(-decayRate * elapsedTime));
-        return Math.max(result, 0); // Ensure it doesn't go below 0
+    // Deterministic waitlist calculation
+    function calculateWaitlist(queueNumber: number, waitlistCreatedAt: number, currentTime: number) {
+        const intervalMs = 2000;
+        const step = 4;
+        const elapsed = currentTime - waitlistCreatedAt;
+        const steps = Math.floor(elapsed / intervalMs);
+        const result = queueNumber - steps * step;
+        return Math.max(result, 1);
     }
 
     useEffect(() => {
-        const getuserdetails = async () => {
+        console.log('Interval useEffect triggered:', { initialWaitlist, waitlistCreatedAt });
+
+        if (initialWaitlist > 0 && waitlistCreatedAt > 0) {
+            console.log('Starting interval with:', { initialWaitlist, waitlistCreatedAt });
+
+            intervalRef.current = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const newWaitlistValue = calculateWaitlist(
+                    initialWaitlist,
+                    waitlistCreatedAt,
+                    currentTime
+                );
+                console.log('Waitlist update:', newWaitlistValue, 'at', new Date().toLocaleTimeString());
+                setWaitlist(newWaitlistValue);
+            }, 2000);
+
+            return () => {
+                console.log('Cleaning up interval');
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                }
+            };
+        }
+    }, [initialWaitlist, waitlistCreatedAt]);
+
+    useEffect(() => {
+        async function fetchWaitlistData() {
             try {
                 const response = await getUserDetails(userId as string);
                 const queueNumber = response?.user?.mediaKit?.queueNumber || 500;
@@ -77,40 +97,14 @@ const MediaKitWaitlist = () => {
                 setInitialWaitlist(fallbackQueue);
                 setWaitlist(fallbackQueue);
                 setWaitlistCreatedAt(fallbackCreatedAt);
-
                 console.log('Using fallback data:', { fallbackQueue, fallbackCreatedAt });
             }
         }
 
-        getuserdetails();
-    }, [userId]);
-
-    // Set up interval for waitlist decay
-    useEffect(() => {
-        console.log('Interval useEffect triggered:', { initialWaitlist, waitlistCreatedAt });
-
-        if (initialWaitlist > 0 && waitlistCreatedAt > 0) {
-            console.log('Starting interval with:', { initialWaitlist, waitlistCreatedAt });
-
-            intervalRef.current = setInterval(() => {
-                const currentTime = new Date().getTime();
-                const newWaitlistValue = calculateQueueDecay(
-                    initialWaitlist,
-                    waitlistCreatedAt,
-                    currentTime
-                );
-                console.log('Waitlist update:', newWaitlistValue, 'at', new Date().toLocaleTimeString());
-                setWaitlist(newWaitlistValue);
-            }, 2000);
-
-            return () => {
-                console.log('Cleaning up interval');
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current);
-                }
-            };
+        if (userId) {
+            fetchWaitlistData();
         }
-    }, [initialWaitlist, waitlistCreatedAt]);
+    }, [userId]);
 
     useEffect(() => {
         setIsMounted(true);
