@@ -33,71 +33,61 @@ const MediaKitWaitlist = () => {
     const scrollAnimationFrame = useRef<number | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const [instaId, setInstaId] = useState("");
-    const [waitlist, setWaitlist] = useState(500);
-    const [initialWaitlist, setInitialWaitlist] = useState(500);
-    const [waitlistCreatedAt, setWaitlistCreatedAt] = useState(new Date().getTime());
+    // Initial state: show '-' until API returns a valid number
+    const [waitlist, setWaitlist] = useState<'-' | number>('-');
+    const [initialWaitlist, setInitialWaitlist] = useState<'-' | number>('-');
+    const [waitlistCreatedAt, setWaitlistCreatedAt] = useState<number | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const userId = loadState(STORAGE_CONSTANTS.userId)
 
-    // Deterministic waitlist calculation
-    function calculateWaitlist(queueNumber: number, waitlistCreatedAt: number, currentTime: number) {
-        const intervalMs = 2000;
-        const step = 4;
-        const elapsed = currentTime - waitlistCreatedAt;
-        const steps = Math.floor(elapsed / intervalMs);
-        const result = queueNumber - steps * step;
-        return Math.max(result, 1);
+    function calculateQueueDecay(
+        initialValue: number,  // Random starting number (N0)
+        startTime: number,     // Start timestamp (e.g., Date.now())
+        currentTime: number    // Current timestamp
+    ): number {
+        if (initialValue <= 0) {
+            throw new Error("Initial value must be positive.");
+        }
+        const decayRate = 0.001;  // Constant lambda (λ) per second for moderate decay
+        const elapsedTime = (currentTime - startTime) / 1000;  // Convert ms to seconds; adjust as needed
+        return Math.ceil(initialValue * Math.exp(-decayRate * elapsedTime));
     }
 
-    useEffect(() => {
-        console.log('Interval useEffect triggered:', { initialWaitlist, waitlistCreatedAt });
-
-        if (initialWaitlist > 0 && waitlistCreatedAt > 0) {
-            console.log('Starting interval with:', { initialWaitlist, waitlistCreatedAt });
-
-            intervalRef.current = setInterval(() => {
-                const currentTime = new Date().getTime();
-                const newWaitlistValue = calculateWaitlist(
-                    initialWaitlist,
-                    waitlistCreatedAt,
-                    currentTime
-                );
-                console.log('Waitlist update:', newWaitlistValue, 'at', new Date().toLocaleTimeString());
-                setWaitlist(newWaitlistValue);
-            }, 2000);
-
-            return () => {
-                console.log('Cleaning up interval');
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current);
-                }
-            };
-        }
-    }, [initialWaitlist, waitlistCreatedAt]);
+    // Deterministic waitlist calculation
+    function calculateWaitlist(queueNumber: number, waitlistCreatedAt: number, currentTime: number) {
+        return calculateQueueDecay(queueNumber, waitlistCreatedAt, currentTime);
+    }
 
     useEffect(() => {
         async function fetchWaitlistData() {
             try {
                 const response = await getUserDetails(userId as string);
-                const queueNumber = response?.user?.mediaKit?.queueNumber || 500;
+                const queueNumber = response?.user?.mediaKit?.queueNumber;
                 const createdAt = new Date(response?.user?.mediaKit?.waitlistCreatedAt || new Date()).getTime();
 
-                setInitialWaitlist(queueNumber);
-                setWaitlist(queueNumber);
-                setWaitlistCreatedAt(createdAt);
-                setInstaId(response?.user?.mediaKit?.instaId);
+                if (response?.user && response?.user?.mediaKit?.isVerified) {
+                    router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
+                }
 
-                console.log('API data loaded:', { queueNumber, createdAt });
+                if (typeof queueNumber === 'number' && !isNaN(queueNumber)) {
+                    setInitialWaitlist(queueNumber);
+                    setWaitlist(queueNumber);
+                    setWaitlistCreatedAt(createdAt);
+                    setInstaId(response?.user?.mediaKit?.instaId);
+                    console.log('API data loaded:', { queueNumber, createdAt });
+                } else {
+                    setInitialWaitlist('-');
+                    setWaitlist('-');
+                    setWaitlistCreatedAt(null);
+                    console.log('API returned invalid queueNumber, showing dash');
+                }
             } catch (error) {
                 console.error('Error fetching user details:', error);
-                // Fallback to default values
-                const fallbackQueue = 500;
-                const fallbackCreatedAt = new Date().getTime();
-
-                setInitialWaitlist(fallbackQueue);
-                setWaitlist(fallbackQueue);
-                setWaitlistCreatedAt(fallbackCreatedAt);
-                console.log('Using fallback data:', { fallbackQueue, fallbackCreatedAt });
+                // Fallback to dash
+                setInitialWaitlist('-');
+                setWaitlist('-');
+                setWaitlistCreatedAt(null);
+                console.log('Using fallback dash');
             }
         }
 
@@ -105,6 +95,27 @@ const MediaKitWaitlist = () => {
             fetchWaitlistData();
         }
     }, [userId]);
+
+    useEffect(() => {
+        // Only start interval if we have a valid initialWaitlist and waitlistCreatedAt
+        if (typeof initialWaitlist === 'number' && waitlistCreatedAt) {
+            intervalRef.current = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const newWaitlistValue = calculateWaitlist(
+                    initialWaitlist,
+                    waitlistCreatedAt,
+                    currentTime
+                );
+                setWaitlist(newWaitlistValue);
+            }, 2000);
+
+            return () => {
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                }
+            };
+        }
+    }, [initialWaitlist, waitlistCreatedAt]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -160,18 +171,16 @@ const MediaKitWaitlist = () => {
                     }}
                 >
                     <div className="mx-4 flex flex-col items-center gap-5">
-                        <div className='flex flex-col items-center gap-2 text-2xl font-bold'>
-                            <span className='leading-none'>🎉You're on the</span>
-                            <span className="bg-gradient-to-r from-[#F9CE34] via-[#EE2A7B] to-[#6228D7] bg-clip-text text-transparent leading-none" >
+                        <div className='flex items-center gap-2 text-2xl font-bold'>
+                            <span>🎉You're on the</span>
+                            <span>
                                 Waitlist!</span>
                         </div>
 
-                        <div className="bg-white shadow-lg rounded-lg p-6 max-w-xs mx-auto">
-                            <h2 className="text-xl font-bold mb-2">Your Waitlist Position</h2>
-                            <div className="text-4xl font-extrabold text-gradient bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent animate-slide-in">
-                                #{waitlist}
-                            </div>
-                            <style jsx>{`
+                        <div className="text-4xl font-extrabold text-gradient bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent animate-slide-in">
+                            #{waitlist}
+                        </div>
+                        <style jsx>{`
                                 @keyframes slide-in {
                                     0% {
                                         transform: translateY(-100%);
@@ -197,8 +206,9 @@ const MediaKitWaitlist = () => {
                                     animation: fade-in 1s ease-in-out;
                                 }
                             `}</style>
-                            <p className="mt-2 text-gray-600">You're in line to access the Dodo Media Kit early. Stay tuned!</p>
-                        </div>
+                        <p className="text-gray-600 mt-4">
+                            ⁠🎉 Just a few ahead of you! Your Dodo Media Kit access is loading...
+                        </p>
 
 
                         <div>
@@ -214,6 +224,9 @@ const MediaKitWaitlist = () => {
                         "w-full px-4 rounded-t-[32px] bg-white",
                         styles.lowerDiv,
                     )}
+                    style={{
+                        top: '360px'
+                    }}
                 >
                     <Image
                         height={53}

@@ -65,12 +65,12 @@ const MediaKitConsole = () => {
     const [pendingItems, setPendingItems] = useState(0);
 
     useEffect(() => {
-        if (!userDetails?.mediaKit?.isVerified) {
+        if (userDetails && userDetails?.mediaKit && !userDetails?.mediaKit?.isVerified) {
             router.push(ROUTE_CONSTANTS.MEDIA_KIT_WAITLIST)
             return;
         }
 
-        if (!userDetails?.mediaKit) {
+        if (userDetails && !userDetails?.mediaKit) {
             router.push(ROUTE_CONSTANTS.MEDIA_KIT)
         }
     }, [userDetails?.mediaKit?.isVerified, router])
@@ -113,12 +113,6 @@ const MediaKitConsole = () => {
         fetchUserDetails();
 
     }, [updateMediaKit, isFirstLoad]);
-
-    useEffect(() => {
-        if (!isLoading && !userDetails?.mediaKit) {
-            router.push(ROUTE_CONSTANTS.MEDIA_KIT)
-        }
-    }, [isLoading, userDetails?.mediaKit, router])
 
     const handleShare = async () => {
         const messageText = "👋 Hey! You've seen my content, now see the numbers behind it. From audience insights to brand collabs, pricing to reach… It's all here in my media kit.👇";

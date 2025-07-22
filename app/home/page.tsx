@@ -109,7 +109,7 @@ export default function Home() {
                 setIsLoading(false);
             })
         }
-    }, [userId]);
+    }, []);
 
     const gotoLinksPage = useCallback((url: string) => {
         const userId: string = loadState(STORAGE_CONSTANTS.userId) || "";
@@ -210,27 +210,28 @@ export default function Home() {
         return null;
     }
 
-    const handleMediaKitNavigation = () => {
+    const openToast = () => {
+        toast.success("Hello");
+    }
+
+    const gotoMediaKit = () => {
         if (!isUserLoggedIn()) {
             router.push(ROUTE_CONSTANTS.LOGIN);
             return;
         }
 
-        if (userDetails?.mediaKit) {
-            console.log(userDetails.mediaKit.isVerified)
-            if (!userDetails?.mediaKit?.isVerified) {
-                router.push(ROUTE_CONSTANTS.MEDIA_KIT_WAITLIST)
-                return;
+        if (userDetails) {
+            if (userDetails?.mediaKit) {
+                if (!userDetails?.mediaKit?.isVerified) {
+                    router.push(ROUTE_CONSTANTS.MEDIA_KIT_WAITLIST)
+                    return;
+                }
+
+                router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
+            } else {
+                router.push(ROUTE_CONSTANTS.MEDIA_KIT);
             }
-
-            router.push(ROUTE_CONSTANTS.MEDIA_KIT_CONSOLE);
-        } else {
-            router.push(ROUTE_CONSTANTS.MEDIA_KIT);
         }
-    };
-
-    const openToast = () => {
-        toast.success("Hello");
     }
 
     return (
@@ -343,41 +344,14 @@ export default function Home() {
 
                     {isEmpty(userId) ? (
                         <div className="mx-4">
-                            <CtaSection
-                                onClick={() =>
-                                    gotoLinksPage(dodoPageDetail?.url)
-                                }
-                                onButtonClick={() =>
-                                    gotoLinksPage(dodoPageDetail?.url)
-                                }
+                            <CTABanner
+                                titleHtml={'Everything a creator needs, in one place'}
+                                highlightedTitle={'in one place'}
+                                description="From MediaKits to Monetisation, build it all in seconds."
+                                ctaText="Login to Explore"
+                                onCtaClick={() => router.push(ROUTE_CONSTANTS.LOGIN)}
+                                maxWidth={310}
                             />
-
-                            <div
-                                className={cx(
-                                    "rounded-full flex px-5 py-3 clr-white my-4 pl-4 shimmer-bg justify-between items-center ",
-                                    styles.shimmerBg
-                                )}
-                                onClick={() => gotoLinksPage(dodoPageDetail?.url)}
-                            >
-                                <div className="flex text-sm">
-                                    Login to get started
-                                    {/* <Image
-                                        className="mx-1"
-                                        height={18}
-                                        width={22}
-                                        src={dodoCoinIcon}
-                                        alt="dodo coin"
-                                    />
-                                    200 dodo coins */}
-                                </div>
-
-                                <Image
-                                    width={24}
-                                    height={24}
-                                    src={gotoIcon}
-                                    alt="creators"
-                                />
-                            </div>
                         </div>
                     ) : (
                         <div className="mx-4 py-4">
@@ -393,9 +367,10 @@ export default function Home() {
                             <CTABanner
                                 titleHtml={'A Better, Smarter Way to Pitch Brands'}
                                 highlightedTitle={'Pitch Brands'}
-                                description="Showcase your value with a sleek MediaKit that brands actually want to open."
+                                description="Showcase your value with a sleek MediaKit brands want to open."
                                 ctaText="Know More"
                                 maxWidth={310}
+                                onCtaClick={() => router.push(ROUTE_CONSTANTS.MEDIA_KIT)}
                             />
                         </div>
                     )}
@@ -408,6 +383,9 @@ export default function Home() {
                         styles.lowerDiv,
                         !userId && 'mt-24'
                     )}
+                    style={{
+                        top: userId ? '250px' : '180px'
+                    }}
                 >
                     <Image
                         height={53}
@@ -420,27 +398,27 @@ export default function Home() {
 
                     <div className="flex justify-center items-center gap-4 min-h-80 flex-col">
 
-                        <Link href={ROUTE_CONSTANTS.MEDIA_KIT}>
+                        <div onClick={gotoMediaKit} style={{ cursor: 'pointer' }}>
                             <Image
                                 src={MediaKitBanner}
                                 alt="user profile"
                                 priority
                             />
-                        </Link>
-                        <Link href={`${ROUTE_CONSTANTS.DODOPAGE}/${dodoPageDetail?.url}`}>
+                        </div>
+                        <div onClick={() => router.push(userId ? `${ROUTE_CONSTANTS.DODOPAGE}/${dodoPageDetail?.url}` : ROUTE_CONSTANTS.LOGIN)} style={{ cursor: 'pointer' }}>
                             <Image
                                 src={LinkInBioBanner}
                                 alt="user profile"
                                 priority
                             />
-                        </Link>
-                        <Link href={ROUTE_CONSTANTS.INVOICE}>
+                        </div>
+                        <div onClick={() => router.push(userId ? ROUTE_CONSTANTS.INVOICE : ROUTE_CONSTANTS.LOGIN)} style={{ cursor: 'pointer' }}>
                             <Image
                                 src={DigiInovoiceBanner}
                                 alt="user profile"
                                 priority
                             />
-                        </Link>
+                        </div>
 
                     </div>
 

@@ -24,20 +24,20 @@ const CTABanner: React.FC<CTABannerProps> = ({
         if (!highlightedText || !fullTitle.includes(highlightedText)) {
             return `<span class="text-black">${fullTitle}</span>`;
         }
-        
+
         const parts = fullTitle.split(highlightedText);
         let result = '';
-        
+
         for (let i = 0; i < parts.length; i++) {
             if (parts[i]) {
-                result += `<span class="text-black text-2xl font-black">${parts[i]}</span>`;
+                result += `<span class="text-black text-2xl font-bold">${parts[i]}</span></br>`;
             }
-            
+
             if (i < parts.length - 1) {
-                result += `<span class="bg-gradient-to-r  from-[#EE2A7B] to-[#6228D7] bg-clip-text text-transparent leading-none text-2xl font-semibold">${highlightedText}</span>`;
+                result += `<span class="bg-gradient-to-r  from-[#EE2A7B] to-[#6228D7] bg-clip-text text-transparent leading-none text-2xl font-bold">${highlightedText}</span>`;
             }
         }
-        
+
         return result;
     };
 
@@ -49,7 +49,7 @@ const CTABanner: React.FC<CTABannerProps> = ({
                 <div className='flex flex-col gap-[7px] items-center'>
                     <div className={`max-w-[${maxWidth}px]`} dangerouslySetInnerHTML={{ __html: processedTitleHtml }} />
 
-                    <p className='text-xs font-medium'>
+                    <p style={{ fontSize: '14px', margin: '0px 24px', fontWeight: '400' }}>
                         {description}
                     </p>
                 </div>
