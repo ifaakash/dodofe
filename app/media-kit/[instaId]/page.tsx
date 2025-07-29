@@ -44,7 +44,7 @@ export default function MediaKit() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#F5F6FA]">
+        <div className="min-h-screen flex flex-col">
             <div className="py-12 px-4 md:px-6 lg:px-8 flex flex-col gap-5 flex-grow">
                 <div className="max-w-[1100px] mx-auto w-full">
                     <MediaKitHeader data={mediaKitData} variant="public" />

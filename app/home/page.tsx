@@ -238,7 +238,23 @@ export default function Home() {
         <Screen>
 
             <div className={cx("pt-8 text-center", styles["transition-wrapper"], mainContentVisible && styles.visible)}
-                style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed', backgroundRepeat: 'no-repeat' }}>
+            // style={{ backgroundImage: `url(${crossBg.src})`, backgroundAttachment: 'fixed', backgroundRepeat: 'no-repeat' }}
+            >
+                <div
+                    style={{
+                        backgroundImage: `url(${crossBg.src})`,
+                        backgroundAttachment: 'fixed',
+                        backgroundRepeat: 'no-repeat',
+                        filter: 'blur(2px)',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        zIndex: -1,
+                        pointerEvents: 'none',
+                    }}
+                />
                 <div className="fixed w-full"
                     style={{
                         filter: `blur(${blurAmount}px)`,
