@@ -46,42 +46,6 @@ interface SocialLinksProps {
 const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode, isLoading }) => {
     const [showAll, setShowAll] = useState(false);
 
-    // Fallback function for copying to clipboard (for older browsers)
-    const fallbackCopyToClipboard = (text: string) => {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            const successful = document.execCommand('copy');
-            if (successful) {
-                toast.success(`📧 Email copied: ${text}`, {
-                    duration: 2000,
-                    position: 'top-center',
-                });
-            } else {
-                toast.error('Failed to copy email', {
-                    duration: 2000,
-                    position: 'top-center',
-
-                });
-            }
-        } catch (err) {
-            toast.error('Failed to copy email', {
-                duration: 2000,
-                position: 'top-center',
-
-            });
-        }
-
-        document.body.removeChild(textArea);
-    };
-
     const socialIcons = [
         { name: "website", icon: Web },
         { name: "instagram", icon: Insta },
@@ -161,14 +125,17 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode, 
                                                 });
                                             }).catch(() => {
                                                 // Fallback for clipboard API failure
-                                                fallbackCopyToClipboard(linkValue);
-                                            });
+                                                toast.error('Failed to copy email', {
+                                                });
+                                            })
                                         } else {
                                             // Fallback for older browsers
-                                            fallbackCopyToClipboard(linkValue);
+                                            toast.error('Failed to copy email', {
+                                            });
                                         }
                                     }
-                                }}
+                                }
+                                }
                             >
                                 <Image
                                     src={item.icon}
