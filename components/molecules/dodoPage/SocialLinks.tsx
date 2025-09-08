@@ -103,39 +103,16 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ socialLinks = {}, url, mode, 
                         return (
                             <a
                                 key={item.name}
-                                {...(item.name !== "email" ? {
-                                    href: href,
-                                    target: "_blank",
-                                    rel: "noopener noreferrer"
-                                } : {
-                                    href: "#",
-                                    "aria-label": `Copy ${linkValue} to clipboard`
-                                })}
+                                href={href}
+                                {...(item.name !== "email"
+                                    ? {
+                                          target: "_blank",
+                                          rel: "noopener noreferrer",
+                                      }
+                                    : {
+                                          "aria-label": `Send email to ${linkValue}`,
+                                      })}
                                 className="cursor-pointer bg-white p-3 rounded-full flex items-center justify-center"
-                                onClick={(e) => {
-                                    if (item.name === "email") {
-                                        e.preventDefault();
-
-                                        // Copy email to clipboard
-                                        if (navigator.clipboard && navigator.clipboard.writeText) {
-                                            navigator.clipboard.writeText(linkValue).then(() => {
-                                                toast.success(`Email copied: ${linkValue}`, {
-                                                    duration: 2000,
-                                                    position: 'top-center',
-                                                });
-                                            }).catch(() => {
-                                                // Fallback for clipboard API failure
-                                                toast.error('Failed to copy email', {
-                                                });
-                                            })
-                                        } else {
-                                            // Fallback for older browsers
-                                            toast.error('Failed to copy email', {
-                                            });
-                                        }
-                                    }
-                                }
-                                }
                             >
                                 <Image
                                     src={item.icon}
