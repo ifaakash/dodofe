@@ -241,8 +241,16 @@ export const addMediaKitAnalytics = async (payload: any): Promise<any> =>
 export const verifyMediaKit = async (instaId: string): Promise<any> =>
     Get<any>(API_CONSTANTS.verifyMediaKit + API_CONSTANTS.slash + instaId);
 
-export const updateMediaKitBrand = async (payload: any): Promise<any> =>
-    Patch<any>(API_CONSTANTS.updateMediaKitBrand, payload);
+export const updateMediaKitBrand = async (payload: any): Promise<any> => {
+    // Check if payload is FormData (for file uploads)
+    if (payload instanceof FormData) {
+        return Patch<any>(API_CONSTANTS.updateMediaKitBrand, payload, {
+            "Content-Type": "multipart/form-data",
+        });
+    }
+    // Regular JSON request
+    return Patch<any>(API_CONSTANTS.updateMediaKitBrand, payload);
+};
 
 export const deleteBrandCollaboration = async (payload: any): Promise<any> =>
     Delete<any>(API_CONSTANTS.deleteBrandCollaboration, payload);

@@ -201,29 +201,48 @@ const BrandModal = ({
             changes.contentType = newContentTypes.join(',')
         }
 
+        if (Object.keys(changes).length === 0 && !brandFormData.brandLogoFile) {
+            console.log("No changes detected");
+            toast.error("No changes to update");
+            return;
+        }
+
+        // If there's a file upload, use FormData
         if (brandFormData.brandLogoFile) {
-            changes.brandLogo = brandFormData.brandLogoFile
-        }
+            const formData = new FormData();
+            formData.append("instaId", instaId);
+            formData.append("brandId", allBrandData._id);
 
-        if (Object.keys(changes).length === 0) {
-            console.log('No changes detected')
-            toast.error('No changes to update')
-            return
-        }
+            // Add all changes as JSON string
+            formData.append("updates", JSON.stringify(changes));
 
-        const res = await updateMediaKitBrand({
-            instaId: instaId,
-            brandId: allBrandData._id,
-            updates: {
-                ...changes
+            // Add the file
+            formData.append("brandLogo", brandFormData.brandLogoFile);
+
+            const res = await updateMediaKitBrand(formData);
+            if (res.success) {
+                toast.success("Brand updated successfully");
+                setIsAddBrandModelOpen(false);
+                window.location.reload();
+            } else {
+                toast.error(res.message);
             }
-        })
-        if (res.success) {
-            toast.success('Brand updated successfully')
-            setIsAddBrandModelOpen(false)
-            window.location.reload()
         } else {
-            toast.error(res.message)
+            // No file upload, use regular JSON request
+            const res = await updateMediaKitBrand({
+                instaId: instaId,
+                brandId: allBrandData._id,
+                updates: {
+                    ...changes,
+                },
+            });
+            if (res.success) {
+                toast.success("Brand updated successfully");
+                setIsAddBrandModelOpen(false);
+                window.location.reload();
+            } else {
+                toast.error(res.message);
+            }
         }
     }
 
