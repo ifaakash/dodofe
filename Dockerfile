@@ -1,9 +1,9 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
-RUN pnpm install
-COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && npm install -g pnpm@8 && pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN corepack enable && pnpm config set ignore-scripts false && pnpm install --frozen-lockfile
 
+ENV CI=true
 COPY . .
 RUN pnpm build
 
